@@ -1,6 +1,5 @@
 #include "FairLogger.h"
 
-#include "TClonesArray.h"
 #include "FairRootManager.h"
 #include "R3BSofSciReader.h"
 #include "R3BSofSciMappedData.h"
@@ -40,13 +39,13 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info *a_struct_info)
 
   // Register output array in tree
   FairRootManager::Instance()->Register("SofSci","MappedDim", fArray, kTRUE);
-  
+
   // clear struct_writer's output struct. Seems ucesb doesn't do that
   // for channels that are unknown to the current ucesb config.
   EXT_STR_h101_SOFSCI_onion* data = (EXT_STR_h101_SOFSCI_onion*)fData;
   for (int d=0;d<NUM_SOFSCI_DETECTORS;d++)
     data->SOFSCI[d].TFM=0;
-  
+
   return kTRUE;
 }
 
@@ -61,7 +60,7 @@ Bool_t R3BSofSciReader::Read()
       struct {
         uint32_t TFM;             : number of PTMTs with FT hits - this is not the number of hits
 	uint32_t TFMI[2 / TFM /]; : PMT number
-	uint32_t TFME[2 / TFM /]; : index (address?) of the first hit for the next PMT in the data word 
+	uint32_t TFME[2 / TFM /]; : index (address?) of the first hit for the next PMT in the data word
 	uint32_t TF;              : total number of hits
 	uint32_t TFv[80 / TF /];  : fine time value for this hit
 	uint32_t TCM;             : this is = TFM
@@ -74,17 +73,17 @@ Bool_t R3BSofSciReader::Read()
 */
 
   // loop over all detectors
-  for (int d=0;d<NUM_SOFSCI_DETECTORS;d++){		
+  for (int d=0;d<NUM_SOFSCI_DETECTORS;d++){
 
-    uint32_t numberOfPMTsWithHits = data->SOFSCI[d].TFM; // also = data->SOFSCI[d].TCM; 
+    uint32_t numberOfPMTsWithHits = data->SOFSCI[d].TFM; // also = data->SOFSCI[d].TCM;
 
     // loop over channels with hits
     uint32_t curChannelStart=0;
     for (int pmmult=0;pmmult<numberOfPMTsWithHits;pmmult++) {
-      uint32_t pmtval=data->SOFSCI[d].TFMI[pmmult]; 
-      uint32_t nextChannelStart=data->SOFSCI[d].TFME[pmmult];  
+      uint32_t pmtval=data->SOFSCI[d].TFMI[pmmult];
+      uint32_t nextChannelStart=data->SOFSCI[d].TFME[pmmult];
       // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
-      for (int hit=curChannelStart;hit<nextChannelStart;hit++){  
+      for (int hit=curChannelStart;hit<nextChannelStart;hit++){
 	new ((*fArray)[fArray->GetEntriesFast()])R3BSofSciMappedData(d+1,pmtval,data->SOFSCI[d].TCv[hit],data->SOFSCI[d].TFv[hit]);
       }
       curChannelStart=nextChannelStart;
@@ -100,4 +99,3 @@ void R3BSofSciReader::Reset()
 }
 
 ClassImp(R3BSofSciReader)
-

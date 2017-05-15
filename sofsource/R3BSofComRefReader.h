@@ -2,6 +2,7 @@
 #define R3BSOFCOMREFREADER_H
 
 #include "R3BReader.h"
+#include "TClonesArray.h"
 
 struct EXT_STR_h101_SOFCOMREF_t;
 typedef struct EXT_STR_h101_SOFCOMREF_t EXT_STR_h101_SOFCOMREF;
@@ -26,10 +27,9 @@ class R3BSofComRefReader : public R3BReader
   FairLogger*	fLogger;
   /* the structs of type R3BSofComRefMapped Item */
   TClonesArray* fArray; /**< Output array. */
-  
+
  public:
   ClassDef(R3BSofComRefReader, 0);
 };
 
 #endif
-

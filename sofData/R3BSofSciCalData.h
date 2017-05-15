@@ -13,10 +13,10 @@ class R3BSofSciCalData : public TObject
     R3BSofSciCalData();
 
     // Standard Constructor
-    R3BSofSciCalData(UChar_t detector); 
+    R3BSofSciCalData(UChar_t detector);
 
     // Destructor
-    virtual ~R3BSofCalData() { }
+    virtual ~R3BSofSciCalData();
 
     // Getters
     inline const UChar_t&  GetDetector()  const { return fDetector; }
@@ -29,11 +29,9 @@ class R3BSofSciCalData : public TObject
   public:
     Double_t fTime_PMT1_ns;   // right
     Double_t fTime_PMT2_ns;   // left
-    Double_t fTime_REF_ns;    // common time reference 
+    Double_t fTime_REF_ns;    // common time reference
 
     ClassDef(R3BSofSciCalData, 3)
 };
 
 #endif
-
-
