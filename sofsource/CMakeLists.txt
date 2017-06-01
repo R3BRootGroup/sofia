@@ -10,7 +10,7 @@ ${ucesb_INCLUDE_DIR}
 
 set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
-#${R3BROOT_SOURCE_DIR}/r3bsource
+${R3BROOT_SOURCE_DIR}/r3bsource
 #${R3BROOT_SOURCE_DIR}/r3bbase
 #${R3BROOT_SOURCE_DIR}/r3bdata/caloData
 #${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
@@ -30,7 +30,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #R3BUcesbSource.cxx
-R3BReader.cxx
+#R3BReader.cxx
 #R3BUnpackReader.cxx
 #R3BNeulandTamexReader.cxx
 #R3BNeulandTacquilaReader.cxx
@@ -57,11 +57,7 @@ Set(HEADERS ${STRUCT_HEADERS} ${HEADERS})
 
 set(LINKDEF_FILE R3BLinkDef.h)
 set(DEPENDENCIES
-#    GeoBase ParBase MbsAPI Base FairTools
-#    R3Bbase R3BData
-    R3BSofData Core Geom GenVector
-    Physics Matrix MathCore
-    ${ucesb_LIBRARY_SHARED})
+    R3BSofData R3Bsource ${ucesb_LIBRARY_SHARED} FairTools)
 set(LIBRARY_NAME R3BSofsource)
 
 If(ROOT_FOUND_VERSION LESS 59999)

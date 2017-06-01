@@ -16,7 +16,7 @@ class R3BSofSciCalData : public TObject
     R3BSofSciCalData(UChar_t detector);
 
     // Destructor
-    virtual ~R3BSofSciCalData();
+    virtual ~R3BSofSciCalData() {}
 
     // Getters
     inline const UChar_t&  GetDetector()  const { return fDetector; }

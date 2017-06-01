@@ -7,11 +7,10 @@
 #pragma link off all functions;
 
 #pragma link C++ class R3BSofATMadcMappedData+;
-#pragma link C++ class R3BSofDetectorList+;
 #pragma link C++ class R3BSofSciMappedData+;
 #pragma link C++ class R3BSofMusicMdpp16MappedData+;
 #pragma link C++ class R3BSofToFWMappedData+;
-#pragma link C++ class R3BSofDataLinkDef+;
 #pragma link C++ class R3BSofSciCalData+;
+#pragma link C++ class R3BSofComRefMappedData+;
 
 #endif

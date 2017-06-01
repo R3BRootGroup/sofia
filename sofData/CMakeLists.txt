@@ -11,7 +11,7 @@ ${BASE_INCLUDE_DIRECTORIES}
 
 set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bdata
-${R3BROOT_SOURCE_DIR}/r3bdata/caloData
+${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
@@ -65,6 +65,6 @@ SET(HEADERS ${HEADERS} R3BSofDetectorList.h )
 set(LINKDEF  R3BSofDataLinkDef.h)
 set(LIBRARY_NAME R3BSofData)
 set(DEPENDENCIES
-    Base FairTools)
+    Core m)
 
 GENERATE_LIBRARY()
