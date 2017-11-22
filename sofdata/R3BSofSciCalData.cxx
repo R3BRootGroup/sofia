@@ -1,5 +1,6 @@
 #include "R3BSofSciCalData.h"
 #include "math.h"
+#include <limits>
 
 /* for the data analysis of the Los detector. 
  * Introduced by Ralf, Feb 2016

@@ -15,9 +15,6 @@ add_subdirectory (sofdata)
 if (WITH_UCESB)
 add_subdirectory (sofsource)
 endif (WITH_UCESB)
-#add_subdirectory (sofmwpc)
-#add_subdirectory (softwim)
-#add_subdirectory (softrim)
-#add_subdirectory (sofat)
-#add_subdirectory (softof)
+add_subdirectory (macros)
+
 
