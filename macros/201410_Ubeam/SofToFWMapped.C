@@ -1,7 +1,7 @@
 struct EXT_STR_h101_t
 {
   EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_SOFTOFW_t tofw;
+  EXT_STR_h101_SOFTOFW_onion_t tofw;
 };
 
 void SofToFWMapped(Int_t First=1320)

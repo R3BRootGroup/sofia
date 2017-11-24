@@ -1,7 +1,7 @@
 struct EXT_STR_h101_t
 {
   EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_SOFAT_MADC_t at;
+  EXT_STR_h101_SOFAT_MADC_onion_t at;
 };
 
 void SofATMapped(Int_t First=1320)

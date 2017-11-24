@@ -1,7 +1,7 @@
 struct EXT_STR_h101_t
 {
   EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_SOFSCI_t sci;
+  EXT_STR_h101_SOFSCI_onion_t sci;
 };
 
 void SofSciMapped(Int_t First=1320)
