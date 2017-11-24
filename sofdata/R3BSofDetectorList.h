@@ -14,7 +14,8 @@ enum DetectorId
     kSOFMWPC,
     kSOFTWIM,
     kSOFTRIM,
-    kSOFTOF,
+    kSOFTOFWALL,
+    kSOFSCI,
     kLAST
 };
 
@@ -27,7 +28,8 @@ enum fDetectorType
     kSofMWPCPoint,
     kSofTWIMPoint,
     kSofTRIMPoint,
-    kSofTOFPoint
+    kSofTOFWALLPoint,
+    kSofSCIPoint
 };
 
 enum SensorSide

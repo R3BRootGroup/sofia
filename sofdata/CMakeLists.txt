@@ -14,10 +14,6 @@ ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
 ${R3BSOF_SOURCE_DIR}/sofdata
-${R3BSOF_SOURCE_DIR}/sofdata/atData
-${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
-${R3BSOF_SOURCE_DIR}/sofdata/musicData
-${R3BSOF_SOURCE_DIR}/sofdata/tofData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -48,12 +44,14 @@ set(SRCS
 #neulandData/R3BNeulandNeutron.cxx
 #neulandData/R3BNeulandPixel.cxx
 #neulandData/R3BPaddleTamexMappedData.cxx
+R3BSofATPoint.cxx
 R3BSofATMadcMappedData.cxx
 R3BSofSciMappedData.cxx
 R3BSofComRefMappedData.cxx
 R3BSofSciCalData.cxx
 R3BSofToFWMappedData.cxx
 R3BSofMusicMdpp16MappedData.cxx
+R3BSofToFWCalData.cxx
 )
 
 

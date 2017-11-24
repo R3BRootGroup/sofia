@@ -16,5 +16,9 @@ if (WITH_UCESB)
 add_subdirectory (sofsource)
 endif (WITH_UCESB)
 add_subdirectory (macros)
-
+add_subdirectory (at)
+add_subdirectory (mwpc)
+add_subdirectory (tofwall)
+add_subdirectory (trim)
+add_subdirectory (twim)
 

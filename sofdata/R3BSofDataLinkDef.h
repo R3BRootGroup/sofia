@@ -6,6 +6,8 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ class R3BSofATPoint+;
+
 #pragma link C++ class R3BSofATMadcMappedData+;
 #pragma link C++ class R3BSofSciMappedData+;
 #pragma link C++ class R3BSofMusicMdpp16MappedData+;
