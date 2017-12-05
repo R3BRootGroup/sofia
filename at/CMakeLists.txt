@@ -28,7 +28,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-#R3BSofAT.cxx
+R3BSofAT.cxx
 #R3BSofATHitPar.cxx
 #R3BSofATCalPar.cxx
 #R3BSofATMappedPar.cxx
@@ -45,11 +45,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofATLinkDef.h)
 set(LIBRARY_NAME R3BSofAT)
 set(DEPENDENCIES
-    R3Bbase R3BPassive R3BData R3BSofData)
-
-if(FAIRDB_FOUND)
-set(DEPENDENCIES
-    ${DEPENDENCIES} FairDB)
-endif(FAIRDB_FOUND)
+    R3Bbase R3BSofData)
 
 GENERATE_LIBRARY()

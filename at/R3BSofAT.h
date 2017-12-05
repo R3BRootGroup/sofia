@@ -60,7 +60,7 @@ class R3BSofAT : public R3BDetector {
   virtual void Register();
   
   /** Accessor to the hit collection **/
-  virtual TClonesArray* GetCollection() const;
+  virtual TClonesArray* GetCollection(Int_t iColl) const;
   
   /** Virtual method Print
    **
@@ -144,7 +144,7 @@ class R3BSofAT : public R3BDetector {
   
   TGeoRotation* createMatrix(Double_t phi, Double_t theta, Double_t psi);
   
-  ClassDef(R3BSofAT, 1);
+  ClassDef(R3BSofAT, 2);
 };
 
 inline void R3BSofAT::ResetParameters()

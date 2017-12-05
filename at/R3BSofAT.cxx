@@ -2,6 +2,7 @@
 // -----                        R3BSofAT source file                  -----
 // -----                  Created 24/11/17  by H.Alvarez-Pol          -----
 // -------------------------------------------------------------------------
+#include "R3BDetectorList.h"
 #include "R3BSofAT.h"
 #include "FairGeoInterface.h"
 #include "FairGeoLoader.h"
@@ -67,16 +68,14 @@ void R3BSofAT::Initialize() {
 
   LOG(INFO) << "R3BSofAT: initialisation" << FairLogger::endl;
   LOG(DEBUG) << "-I- R3BSofAT: Vol (McId) def" << FairLogger::endl;
-
-  TGeoVolume* vol = gGeoManager->GetVolume("SofATWorld");
-  vol->SetVisibility(kFALSE);
 }
 
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofAT::ProcessHits(FairVolume* vol) {
+  Int_t nodeId;
   if (gMC->IsTrackEntering() ) {
     gGeoManager->cd(gMC->CurrentVolPath());
-    Int_t nodeId = gGeoManager->GetNodeId();
+    nodeId = gGeoManager->GetNodeId();
   }
   if (gMC->IsTrackEntering()) {
     fELoss = 0.;
@@ -101,7 +100,7 @@ Bool_t R3BSofAT::ProcessHits(FairVolume* vol) {
 
   fELoss += dE / 1000.; // back to GeV
 
-  if (dE > 0 && dx > 0) {
+  if (dE > 0 /*&& dx > 0*/) {
 
     fNSteps++;
 
@@ -119,6 +118,13 @@ Bool_t R3BSofAT::ProcessHits(FairVolume* vol) {
 
       if (fELoss == 0.)
 	return kFALSE;
+
+      AddPoint(fTrackID, nodeId, fVolumeID, 0, 0,
+      TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
+      TVector3(fPosOut.X(), fPosOut.Y(), fPosOut.Z()),
+      TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()),
+      TVector3(fMomOut.Px(), fMomOut.Py(), fMomOut.Pz()),
+      fTime, fLength, fELoss);
 
       // Increment number of SofATPoints for this track
       R3BStack* stack = (R3BStack*)gMC->GetStack();
@@ -151,7 +157,7 @@ void R3BSofAT::Register() {
 }
 
 // -----   Public method GetCollection   --------------------------------------
-TClonesArray* R3BSofAT::GetCollection() const {
+TClonesArray* R3BSofAT::GetCollection(Int_t iColl) const {
   return fSofATCollection;
 }
 
@@ -202,12 +208,12 @@ R3BSofATPoint* R3BSofAT::AddPoint(Int_t trackID,
     LOG(INFO) << "R3BSofAT: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
 	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV"
               << FairLogger::endl;
-  return new (clref[size]) R3BSofATPoint(trackID, detID, volid, copy, ident, posIn, posOut, momIn, momOut, time, length, eLoss, Nf, Ns);
+  return new (clref[size]) R3BSofATPoint(trackID, detID, volid, copy, ident, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofAT::CheckIfSensitive(std::string name) {
-  if (TString(name).Contains("ATVolume_")) {//check at the simulation
+  if (TString(name).Contains("SOFATLog")) {//check at the simulation
     return kTRUE;
   }
   return kFALSE;

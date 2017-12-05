@@ -58,7 +58,6 @@ R3BSofToFWCalData.cxx
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
-SET(HEADERS ${HEADERS} R3BSofDetectorList.h )
 
 set(LINKDEF  R3BSofDataLinkDef.h)
 set(LIBRARY_NAME R3BSofData)
