@@ -10,6 +10,7 @@ ${BASE_INCLUDE_DIRECTORIES}
 set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
+${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/passive
 ${R3BROOT_SOURCE_DIR}/sofia/tofwall
 ${R3BROOT_SOURCE_DIR}/sofia/sofdata
@@ -27,7 +28,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-#R3BSofTofWall.cxx
+R3BSofTofWall.cxx
 #R3BSofTofWallHitPar.cxx
 #R3BSofTofWallCalPar.cxx
 #R3BSofTofWallMappedPar.cxx

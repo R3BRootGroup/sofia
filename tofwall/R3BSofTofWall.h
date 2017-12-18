@@ -6,7 +6,7 @@
 #include <map>
 
 class TClonesArray;
-class R3BSofTofWallPoint;
+class R3BSofToFWPoint;
 class FairVolume;
 class TGeoRotation;
 
@@ -34,7 +34,7 @@ class R3BSofTofWall : public R3BDetector {
   /** Virtual method ProcessHits
    **
    ** Defines the action to be taken when a step is inside the
-   ** active volume. Creates a R3BSofTofWallPoint and adds it
+   ** active volume. Creates a R3BSofToFWPoint and adds it
    ** to the collection.
    *@param vol  Pointer to the active volume
    **/
@@ -60,7 +60,7 @@ class R3BSofTofWall : public R3BDetector {
   virtual void Register();
   
   /** Accessor to the hit collection **/
-  virtual TClonesArray* GetCollection() const;
+  virtual TClonesArray* GetCollection(Int_t iColl) const;
   
   /** Virtual method Print
    **
@@ -102,6 +102,9 @@ class R3BSofTofWall : public R3BDetector {
   Int_t fTrackID;                 //!  track index
   Int_t fTrackPID;                //!  particle identification
   Int_t fVolumeID;                //!  volume id
+  Int_t fDetCopyID;               //!  Det volume id
+  Double_t fZ;                    //!  atomic number fragment
+  Double_t fA;                    //!  mass number fragment
   Int_t fParentTrackID;           //!  parent track index
   Int_t fUniqueID;                //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
   TLorentzVector fPosIn, fPosOut; //!  position
@@ -109,8 +112,6 @@ class R3BSofTofWall : public R3BDetector {
   Double32_t fTime;               //!  time
   Double32_t fLength;             //!  length
   Double32_t fELoss;              //!  energy loss
-  Double32_t fNf;                 //!  fast CsI(Tl) amplitude
-  Double32_t fNs;                 //!  slow CsI(Tl) amplitude
   Int_t fPosIndex;                //!
   Int_t fNSteps;                  //!  Number of steps in the active volume
   Double32_t fEinc;               //!  Total incident energy
@@ -123,11 +124,11 @@ class R3BSofTofWall : public R3BDetector {
    **
    ** Adds a SofTofWallPoint to the HitCollection
    **/
-  R3BSofTofWallPoint* AddPoint(Int_t trackID,
+  R3BSofToFWPoint* AddPoint(Int_t trackID,
 			       Int_t detID,
 			       Int_t volid,
-			       Int_t copy,
-			       Int_t ident,
+			       Double_t Z,
+			       Double_t A,
 			       TVector3 posIn,
 			       TVector3 pos_out,
 			       TVector3 momIn,
@@ -154,7 +155,7 @@ inline void R3BSofTofWall::ResetParameters()
   fPosOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
   fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
   fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
-  fTime = fLength = fELoss = fNf = fNs = fEinc = 0;
+  fTime = fLength = fELoss = fEinc = fZ = fA = 0;
   fPosIndex = 0;
   fNSteps = 0;
 };

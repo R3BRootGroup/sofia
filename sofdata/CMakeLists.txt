@@ -27,23 +27,6 @@ ${FAIRROOT_LIBRARY_DIR}
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-#R3BMCStack.cxx
-#R3BMCTrack.cxx
-#caloData/R3BCaloCrystalHit.cxx
-#caloData/R3BCaloCrystalHitSim.cxx
-#caloData/R3BCaloRawHit.cxx
-#caloData/R3BCaloHit.cxx
-#caloData/R3BCaloHitSim.cxx
-#caloData/R3BCaloPoint.cxx
-#caloData/R3BCaloRawHit.cxx
-#neulandData/R3BNeulandMappedData.cxx
-#neulandData/R3BNeulandCalData.cxx
-#neulandData/R3BNeulandPoint.cxx
-#neulandData/R3BNeulandDigi.cxx
-#neulandData/R3BNeulandCluster.cxx
-#neulandData/R3BNeulandNeutron.cxx
-#neulandData/R3BNeulandPixel.cxx
-#neulandData/R3BPaddleTamexMappedData.cxx
 R3BSofATPoint.cxx
 R3BSofATMadcMappedData.cxx
 R3BSofSciMappedData.cxx
@@ -52,6 +35,10 @@ R3BSofSciCalData.cxx
 R3BSofToFWMappedData.cxx
 R3BSofMusicMdpp16MappedData.cxx
 R3BSofToFWCalData.cxx
+R3BSofMWPCPoint.cxx
+R3BSofTWIMPoint.cxx
+R3BSofToFWPoint.cxx
+R3BSofMWPCPoint2.cxx
 )
 
 

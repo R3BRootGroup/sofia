@@ -10,6 +10,7 @@ ${BASE_INCLUDE_DIRECTORIES}
 set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
+${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/passive
 ${R3BROOT_SOURCE_DIR}/sofia/mwpc
 ${R3BROOT_SOURCE_DIR}/sofia/sofdata
@@ -27,7 +28,8 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-#R3BSofMWPC.cxx
+R3BSofMWPC.cxx
+R3BSofMWPC2.cxx
 #R3BSofMWPCHitPar.cxx
 #R3BSofMWPCCalPar.cxx
 #R3BSofMWPCMappedPar.cxx

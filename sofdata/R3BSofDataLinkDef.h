@@ -15,5 +15,9 @@
 #pragma link C++ class R3BSofToFWCalData+;
 #pragma link C++ class R3BSofSciCalData+;
 #pragma link C++ class R3BSofComRefMappedData+;
+#pragma link C++ class R3BSofMWPCPoint+;
+#pragma link C++ class R3BSofTWIMPoint+;
+#pragma link C++ class R3BSofToFWPoint+;
+#pragma link C++ class R3BSofMWPCPoint2+;
 
 #endif
