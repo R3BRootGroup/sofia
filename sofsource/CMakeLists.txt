@@ -29,6 +29,7 @@ set(SRCS
 R3BSofSciReader.cxx
 R3BSofATMadcReader.cxx
 R3BSofComRefReader.cxx
+R3BSofToFWReader.cxx
 )
 
 Set(STRUCT_HEADERS

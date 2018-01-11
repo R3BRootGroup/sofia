@@ -4,7 +4,6 @@
 #include "TObject.h"
 
 // for the data analysis of the SOFIA TIME-OF-FLIGHT WALL
-// Introduced by Audrey, April 2017
 
 class R3BSofToFWMappedData : public TObject
 {
@@ -18,7 +17,7 @@ class R3BSofToFWMappedData : public TObject
 			 UInt_t  tc,
 			 UInt_t  tf,
 			 UInt_t  e,
-			 Bool_t  v
+			 Bool_t  flag
 			);
 
     // Destructor
@@ -30,16 +29,17 @@ class R3BSofToFWMappedData : public TObject
     inline const UInt_t&  GetTimeCoarse()    const {return fTimeCoarse;}
     inline const UInt_t&  GetTimeFine()      const {return fTimeFine;}
     inline const UInt_t&  GetEnergy()        const {return fEnergy;}
-    inline const Bool_t&  IsValid()          const {return fValid;}
-
+    inline const Bool_t&  WhichFlag()        const {return fFlag;}
+ 
   private:
     UChar_t fDetector;    // 1..28
     UChar_t fPmt;         // 1..2
     UInt_t  fTimeCoarse;
     UInt_t  fTimeFine;
     UInt_t  fEnergy;
-    Bool_t  fValid;       // if mult >1 on one plastic, event is not valid discarded
-
+    Bool_t  fFlag;
+    // fFlag is set to kTRUE only if both PMTs fired once only 
+    // Any event which has at least one plastic turned to kFALSE should be discarded
 
   public:
     ClassDef(R3BSofToFWMappedData, 2)

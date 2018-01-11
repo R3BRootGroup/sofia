@@ -1,7 +1,6 @@
 #include "R3BSofToFWMappedData.h"
 
 // for the data analysis of the SOFIA TIME-OF-FLIGHT WALL
-// Introduced by Audrey, April 2017
 
 
 R3BSofToFWMappedData::R3BSofToFWMappedData()
@@ -10,7 +9,7 @@ R3BSofToFWMappedData::R3BSofToFWMappedData()
   , fTimeCoarse(0)
   , fTimeFine(0)
   , fEnergy(0)
-  , fValid(kTRUE)
+  , fFlag(kFALSE)
 {
 }
 
@@ -19,13 +18,13 @@ R3BSofToFWMappedData::R3BSofToFWMappedData(UChar_t detector,
 					   UInt_t tc,
 					   UInt_t tf,
 					   UInt_t e,
-					   Bool_t v)
+					   Bool_t flag)
     : fDetector(detector)
     , fPmt(pmt)
     , fTimeCoarse(tc)
     , fTimeFine(tf)
     , fEnergy(e)
-    , fValid(v)
+    , fFlag(flag)
 {
 }
 
