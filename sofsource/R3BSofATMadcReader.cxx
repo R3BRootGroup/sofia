@@ -9,7 +9,7 @@ extern "C" {
 #include "ext_h101_sofat_madc.h"
 }
 
-#define NUM_SOFAT_ANODES  5
+#define NUM_SOFAT_CHANNELS  5
 #include <iostream>
 
 
@@ -43,8 +43,8 @@ Bool_t R3BSofATMadcReader::Init(ext_data_struct_info *a_struct_info)
   FairRootManager::Instance()->Register("SofAt","MappedDim", fArray, kTRUE);
 
   EXT_STR_h101_SOFAT_MADC_onion* data = (EXT_STR_h101_SOFAT_MADC_onion*)fData;
-  for (int anode=0;anode<NUM_SOFAT_ANODES;anode++)
-    data->SOFAT_E[anode]=0;
+  for (int ch=0;ch<NUM_SOFAT_CHANNELS;ch++)
+    data->SOFAT_E[ch]=0;
 
   return kTRUE;
 }
@@ -52,11 +52,13 @@ Bool_t R3BSofATMadcReader::Init(ext_data_struct_info *a_struct_info)
 Bool_t R3BSofATMadcReader::Read()
 {
   EXT_STR_h101_SOFAT_MADC_onion* data = (EXT_STR_h101_SOFAT_MADC_onion*)fData;
-  
-  // loop over all the anodes and put the mapped items {anode, energy} one after the other in the fArray
-  for(int anode=0; anode<NUM_SOFAT_ANODES; anode++){
-    new ((*fArray)[fArray->GetEntriesFast()])R3BSofATMadcMappedData(anode+1,data->SOFAT_E[anode]);
-  }
+
+  R3BSofATMadcMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofATMadcMappedData(NUM_SOFAT_CHANNELS);
+
+
+  // loop over all the anodes
+  for (int ch=0; ch<NUM_SOFAT_CHANNELS; ch++)
+    mapped->SetEnergy(ch,data->SOFAT_E[ch]);
 
   return kTRUE;
 }
