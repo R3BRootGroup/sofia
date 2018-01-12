@@ -2,8 +2,10 @@
 #define R3BSOFATMADCMAPPEDITEM_H
 
 #include "TObject.h"
+#include <vector>
 
 // for the data analysis of the SOFIA - ACTIVE TARGET
+// Introduced by Audrey, March 2017
 
 class R3BSofATMadcMappedData : public TObject
 {
@@ -11,21 +13,18 @@ class R3BSofATMadcMappedData : public TObject
     // Default Constructor
     R3BSofATMadcMappedData();
 
-    // Standard Constructor - version under construction
-    R3BSofATMadcMappedData(UChar_t a,
-			   UInt_t  e);  
+    // Standard Constructor
+    R3BSofATMadcMappedData(UInt_t nChannels);
 
     // Destructor
     virtual ~R3BSofATMadcMappedData() { }
 
-    // Getters - version under construction
-    inline const UChar_t& GetAnode() const  { return fAnode; }
-    inline const UInt_t&  GetEnergy() const { return fEnergy; }
+    // Getters
+    inline const UInt_t&  GetEnergy(UInt_t channel) const { return fEnergy[channel]; }
+    void SetEnergy(UInt_t channel,UInt_t energy)          {fEnergy[channel] = energy;};
 
   private:
-    // version under construction
-    UChar_t fAnode;    // 1..5
-    UInt_t  fEnergy;   
+    std::vector<UInt_t>  fEnergy;   
 
   public:
     ClassDef(R3BSofATMadcMappedData, 2)
