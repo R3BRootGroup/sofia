@@ -11,9 +11,6 @@ ${ucesb_INCLUDE_DIR}
 set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bsource
-#${R3BROOT_SOURCE_DIR}/r3bbase
-#${R3BROOT_SOURCE_DIR}/r3bdata/caloData
-#${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
 ${R3BSOF_SOURCE_DIR}/sofsource
 ${R3BSOF_SOURCE_DIR}/sofdata
 )
@@ -29,21 +26,12 @@ include_directories(SYSTEM ${SYSTEM_INCLUDE_DIRECTORIES})
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-#R3BUcesbSource.cxx
-#R3BReader.cxx
-#R3BUnpackReader.cxx
-#R3BNeulandTamexReader.cxx
-#R3BNeulandTacquilaReader.cxx
-#R3BSofATReader.cxx
 R3BSofSciReader.cxx
 R3BSofATMadcReader.cxx
 R3BSofComRefReader.cxx
 )
 
 Set(STRUCT_HEADERS
-#ext_h101_unpack.h
-#ext_h101_raw_nnp.h
-#ext_h101_raw_nnp_tamex.h
 ext_h101_sofsci.h
 ext_h101_sofat_madc.h
 ext_h101_softofw.h
@@ -55,7 +43,7 @@ ext_h101_sofcomref.h
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 Set(HEADERS ${STRUCT_HEADERS} ${HEADERS})
 
-set(LINKDEF_FILE R3BLinkDef.h)
+set(LINKDEF_FILE R3BSofLinkDef.h)
 set(DEPENDENCIES
     R3BSofData R3Bsource ${ucesb_LIBRARY_SHARED} FairTools)
 set(LIBRARY_NAME R3BSofsource)
