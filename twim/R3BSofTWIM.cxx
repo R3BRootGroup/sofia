@@ -43,7 +43,7 @@ R3BSofTWIM::R3BSofTWIM(const TString& geoFile, const TGeoTranslation& trans, con
   : R3BSofTWIM(geoFile, { trans, rot }) {
 }
 
-// -----   Standard constructor  
+// -----   Standard constructor
 R3BSofTWIM::R3BSofTWIM(const TString& geoFile, const TGeoCombiTrans& combi)
   : R3BDetector("R3BSofTWIM", kSOFTWIM, geoFile, combi)
   , fSofTWIMCollection(new TClonesArray("R3BSofTWIMPoint"))
@@ -67,10 +67,10 @@ R3BSofTWIM::~R3BSofTWIM() {
 
 void R3BSofTWIM::Initialize() {
   FairDetector::Initialize();
-  
+
   LOG(INFO) << "R3BSofTWIM: initialisation" << FairLogger::endl;
   LOG(DEBUG) << "-I- R3BSofTWIM: Vol (McId) def" << gMC->VolId("TwinLog") << FairLogger::endl;
-  
+
   //TGeoVolume* vol = gGeoManager->GetVolume("SofTRIMWorld");
   //vol->SetVisibility(kFALSE);
 }
@@ -92,35 +92,35 @@ Bool_t R3BSofTWIM::ProcessHits(FairVolume* vol) {
     gMC->TrackMomentum(fMomIn);
     fEinc = gMC->Etot() - gMC->TrackMass(); // be aware!! Relativistic mass!
   }
-  
+
   // Sum energy loss for all steps in the active volume
   Double_t dE = gMC->Edep() * 1000.;                          // in MeV
   Double_t post_E = (gMC->Etot() - gMC->TrackMass()) * 1000.; // in MeV
   TString ptype = gMC->GetStack()->GetCurrentTrack()->GetName();
-  
+
   Double_t M_in = gMC->TrackMass() * 1000.;
   Double_t fA_in = M_in / U_MEV;
   Double_t fZ_in = gMC->TrackCharge();
-  
+
   fELoss += dE / 1000.; // back to GeV
-  
+
   if (dE > 0) {
-    
+
     fNSteps++;
-    
+
     // Set additional parameters at exit of active volume. Create R3BSofTWIMPoint.
     if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared()) {
-      
+
       fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
       fParentTrackID = gMC->GetStack()->GetCurrentParentTrackNumber();
       fVolumeID = vol->getMCid();
       fDetCopyID = vol->getCopyNo();
       fTrackPID = gMC->TrackPid();
       fUniqueID = gMC->GetStack()->GetCurrentTrack()->GetUniqueID();
-      
+
       gMC->TrackPosition(fPosOut);
       gMC->TrackMomentum(fMomOut);
-      
+
       if (fELoss == 0.)
 	return kFALSE;
 
@@ -137,11 +137,11 @@ Bool_t R3BSofTWIM::ProcessHits(FairVolume* vol) {
                fTime,
                fLength,
                fELoss);
-      
+
       // Increment number of SofTRIMPoints for this track
       R3BStack* stack = (R3BStack*)gMC->GetStack();
       stack->AddPoint(kSOFTWIM);
-      
+
       ResetParameters();
     }
   }
@@ -158,21 +158,21 @@ void R3BSofTWIM::BeginEvent() {
 void R3BSofTWIM::EndOfEvent() {
   if (fVerboseLevel)
     Print();
-  
+
   fSofTWIMCollection->Clear();
-  
+
   ResetParameters();
 }
 
 // -----   Public method Register   -------------------------------------------
 void R3BSofTWIM::Register() {
-  FairRootManager::Instance()->Register("SofTRIMPoint", GetName(),
+  FairRootManager::Instance()->Register("SofTWIMPoint", GetName(),
 					fSofTWIMCollection, kTRUE);
 }
 
 // -----   Public method GetCollection   --------------------------------------
 TClonesArray* R3BSofTWIM::GetCollection(Int_t iColl) const {
-    if (iColl == 0)  
+    if (iColl == 0)
         return fSofTWIMCollection;
     else
         return NULL;
