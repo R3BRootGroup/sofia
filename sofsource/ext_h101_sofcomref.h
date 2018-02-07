@@ -29,26 +29,26 @@ typedef          int  int32_t;
 typedef struct EXT_STR_h101_SOFCOMREF_t
 {
   /* RAW */
-  uint32_t SOFCOMREF1TFM /* [1,1] */;
-  uint32_t SOFCOMREF1TFMI[1 EXT_STRUCT_CTRL(SOFCOMREF1TFM)] /* [1,1] */;
-  uint32_t SOFCOMREF1TFME[1 EXT_STRUCT_CTRL(SOFCOMREF1TFM)] /* [1,2] */;
-  uint32_t SOFCOMREF1TF /* [0,2] */;
-  uint32_t SOFCOMREF1TFv[2 EXT_STRUCT_CTRL(SOFCOMREF1TF)] /* [0,65535] */;
-  uint32_t SOFCOMREF1TCM /* [1,1] */;
-  uint32_t SOFCOMREF1TCMI[1 EXT_STRUCT_CTRL(SOFCOMREF1TCM)] /* [1,1] */;
-  uint32_t SOFCOMREF1TCME[1 EXT_STRUCT_CTRL(SOFCOMREF1TCM)] /* [1,2] */;
-  uint32_t SOFCOMREF1TC /* [0,2] */;
-  uint32_t SOFCOMREF1TCv[2 EXT_STRUCT_CTRL(SOFCOMREF1TC)] /* [0,65535] */;
-  uint32_t SOFCOMREF2TFM /* [1,1] */;
-  uint32_t SOFCOMREF2TFMI[1 EXT_STRUCT_CTRL(SOFCOMREF2TFM)] /* [1,1] */;
-  uint32_t SOFCOMREF2TFME[1 EXT_STRUCT_CTRL(SOFCOMREF2TFM)] /* [1,2] */;
-  uint32_t SOFCOMREF2TF /* [0,2] */;
-  uint32_t SOFCOMREF2TFv[2 EXT_STRUCT_CTRL(SOFCOMREF2TF)] /* [0,65535] */;
-  uint32_t SOFCOMREF2TCM /* [1,1] */;
-  uint32_t SOFCOMREF2TCMI[1 EXT_STRUCT_CTRL(SOFCOMREF2TCM)] /* [1,1] */;
-  uint32_t SOFCOMREF2TCME[1 EXT_STRUCT_CTRL(SOFCOMREF2TCM)] /* [1,2] */;
-  uint32_t SOFCOMREF2TC /* [0,2] */;
-  uint32_t SOFCOMREF2TCv[2 EXT_STRUCT_CTRL(SOFCOMREF2TC)] /* [0,65535] */;
+  uint32_t SOFCOMREF_S1TFM /* [1,1] */;
+  uint32_t SOFCOMREF_S1TFMI[1 EXT_STRUCT_CTRL(SOFCOMREF_S1TFM)] /* [1,1] */;
+  uint32_t SOFCOMREF_S1TFME[1 EXT_STRUCT_CTRL(SOFCOMREF_S1TFM)] /* [1,2] */;
+  uint32_t SOFCOMREF_S1TF /* [0,2] */;
+  uint32_t SOFCOMREF_S1TFv[2 EXT_STRUCT_CTRL(SOFCOMREF_S1TF)] /* [0,65535] */;
+  uint32_t SOFCOMREF_S1TCM /* [1,1] */;
+  uint32_t SOFCOMREF_S1TCMI[1 EXT_STRUCT_CTRL(SOFCOMREF_S1TCM)] /* [1,1] */;
+  uint32_t SOFCOMREF_S1TCME[1 EXT_STRUCT_CTRL(SOFCOMREF_S1TCM)] /* [1,2] */;
+  uint32_t SOFCOMREF_S1TC /* [0,2] */;
+  uint32_t SOFCOMREF_S1TCv[2 EXT_STRUCT_CTRL(SOFCOMREF_S1TC)] /* [0,65535] */;
+  uint32_t SOFCOMREF_S2TFM /* [1,1] */;
+  uint32_t SOFCOMREF_S2TFMI[1 EXT_STRUCT_CTRL(SOFCOMREF_S2TFM)] /* [1,1] */;
+  uint32_t SOFCOMREF_S2TFME[1 EXT_STRUCT_CTRL(SOFCOMREF_S2TFM)] /* [1,2] */;
+  uint32_t SOFCOMREF_S2TF /* [0,2] */;
+  uint32_t SOFCOMREF_S2TFv[2 EXT_STRUCT_CTRL(SOFCOMREF_S2TF)] /* [0,65535] */;
+  uint32_t SOFCOMREF_S2TCM /* [1,1] */;
+  uint32_t SOFCOMREF_S2TCMI[1 EXT_STRUCT_CTRL(SOFCOMREF_S2TCM)] /* [1,1] */;
+  uint32_t SOFCOMREF_S2TCME[1 EXT_STRUCT_CTRL(SOFCOMREF_S2TCM)] /* [1,2] */;
+  uint32_t SOFCOMREF_S2TC /* [0,2] */;
+  uint32_t SOFCOMREF_S2TCv[2 EXT_STRUCT_CTRL(SOFCOMREF_S2TC)] /* [0,65535] */;
 
 } EXT_STR_h101_SOFCOMREF;
 
@@ -72,7 +72,7 @@ typedef struct EXT_STR_h101_SOFCOMREF_onion_t
     uint32_t TCME[1 /* TCM */];
     uint32_t TC;
     uint32_t TCv[2 /* TC */];
-  } SOFCOMREF[2];
+  } SOFCOMREF_S[2];
 
 } EXT_STR_h101_SOFCOMREF_onion;
 
@@ -82,70 +82,66 @@ typedef struct EXT_STR_h101_SOFCOMREF_onion_t
   ok = 1; \
   /* RAW */ \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TFM,                   UINT32,\
-                    "SOFCOMREF1TFM",1); \
+                     SOFCOMREF_S1TFM,                 UINT32,\
+                    "SOFCOMREF_S1TFM",1); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TFMI,                  UINT32,\
-                    "SOFCOMREF1TFMI",                  "SOFCOMREF1TFM"); \
+                     SOFCOMREF_S1TFMI,                UINT32,\
+                    "SOFCOMREF_S1TFMI",                "SOFCOMREF_S1TFM"); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TFME,                  UINT32,\
-                    "SOFCOMREF1TFME",                  "SOFCOMREF1TFM"); \
+                     SOFCOMREF_S1TFME,                UINT32,\
+                    "SOFCOMREF_S1TFME",                "SOFCOMREF_S1TFM"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TF,                    UINT32,\
-                    "SOFCOMREF1TF",2); \
+                     SOFCOMREF_S1TF,                  UINT32,\
+                    "SOFCOMREF_S1TF",2); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TFv,                   UINT32,\
-                    "SOFCOMREF1TFv",                   "SOFCOMREF1TF"); \
+                     SOFCOMREF_S1TFv,                 UINT32,\
+                    "SOFCOMREF_S1TFv",                 "SOFCOMREF_S1TF"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TCM,                   UINT32,\
-                    "SOFCOMREF1TCM",1); \
+                     SOFCOMREF_S1TCM,                 UINT32,\
+                    "SOFCOMREF_S1TCM",1); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TCMI,                  UINT32,\
-                    "SOFCOMREF1TCMI",                  "SOFCOMREF1TCM"); \
+                     SOFCOMREF_S1TCMI,                UINT32,\
+                    "SOFCOMREF_S1TCMI",                "SOFCOMREF_S1TCM"); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TCME,                  UINT32,\
-                    "SOFCOMREF1TCME",                  "SOFCOMREF1TCM"); \
+                     SOFCOMREF_S1TCME,                UINT32,\
+                    "SOFCOMREF_S1TCME",                "SOFCOMREF_S1TCM"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TC,                    UINT32,\
-                    "SOFCOMREF1TC",2); \
+                     SOFCOMREF_S1TC,                  UINT32,\
+                    "SOFCOMREF_S1TC",2); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF1TCv,                   UINT32,\
-                    "SOFCOMREF1TCv",                   "SOFCOMREF1TC"); \
+                     SOFCOMREF_S1TCv,                 UINT32,\
+                    "SOFCOMREF_S1TCv",                 "SOFCOMREF_S1TC"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TFM,                   UINT32,\
-                    "SOFCOMREF2TFM",1); \
+                     SOFCOMREF_S2TFM,                 UINT32,\
+                    "SOFCOMREF_S2TFM",1); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TFMI,                  UINT32,\
-                    "SOFCOMREF2TFMI",                  "SOFCOMREF2TFM"); \
+                     SOFCOMREF_S2TFMI,                UINT32,\
+                    "SOFCOMREF_S2TFMI",                "SOFCOMREF_S2TFM"); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TFME,                  UINT32,\
-                    "SOFCOMREF2TFME",                  "SOFCOMREF2TFM"); \
+                     SOFCOMREF_S2TFME,                UINT32,\
+                    "SOFCOMREF_S2TFME",                "SOFCOMREF_S2TFM"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TF,                    UINT32,\
-                    "SOFCOMREF2TF",2); \
+                     SOFCOMREF_S2TF,                  UINT32,\
+                    "SOFCOMREF_S2TF",2); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TFv,                   UINT32,\
-                    "SOFCOMREF2TFv",                   "SOFCOMREF2TF"); \
+                     SOFCOMREF_S2TFv,                 UINT32,\
+                    "SOFCOMREF_S2TFv",                 "SOFCOMREF_S2TF"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TCM,                   UINT32,\
-                    "SOFCOMREF2TCM",1); \
+                     SOFCOMREF_S2TCM,                 UINT32,\
+                    "SOFCOMREF_S2TCM",1); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TCMI,                  UINT32,\
-                    "SOFCOMREF2TCMI",                  "SOFCOMREF2TCM"); \
+                     SOFCOMREF_S2TCMI,                UINT32,\
+                    "SOFCOMREF_S2TCMI",                "SOFCOMREF_S2TCM"); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TCME,                  UINT32,\
-                    "SOFCOMREF2TCME",                  "SOFCOMREF2TCM"); \
+                     SOFCOMREF_S2TCME,                UINT32,\
+                    "SOFCOMREF_S2TCME",                "SOFCOMREF_S2TCM"); \
   EXT_STR_ITEM_INFO_LIM(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TC,                    UINT32,\
-                    "SOFCOMREF2TC",2); \
+                     SOFCOMREF_S2TC,                  UINT32,\
+                    "SOFCOMREF_S2TC",2); \
   EXT_STR_ITEM_INFO_ZZP(ok,si,offset,struct_t,printerr,\
-                     SOFCOMREF2TCv,                   UINT32,\
-                    "SOFCOMREF2TCv",                   "SOFCOMREF2TC"); \
+                     SOFCOMREF_S2TCv,                 UINT32,\
+                    "SOFCOMREF_S2TCv",                 "SOFCOMREF_S2TC"); \
   \
 } while (0);
 
-
-
-#endif/*__GUARD_H101_SOFCOMREF_EXT_H101_H__*/
-
-/*******************************************************/
+#endif/*__GUARD_H101_SOFCONREF_EXT_H101_H__*/

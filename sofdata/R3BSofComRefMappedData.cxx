@@ -8,15 +8,18 @@ R3BSofComRefMappedData::R3BSofComRefMappedData()
     : fDetector(0)
     , fTimeCoarse(0)
     , fTimeFine(0)
+    , fValid(kFALSE)
 {
 }
 
 R3BSofComRefMappedData::R3BSofComRefMappedData(UChar_t detector,
 					       UInt_t tc,
-					       UInt_t tf)
+					       UInt_t tf,
+					       Bool_t valid)
     : fDetector(detector)
     , fTimeCoarse(tc)
     , fTimeFine(tf)
+    , fValid(valid)
 {
 }
 
