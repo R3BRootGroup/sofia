@@ -23,7 +23,7 @@ R3BSofSciCalData::R3BSofSciCalData()
 {
 }
 
-R3BSofSciCalData::R3BSofSciCalData(UChar_t detector )
+R3BSofSciCalData::R3BSofSciCalData(UShort_t detector )
     : fDetector(detector)
     , fTime_PMT1_ns(std::numeric_limits<double>::quiet_NaN()) 
     , fTime_PMT2_ns(std::numeric_limits<double>::quiet_NaN())

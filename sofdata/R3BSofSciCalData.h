@@ -13,18 +13,18 @@ class R3BSofSciCalData : public TObject
     R3BSofSciCalData();
 
     // Standard Constructor
-    R3BSofSciCalData(UChar_t detector);
+    R3BSofSciCalData(UShort_t detector);
 
     // Destructor
     virtual ~R3BSofSciCalData() {}
 
     // Getters
-    inline const UChar_t&  GetDetector()  const { return fDetector; }
+    inline const UShort_t&  GetDetector()  const { return fDetector; }
     Double_t GetMeanTime();
     Double_t GetRawPos();
 
   private:
-    UChar_t  fDetector;
+    UShort_t  fDetector;
 
   public:
     Double_t fTime_PMT1_ns;   // right

@@ -9,7 +9,7 @@ R3BSofATMadcMappedData::R3BSofATMadcMappedData()
 {
 }
 
-R3BSofATMadcMappedData::R3BSofATMadcMappedData(UChar_t a,
+R3BSofATMadcMappedData::R3BSofATMadcMappedData(UShort_t a,
 					       UInt_t  e)
   : fAnode(a)
   , fEnergy(e)

@@ -13,8 +13,8 @@ R3BSofToFWMappedData::R3BSofToFWMappedData()
 {
 }
 
-R3BSofToFWMappedData::R3BSofToFWMappedData(UChar_t detector,
-					   UChar_t pmt,
+R3BSofToFWMappedData::R3BSofToFWMappedData(UShort_t detector,
+					   UShort_t pmt,
 					   UInt_t tc,
 					   UInt_t tf,
 					   UInt_t e,

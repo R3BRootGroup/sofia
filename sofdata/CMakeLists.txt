@@ -45,10 +45,11 @@ R3BSofMWPCPoint2.cxx
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
+SET(HEADERS ${HEADERS} ${R3BROOT_SOURCE_DIR}/r3bdata/R3BDetectorList.h )
 
 set(LINKDEF  R3BSofDataLinkDef.h)
 set(LIBRARY_NAME R3BSofData)
 set(DEPENDENCIES
-    Core m)
+    Base FairTools Core m)
 
 GENERATE_LIBRARY()

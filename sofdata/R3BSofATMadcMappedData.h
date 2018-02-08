@@ -12,14 +12,14 @@ class R3BSofATMadcMappedData : public TObject
     R3BSofATMadcMappedData();
 
     // Standard Constructor - version under construction
-    R3BSofATMadcMappedData(UChar_t a,
-			   UInt_t  e);  
+    R3BSofATMadcMappedData(UShort_t a,
+			   UInt_t   e);  
 
     // Destructor
     virtual ~R3BSofATMadcMappedData() { }
 
     // Getters - version under construction
-    inline const UChar_t& GetAnode() const  { return fAnode; }
+    inline const UShort_t& GetAnode() const  { return fAnode; }
     inline const UInt_t&  GetEnergy() const { return fEnergy; }
 
   private:

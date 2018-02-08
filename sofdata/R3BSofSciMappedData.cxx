@@ -12,8 +12,8 @@ R3BSofSciMappedData::R3BSofSciMappedData()
 {
 }
 
-R3BSofSciMappedData::R3BSofSciMappedData(UChar_t detector,
-					 UChar_t pmt,
+R3BSofSciMappedData::R3BSofSciMappedData(UShort_t detector,
+					 UShort_t pmt,
 					 UInt_t tc,
 					 UInt_t tf)
     : fDetector(detector)

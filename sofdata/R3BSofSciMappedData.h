@@ -13,8 +13,8 @@ class R3BSofSciMappedData : public TObject
     R3BSofSciMappedData();
 
     // Standard Constructor
-    R3BSofSciMappedData(UChar_t detector,
-			UChar_t pmt,
+    R3BSofSciMappedData(UShort_t detector,
+			UShort_t pmt,
 			UInt_t  tc,
 			UInt_t  tf
 			);
@@ -23,16 +23,16 @@ class R3BSofSciMappedData : public TObject
     virtual ~R3BSofSciMappedData() { }
 
     // Getters
-    inline const UChar_t& GetDetector()   const {return fDetector;}
-    inline const UChar_t& GetPmt()        const {return fPmt;}
-    inline const UInt_t&  GetTimeCoarse() const {return fTimeCoarse;}
-    inline const UInt_t&  GetTimeFine()   const {return fTimeFine;}
+    inline const UShort_t& GetDetector()   const {return fDetector;}
+    inline const UShort_t& GetPmt()        const {return fPmt;}
+    inline const UInt_t&   GetTimeCoarse() const {return fTimeCoarse;}
+    inline const UInt_t&   GetTimeFine()   const {return fTimeFine;}
 
   private:
-    UChar_t fDetector; // 1..n (2014, n=2, 1=S2, 2=Cave C)
-    UChar_t fPmt;      // 1..2
-    UInt_t  fTimeCoarse;
-    UInt_t  fTimeFine;
+    UShort_t fDetector; // 1..n (2014, n=2, 1=S2, 2=Cave C)
+    UShort_t fPmt;      // 1..2
+    UInt_t   fTimeCoarse;
+    UInt_t   fTimeFine;
 
 
   public:

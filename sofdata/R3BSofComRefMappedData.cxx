@@ -12,7 +12,7 @@ R3BSofComRefMappedData::R3BSofComRefMappedData()
 {
 }
 
-R3BSofComRefMappedData::R3BSofComRefMappedData(UChar_t detector,
+R3BSofComRefMappedData::R3BSofComRefMappedData(UShort_t detector,
 					       UInt_t tc,
 					       UInt_t tf,
 					       Bool_t valid)

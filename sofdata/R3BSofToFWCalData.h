@@ -25,7 +25,7 @@ class R3BSofToFWCalData : public FairMultiLinkedData {
    *@param fTime        Calibrated Time 
    *@param fEnergy      Calibrated Energy
    **/
-  R3BSofToFWCalData(UChar_t ident, UChar_t pmt, 
+  R3BSofToFWCalData(UShort_t ident, UShort_t pmt, 
 		    Double_t time, Float_t energy) ;
   
   /** Copy constructor **/
@@ -37,14 +37,14 @@ class R3BSofToFWCalData : public FairMultiLinkedData {
   virtual ~R3BSofToFWCalData();
   
   /** Accessors **/
-  inline const UChar_t& GetDetector()      const {return fDetector;}
-  inline const UChar_t& GetPmt()           const {return fPmt;}
-  inline const Double_t&  GetTime()          const {return fTime;}
+  inline const UShort_t& GetDetector()      const {return fDetector;}
+  inline const UShort_t& GetPmt()           const {return fPmt;}
+  inline const Double_t&  GetTime()         const {return fTime;}
   inline const Float_t&  GetEnergy()        const {return fEnergy;}  
   
   /** Modifiers **/
-  void SetDetector(UChar_t ident){ fDetector = ident; }
-  void SetPmt(UChar_t pmt){fPmt = pmt;}
+  void SetDetector(UShort_t ident){ fDetector = ident; }
+  void SetPmt(UShort_t pmt){fPmt = pmt;}
   void SetTime(Double_t time){fTime = time;}
   void SetEnergy(Float_t energy){fEnergy = energy;}
   
@@ -52,8 +52,8 @@ class R3BSofToFWCalData : public FairMultiLinkedData {
   virtual void Print(const Option_t* opt) const;
   
  protected:
-  UChar_t fDetector;    // 1..28
-  UChar_t fPmt;         // needed at this level?
+  UChar_t fDetector;     // 1..28
+  UShort_t fPmt;         // needed at this level?
   Double_t fTime;
   Float_t fEnergy;
   

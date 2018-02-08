@@ -15,12 +15,12 @@ R3BSofMusicMdpp16MappedData::R3BSofMusicMdpp16MappedData()
 {
 }
 
-R3BSofMusicMdpp16MappedData::R3BSofMusicMdpp16MappedData(UChar_t plane,
-							 UChar_t section,
-							 UChar_t anode,
-							 UInt_t t,
-							 UInt_t e,
-							 Bool_t v)
+R3BSofMusicMdpp16MappedData::R3BSofMusicMdpp16MappedData(UShort_t plane,
+							 UShort_t section,
+							 UShort_t anode,
+							 UInt_t   t,
+							 UInt_t   e,
+							 Bool_t   v)
   : fPlane(plane)
   , fSection(section)
   , fAnode(anode)
