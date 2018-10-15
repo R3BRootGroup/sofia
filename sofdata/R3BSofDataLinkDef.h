@@ -10,6 +10,7 @@
 
 #pragma link C++ class R3BSofATMadcMappedData+;
 #pragma link C++ class R3BSofSciMappedData+;
+#pragma link C++ class R3BSofMusicMadcVftxMappedData+;
 #pragma link C++ class R3BSofMusicMdpp16MappedData+;
 #pragma link C++ class R3BSofToFWMappedData+;
 #pragma link C++ class R3BSofToFWCalData+;
