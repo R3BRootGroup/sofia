@@ -1,10 +1,13 @@
 #include <TCanvas.h>
 #include <TH1.h>
+#include <string.h>
 
 
 #define SOF_COMREF 1
 #define SOF_SCI    1
 #define SOF_TOFW   1
+#define SOF_TRIM   1
+#define SOF_TWIM   1
 
 #if SOF_COMREF
 // see sofsource/R3BSofComRefReader.cxx
@@ -18,9 +21,23 @@
 #endif
 
 #if SOF_TOFW
-// see sofsource/R3BSofSciToFW.cxx
+// see sofsource/R3BSofToFWReader.cxx
 #define NUM_SOFTOFW_DETECTORS 28
 #define NUM_SOFTOFW_CHANNELS  2
+#endif
+
+#if SOF_TRIM
+// see sofsource/R3BSofTrimMadcVftxReader.cxx
+#define NUM_SOFTRIM_PLANES   1
+#define NUM_SOFTRIM_SECTIONS 3
+#define NUM_SOFTRIM_ANODES   6
+#endif
+
+#if SOF_TWIM
+// see sofsource/R3BSofTwimMadcVftxReader.cxx
+#define NUM_SOFTWIM_PLANES   2
+#define NUM_SOFTWIM_SECTIONS 2
+#define NUM_SOFTWIM_ANODES   16
 #endif
 
 
@@ -37,7 +54,7 @@ void ViewFineTime(){
   // --- ---------- --- //
   // --- INPUT DATA --- //
   // --- ---------- --- //
-  char inputFile[250] = "../../../../SofMacrosOutput/201410_Ubeam/SofDataVftx_run1322.root";  //change root file
+  char inputFile[250] = "../SofMacrosOutput/201410_Ubeam/SofDataVftx_run132x.root";  //change root file
   TFile * file = TFile::Open(inputFile);
   TTree * t = (TTree*)file->Get("evt");
   t->ls();
@@ -73,6 +90,24 @@ void ViewFineTime(){
   Int_t nHits_mappedSofToFW=0;
   R3BSofToFWMappedData** evt_mappedSofToFW;
 #endif
+#if SOF_TRIM
+  // TRIPLE MUSIC WHEN READ OUT BY VFTX+MADC
+  TClonesArray * mappedSofTrim = new TClonesArray("R3BSofMusicMadcVftxMappedData",5);
+  TBranch * b_mappedSofTrim = t->GetBranch("SofTrimMadcVftx");
+  b_mappedSofTrim->SetAddress(&mappedSofTrim);
+  b_mappedSofTrim->ls();
+  Int_t nHits_mappedSofTrim=0;
+  R3BSofMusicMadcVftxMappedData** evt_mappedSofTrim;
+#endif
+#if SOF_TWIM
+  // TWIIN MUSIC WHEN READ OUT BY VFTX+MADC
+  TClonesArray * mappedSofTwim = new TClonesArray("R3BSofMusicMadcVftxMappedData",5);
+  TBranch * b_mappedSofTwim = t->GetBranch("SofTwimMadcVftx");
+  b_mappedSofTwim->SetAddress(&mappedSofTwim);
+  b_mappedSofTwim->ls();
+  Int_t nHits_mappedSofTwim=0;
+  R3BSofMusicMadcVftxMappedData** evt_mappedSofTwim;
+#endif
 
 
   // --- -------------------- --- //
@@ -99,6 +134,28 @@ void ViewFineTime(){
     for(UShort_t pmt=0; pmt<NUM_SOFTOFW_CHANNELS; pmt++){
       sprintf(name,"SofToFW_Det%i_Pmt%i_FineTime",det+1,pmt+1);
       h1_mappedSofToFW_ft[det][pmt] = new TH1I(name,name,1000,0,1000);
+    }
+  }
+#endif
+#if SOF_TRIM
+  TH1I * h1_mappedSofTrim_ft[NUM_SOFTRIM_PLANES][NUM_SOFTRIM_SECTIONS][NUM_SOFTRIM_ANODES];
+  for(UShort_t plane=0; plane<NUM_SOFTRIM_PLANES; plane++){
+    for(UShort_t section=0; section<NUM_SOFTRIM_SECTIONS; section++){
+      for(UShort_t anode=0; anode<NUM_SOFTRIM_ANODES; anode++){
+	sprintf(name,"SofTrim_Plane%i_Section%i_Anode%i_FineTime",plane+1,section+1,anode+1);
+	h1_mappedSofTrim_ft[plane][section][anode] = new TH1I(name,name,1000,0,1000);
+      }
+    }}
+  
+#endif
+#if SOF_TWIM
+  TH1I * h1_mappedSofTwim_ft[NUM_SOFTWIM_PLANES][NUM_SOFTWIM_SECTIONS][NUM_SOFTWIM_ANODES];
+  for(UShort_t plane=0; plane<NUM_SOFTWIM_PLANES; plane++){
+    for(UShort_t section=0; section<NUM_SOFTWIM_SECTIONS; section++){
+      for(UShort_t anode=0; anode<NUM_SOFTWIM_ANODES; anode++){
+	sprintf(name,"SofTwim_Plane%i_Section%i_Anode%i_FineTime",plane+1,section+1,anode+1);
+	h1_mappedSofTwim_ft[plane][section][anode] = new TH1I(name,name,1000,0,1000);
+      }
     }
   }
 #endif
@@ -142,9 +199,32 @@ void ViewFineTime(){
       }
     }
 #endif
+#if SOF_TRIM
+    nHits_mappedSofTrim = mappedSofTrim->GetEntries();
+    if(nHits_mappedSofTrim!=0){
+      evt_mappedSofTrim = new R3BSofMusicMadcVftxMappedData*[nHits_mappedSofTrim];
+      for(Int_t hit=0; hit<nHits_mappedSofTrim; hit++) {
+	evt_mappedSofTrim[hit] = (R3BSofMusicMadcVftxMappedData*)mappedSofTrim->At(hit);
+	h1_mappedSofTrim_ft[evt_mappedSofTrim[hit]->GetPlane()-1][evt_mappedSofTrim[hit]->GetSection()-1][evt_mappedSofTrim[hit]->GetAnode()-1]->Fill(evt_mappedSofTrim[hit]->GetTimeFine());
+      }
+    }
+#endif
+#if SOF_TWIM
+    nHits_mappedSofTwim = mappedSofTwim->GetEntries();
+    if(nHits_mappedSofTwim!=0){
+      evt_mappedSofTwim = new R3BSofMusicMadcVftxMappedData*[nHits_mappedSofTwim];
+      for(Int_t hit=0; hit<nHits_mappedSofTwim; hit++) {
+	evt_mappedSofTwim[hit] = (R3BSofMusicMadcVftxMappedData*)mappedSofTwim->At(hit);
+	h1_mappedSofTwim_ft[evt_mappedSofTwim[hit]->GetPlane()-1][evt_mappedSofTwim[hit]->GetSection()-1][evt_mappedSofTwim[hit]->GetAnode()-1]->Fill(evt_mappedSofTwim[hit]->GetTimeFine());
+      }
+    }
+#endif
     
   }// end of for(Event)
 
+
+  char nameCan[100];
+  
 #if SOF_COMREF
   TCanvas * can_SofComRef_ft = new TCanvas("FineTime_SofComRef","FineTime_SofComRef",0,0,1000,500);
   can_SofComRef_ft->Divide(2,1);
@@ -166,6 +246,37 @@ void ViewFineTime(){
   for(UShort_t det=0; det<NUM_SOFTOFW_DETECTORS; det++){
     can_ToFW_ft[0]->cd(det+1); gPad->SetGridx(); gPad->SetGridy(); h1_mappedSofToFW_ft[det][0]->SetLineColor(kBlue+2); h1_mappedSofToFW_ft[det][0]->Draw();
     can_ToFW_ft[1]->cd(det+1); gPad->SetGridx(); gPad->SetGridy(); h1_mappedSofToFW_ft[det][1]->SetLineColor(kBlue+2); h1_mappedSofToFW_ft[det][1]->Draw();
+  }
+#endif
+#if SOF_TRIM
+  TCanvas * can_Trim_ft = new TCanvas("FineTime_TripleMUSIC","FineTime_TripleMUSIC",0,0,1300,1000);
+  can_Trim_ft->Divide(6,3);
+  for(UShort_t plane=0; plane<NUM_SOFTRIM_PLANES; plane++){
+    for(UShort_t section=0; section<NUM_SOFTRIM_SECTIONS; section++){
+      for(UShort_t anode=0; anode<NUM_SOFTRIM_ANODES; anode++){
+	can_Trim_ft->cd(plane*NUM_SOFTRIM_SECTIONS*NUM_SOFTRIM_ANODES + section*NUM_SOFTRIM_ANODES + anode + 1 ); gPad->SetGridx(); gPad->SetGridy(); 
+	h1_mappedSofTrim_ft[plane][section][anode]->SetLineColor(kBlue+2); 
+	h1_mappedSofTrim_ft[plane][section][anode]->Draw();
+      }
+    }
+  }
+#endif
+#if SOF_TWIM
+  const char * namePlane[NUM_SOFTWIM_PLANES] = {"Right","Left"};
+  const char * nameSection[NUM_SOFTWIM_SECTIONS] = {"Down","Up"};
+  TCanvas * can_Twim_ft[4];
+  for(UShort_t plane=0; plane<NUM_SOFTWIM_PLANES; plane++){
+    for(UShort_t section=0; section<NUM_SOFTWIM_SECTIONS; section++){
+      sprintf(nameCan,"FineTime_TwinMUSIC_%s_%s",namePlane[plane],nameSection[section]);
+      can_Twim_ft[plane*NUM_SOFTWIM_SECTIONS + section] = new TCanvas(nameCan,nameCan,0,0,1300,1000);
+      can_Twim_ft[plane*NUM_SOFTWIM_SECTIONS + section]->Divide(4,4);
+      for(UShort_t anode=0; anode<NUM_SOFTWIM_ANODES; anode++){
+	can_Twim_ft[plane*NUM_SOFTWIM_SECTIONS + section]->cd(anode+1);
+	gPad->SetGridx(); gPad->SetGridy(); 
+	h1_mappedSofTwim_ft[plane][section][anode]->SetLineColor(kBlue+2); 
+	h1_mappedSofTwim_ft[plane][section][anode]->Draw();
+      }
+    }
   }
 #endif
 

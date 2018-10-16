@@ -3,6 +3,8 @@ typedef struct EXT_STR_h101_t {
   EXT_STR_h101_SOFCOMREF_onion_t comref;
   EXT_STR_h101_SOFSCI_onion_t sci;
   EXT_STR_h101_SOFTOFW_onion_t tofw;
+  EXT_STR_h101_SOFTRIM_MADCVFTX_onion_t trim;
+  EXT_STR_h101_SOFTWIM_MADCVFTX_onion_t twim;
 } EXT_STR_h101;
 
 
@@ -19,7 +21,7 @@ void SofDataVftx(Int_t First=1322)
 
   /* Create source using ucesb for input ------------------ */
   TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run132*.lmd";
-  TString outputFileName = "/media/audrey/COURGE/R3BSof/SofMacrosOutput/201410_Ubeam/SofDataVftx_run132x.root";
+  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/SofDataVftx_run132x.root";
   TString ntuple_options = "UNPACK:EVENTNO,UNPACK:TRIGGER,RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   TString ucesb_path = ucesb_dir + "/../upexps/sofia2014oct/sofia2014oct";
@@ -34,6 +36,8 @@ void SofDataVftx(Int_t First=1322)
   source->AddReader(new R3BSofComRefReader((EXT_STR_h101_SOFCOMREF_t *)&ucesb_struct.comref,offsetof(EXT_STR_h101, comref)));
   source->AddReader(new R3BSofSciReader((EXT_STR_h101_SOFSCI_t *)&ucesb_struct.sci,offsetof(EXT_STR_h101, sci)));
   source->AddReader(new R3BSofToFWReader((EXT_STR_h101_SOFTOFW_t *)&ucesb_struct.tofw,offsetof(EXT_STR_h101, tofw)));
+  source->AddReader(new R3BSofTrimMadcVftxReader((EXT_STR_h101_SOFTRIM_MADCVFTX_t *)&ucesb_struct.trim,offsetof(EXT_STR_h101, trim)));
+  source->AddReader(new R3BSofTwimMadcVftxReader((EXT_STR_h101_SOFTWIM_MADCVFTX_t *)&ucesb_struct.twim,offsetof(EXT_STR_h101, twim)));
 
   const Int_t refresh = 100;  /* refresh rate for saving */
   

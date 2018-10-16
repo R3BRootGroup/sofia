@@ -1,10 +1,10 @@
 struct EXT_STR_h101_t
 {
   EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_SOFSCI_onion_t sci;
+  EXT_STR_h101_SOFTWIM_MADCVFTX_onion_t twim;
 };
 
-void SofSciMapped(Int_t First=1320)
+void SofTwimMapped(Int_t First=1320)
 {
   TString runNumber = Form("%04d", First);
   TStopwatch timer;
@@ -16,7 +16,7 @@ void SofSciMapped(Int_t First=1320)
 
   /* Create source using ucesb for input ------------------ */
   TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run" + runNumber + ".lmd";
-  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/SofSciMapped_run"+runNumber+".root";
+  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/SofTwimMapped_run"+runNumber+".root";
   TString ntuple_options = "UNPACK:EVENTNO,UNPACK:TRIGGER,RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   TString ucesb_path = ucesb_dir + "/../upexps/sofia2014oct/sofia2014oct"
@@ -28,7 +28,7 @@ void SofSciMapped(Int_t First=1320)
   source->SetMaxEvents(nev);
   
   source->AddReader(new R3BUnpackReader((EXT_STR_h101_unpack_t *)&ucesb_struct,offsetof(EXT_STR_h101, unpack)));
-  source->AddReader(new R3BSofSciReader((EXT_STR_h101_SOFSCI_t *)&ucesb_struct.sci,offsetof(EXT_STR_h101, sci)));
+  source->AddReader(new R3BSofTwimMadcVftxReader((EXT_STR_h101_SOFTWIM_MADCVFTX_t *)&ucesb_struct.twim,offsetof(EXT_STR_h101, twim)));
 
   const Int_t refresh = 100;  /* refresh rate for saving */
   

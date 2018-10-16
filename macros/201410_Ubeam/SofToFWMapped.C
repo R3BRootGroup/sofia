@@ -16,7 +16,7 @@ void SofToFWMapped(Int_t First=1320)
 
   /* Create source using ucesb for input ------------------ */
   TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run" + runNumber + ".lmd";
-  TString outputFileName = "../../../../SofMacrosOutput/201410_Ubeam/SofToFWMapped_run"+runNumber+".root";
+  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/SofToFWMapped_run"+runNumber+".root";
   TString ntuple_options = "UNPACK:EVENTNO,UNPACK:TRIGGER,RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   TString ucesb_path = ucesb_dir + "/../upexps/sofia2014oct/sofia2014oct"
