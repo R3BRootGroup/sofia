@@ -80,23 +80,19 @@ This directory contains all the readers
 The active target is a gaseous detector which can be seen as a stack of ionisation chambers.
 Four targets are mounted as cathode, and signal are readout on 5 anodes.
 Each event, there will always be 5 energies collected (one per anode).
-The comparison of the energy losses collected on two following anodes give the layer (i) where the fission occures
-Scheme of the AT in the October 2014 beam time
-               |
-               |
-               |  beam
-               |
-               |
-               V
-      ---------------- ANODE 1:   ALUMINIUM
-  (1) ================ CATHODE 1: URANIUM-238
-  (2) ---------------- ANODE 2:   ALUMINIUM
-  (3) ================ CATHODE 2: URANIUM-238
-  (4) ---------------- ANODE 3:   ALUMINIUM
-  (5) ================ CATHODE 3: ALUMINIUM 
-  (6) ---------------- ANODE 4:   ALUMINIUM
-  (7) ================ CATHODE 4: LEAD
-      ---------------- ANODE 5:   ALUMINIUM
+The comparison of the energy losses collected on two following anodes give the layer ni where the fission occures
+Scheme of the AT in the October 2014 beam time :
+---
+       ANODE 1  :   ALUMINIUM
+ ni=1 CATHODE 1 :   URANIUM 238
+ ni=2  ANODE 2  :   ALUMINIUM
+ ni=3 CATHODE 2 :   URANIUM 238
+ ni=4  ANODE 3  :   ALUMINIUM
+ ni=5 CATHODE 3 :   ALUMINIUM 
+ ni=6  ANODE 4  :   ALUMINIUM
+ ni=7 CATHODE 4 :   LEAD
+       ANODE 5  :   ALUMINIUM
+---
 
 - Single scintillators (SofSci)
 There are one scintillators at S2 and one at cave C.
@@ -115,7 +111,7 @@ Each scintillator are readout by 2 PMTs : down and up.
 In order to follow the coordinate system, plastic 1 is on the right and plastic 28 is on the left, looking in the same direction than the beam.
 
 - Triple-MUSIC (SofTriM)
-SofTriM has 3 sections in the beam direction.
+SofTriM has 3 sections along the beam direction (z axis).
 Each section has 6 anodes (3 pairs of trapezoidal anodes) which are readout in energy and time.
 Energy losses obtained from each section are independant.
 We need to combine them to get rid, as much as possible, of the charge states of the secondary beam.

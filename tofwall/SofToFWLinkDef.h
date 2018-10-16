@@ -6,6 +6,8 @@
 
 #pragma link C++ class R3BSofTofWall+;
 
+#pragma link C++ class R3BSofToFWMapped2TcalPar+;
+
 //#pragma link C++ class R3BSofTofWallHitPar+;
 //#pragma link C++ class R3BSofTofWallCalPar+;
 //#pragma link C++ class R3BSofTofWallMappedPar+;
@@ -14,6 +16,5 @@
 //#pragma link C++ class R3BSofTofWallMapped2Cal+;
 
 //#pragma link C++ class R3BSofTofWallCal2HitPar+;
-//#pragma link C++ class R3BSofTofWallMapped2CalPar+;
 
 #endif

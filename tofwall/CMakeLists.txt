@@ -12,8 +12,9 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/passive
-${R3BROOT_SOURCE_DIR}/sofia/tofwall
-${R3BROOT_SOURCE_DIR}/sofia/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/tcal
+${R3BSOF_SOURCE_DIR}/tofwall
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -29,23 +30,17 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofTofWall.cxx
-#R3BSofTofWallHitPar.cxx
-#R3BSofTofWallCalPar.cxx
-#R3BSofTofWallMappedPar.cxx
-#R3BSofTofWallCal2Hit.cxx
-#R3BSofTofWallMapped2Cal.cxx
-#R3BSofTofWallCal2HitPar.cxx
-#R3BSofTofWallMapped2CalPar.cxx
+R3BSofToFWMapped2TcalPar.cxx
 )
 
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
-set(LINKDEF SofTofWallLinkDef.h)
-set(LIBRARY_NAME R3BSofTofWall)
+set(LINKDEF SofToFWLinkDef.h)
+set(LIBRARY_NAME R3BSofToFW)
 set(DEPENDENCIES
-    R3Bbase R3BPassive R3BSofData)
+    R3Bbase R3BPassive R3BSofData R3BSofTcal)
 
 if(FAIRDB_FOUND)
 set(DEPENDENCIES

@@ -1,4 +1,4 @@
-# Create a library called "libR3BSofSCI" which includes the source files given in
+# Create a library called "libR3BSofSci" which includes the source files given in
 # the array .
 # The extension is already found.  Any number of sources could be listed here.
 
@@ -10,9 +10,11 @@ ${BASE_INCLUDE_DIRECTORIES}
 set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
+${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/passive
-${R3BROOT_SOURCE_DIR}/sofia/sci
-${R3BROOT_SOURCE_DIR}/sofia/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/tcal
+${R3BSOF_SOURCE_DIR}/sci
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -27,24 +29,17 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-#R3BSofSCI.cxx
-#R3BSofSCIHitPar.cxx
-#R3BSofSCICalPar.cxx
-#R3BSofSCIMappedPar.cxx
-#R3BSofSCICal2Hit.cxx
-#R3BSofSCIMapped2Cal.cxx
-#R3BSofSCICal2HitPar.cxx
-#R3BSofSCIMapped2CalPar.cxx
+R3BSofSciMapped2TcalPar.cxx
 )
 
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
-set(LINKDEF SofSCILinkDef.h)
-set(LIBRARY_NAME R3BSofSCI)
+set(LINKDEF SofSciLinkDef.h)
+set(LIBRARY_NAME R3BSofSci)
 set(DEPENDENCIES
-    R3Bbase R3BPassive R3BSofData)
+    R3Bbase R3BPassive R3BSofData R3BSofTcal)
 
 if(FAIRDB_FOUND)
 set(DEPENDENCIES

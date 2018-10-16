@@ -1,4 +1,4 @@
-# Create a library called "libR3BSofTRIM" which includes the source files given in
+# Create a library called "libR3BTCal" which includes the source files given in
 # the array .
 # The extension is already found.  Any number of sources could be listed here.
 
@@ -13,7 +13,6 @@ ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/passive
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/tcal
-${R3BSOF_SOURCE_DIR}/trim
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -27,18 +26,18 @@ ${FAIRROOT_LIBRARY_DIR}
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-#Put here your sourcefiles
-R3BSofTrimMapped2TcalPar.cxx
+R3BSofTcalPar.cxx
+R3BSofTcalContFact.cxx
 )
 
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
-set(LINKDEF SofTrimLinkDef.h)
-set(LIBRARY_NAME R3BSofTrim)
-set(DEPENDENCIES
-    R3Bbase R3BPassive R3BSofData R3BSofTcal)
+Set(LINKDEF SofTcalLinkDef.h)
+Set(LIBRARY_NAME R3BSofTcal)
+Set(DEPENDENCIES
+    Base ParBase Core m)
 
 if(FAIRDB_FOUND)
 set(DEPENDENCIES
@@ -46,3 +45,4 @@ set(DEPENDENCIES
 endif(FAIRDB_FOUND)
 
 GENERATE_LIBRARY()
+
