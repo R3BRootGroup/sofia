@@ -151,7 +151,7 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
   // nHitsComRef = number of hits per event
   // for the common reference, this nHitsComRef is equal to 2 (one hit at S2 and one hit at cave C)
   UInt_t nHitsComRef = fMappedComRef->GetEntries(); 
-
+  UInt_t iSignalComRef;
   for (UInt_t ihit=0; ihit<nHitsComRef; ihit++){
     R3BSofComRefMappedData* hitComRef = (R3BSofComRefMappedData*)fMappedComRef->At(ihit);
     if (!hitComRef){ 
@@ -177,11 +177,11 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     // ***     * channel=1                             *** //
     // ***     * signal=3                              *** //
     // *** ******************************************* *** //
-    UInt_t iSignalComRef   = (hitComRef->GetDetector()-1)*fNumChannels;
-    if((0<=iSignalComRef)&&(iSignalComRef<fNumSignals))
+    iSignalComRef   = (hitComRef->GetDetector()-1)*fNumChannels;
+    if((iSignalComRef==0)||(iSignalComRef==3))
       fh_TimeFineBin[iSignalComRef]->Fill(hitComRef->GetTimeFine());
     else
-      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: "<< iSignalComRef << " instead of [0,"<< fNumSignals << "]" << FairLogger::endl;
+      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Signal number out of range for ComRef: "<< iSignalComRef << " instead of 0 or 3"<< FairLogger::endl;
   }// end of loop over the number of hits per event in MappedComRef
 
 
@@ -191,7 +191,8 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
   
   // nHitsSci = number of hits per event
   // for the scintillator this number of hits can be very large especially for the detector at S2
-  UInt_t nHitsSci    = fMappedSci->GetEntries();    // can be very high especially for S2 detector
+  UInt_t nHitsSci = fMappedSci->GetEntries();    // can be very high especially for S2 detector
+  UInt_t iSignalSci;
   for (UInt_t ihit=0; ihit<nHitsSci; ihit++){
     R3BSofSciMappedData* hitSci = (R3BSofSciMappedData*)fMappedSci->At(ihit);
     if (!hitSci){
@@ -203,40 +204,40 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     // ***         Numbers of det and channel          *** //
     // ***   in Mapped and TcalPar Data are 1-based    *** //
     // *** ******************************************* *** //
-    // *** SofSci at S2, Pmt Down (Mapped Data)        *** //
+    // *** SofSci at S2, Pmt Right (Mapped Data)       *** //
     // ***     * det=1                                 *** //
     // ***     * channel=1                             *** //
-    // *** SofSci at S2, Pmt Down (Tcal Data)          *** //
+    // *** SofSci at S2, Pmt Right (Tcal Data)         *** //
     // ***     * det=1                                 *** //
     // ***     * channel=2                             *** //
     // ***     * signal=1                              *** //
     // *** ******************************************* *** //
-    // *** SofSci at S2, Pmt Up (Mapped Data)          *** //
+    // *** SofSci at S2, Pmt Left (Mapped Data)        *** //
     // ***     * det=1                                 *** //
     // ***     * channel=2                             *** //
-    // *** SofSci at S2, Pmt Up (Tcal Data)            *** //
+    // *** SofSci at S2, Pmt Left (Tcal Data)          *** //
     // ***     * det=1                                 *** //
     // ***     * channel=3                             *** //
     // ***     * signal=2                              *** //
     // *** ******************************************* *** //
-    // *** SofSci at Cave C, Pmt Down (Mapped Data)    *** //
+    // *** SofSci at Cave C, Pmt Right (Mapped Data)   *** //
     // ***     * det=2                                 *** //
     // ***     * channel=1                             *** //
-    // *** SofSci at Cave C, Pmt Down (Tcal Data)      *** //
+    // *** SofSci at Cave C, Pmt Right(Tcal Data)      *** //
     // ***     * det=2                                 *** //
     // ***     * channel=2                             *** //
     // ***     * signal=4                              *** //
     // *** ******************************************* *** //
-    // *** SofSci at Cave C, Pmt Up (Mapped Data)      *** //
+    // *** SofSci at Cave C, Pmt Left (Mapped Data)    *** //
     // ***     * det=2                                 *** //
     // ***     * channel=2                             *** //
-    // *** SofSci at Cave C, Pmt Up (Tcal Data)        *** //
+    // *** SofSci at Cave C, Pmt Left (Tcal Data)      *** //
     // ***     * det=2                                 *** //
     // ***     * channel=3                             *** //
     // ***     * signal=5                              *** //
     // *** ******************************************* *** //
-    UInt_t iSignalSci = (hitSci->GetDetector()-1)*fNumChannels + hitSci->GetPmt();
-    if((0<=iSignalSci)&&(iSignalSci<fNumSignals))
+    iSignalSci = (hitSci->GetDetector()-1)*fNumChannels + hitSci->GetPmt();
+    if((0<iSignalSci)&&(iSignalSci<fNumSignals)&&(iSignalSci!=3))
       fh_TimeFineBin[iSignalSci]->Fill(hitSci->GetTimeFine());
     else
       LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: "<< iSignalSci << " instead of [0,"<< fNumSignals << "]" << FairLogger::endl;

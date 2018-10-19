@@ -9,7 +9,7 @@ typedef struct EXT_STR_h101_t {
 
 
 
-void SofDataVftx(Int_t First=1322)
+void SofDataVftx(Int_t First=1355)
 {
   TString runNumber = Form("%04d", First);
   TStopwatch timer;
@@ -20,8 +20,9 @@ void SofDataVftx(Int_t First=1322)
   TString max_events = Form("%d", max_events_ucesb);
 
   /* Create source using ucesb for input ------------------ */
-  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run132*.lmd";
-  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/SofDataVftx_run132x.root";
+  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/Bi194/*.lmd";
+  //  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run122*.lmd";
+  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/SofDataVftx_Bi194.root";
   TString ntuple_options = "UNPACK:EVENTNO,UNPACK:TRIGGER,RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   TString ucesb_path = ucesb_dir + "/../upexps/sofia2014oct/sofia2014oct";

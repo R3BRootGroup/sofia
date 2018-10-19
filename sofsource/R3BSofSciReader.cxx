@@ -20,7 +20,8 @@ R3BSofSciReader::R3BSofSciReader(EXT_STR_h101_SOFSCI* data, UInt_t offset)
   , fData(data)
   , fOffset(offset)
   , fLogger(FairLogger::GetLogger())
-  , fArray(new TClonesArray("R3BSofSciMappedData"))
+  , fArray(new TClonesArray("R3BSofSciMappedData")) // class name
+  , fNumEntries(0)
 {
 }
 
@@ -39,6 +40,7 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info *a_struct_info)
 
   // Register output array in tree
   FairRootManager::Instance()->Register("SofSci","MappedDim", fArray, kTRUE);
+  fArray->Clear();
 
   // clear struct_writer's output struct. Seems ucesb doesn't do that
   // for channels that are unknown to the current ucesb config.
@@ -84,7 +86,7 @@ Bool_t R3BSofSciReader::Read()
       uint32_t nextChannelStart=data->SOFSCI[d].TFME[pmmult];
       // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
       for (int hit=curChannelStart;hit<nextChannelStart;hit++){
-	new ((*fArray)[fArray->GetEntriesFast()])R3BSofSciMappedData(d+1,pmtval,data->SOFSCI[d].TCv[hit],data->SOFSCI[d].TFv[hit]);
+ 	auto item = new ((*fArray)[fNumEntries++])R3BSofSciMappedData(d+1,pmtval,data->SOFSCI[d].TCv[hit],data->SOFSCI[d].TFv[hit]);
       }
       curChannelStart=nextChannelStart;
     }
@@ -96,6 +98,7 @@ void R3BSofSciReader::Reset()
 {
     // Reset the output array
     fArray->Clear();
+    fNumEntries = 0;
 }
 
 ClassImp(R3BSofSciReader)

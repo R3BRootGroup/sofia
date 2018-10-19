@@ -7,6 +7,7 @@
 #pragma link C++ class R3BSofSCI+;
 
 #pragma link C++ class R3BSofSciMapped2TcalPar+;
+#pragma link C++ class R3BSofSciMapped2Tcal+;
 
 
 #endif

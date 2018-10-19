@@ -27,6 +27,7 @@ class R3BSofSciReader : public R3BReader
   FairLogger*	fLogger;
   /* the structs of type R3BSofSciMapped Item */
   TClonesArray* fArray; /**< Output array. */
+  UInt_t fNumEntries;
 
 
  public:

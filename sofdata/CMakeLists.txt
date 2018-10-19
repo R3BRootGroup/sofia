@@ -29,8 +29,9 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 R3BSofATPoint.cxx
 R3BSofATMadcMappedData.cxx
-R3BSofSciMappedData.cxx
 R3BSofComRefMappedData.cxx
+R3BSofSciMappedData.cxx
+R3BSofSciTcalData.cxx
 R3BSofSciCalData.cxx
 R3BSofToFWMappedData.cxx
 R3BSofMusicMadcVftxMappedData.cxx

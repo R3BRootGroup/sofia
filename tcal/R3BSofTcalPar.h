@@ -35,11 +35,13 @@ class R3BSofTcalPar : public FairParGenericSet {
   void printParams();
   
   /** Accessor functions **/
-  const Double_t GetNumDetectorss() {return fNumDetectors;}
+  const Double_t GetNumDetectors() {return fNumDetectors;}
   const Double_t GetNumSections() {return fNumSections;}
   const Double_t GetNumChannels() {return fNumChannels;}
   const Double_t GetNumSignals() {return fNumSignals;}
+  const Double_t GetNumTcalParsPerSignal() {return fNumTcalParsPerSignal;}
   TArrayF* GetAllSignalsTcalParams() {return fAllSignalsTcalParams;}
+  Double_t GetSignalTcalParams(UInt_t rank){return (Double_t) fAllSignalsTcalParams->GetAt(rank);}
 
   void SetNumDetectors(Int_t NumberOfDetectors)   {fNumDetectors=NumberOfDetectors;}  
   void SetNumSections(Int_t NumberOfSections)     {fNumSections=NumberOfSections;}
@@ -50,7 +52,7 @@ class R3BSofTcalPar : public FairParGenericSet {
     fNumSignals=NumberOfDetectors*NumberOfSections*NumberOfChannels;
   }
   void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) {fNumTcalParsPerSignal=NumberOfTcalParsPerSignal;}
-  void SetSignalTcalParams(Double_t ft_ns, Int_t rank){fAllSignalsTcalParams->AddAt(ft_ns, rank);}
+  void SetSignalTcalParams(Double_t ft_ns, UInt_t rank){fAllSignalsTcalParams->AddAt(ft_ns, rank);}
   
   /** Create more Methods if you need them! **/
   

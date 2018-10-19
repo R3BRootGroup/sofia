@@ -30,6 +30,7 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofSciMapped2TcalPar.cxx
+R3BSofSciMapped2Tcal.cxx
 )
 
 # fill list of header files from list of source files

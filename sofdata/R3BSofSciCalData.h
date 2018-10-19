@@ -2,9 +2,13 @@
 #define R3BSOFSCICALITEM_H
 
 #include "TObject.h"
+#include "TArrayD.h"
 
-// for the data analysis of the SOFIA SINGLE SCINTILLATORS detectors at S2 and Cave C
-// Introduced by Audrey, April 2017
+#define NUM_SOFSCI     2
+#define NUM_SOFSCI_PMT 2
+
+// for the data analysis of the SOFIA SINGLE SCINTILLATORS
+// Introduced by Audrey, October 2018
 
 class R3BSofSciCalData : public TObject
 {
@@ -12,26 +16,28 @@ class R3BSofSciCalData : public TObject
     // Default Constructor
     R3BSofSciCalData();
 
-    // Standard Constructor
-    R3BSofSciCalData(UShort_t detector);
-
     // Destructor
-    virtual ~R3BSofSciCalData() {}
+    virtual ~R3BSofSciCalData();
+    
+    void SetRawTimeNs(UShort_t det, UShort_t pmt, Double_t tns)   {fRawTimeNs->AddAt(tns,(det-1)*NUM_SOFSCI_PMT+pmt-1);}
+    void SetMeanTimeNs(UShort_t det, Double_t mean)               {fMeanTimeNs->AddAt(mean,det-1);}
+    void SetRawPos(UShort_t det, Double_t pos)                    {fRawPos->AddAt(pos,det-1);}
+    void SetRawToF(Double_t tof)                                  {fRawTof = tof;}
 
-    // Getters
-    inline const UShort_t&  GetDetector()  const { return fDetector; }
-    Double_t GetMeanTime();
-    Double_t GetRawPos();
+    Double_t GetRawTimeNs(UShort_t det, UShort_t pmt) {return (Double_t)fRawTimeNs->At((det-1)*NUM_SOFSCI_PMT+pmt-1);}
+    Double_t GetMeanTimeNs(UShort_t det)              {return (Double_t)fMeanTimeNs->At(det-1);}
+    Double_t GetRawPos(UShort_t det)                  {return (Double_t)fRawPos->At(det-1);}
+    Double_t GetRawToF()                              {return fRawTof;}
 
   private:
-    UShort_t  fDetector;
+    TArrayD* fRawTimeNs;
+    TArrayD* fMeanTimeNs;
+    TArrayD* fRawPos;
+    Double_t fRawTof;
+
 
   public:
-    Double_t fTime_PMT1_ns;   // right
-    Double_t fTime_PMT2_ns;   // left
-    Double_t fTime_REF_ns;    // common time reference
-
-    ClassDef(R3BSofSciCalData, 3)
+    ClassDef(R3BSofSciCalData, 2)
 };
 
 #endif

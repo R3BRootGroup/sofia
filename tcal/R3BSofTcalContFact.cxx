@@ -19,7 +19,8 @@
 
 #include "TClass.h"
 
-//static R3BSofTcalContFact gR3BSofTcalContFact;
+
+static R3BSofTcalContFact gR3BSofTcalContFact;
 
 R3BSofTcalContFact::R3BSofTcalContFact()
 {

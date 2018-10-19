@@ -9,7 +9,7 @@
 #define TRIM_TCALPAR  1
 #define TWIM_TCALPAR  1
 
-#define SAVE_TCALPAR_ROOT 1
+#define SAVE_TCALPAR_ROOT 0
 
 
 struct EXT_STR_h101_t
@@ -32,7 +32,7 @@ struct EXT_STR_h101_t
 #endif
 };
 
-void calib_tcal_VFTX(Int_t First=1320)
+void calib01_tcal_VFTX(Int_t First=1320)
 {
   TString runNumber=Form ("%03d", First);
   TStopwatch timer;
@@ -43,9 +43,9 @@ void calib_tcal_VFTX(Int_t First=1320)
   /* Create source using ucesb for input ------------------ */
      
   //TString filename = " --stream=lxir123 ";
-  //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run13*.lmd";
-  TString filename = "/media/audrey/MANGUE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run1*.lmd";
-  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/calib_tcal_VFTX_run13xx.root";
+  TString filename = "/media/audrey/MANGUE/SOFIA/ANALYSE/SOFIA2/data/lmd_timestitched/run*.lmd";
+  TString outputFileName = "../SofMacrosOutput/201410_Ubeam/calib_output_tcal_VFTX_All.root";
+  TString outputFileNamePar = "../SofMacrosOutput/201410_Ubeam/Parameters/tcal_VFTX_All";
   TString ntuple_options = "UNPACK:EVENTNO,UNPACK:TRIGGER,RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   TString ucesb_path = ucesb_dir + "/../upexps/sofia2014oct/sofia2014oct";
@@ -89,6 +89,7 @@ void calib_tcal_VFTX(Int_t First=1320)
   sciTcalibrator->SetNumChannels(3);
   sciTcalibrator->SetNumSignals(2,1,3);
   sciTcalibrator->SetMinStatistics(1000000);
+  sciTcalibrator->SetMinStatistics(250000);
   run->AddTask(sciTcalibrator);
 #endif
 
@@ -99,7 +100,7 @@ void calib_tcal_VFTX(Int_t First=1320)
   tofwTcalibrator->SetNumSections(1);
   tofwTcalibrator->SetNumChannels(2);
   tofwTcalibrator->SetNumSignals(28,1,2);
-  tofwTcalibrator->SetMinStatistics(1000000);
+  tofwTcalibrator->SetMinStatistics(100000);
   run->AddTask(tofwTcalibrator);
 #endif
 
@@ -133,15 +134,16 @@ void calib_tcal_VFTX(Int_t First=1320)
   // Root file with the Calibration Parameters
   Bool_t kParameterMerged = kTRUE;
   FairParRootFileIo* parOut = new FairParRootFileIo(kParameterMerged);
-  TString parFileName = "../SofMacrosOutput/201410_Ubeam/Parameters/tcal_VFTX_run1xxx.root";  // name of parameter file	
-  parOut->open(parFileName);
+  outputFileNamePar = outputFileNamePar+ ".root";
+  parOut->open(outputFileNamePar);
   rtdb->setFirstInput(parOut);
   rtdb->setOutput(parOut);
 #else
   // Ascii file with the Calibration Parameters
-  FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();
-  parIo1->open("../SofMacrosOutput/201410_Ubeam/Parameters/tcal_VFTX_run1xxx.par","out");
-  rtdb->setOutput(parIo1);
+  FairParAsciiFileIo* parOut = new FairParAsciiFileIo();
+  outputFileNamePar = outputFileNamePar+ ".par";
+  parOut->open(outputFileNamePar,"out");
+  rtdb->setOutput(parOut);
 #endif
 #endif
   

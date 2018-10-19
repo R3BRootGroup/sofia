@@ -68,11 +68,11 @@ class R3BSofSciMapped2TcalPar : public FairTask {
 
 
  protected:
-  Int_t fNumDetectors;  // number of detectors (=2 for Sci, =28 for ToFW, =1 for Trim, =2 for Twim)
-  Int_t fNumSections;	// number of sections  (=1 for Sci, =1 for ToFW, =3 for Trim, =2 for Twim)
-  Int_t fNumChannels;   // number of channels  (=3 for Sci, =2 for ToFW, =6 for Twim, =16 for Twim)
-  Int_t fNumSignals;
-  Int_t fNumTcalParsPerSignal;
+  Int_t fNumDetectors;  // number of detectors (=2 for Sci, =28 for ToFW, =1  for Trim, =2 for  Twim)
+  Int_t fNumSections;	// number of sections  (=1 for Sci, =1  for ToFW, =3  for Trim, =2 for  Twim)
+  Int_t fNumChannels;   // number of channels  (=3 for Sci, =2  for ToFW, =6  for Trim, =16 for Twim)
+  Int_t fNumSignals;    // number of signal    (=6 for Sci, =56 for ToFW, =18 for Trim, =64 fro Twim)
+  Int_t fNumTcalParsPerSignal; // =1000 for each signal
   Int_t fMinStatistics; // minimum statistics to proceed to the calibration
 
   // calibration parameters
