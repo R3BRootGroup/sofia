@@ -39,16 +39,21 @@ the arguments are the following:
      fEnergy     energy given by the MADC32
      fValid      kTRUE: if multiplicity 1 
 
-# R3BSofMusicMdpp16MappedData
------------------------------
+# R3BSofAnodMappedData
+------------------------
 Both MUSICs can be readout by MDPP16 module (cf. 2016 beam test)
 Arguments of the class:
-                   TriM                       TwiM
-    fPlane         1 one plane only           1: right plane,  2:left plane
-    fSection       1..3 along beam axis       1: down section, 2: up section
-    fAnode         1..6 along beam axis       1..16 along beam axis
-    fTime          time given by MDPP16       time given by MDPP16
-    fEnergy        energy given by MDPP16     energy given by MDPP16
+                   TriM                          TwiM
+    fPlane         1 one plane only              1: right plane,  2:left plane
+    fSection       1..3 along beam axis          1: down section, 2: up section
+    fChannel       1.. along beam axis           1..34 along beam axis
+    fEnergy                       energy                        
+    fTime                          time                          
+
+# R3BSofTrefMusicMappedData
+---------------------------
+When MUSICs are readout with MDPP16, there is one reference time per plane / section, which will be used in the next step to calculate the drift time of the ionisation electron per anode. 
+
 
 R3BSofMusicMadcMappedData
 --------------------------

@@ -80,17 +80,17 @@ This directory contains all the readers
 The active target is a gaseous detector which can be seen as a stack of ionisation chambers.
 Four targets are mounted as cathode, and signal are readout on 5 anodes.
 Each event, there will always be 5 energies collected (one per anode).
-The comparison of the energy losses collected on two following anodes give the layer ni where the fission occures
-Scheme of the AT in the October 2014 beam time :
+The comparison of the energy losses collected on two following anodes give the layer (anode or cathode) where the fission occures
+AT in the October 2014 beam time :
 ---
        ANODE 1  :   ALUMINIUM
- ni=1 CATHODE 1 :   URANIUM 238
- ni=2  ANODE 2  :   ALUMINIUM
- ni=3 CATHODE 2 :   URANIUM 238
- ni=4  ANODE 3  :   ALUMINIUM
- ni=5 CATHODE 3 :   ALUMINIUM 
- ni=6  ANODE 4  :   ALUMINIUM
- ni=7 CATHODE 4 :   LEAD
+      CATHODE 1 :   URANIUM 238
+       ANODE 2  :   ALUMINIUM
+      CATHODE 2 :   URANIUM 238
+       ANODE 3  :   ALUMINIUM
+      CATHODE 3 :   ALUMINIUM 
+       ANODE 4  :   ALUMINIUM
+      CATHODE 4 :   LEAD
        ANODE 5  :   ALUMINIUM
 ---
 

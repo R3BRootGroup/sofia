@@ -35,7 +35,8 @@ R3BSofSciTcalData.cxx
 R3BSofSciCalData.cxx
 R3BSofToFWMappedData.cxx
 R3BSofMusicMadcVftxMappedData.cxx
-R3BSofMusicMdpp16MappedData.cxx
+R3BSofAnodeMappedData.cxx
+R3BSofTrefMusicMappedData.cxx
 R3BSofToFWCalData.cxx
 R3BSofMWPCPoint.cxx
 R3BSofTWIMPoint.cxx
