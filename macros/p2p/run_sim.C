@@ -11,7 +11,7 @@
 //
 //--------------------------------------------------------------------
 
-void run_sim()
+void run_sim(Int_t nEvents = 1)
 {
   //-------------------------------------------------
   // Monte Carlo type     |           (TString)
@@ -37,12 +37,11 @@ void run_sim()
     //TString inputFile = "p2p_U238_300.txt";
     TString inputFile = "p2p_U238_500.txt";
 
-    Int_t nEvents = 10;
     Bool_t storeTrajectories = kTRUE;
     Int_t randomSeed = 335566; // 0 for time-dependent random numbers
 
     // Target type
-    Bool_t  fTarget = true;
+    Bool_t  fTarget = false;
     TString target1 = "LeadTarget";
     TString target2 = "Para";
     TString target3 = "Para45";
@@ -54,9 +53,8 @@ void run_sim()
     // Stable part ------------------------------------------------------------
 
     TString dir = getenv("VMCWORKDIR");
-    char str[1000];
-    sprintf(str, "GEOMPATH=%s/sofia/geometry", dir.Data());
-    putenv(str);
+    TString geodir = dir+"/sofia/geometry/";
+    TString inputdir = dir+"/sofia/input/";
 
     // ----    Debug option   -------------------------------------------------
     gDebug = 0;
@@ -67,8 +65,8 @@ void run_sim()
 
     // -----   Create simulation run   ----------------------------------------
     FairRunSim* run = new FairRunSim();
-    run->SetName(transport);            // Transport engine
-    run->SetOutputFile(outFile.Data()); // Output file
+    run->SetName(transport);                     // Transport engine
+    run->SetSink(new FairRootFileSink(outFile)); // Output file
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
     // -----   Create media   -------------------------------------------------
@@ -87,7 +85,7 @@ void run_sim()
     run->AddModule(new R3BTarget(targetType, "target_" + targetType + ".geo.root", { 0., 0., -50. }));
 
     // R3B SiTracker Cooling definition
-    run->AddModule(new R3BVacVesselCool("LiH", "vacvessel_v13a.geo.root", { 0., 0., -50. }));
+    //run->AddModule(new R3BVacVesselCool("LiH", "vacvessel_v13a.geo.root", { 0., 0., -50. }));
 
     // GLAD
     run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
@@ -97,12 +95,11 @@ void run_sim()
     //run->AddModule(new R3BPsp("psp_v13a.geo.root", {}, -221., -89., 94.1));
 
     // STaRTrack
-    run->AddModule(new R3BStartrack("startrack_v16-300_2layers.geo.root", { 0., 0., -50. +20.}));
+    //run->AddModule(new R3BStartrack("startrack_v16-300_2layers.geo.root", { 0., 0., -50. +20.}));
     //run->AddModule(new R3BSTaRTra("startra_v13a.geo.root", { 0., 0., -50. }));
 
     // CALIFA
-    //R3BCalifa* califa = new R3BCalifa("califa_10_v8.11.geo.root", { 0., 0., -50. });
-    R3BCalifa* califa = new R3BCalifa("sof_califa_demo.geo.root", { 0., 0., -50. });
+    R3BCalifa* califa = new R3BCalifa("califa_s444.geo.root", { 0., 0., 0. });
     califa->SelectGeometryVersion(10);
     // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
     califa->SetNonUniformity(1.0);
@@ -114,11 +111,11 @@ void run_sim()
     // --- SOFIA detectors ---
     //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
 
-    run->AddModule(new R3BSofTWIM("twinmusic_v0.geo.root", { 0., 0., 70. }));
+    //run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 70. }));
 
-    run->AddModule(new R3BSofMWPC("mwpc_1.geo.root", { 0., 0., 100. }));
+    //run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 100. }));
 
-    run->AddModule(new R3BSofMWPC2("mwpc_2.geo.root"));
+    //run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
 
     run->AddModule(new R3BSofTofWall("sof_tof_v0.geo.root"));
 
@@ -172,9 +169,9 @@ void run_sim()
 
     if (generator.CompareTo("ascii") == 0)
     {
-        R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + inputFile).Data());
-        gen->SetXYZ(0.,0.,-50.+1.2/2.0);
-        gen->SetDxDyDz(0.45,0.45,1.2/2.0);
+        R3BAsciiGenerator* gen = new R3BAsciiGenerator(inputdir+inputFile);
+        //gen->SetXYZ(0.,0.,-50.+1.2/2.0);
+        //gen->SetDxDyDz(0.45,0.45,1.2/2.0);
         primGen->AddGenerator(gen);
     }
 
@@ -234,15 +231,11 @@ void run_sim()
     run->SetStoreTraj(storeTrajectories);
 
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    //FairLogger::GetLogger()->SetLogScreenLevel("INFO");
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();
-    TVirtualMC::GetMC()->SetRandom(new TRandom3(randomSeed));
 
-    // ------  Increase nb of step for CALO
-    Int_t nSteps = -15000;
-    TVirtualMC::GetMC()->SetMaxNStep(nSteps);
 
     // -----   Runtime database   ---------------------------------------------
     R3BFieldPar* fieldPar = (R3BFieldPar*)rtdb->getContainer("R3BFieldPar");
@@ -259,10 +252,7 @@ void run_sim()
     rtdb->print();
 
     // -----   Start run   ----------------------------------------------------
-    if (nEvents > 0)
-    {
-        run->Run(nEvents);
-    }
+    if (nEvents > 0) run->Run(nEvents);
 
     // -----   Finish   -------------------------------------------------------
     timer.Stop();

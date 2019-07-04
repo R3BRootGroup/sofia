@@ -33,42 +33,49 @@ Double_t fX = 0.;
 Double_t fY = 0.;
 Double_t fZ = 0.;
 Bool_t fLocalTrans = kFALSE;
-Bool_t fLabTrans = kTRUE;
-
 
 TGeoCombiTrans* GetGlobalPosition(TGeoCombiTrans *fRef);
 
 
-void create_tofsofia_geo(const char* geoTag)
+void create_tofsofia_geo(const char* geoTag="v0")
 {
 
-  // out-of-file geometry definition
+// --------------------------------------------------------------------------
+// Configurable geometry for the SOFIA ToF-Wall.
+// Use this macro to create root files with the different configurations 
+// and positions/angles of the detector.
+//
+// Execute macro:  root -l
+//                 .L create_tofsofia_geo.C
+//                 create_tofsofia_geo()
+// --------------------------------------------------------------------------
+
    Double_t dx,dy,dz;
    Double_t a;
    Double_t thx, phx, thy, phy, thz, phz;
+   Double_t tx,ty,tz;
    Double_t z, density, w;
    Int_t nel, numed;
+   fGlobalTrans->SetTranslation(0.0,0.0,0.0);
 
-  fGlobalTrans->SetTranslation(0.0,0.0,0.0);
+   TGeoRotation * zeroRot = new TGeoRotation; //zero rotation
+   TGeoCombiTrans * tZero = new TGeoCombiTrans("tZero", 0., 0., 0., zeroRot);
+   tZero->RegisterYourself();
 
   // -------   Load media from media file   -----------------------------------
   FairGeoLoader*    geoLoad = new FairGeoLoader("TGeo","FairGeoLoader");
   FairGeoInterface* geoFace = geoLoad->getGeoInterface();
   TString geoPath = gSystem->Getenv("VMCWORKDIR");
-  TString medFile = geoPath + "/sofia/geometry/media_r3b.geo";
+  TString medFile = geoPath + "/geometry/media_r3b.geo";
   geoFace->setMediaFile(medFile);
   geoFace->readMedia();
   gGeoMan = gGeoManager;
   // --------------------------------------------------------------------------
 
-
-
   // -------   Geometry file name (output)   ----------------------------------
   TString geoFileName = geoPath + "/sofia/geometry/sof_tof_";
   geoFileName = geoFileName + geoTag + ".geo.root";
   // --------------------------------------------------------------------------
-
-
 
   // -----------------   Get and create the required media    -----------------
   FairGeoMedia*   geoMedia = geoFace->getMedia();
@@ -110,7 +117,7 @@ void create_tofsofia_geo(const char* geoTag)
   TGeoMedium* pMedFe = gGeoMan->GetMedium("iron");
   if ( ! pMedFe ) Fatal("Main", "Medium iron not found");
 
-
+/*
   // Mixture: plasticForTOF
   TGeoMedium * pMed34=NULL;
    if (gGeoManager->GetMedium("plasticForTOF") ){
@@ -138,7 +145,7 @@ void create_tofsofia_geo(const char* geoTag)
      par[7]  = 0.000000; // stmin
      pMed34 = new TGeoMedium("plasticForTOF", numed,pMat34,par);
    }
-
+*/
 
   // --------------------------------------------------------------------------
 
@@ -152,7 +159,7 @@ void create_tofsofia_geo(const char* geoTag)
   // --------------------------------------------------------------------------
 
 
-
+/*
         // WORLD
 	TGeoVolume *pAWorld  =  gGeoManager->GetTopVolume();
     
@@ -181,7 +188,11 @@ void create_tofsofia_geo(const char* geoTag)
 	
 	// Add the box as Mother Volume
 	pAWorld->AddNodeOverlap(pWorld, 0, pGlobalc);
+*/
 
+   // Shape: World type: TGeoBBox
+   TGeoVolume* pWorld = gGeoManager->GetTopVolume();
+   pWorld->SetVisLeaves(kTRUE);
 
   
    // Shape: TOFBox type: TGeoBBox
@@ -191,17 +202,11 @@ void create_tofsofia_geo(const char* geoTag)
    TGeoShape *pTOFBox = new TGeoBBox("TOFBox", dx/2.0,dy/2.0,dz/2.0);
    // Volume: TOFLog
    TGeoVolume*
-   pTOFLog = new TGeoVolume("TOF_FFs",pTOFBox, pMed34);
+   pTOFLog = new TGeoVolume("TOF_FFs",pTOFBox, pMedAir);
    pTOFLog->SetVisLeaves(kTRUE);
    pTOFLog->SetLineColor(kBlue-8);
-  
-   pWorld->AddNode(pTOFLog, 0, 0 );
 
- //  AddSensitiveVolume(pTOFLog);
- //  fNbOfSensitiveVol+=1;
-
-
-    // SHAPES, VOLUMES AND GEOMETRICAL HIERARCHY
+   // SHAPES, VOLUMES AND GEOMETRICAL HIERARCHY
    // Shape: TargetEnveloppe type: TGeoTubeSeg
    Double_t rmin = 0.0000;
    Double_t rmax = 1.35;
@@ -241,7 +246,7 @@ void create_tofsofia_geo(const char* geoTag)
   
    pGlobalPMsu[i] = GetGlobalPosition(pMatrixPMsu[i]);
 
-   pWorld->AddNode(pPM_nbu[i], i, pGlobalPMsu[i] );
+   //pWorld->AddNode(pPM_nbu[i], i, pGlobalPMsu[i] );
 
 
    sprintf(buf,"PM_down_%i",i+1);
@@ -257,7 +262,7 @@ void create_tofsofia_geo(const char* geoTag)
    pPM_nbd[i]->SetLineColor(kGray);
 
    pGlobalPMsd[i] = GetGlobalPosition(pMatrixPMsd[i]);
-   pWorld->AddNode(pPM_nbd[i], i, pGlobalPMsd[i] );
+   //pWorld->AddNode(pPM_nbd[i], i, pGlobalPMsd[i] );
 
 
    }
@@ -276,14 +281,14 @@ void create_tofsofia_geo(const char* geoTag)
     dz=0.00;
     TGeoCombiTrans* pMatrix3 = new TGeoCombiTrans("", dx,dy,dz,0);
     TGeoCombiTrans* pGlobal3 = GetGlobalPosition(pMatrix3);
-    pWorld->AddNode(subplane, 0, pGlobal3 );
+   // pWorld->AddNode(subplane, 0, pGlobal3 );
 
     dx=0.00;
     dy=-43.5;
     dz=0.00;
     TGeoCombiTrans* pMatrix4 = new TGeoCombiTrans("", dx,dy,dz,0);
     TGeoCombiTrans* pGlobal4 = GetGlobalPosition(pMatrix4);
-    pWorld->AddNode(subplane, 0, pGlobal4 );
+    //pWorld->AddNode(subplane, 0, pGlobal4 );
 
 
 
@@ -301,16 +306,34 @@ void create_tofsofia_geo(const char* geoTag)
     dz=0.00;
     TGeoCombiTrans* pMatrix5 = new TGeoCombiTrans("", dx,dy,dz,0);
     TGeoCombiTrans* pGlobal5 = GetGlobalPosition(pMatrix5);
-    pWorld->AddNode(subplane2, 0, pGlobal5 );
+    //pWorld->AddNode(subplane2, 0, pGlobal5 );
 
     dx=-52.00;
     dy=-36.00;
     dz=0.00;
     TGeoCombiTrans* pMatrix6 = new TGeoCombiTrans("", dx,dy,dz,0);
     TGeoCombiTrans* pGlobal6 = GetGlobalPosition(pMatrix6);
-    pWorld->AddNode(subplane2, 0, pGlobal6 );
+    //pWorld->AddNode(subplane2, 0, pGlobal6 );
   
 
+
+  /************ Assembling everything together ****************/
+  TGeoVolume *Tof = new TGeoVolumeAssembly("SOFIATOFWALL");
+  Tof->AddNode(pTOFLog, 1, 0 );
+
+
+  TGeoRotation *rotg = new TGeoRotation();
+  rotg->RotateX(0.);
+  rotg->RotateY(0.);
+  rotg->RotateZ(0.);
+  dx=tx=0.0;
+  dy=ty=0.0;
+  dz=tz=0.0;
+  
+  TGeoCombiTrans *t_zero = new TGeoCombiTrans("t_zero");
+
+  TGeoCombiTrans *t0 = new TGeoCombiTrans(tx,ty,tz,rotg);
+  pWorld->AddNode(Tof, 1, GetGlobalPosition(t0));
   
    
   // ---------------   Finish   -----------------------------------------------
@@ -322,6 +345,7 @@ void create_tofsofia_geo(const char* geoTag)
   TFile* geoFile = new TFile(geoFileName, "RECREATE");
   top->Write();
   geoFile->Close();
+  std::cout << "Creating geometry: "<<geoFileName<< std::endl;
   // --------------------------------------------------------------------------
 }
 
