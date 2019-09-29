@@ -12,6 +12,7 @@
 #include "FairRuntimeDb.h"
 #include "FairVolume.h"
 #include "R3BSofToFWPoint.h"
+#include "R3BSofToFWCalData.h"
 #include "R3BMCStack.h"
 #include "TClonesArray.h"
 #include "TGeoCompositeShape.h"
@@ -45,6 +46,7 @@ R3BSofTofWall::R3BSofTofWall(const TString& geoFile, const TGeoTranslation& tran
 R3BSofTofWall::R3BSofTofWall(const TString& geoFile, const TGeoCombiTrans& combi)
   : R3BDetector("R3BSofTofWall", kSOFTofWall, geoFile, combi) 
   , fSofTofWallCollection(new TClonesArray("R3BSofToFWPoint"))
+  , fSofTofWallCalCollection(new TClonesArray("R3BSofToFWCalData"))
   , fPosIndex(0)
   , kGeoSaved(kFALSE)
   , flGeoPar(new TList())
@@ -61,13 +63,17 @@ R3BSofTofWall::~R3BSofTofWall() {
     fSofTofWallCollection->Delete();
     delete fSofTofWallCollection;
   }
+  if (fSofTofWallCalCollection) {
+    fSofTofWallCalCollection->Delete();
+    delete fSofTofWallCalCollection;
+  }
 }
 
 void R3BSofTofWall::Initialize() {
   FairDetector::Initialize();
   
-  LOG(INFO) << "R3BSofTofWall: initialisation" << FairLogger::endl;
-  LOG(DEBUG) << "-I- R3BSofTofWall: Vol (McId) def" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTofWall: initialisation";
+  LOG(DEBUG) << "-I- R3BSofTofWall: Vol (McId) def";
   
  // TGeoVolume* vol = gGeoManager->GetVolume("SofTofWallWorld");
  // vol->SetVisibility(kFALSE);
@@ -110,6 +116,7 @@ Bool_t R3BSofTofWall::ProcessHits(FairVolume* vol) {
       fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
       fParentTrackID = gMC->GetStack()->GetCurrentParentTrackNumber();
       fVolumeID = vol->getMCid();
+      fDetCopyID = vol->getCopyNo();
       fTrackPID = gMC->TrackPid();
       fUniqueID = gMC->GetStack()->GetCurrentTrack()->GetUniqueID();
       
@@ -132,10 +139,46 @@ Bool_t R3BSofTofWall::ProcessHits(FairVolume* vol) {
                fTime,
                fLength,
                fELoss);
-      
+
       // Increment number of SofTofWallPoints for this track
       R3BStack* stack = (R3BStack*)gMC->GetStack();
       stack->AddPoint(kSOFTofWall);
+
+      // Cal Data for each plastic
+      // Adding a CalHit support
+      Int_t nPlasticHits = fSofTofWallCalCollection->GetEntriesFast();
+      Bool_t existHit = 0;
+
+      if (nPlasticHits == 0)
+            AddCalHit(vol->getCopyNo(),
+                           0,
+                           fTime,
+                           fELoss);
+        else
+        {
+            for (Int_t i = 0; i < nPlasticHits; i++)
+            {
+                if (((R3BSofToFWCalData*)(fSofTofWallCalCollection->At(i)))->GetDetector() ==
+                    vol->getCopyNo())
+                {
+                    ((R3BSofToFWCalData*)(fSofTofWallCalCollection->At(i)))->SetEnergy(fELoss+
+                                          ((R3BSofToFWCalData*)(fSofTofWallCalCollection->At(i)))->GetEnergy());
+                    if (((R3BSofToFWCalData*)(fSofTofWallCalCollection->At(i)))->GetTime() > fTime && fZ_in > 6)//Above Z=6
+                    {
+                        ((R3BSofToFWCalData*)(fSofTofWallCalCollection->At(i)))->SetTime(fTime);
+                    }
+                    existHit = 1; // to avoid the creation of a new CalHit
+                    break;
+                }
+            }
+            if (!existHit)
+            AddCalHit(vol->getCopyNo(),
+                           0,
+                           fTime,
+                           fELoss);
+      }
+
+      existHit = 0;
       
       ResetParameters();
     }
@@ -153,6 +196,7 @@ void R3BSofTofWall::EndOfEvent() {
     Print();
   
   fSofTofWallCollection->Clear();
+  fSofTofWallCalCollection->Clear();
   
   ResetParameters();
 }
@@ -161,6 +205,8 @@ void R3BSofTofWall::EndOfEvent() {
 void R3BSofTofWall::Register() {
   FairRootManager::Instance()->Register("SofTofWallPoint", GetName(),
 					fSofTofWallCollection, kTRUE);
+  FairRootManager::Instance()->Register("TofWCal", GetName(),
+					fSofTofWallCalCollection, kTRUE);
 }
 
 // -----   Public method GetCollection   --------------------------------------
@@ -174,19 +220,22 @@ TClonesArray* R3BSofTofWall::GetCollection(Int_t iColl) const {
 // -----   Public method Print   ----------------------------------------------
 void R3BSofTofWall::Print(Option_t* option) const {
   Int_t nHits = fSofTofWallCollection->GetEntriesFast();
-  LOG(INFO) << "R3BSofTofWall: " << nHits << " points registered in this event" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTofWall: " << nHits << " points registered in this event";
+  Int_t nCalHits = fSofTofWallCalCollection->GetEntriesFast();
+  LOG(INFO) << "R3BSofTofWallCalData: " << nCalHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
 void R3BSofTofWall::Reset() {
   fSofTofWallCollection->Clear();
+  fSofTofWallCalCollection->Clear();
   ResetParameters();
 }
 
 // -----   Public method CopyClones   -----------------------------------------
 void R3BSofTofWall::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) {
   Int_t nEntries = cl1->GetEntriesFast();
-  LOG(INFO) << "R3BSofTofWall: " << nEntries << " entries to add" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTofWall: " << nEntries << " entries to add";
   TClonesArray& clref = *cl2;
   R3BSofToFWPoint* oldpoint = NULL;
   for (Int_t i = 0; i < nEntries; i++) {
@@ -196,7 +245,20 @@ void R3BSofTofWall::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offse
     new (clref[fPosIndex]) R3BSofToFWPoint(*oldpoint);
     fPosIndex++;
   }
-  LOG(INFO) << "R3BSofTofWall: " << cl2->GetEntriesFast() << " merged entries" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTofWall: " << cl2->GetEntriesFast() << " merged entries";
+}
+
+// -----   Private method AddCalPoint   --------------------------------------------
+R3BSofToFWCalData* R3BSofTofWall::AddCalHit(UShort_t ident, 
+                                            UShort_t pmt, 
+		                            Double_t time, 
+                                            Float_t eLoss) {
+  TClonesArray& clref = *fSofTofWallCalCollection;
+  Int_t size = clref.GetEntriesFast();
+  if (fVerboseLevel > 1)
+    LOG(INFO) << "TofWCalData: Adding Point at detector " << ident
+	      << ", pmt " << pmt << ", time " << time << " ps" << ", energy loss " << eLoss << " MeV";
+  return new (clref[size]) R3BSofToFWCalData(ident, pmt, time, eLoss);
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -216,8 +278,7 @@ R3BSofToFWPoint* R3BSofTofWall::AddPoint(Int_t trackID,
   Int_t size = clref.GetEntriesFast();
   if (fVerboseLevel > 1)
     LOG(INFO) << "R3BSofTofWall: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
-	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV"
-              << FairLogger::endl;
+	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
   return new (clref[size]) R3BSofToFWPoint(trackID, detID, volid, Z, A, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
@@ -225,7 +286,7 @@ R3BSofToFWPoint* R3BSofTofWall::AddPoint(Int_t trackID,
 Bool_t R3BSofTofWall::CheckIfSensitive(std::string name) {
   if(TString(name).Contains("TOF_FFs"))
   {
-    LOG(INFO) << "Found TOF SOFIA geometry from ROOT file: " << name << FairLogger::endl;
+    LOG(INFO) << "Found TOF SOFIA geometry from ROOT file: " << name;
     return kTRUE;
   }
   return kFALSE;

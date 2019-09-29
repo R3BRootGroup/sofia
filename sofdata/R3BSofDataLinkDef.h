@@ -24,6 +24,8 @@
 
 #pragma link C++ class R3BSofMWPCPoint+;
 #pragma link C++ class R3BSofTWIMPoint+;
+#pragma link C++ class R3BSofTwimMappedData+;
+#pragma link C++ class R3BSofTwimCalData+;
 #pragma link C++ class R3BSofToFWPoint+;
 #pragma link C++ class R3BSofMWPCPoint2+;
 

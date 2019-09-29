@@ -36,7 +36,7 @@ R3BSofToFWPoint::R3BSofToFWPoint(Int_t trackID, Int_t detID, Int_t detCopyID,
   fPy_out = momOut.Py();
   fPz_out = momOut.Pz();
   fZFF = Z;
-  fZFF = A;
+  fAFF = A;
 }
 // -------------------------------------------------------------------------
 

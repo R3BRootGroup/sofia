@@ -65,8 +65,8 @@ R3BSofTRIM::~R3BSofTRIM() {
 void R3BSofTRIM::Initialize() {
   FairDetector::Initialize();
   
-  LOG(INFO) << "R3BSofTRIM: initialisation" << FairLogger::endl;
-  LOG(DEBUG) << "-I- R3BSofTRIM: Vol (McId) def" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTRIM: initialisation";
+  LOG(DEBUG) << "-I- R3BSofTRIM: Vol (McId) def";
   
   TGeoVolume* vol = gGeoManager->GetVolume("SofTRIMWorld");
   vol->SetVisibility(kFALSE);
@@ -158,7 +158,7 @@ TClonesArray* R3BSofTRIM::GetCollection() const {
 // -----   Public method Print   ----------------------------------------------
 void R3BSofTRIM::Print(Option_t* option) const {
   Int_t nHits = fSofTRIMCollection->GetEntriesFast();
-  LOG(INFO) << "R3BSofTRIM: " << nHits << " points registered in this event" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTRIM: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
@@ -170,7 +170,7 @@ void R3BSofTRIM::Reset() {
 // -----   Public method CopyClones   -----------------------------------------
 void R3BSofTRIM::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) {
   Int_t nEntries = cl1->GetEntriesFast();
-  LOG(INFO) << "R3BSofTRIM: " << nEntries << " entries to add" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTRIM: " << nEntries << " entries to add";
   TClonesArray& clref = *cl2;
   R3BSofTRIMPoint* oldpoint = NULL;
   for (Int_t i = 0; i < nEntries; i++) {
@@ -180,7 +180,7 @@ void R3BSofTRIM::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) 
     new (clref[fPosIndex]) R3BSofTRIMPoint(*oldpoint);
     fPosIndex++;
   }
-  LOG(INFO) << "R3BSofTRIM: " << cl2->GetEntriesFast() << " merged entries" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTRIM: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -200,8 +200,7 @@ R3BSofTRIMPoint* R3BSofTRIM::AddPoint(Int_t trackID,
   Int_t size = clref.GetEntriesFast();
   if (fVerboseLevel > 1)
     LOG(INFO) << "R3BSofTRIM: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
-	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV"
-              << FairLogger::endl;
+	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
   return new (clref[size]) R3BSofTRIMPoint(trackID, detID, volid, copy, ident, posIn, posOut, momIn, momOut, time, length, eLoss, Nf, Ns);
 }
 

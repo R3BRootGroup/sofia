@@ -111,13 +111,15 @@ void run_sim(Int_t nEvents = 1)
     // --- SOFIA detectors ---
     //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
 
-    //run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 70. }));
+  //  run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 70. }));
 
-    //run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 100. }));
+    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root"));
 
-    //run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
+    run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 100. }));
 
-    run->AddModule(new R3BSofTofWall("sof_tof_v0.geo.root"));
+    run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
+
+    run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v0.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
@@ -250,6 +252,7 @@ void run_sim(Int_t nEvents = 1)
     rtdb->setOutput(parOut);
     rtdb->saveOutput();
     rtdb->print();
+
 
     // -----   Start run   ----------------------------------------------------
     if (nEvents > 0) run->Run(nEvents);

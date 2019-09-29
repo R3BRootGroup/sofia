@@ -24,7 +24,7 @@ class R3BSofATMadcMappedData : public TObject
 
   private:
     // version under construction
-    UChar_t fAnode;    // 1..5
+    UShort_t fAnode;    // 1..5
     UInt_t  fEnergy;   
 
   public:

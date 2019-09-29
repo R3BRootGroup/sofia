@@ -37,10 +37,10 @@ class R3BSofToFWCalData : public FairMultiLinkedData {
   virtual ~R3BSofToFWCalData();
   
   /** Accessors **/
-  inline const UShort_t& GetDetector()      const {return fDetector;}
-  inline const UShort_t& GetPmt()           const {return fPmt;}
-  inline const Double_t&  GetTime()         const {return fTime;}
-  inline const Float_t&  GetEnergy()        const {return fEnergy;}  
+  UShort_t GetDetector()      const {return fDetector;}
+  UShort_t GetPmt()           const {return fPmt;}
+  Double_t GetTime()          const {return fTime;}
+  Float_t  GetEnergy()        const {return fEnergy;}  
   
   /** Modifiers **/
   void SetDetector(UShort_t ident){ fDetector = ident; }

@@ -3,7 +3,7 @@
 //
 //         Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
 //
-//         Last Update: 08/12/17 (Jose Luis)
+//         Last Update: 29/09/19 (Jose Luis)
 //
 //         Comments:
 //       
@@ -39,7 +39,7 @@ Bool_t fLabTrans = kTRUE;
 TGeoCombiTrans* GetGlobalPosition(TGeoCombiTrans *fRef);
 
 
-void create_twin_geo(const char* geoTag = "twin")
+void create_twin_geo(const char* geoTag = "v0")
 {
 
   fGlobalTrans->SetTranslation(0.0,0.0,0.0);
@@ -79,12 +79,6 @@ void create_twin_geo(const char* geoTag = "twin")
   TGeoMedium* pMedVac = gGeoMan->GetMedium("vacuum");
   if ( ! pMedVac ) Fatal("Main", "Medium vacuum not found");
   
-  FairGeoMedium* mSi      = geoMedia->getMedium("silicon");
-  if ( ! mSi ) Fatal("Main", "FairMedium silicon not found");
-  geoBuild->createMedium(mSi);
-  TGeoMedium* pMedSi = gGeoMan->GetMedium("silicon");
-  if ( ! pMedSi ) Fatal("Main", "Medium silicon not found");
-
   FairGeoMedium* mCopper      = geoMedia->getMedium("copper");
   if ( ! mCopper ) Fatal("Main", "FairMedium copper not found");
   geoBuild->createMedium(mCopper);
@@ -114,11 +108,94 @@ void create_twin_geo(const char* geoTag = "twin")
 
   // --------------   Create geometry and top volume  -------------------------
   gGeoMan = (TGeoManager*)gROOT->FindObject("FAIRGeom");
-  gGeoMan->SetName("TRAgeom");
+  gGeoMan->SetName("TWIMgeom");
   TGeoVolume* top = new TGeoVolumeAssembly("TOP");
   gGeoMan->SetTopVolume(top);
   // --------------------------------------------------------------------------
 
+
+  TGeoVolumeAssembly *twim = new TGeoVolumeAssembly("TWIM");
+
+  // out-of-file geometry definition
+  Double_t dx,dy,dz;
+  // TRANSFORMATION MATRICES
+  // Combi transformation:
+  dx = 0.00000;
+  dy = 0.00000;    
+  dz = 73.; 
+
+  TGeoRotation *rotg = new TGeoRotation();
+
+  TGeoCombiTrans*
+  pMatrix0 = new TGeoCombiTrans("",dx,dy,dz,rotg);
+
+  //Top Volume
+  TGeoVolume* pWorld = gGeoManager->GetTopVolume();
+  pWorld->SetVisLeaves(kTRUE);
+
+  // --------------- Detector --------------------------------------
+
+  // SHAPES, VOLUMES AND GEOMETRICAL HIERARCHY
+  // Shape: Anode type: TGeoBBox
+  dx = 11.000;
+  dy = 11.000;
+  dz = 2.5000;
+  Float_t xcathode=0.05;//mm
+  TGeoShape *AnodeBox = new TGeoBBox("TWIMAnode", dx/2.,dy/2.,dz/2.);
+  // Volume: TOFLog
+  TGeoVolume*
+  AnodeLog = new TGeoVolume("TwinLog",AnodeBox,pMedAr);
+  AnodeLog->SetVisLeaves(kTRUE);
+  AnodeLog->SetLineColor(2);
+
+  Int_t nbSections=4;
+  Int_t nbAnodes=16;
+  TGeoCombiTrans* pGlobalAnode[nbSections*nbAnodes];
+  TGeoCombiTrans* pMatrixAnode[nbSections*nbAnodes];
+
+  Int_t nbanode=0;
+  Float_t offsetx=11./2.+xcathode/2.;
+  Float_t secposx[4]={-offsetx,-offsetx,offsetx,offsetx};
+  Float_t secposy[4]={11./2.,-11./2.,-11./2.,11./2.};
+  for(Int_t i=0;i<nbSections;i++){//Sections
+   dx=secposx[i];
+   dy=secposy[i];
+   for(Int_t j=0;j<nbAnodes;j++){//Anodes per section
+   
+   nbanode=i*nbAnodes+j;
+   dz=2.5*(-7.5+j);
+
+   pMatrixAnode[nbanode] = new TGeoCombiTrans("", dx,dy,dz,rotg);
+   pGlobalAnode[nbanode] = GetGlobalPosition(pMatrixAnode[nbanode]);
+   twim->AddNode(AnodeLog, nbanode, pGlobalAnode[nbanode]);
+   }
+  }
+
+   dx = xcathode;
+   dy = 22.0;
+   dz = nbAnodes*2.5;
+   TGeoShape *twin1 = new TGeoBBox("", dx/2.,dy/2.,dz/2.);
+   // Volume: 
+   TGeoVolume*
+   twin_log = new TGeoVolume("cathode",twin1, pMedCu);
+   twin_log->SetVisLeaves(kTRUE);
+   twin_log->SetLineColor(3);
+
+   // Position Mother Volume
+   TGeoCombiTrans *pMatrix1 = new TGeoCombiTrans("", 0.,0.,0.,rotg);
+   TGeoCombiTrans* pGlobal1 = GetGlobalPosition(pMatrix1);
+   twim->AddNode(twin_log, 0, pGlobal1);
+
+  TGeoCombiTrans *pGlobal = GetGlobalPosition(pMatrix0);
+  if (pGlobal){
+    pWorld->AddNode(twim, 0, pGlobal);
+  }else{
+    pWorld->AddNode(twim, 0, pMatrix0);
+  }
+
+
+
+/*
 	// out-of-file geometry definition
 	Double_t dx,dy,dz;
 	Double_t rmin, rmax, rmin1, rmax1, rmin2, rmax2;
@@ -131,32 +208,13 @@ void create_twin_geo(const char* geoTag = "twin")
 	tZero->RegisterYourself();
   
   
-	//-------------------------------------------------------------------
-  
-	// Fill Chamber: Vacuum or Air. Needed still: an external call interface for choosing which.
-	TGeoMedium * pMedFill=pMedVac;
-  //pMedFill = new TGeoMedium("Fill_Air", numed,pMat2, par);
-  //pMedFill = (TGeoMedium*) pMedAir->Clone();
-  //pMedFill->SetName("Fill_Air");
-//  pMedFill = (TGeoMedium*) pMedVac->Clone();
-//  pMedFill->SetName("Fill_Vacuum");
-  
-	//-------------------------------------------------------------------
-   
-  
-	// Shape: World type: TGeoBBox
-	//TGeoVolume* pWorld = gGeoManager->GetTopVolume();
-	//pWorld->SetVisLeaves(kTRUE);
-
-	
+	//-------------------------------------------------------------------	
 	TGeoVolume *pAWorld  =  gGeoManager->GetTopVolume();
 
         TGeoRotation *rot_twin = new TGeoRotation("TWINrot");
         rot_twin->RotateY(0.0);
     
         // Defintion of the Mother Volume
-	
-	//Double_t length = 54.;
 	
 	TGeoShape *pCBWorld = new TGeoBBox("TWIN_box",
 									   25.0/2.0,
@@ -172,14 +230,12 @@ void create_twin_geo(const char* geoTag = "twin")
 	// add the sphere as Mother Volume
 	pAWorld->AddNodeOverlap(pWorld, 0, pGlobalc);
 
-  // pWorld->SetVisLeaves(kTRUE);
-  // pWorld->SetLineColor(3);
-  
+  */
   
 	//**************************************************************//
 	//*********************   Si Sensors ******************************//
 	//***************************************************************/
-  
+  /*
 	// Si Shape & volume: TraBox type: TGeoBBox
 	dx = 10./2.;
 	dy = 20./2.;
@@ -234,7 +290,7 @@ void create_twin_geo(const char* geoTag = "twin")
    pWorld->AddNode(twin_log, 0, pGlobal1);
    pWorld->AddNode(TraLog, 0, pMatrix2);
    pWorld->AddNode(TraLog1, 0, pMatrix4);
-
+*/
   
 	/************ Assembling everything together ****************/
 /*
@@ -261,6 +317,7 @@ void create_twin_geo(const char* geoTag = "twin")
   TFile* geoFile = new TFile(geoFileName, "RECREATE");
   top->Write();
   geoFile->Close();
+  std::cout << "Creating geometry: "<<geoFileName<< std::endl;
   // --------------------------------------------------------------------------
 }
 

@@ -40,6 +40,8 @@ R3BSofTrefMusicMappedData.cxx
 R3BSofToFWCalData.cxx
 R3BSofMWPCPoint.cxx
 R3BSofTWIMPoint.cxx
+R3BSofTwimMappedData.cxx
+R3BSofTwimCalData.cxx
 R3BSofToFWPoint.cxx
 R3BSofMWPCPoint2.cxx
 )

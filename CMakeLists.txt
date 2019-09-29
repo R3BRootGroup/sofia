@@ -22,5 +22,6 @@ add_subdirectory (trim)
 add_subdirectory (twim)
 add_subdirectory (at)
 add_subdirectory (mwpc)
+add_subdirectory (sofonline)
 add_subdirectory (macros)
 

@@ -72,13 +72,13 @@ void R3BSofMWPC::Initialize()
 {
     FairDetector::Initialize();
 
-    LOG(INFO) << "R3BSofMWPC: initialisation" << FairLogger::endl;
-    LOG(DEBUG) << "R3BSofMWPC: Sens. Vol. (McId) " << gMC->VolId("MWPC11") << FairLogger::endl;
+    LOG(INFO) << "R3BSofMWPC: initialisation";
+    LOG(DEBUG) << "R3BSofMWPC: Sens. Vol. (McId) " << gMC->VolId("MWPC11");
 }
 
 void R3BSofMWPC::SetSpecialPhysicsCuts()
 {
-    LOG(INFO) << "-I- R3BSofMWPC: Adding customized Physics cut ... " << FairLogger::endl;
+    LOG(INFO) << "-I- R3BSofMWPC: Adding customized Physics cut ... ";
 }
 
 // -----   Public method ProcessHits  --------------------------------------
@@ -194,7 +194,7 @@ TClonesArray* R3BSofMWPC::GetCollection(Int_t iColl) const
 void R3BSofMWPC::Print(Option_t* option) const
 {
     Int_t nHits = fSofMWPCCollection->GetEntriesFast();
-    LOG(INFO) << "R3BSofMWPC: " << nHits << " points registered in this event" << FairLogger::endl;
+    LOG(INFO) << "R3BSofMWPC: " << nHits << " points registered in this event";
 }
 // ----------------------------------------------------------------------------
 
@@ -210,7 +210,7 @@ void R3BSofMWPC::Reset()
 void R3BSofMWPC::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 {
     Int_t nEntries = cl1->GetEntriesFast();
-    LOG(INFO) << "R3BSofMWPC: " << nEntries << " entries to add" << FairLogger::endl;
+    LOG(INFO) << "R3BSofMWPC: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
     R3BSofMWPCPoint* oldpoint = NULL;
     for (Int_t i = 0; i < nEntries; i++)
@@ -221,7 +221,7 @@ void R3BSofMWPC::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
         new (clref[fPosIndex]) R3BSofMWPCPoint(*oldpoint);
         fPosIndex++;
     }
-    LOG(INFO) << "R3BSofMWPC: " << cl2->GetEntriesFast() << " merged entries" << FairLogger::endl;
+    LOG(INFO) << "R3BSofMWPC: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -240,8 +240,7 @@ R3BSofMWPCPoint* R3BSofMWPC::AddPoint(Int_t trackID,
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
         LOG(INFO) << "R3BSofMWPC: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
-                  << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV"
-                  << FairLogger::endl;
+                  << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size]) R3BSofMWPCPoint(trackID,
                                          detID,
                                          detCopyID,
@@ -257,7 +256,7 @@ R3BSofMWPCPoint* R3BSofMWPC::AddPoint(Int_t trackID,
 Bool_t R3BSofMWPC::CheckIfSensitive(std::string name)
 {
   if (TString(name).Contains("MWPC11")) {
-    LOG(INFO) << "Found MWPC1 geometry from ROOT file: " << name << FairLogger::endl;
+    LOG(INFO) << "Found MWPC1 geometry from ROOT file: " << name;
     return kTRUE;
   }
     return kFALSE;

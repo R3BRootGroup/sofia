@@ -68,8 +68,8 @@ R3BSofTWIM::~R3BSofTWIM() {
 void R3BSofTWIM::Initialize() {
   FairDetector::Initialize();
 
-  LOG(INFO) << "R3BSofTWIM: initialisation" << FairLogger::endl;
-  LOG(DEBUG) << "-I- R3BSofTWIM: Vol (McId) def" << gMC->VolId("TwinLog") << FairLogger::endl;
+  LOG(INFO) << "R3BSofTWIM: initialisation";
+  LOG(DEBUG) << "-I- R3BSofTWIM: Vol (McId) def" << gMC->VolId("TwinLog");
 
   //TGeoVolume* vol = gGeoManager->GetVolume("SofTRIMWorld");
   //vol->SetVisibility(kFALSE);
@@ -181,7 +181,7 @@ TClonesArray* R3BSofTWIM::GetCollection(Int_t iColl) const {
 // -----   Public method Print   ----------------------------------------------
 void R3BSofTWIM::Print(Option_t* option) const {
   Int_t nHits = fSofTWIMCollection->GetEntriesFast();
-  LOG(INFO) << "R3BSofTWIM: " << nHits << " points registered in this event" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTWIM: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
@@ -193,7 +193,7 @@ void R3BSofTWIM::Reset() {
 // -----   Public method CopyClones   -----------------------------------------
 void R3BSofTWIM::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) {
   Int_t nEntries = cl1->GetEntriesFast();
-  LOG(INFO) << "R3BSofTWIM: " << nEntries << " entries to add" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTWIM: " << nEntries << " entries to add";
   TClonesArray& clref = *cl2;
   R3BSofTWIMPoint* oldpoint = NULL;
   for (Int_t i = 0; i < nEntries; i++) {
@@ -203,7 +203,7 @@ void R3BSofTWIM::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) 
     new (clref[fPosIndex]) R3BSofTWIMPoint(*oldpoint);
     fPosIndex++;
   }
-  LOG(INFO) << "R3BSofTWIM: " << cl2->GetEntriesFast() << " merged entries" << FairLogger::endl;
+  LOG(INFO) << "R3BSofTWIM: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -223,15 +223,14 @@ R3BSofTWIMPoint* R3BSofTWIM::AddPoint(Int_t trackID,
   Int_t size = clref.GetEntriesFast();
   if (fVerboseLevel > 1)
     LOG(INFO) << "R3BSofTWIM: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
-	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV"
-              << FairLogger::endl;
+	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
   return new (clref[size]) R3BSofTWIMPoint(trackID, detID, volid, Z, A, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofTWIM::CheckIfSensitive(std::string name) {
   if (TString(name).Contains("TwinLog")) {
-        LOG(INFO) << "Found TWIN MUSIC geometry from ROOT file: " << name << FairLogger::endl;
+        LOG(INFO) << "Found TWIN MUSIC geometry from ROOT file: " << name;
         return kTRUE;
     }
   return kFALSE;
