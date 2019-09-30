@@ -2,7 +2,7 @@
 
 #include "FairRootManager.h"
 #include "R3BSofTwimReader.h"
-#include "R3BSofTwimMappedData.h"
+#include "R3BSofMusicMappedData.h"
 
 extern "C" {
 #include "ext_data_client.h"
@@ -18,7 +18,7 @@ R3BSofTwimReader::R3BSofTwimReader(EXT_STR_h101_SOFTWIM* data, UInt_t offset)
   , fData(data)
   , fOffset(offset)
   , fLogger(FairLogger::GetLogger())
-  , fArray(new TClonesArray("R3BSofTwimMappedData"))
+  , fArray(new TClonesArray("R3BSofMusicMappedData"))
 {
 }
 
@@ -36,7 +36,7 @@ Bool_t R3BSofTwimReader::Init(ext_data_struct_info *a_struct_info)
   }
 
   // Register output array in tree
-  FairRootManager::Instance()->Register("SofTwim","MappedDim", fArray, kTRUE);
+  FairRootManager::Instance()->Register("SofTwimMappedData","SofTwim", fArray, kTRUE);
 
   // clear struct_writer's output struct. Seems ucesb doesn't do that
   // for channels that are unknown to the current ucesb config.
@@ -90,7 +90,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     if(multPerAnode[16]!=data->SOFTWIM_S[section].TREF)
       LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! multiplicity of Tref not consistent!" ;
     for(int hit=curTref; hit<nextTref;hit++)
-      R3BSofTwimMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofTwimMappedData(section+1,17,data->SOFTWIM_S[section].TREFv[hit],0);
+      R3BSofMusicMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofMusicMappedData(section+1,17,data->SOFTWIM_S[section].TREFv[hit],0);
   }
 
 
@@ -123,7 +123,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     if(multPerAnode[idAnodeTime-1]!=(nextAnodeEnergyStart-curAnodeEnergyStart))
       LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
     for(int hit=curAnodeTimeStart; hit<nextAnodeTimeStart;hit++){
-      R3BSofTwimMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofTwimMappedData(section+1,idAnodeEnergy,data->SOFTWIM_S[section].Tv[hit],data->SOFTWIM_S[section].Ev[hit]);
+      R3BSofMusicMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofMusicMappedData(section+1,idAnodeEnergy,data->SOFTWIM_S[section].Tv[hit],data->SOFTWIM_S[section].Ev[hit]);
     }
     curAnodeEnergyStart=nextAnodeEnergyStart;
     curAnodeTimeStart=nextAnodeTimeStart;

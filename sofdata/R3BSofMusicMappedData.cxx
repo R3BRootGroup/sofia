@@ -1,12 +1,12 @@
 // -------------------------------------------------------------------------
-// -----                      R3BSofTwimMappedData source file              -----
+// -----                      R3BSofMusicMappedData source file              -----
 // -------------------------------------------------------------------------
 
-#include "R3BSofTwimMappedData.h"
+#include "R3BSofMusicMappedData.h"
 
 
 // -----   Default constructor   -------------------------------------------
-R3BSofTwimMappedData::R3BSofTwimMappedData() 
+R3BSofMusicMappedData::R3BSofMusicMappedData() 
 : fSecID(0),
   fAnodeID(0),
   fTime(0),
@@ -17,8 +17,8 @@ R3BSofTwimMappedData::R3BSofTwimMappedData()
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTwimMappedData::R3BSofTwimMappedData(UShort_t secID, UShort_t anodeID,
-			                   UShort_t time, UShort_t energy) 
+R3BSofMusicMappedData::R3BSofMusicMappedData(UChar_t secID, UChar_t anodeID,
+					     UShort_t time, UShort_t energy) 
   : fSecID(secID)
   , fAnodeID(anodeID)
   , fTime(time)
@@ -27,4 +27,4 @@ R3BSofTwimMappedData::R3BSofTwimMappedData(UShort_t secID, UShort_t anodeID,
 }
 // -------------------------------------------------------------------------
 
-ClassImp(R3BSofTwimMappedData)
+ClassImp(R3BSofMusicMappedData)

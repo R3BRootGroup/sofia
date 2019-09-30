@@ -30,6 +30,7 @@ R3BSofSciReader.cxx
 R3BSofComRefReader.cxx
 R3BSofToFWReader.cxx
 R3BSofTwimReader.cxx
+R3BSofTrimReader.cxx
 )
 
 Set(STRUCT_HEADERS
@@ -37,6 +38,7 @@ ext_h101_sofsci.h
 ext_h101_sofcomref.h
 ext_h101_softofw.h
 ext_h101_softwim.h
+ext_h101_softrim.h
 )
 
 # fill list of header files from list of source files

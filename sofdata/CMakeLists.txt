@@ -27,17 +27,17 @@ ${FAIRROOT_LIBRARY_DIR}
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-R3BSofATPoint.cxx
 R3BSofComRefMappedData.cxx
 R3BSofSciMappedData.cxx
+R3BSofToFWMappedData.cxx
+R3BSofMusicMappedData.cxx
 R3BSofSciTcalData.cxx
 R3BSofSciCalData.cxx
-R3BSofToFWMappedData.cxx
 R3BSofToFWCalData.cxx
+R3BSofTwimCalData.cxx
+R3BSofATPoint.cxx
 R3BSofMWPCPoint.cxx
 R3BSofTWIMPoint.cxx
-R3BSofTwimMappedData.cxx
-R3BSofTwimCalData.cxx
 R3BSofToFWPoint.cxx
 R3BSofMWPCPoint2.cxx
 )

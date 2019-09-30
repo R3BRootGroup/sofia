@@ -38,7 +38,7 @@ Bool_t R3BSofComRefReader::Init(ext_data_struct_info *a_struct_info)
   }
 
   // Register output array in tree
-  FairRootManager::Instance()->Register("SofComRef","MappedDim", fArray, kTRUE);
+  FairRootManager::Instance()->Register("SofComRefMappedData","SofComRef", fArray, kTRUE);
   // clear struct_writer's output struct. Seems ucesb doesn't do that
   // for channels that are unknown to the current ucesb config.
   EXT_STR_h101_SOFCOMREF_onion* data = (EXT_STR_h101_SOFCOMREF_onion*)fData;

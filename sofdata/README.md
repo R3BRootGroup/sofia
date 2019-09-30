@@ -32,7 +32,7 @@ the arguments are the following:
      fValid      kTRUE: if multiplicity 1 
 
 
-# R3BSofTwimMappedData
+# R3BSofMusicMappedData
 --------------------------
 Twin-MUSIC readout by the MDPP16 module
     fSection       1: right/down, 2: right/up, 3: left/down, 4: left/up
@@ -41,9 +41,7 @@ Twin-MUSIC readout by the MDPP16 module
     fEnergy        energy given by MDPP16, energy=0 for anode 17
 
 
-# R3BSofTwimMappedData
---------------------------
-Twin-MUSIC readout by the MDPP16 module
+Triple-MUSIC readout by the MDPP16 module
     fSection       1: first, 2: middle, 3: last in the beam direction
     fAnode         1..6: anodes id along beam axis, 7: time reference to calculate the drift time
     fTime          time given by the MDPP16
