@@ -17,13 +17,13 @@ public:
   /** Constructor with arguments
    *@param secID    Section ID
    *@param anodeID  Anode ID 
-   *@param dtime    Drift time [channels]
+   *@param dtime    Time [channels]
    *@param eLoss    Energy deposit [channels]
    **/
-  R3BSofTwimMappedData(Int_t secID, 
-                       Int_t anodeID, 
-                       Int_t dtime,
-	               Int_t energy);
+  R3BSofTwimMappedData(UShort_t secID, 
+                       UShort_t anodeID, 
+                       UShort_t time,
+	               UShort_t energy);
 
 
   /** Destructor **/
@@ -31,23 +31,25 @@ public:
 
 
   /** Accessors **/
-  inline const Int_t&    GetSecID()     const { return fSecID;   }
-  inline const Int_t&    GetAnodeID()   const { return fAnodeID; }
-  inline const Int_t&    GetDTime()     const { return fDT;      }
-  inline const Int_t&    GetEnergy()    const { return fEnergy;  }
+  inline const UShort_t&    GetSecID()     const { return fSecID;   }
+  inline const UShort_t&    GetAnodeID()   const { return fAnodeID; }
+  inline const UShort_t&    GetTime()      const { return fTime;      }
+  inline const UShort_t&    GetEnergy()    const { return fEnergy;  }
 
 
   /** Modifiers **/
-  void SetSecID(Int_t id)      { fSecID = id;     };
-  void SetAnodeID(Int_t id)    { fAnodeID = id;   };
-  void SetDTime(Int_t dt)      { fDT = dt;        };
-  void SetEnergy(Int_t energy) { fEnergy = energy;};
+  void SetSecID(UShort_t id)      { fSecID = id;     };
+  void SetAnodeID(UShort_t id)    { fAnodeID = id;   };
+  void SetDTime(UShort_t time)    { fTime = time;    };
+  void SetEnergy(UShort_t energy) { fEnergy = energy;};
 
 
  protected:
 
-  Int_t fSecID, fAnodeID;
-  Int_t fDT, fEnergy;
+  UShort_t fSecID;     // 1:RIGHT DOWN, 2: RIGHT UP, 3: LEFT DOWN, 4: LEFT UP 
+  UShort_t fAnodeID;   // [1:16]: Anode ID, 17: Tref
+  UShort_t fTime;
+  UShort_t fEnergy;
 
   ClassDef(R3BSofTwimMappedData,1)
 };

@@ -6,6 +6,4 @@
 
 #pragma link C++ class R3BSofTRIM+;
 
-#pragma link C++ class R3BSofTrimMapped2TcalPar+;
-
 #endif

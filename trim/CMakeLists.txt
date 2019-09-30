@@ -28,7 +28,6 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-R3BSofTrimMapped2TcalPar.cxx
 )
 
 # fill list of header files from list of source files

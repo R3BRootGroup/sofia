@@ -6,8 +6,6 @@
 
 #pragma link C++ class R3BSofTWIM+;
 
-#pragma link C++ class R3BSofTwimMapped2TcalPar+;
-
 //#pragma link C++ class R3BSofTWIMHitPar+;
 //#pragma link C++ class R3BSofTWIMCalPar+;
 //#pragma link C++ class R3BSofTWIMMappedPar+;

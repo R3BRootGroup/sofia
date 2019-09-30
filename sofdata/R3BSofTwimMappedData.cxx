@@ -7,9 +7,9 @@
 
 // -----   Default constructor   -------------------------------------------
 R3BSofTwimMappedData::R3BSofTwimMappedData() 
-: fSecID(-1),
-  fAnodeID(-1),
-  fDT(0),
+: fSecID(0),
+  fAnodeID(0),
+  fTime(0),
   fEnergy(0) 
 {
 }
@@ -17,11 +17,11 @@ R3BSofTwimMappedData::R3BSofTwimMappedData()
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTwimMappedData::R3BSofTwimMappedData(Int_t secID, Int_t anodeID,
-			                   Int_t dt, Int_t energy) 
+R3BSofTwimMappedData::R3BSofTwimMappedData(UShort_t secID, UShort_t anodeID,
+			                   UShort_t time, UShort_t energy) 
   : fSecID(secID)
   , fAnodeID(anodeID)
-  , fDT(dt)
+  , fTime(time)
   , fEnergy(energy)
 {
 }

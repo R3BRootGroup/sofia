@@ -27,21 +27,15 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 R3BSofSciReader.cxx
-R3BSofATMadcReader.cxx
 R3BSofComRefReader.cxx
 R3BSofToFWReader.cxx
-R3BSofTrimMadcVftxReader.cxx
-R3BSofTwimMadcVftxReader.cxx
 R3BSofTwimReader.cxx
 )
 
 Set(STRUCT_HEADERS
 ext_h101_sofsci.h
-ext_h101_sofat_madc.h
-ext_h101_softofw.h
 ext_h101_sofcomref.h
-ext_h101_softrim_madcvftx.h
-ext_h101_softwim_madcvftx.h
+ext_h101_softofw.h
 ext_h101_softwim.h
 )
 
