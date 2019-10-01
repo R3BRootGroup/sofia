@@ -22,7 +22,7 @@ public:
 
 
   /** Destructor **/
-  ~R3BSofMusicMappedData();
+  virtual ~R3BSofMusicMappedData() { }
 
 
   /** Accessors **/

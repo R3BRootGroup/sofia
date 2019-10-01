@@ -21,7 +21,7 @@ R3BSofToFWCalData::R3BSofToFWCalData()
 }
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofToFWCalData::R3BSofToFWCalData(UShort_t ident, UShort_t pmt, 
+R3BSofToFWCalData::R3BSofToFWCalData(UChar_t ident, UShort_t pmt, 
 				     Double_t time, Float_t energy) 
   : FairMultiLinkedData(),
     fDetector(ident),

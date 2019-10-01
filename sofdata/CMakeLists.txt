@@ -2,8 +2,6 @@
 # the array .
 # The extension is already found.  Any number of sources could be listed here.
 
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overloaded-virtual")
-
 Set(SYSTEM_INCLUDE_DIRECTORIES
 ${SYSTEM_INCLUDE_DIRECTORIES}
 ${BASE_INCLUDE_DIRECTORIES}
@@ -27,19 +25,19 @@ ${FAIRROOT_LIBRARY_DIR}
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-R3BSofComRefMappedData.cxx
-R3BSofSciMappedData.cxx
-R3BSofToFWMappedData.cxx
-R3BSofMusicMappedData.cxx
-R3BSofSciTcalData.cxx
-R3BSofSciCalData.cxx
-R3BSofToFWCalData.cxx
-R3BSofTwimCalData.cxx
 R3BSofATPoint.cxx
 R3BSofMWPCPoint.cxx
 R3BSofTWIMPoint.cxx
 R3BSofToFWPoint.cxx
 R3BSofMWPCPoint2.cxx
+R3BSofComRefMappedData.cxx
+R3BSofSciMappedData.cxx
+R3BSofSciTcalData.cxx
+R3BSofSciCalData.cxx
+R3BSofToFWMappedData.cxx
+R3BSofToFWCalData.cxx
+R3BSofMusicMappedData.cxx
+R3BSofTwimCalData.cxx
 )
 
 
@@ -51,6 +49,6 @@ SET(HEADERS ${HEADERS} ${R3BROOT_SOURCE_DIR}/r3bdata/R3BDetectorList.h )
 set(LINKDEF  R3BSofDataLinkDef.h)
 set(LIBRARY_NAME R3BSofData)
 set(DEPENDENCIES
-    Base FairTools Core m)
+    Base FairTools R3Bbase R3BData Core m)
 
 GENERATE_LIBRARY()

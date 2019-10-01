@@ -11,9 +11,8 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
-${R3BROOT_SOURCE_DIR}/passive
-${R3BROOT_SOURCE_DIR}/sofia/mwpc
-${R3BROOT_SOURCE_DIR}/sofia/sofdata
+${R3BSOF_SOURCE_DIR}/mwpc
+${R3BSOF_SOURCE_DIR}/sofdata
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -46,11 +45,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofMWPCLinkDef.h)
 set(LIBRARY_NAME R3BSofMWPC)
 set(DEPENDENCIES
-    R3Bbase R3BPassive R3BSofData)
-
-if(FAIRDB_FOUND)
-set(DEPENDENCIES
-    ${DEPENDENCIES} FairDB)
-endif(FAIRDB_FOUND)
+    R3Bbase R3BData R3BSofData)
 
 GENERATE_LIBRARY()

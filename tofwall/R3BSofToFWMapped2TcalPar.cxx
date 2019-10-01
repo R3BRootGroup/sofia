@@ -64,7 +64,7 @@ R3BSofToFWMapped2TcalPar::~R3BSofToFWMapped2TcalPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofToFWMapped2TcalPar::Init() {
 
-  LOG(INFO) << "R3BSofToFWMapped2TcalPar: Init" << FairLogger::endl;
+  LOG(INFO) << "R3BSofToFWMapped2TcalPar: Init";
 
   FairRootManager* rm = FairRootManager::Instance();
   if (!rm) { return kFATAL;}
@@ -85,7 +85,7 @@ InitStatus R3BSofToFWMapped2TcalPar::Init() {
   if (!rtdb) { return kFATAL;}  
   fTcalPar=(R3BSofTcalPar*)rtdb->getContainer("SofToFWTcalPar");
   if (!fTcalPar) {
-    LOG(ERROR)<<"R3BSofToFWMapped2TcalPar::Init() Couldn't get handle on SofToFWTcalPar container"<<FairLogger::endl;
+    LOG(ERROR)<<"R3BSofToFWMapped2TcalPar::Init() Couldn't get handle on SofToFWTcalPar container";
     return kFATAL;
   }
 
@@ -127,7 +127,7 @@ void R3BSofToFWMapped2TcalPar::Exec(Option_t* opt) {
   for (UInt_t ihit=0; ihit<nHits; ihit++){
     R3BSofToFWMappedData* hit = (R3BSofToFWMappedData*)fMappedToFW->At(ihit);
     if (!hit){
-      LOG(WARNING) << "R3BSofToFWMapped2TcalPar::Exec() : could not get hit" << FairLogger::endl;
+      LOG(WARNING) << "R3BSofToFWMapped2TcalPar::Exec() : could not get hit";
       continue; // should not happen
     }           
 
@@ -150,7 +150,7 @@ void R3BSofToFWMapped2TcalPar::Exec(Option_t* opt) {
     if((0<=iSignal)&&(iSignal<fNumSignals))
       fh_TimeFineBin[iSignal]->Fill(hit->GetTimeFine());
     else
-      LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Exec() Number of signals out of range: "<< iSignal << " instead of [0,"<< fNumSignals << "]" << FairLogger::endl;
+      LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Exec() Number of signals out of range: "<< iSignal << " instead of [0,"<< fNumSignals << "]";
       
   }// end of loop over the number of hits per event in MappedToFW
 }
@@ -175,7 +175,7 @@ void R3BSofToFWMapped2TcalPar::FinishTask()
 //------------------
 void R3BSofToFWMapped2TcalPar::CalculateVftxTcalParams()
 {
-  LOG(INFO) << "R3BSofToFWMapped2TcalPar: CalculateVftxTcalParams()" << FairLogger::endl;
+  LOG(INFO) << "R3BSofToFWMapped2TcalPar: CalculateVftxTcalParams()";
   
   fTcalPar->SetNumDetectors(fNumDetectors);
   fTcalPar->SetNumSections(fNumSections);

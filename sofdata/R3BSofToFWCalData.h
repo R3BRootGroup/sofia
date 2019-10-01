@@ -25,7 +25,7 @@ class R3BSofToFWCalData : public FairMultiLinkedData {
    *@param fTime        Calibrated Time 
    *@param fEnergy      Calibrated Energy
    **/
-  R3BSofToFWCalData(UShort_t ident, UShort_t pmt, 
+  R3BSofToFWCalData(UChar_t ident, UShort_t pmt, 
 		    Double_t time, Float_t energy) ;
   
   /** Copy constructor **/
@@ -37,13 +37,13 @@ class R3BSofToFWCalData : public FairMultiLinkedData {
   virtual ~R3BSofToFWCalData();
   
   /** Accessors **/
-  UShort_t GetDetector()      const {return fDetector;}
+  UChar_t GetDetector()       const {return fDetector;}
   UShort_t GetPmt()           const {return fPmt;}
   Double_t GetTime()          const {return fTime;}
   Float_t  GetEnergy()        const {return fEnergy;}  
   
   /** Modifiers **/
-  void SetDetector(UShort_t ident){ fDetector = ident; }
+  void SetDetector(UChar_t ident){ fDetector = ident; }
   void SetPmt(UShort_t pmt){fPmt = pmt;}
   void SetTime(Double_t time){fTime = time;}
   void SetEnergy(Float_t energy){fEnergy = energy;}

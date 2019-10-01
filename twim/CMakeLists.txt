@@ -11,7 +11,6 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
-${R3BROOT_SOURCE_DIR}/passive
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/twim
@@ -39,11 +38,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofTwimLinkDef.h)
 set(LIBRARY_NAME R3BSofTwim)
 set(DEPENDENCIES
-    R3Bbase R3BPassive R3BSofData R3BSofTcal)
-
-if(FAIRDB_FOUND)
-set(DEPENDENCIES
-    ${DEPENDENCIES} FairDB)
-endif(FAIRDB_FOUND)
+    R3Bbase R3BData R3BSofData R3BSofTcal)
 
 GENERATE_LIBRARY()

@@ -111,8 +111,6 @@ void run_sim(Int_t nEvents = 1)
     // --- SOFIA detectors ---
     //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
 
-  //  run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 70. }));
-
     run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root"));
 
     run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 100. }));

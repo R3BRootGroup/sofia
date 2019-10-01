@@ -25,7 +25,7 @@ public:
 	               Double_t energy);
 
   /** Destructor **/
-  ~R3BSofTwimCalData();
+  virtual ~R3BSofTwimCalData() { }
 
 
   /** Accessors **/
