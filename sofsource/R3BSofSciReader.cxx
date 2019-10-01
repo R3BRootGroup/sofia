@@ -31,10 +31,11 @@ R3BSofSciReader::~R3BSofSciReader()
 Bool_t R3BSofSciReader::Init(ext_data_struct_info *a_struct_info)
 {
   int ok;
+  LOG(INFO) << "R3BSofSciReader::Init";
   EXT_STR_h101_SOFSCI_ITEMS_INFO(ok, *a_struct_info, fOffset,EXT_STR_h101_SOFSCI, 0);
   if (!ok) {
     perror("ext_data_struct_info_item");
-    fLogger->Error(MESSAGE_ORIGIN,"Failed to setup structure information.");
+    LOG(ERROR)<<"R3BSofSciReader::Failed to setup structure information.";
     return kFALSE;
   }
 

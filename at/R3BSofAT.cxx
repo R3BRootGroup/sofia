@@ -66,8 +66,8 @@ R3BSofAT::~R3BSofAT() {
 void R3BSofAT::Initialize() {
   FairDetector::Initialize();
 
-  LOG(INFO) << "R3BSofAT: initialisation" << FairLogger::endl;
-  LOG(DEBUG) << "-I- R3BSofAT: Vol (McId) def" << FairLogger::endl;
+  LOG(INFO) << "R3BSofAT: initialisation";
+  LOG(DEBUG) << "-I- R3BSofAT: Vol (McId) def";
 }
 
 // -----   Public method ProcessHits  --------------------------------------
@@ -164,7 +164,7 @@ TClonesArray* R3BSofAT::GetCollection(Int_t iColl) const {
 // -----   Public method Print   ----------------------------------------------
 void R3BSofAT::Print(Option_t* option) const {
   Int_t nHits = fSofATCollection->GetEntriesFast();
-  LOG(INFO) << "R3BSofAT: " << nHits << " points registered in this event" << FairLogger::endl;
+  LOG(INFO) << "R3BSofAT: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
@@ -176,7 +176,7 @@ void R3BSofAT::Reset() {
 // -----   Public method CopyClones   -----------------------------------------
 void R3BSofAT::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) {
   Int_t nEntries = cl1->GetEntriesFast();
-  LOG(INFO) << "R3BSofAT: " << nEntries << " entries to add" << FairLogger::endl;
+  LOG(INFO) << "R3BSofAT: " << nEntries << " entries to add";
   TClonesArray& clref = *cl2;
   R3BSofATPoint* oldpoint = NULL;
   for (Int_t i = 0; i < nEntries; i++) {
@@ -186,7 +186,7 @@ void R3BSofAT::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset) {
     new (clref[fPosIndex]) R3BSofATPoint(*oldpoint);
     fPosIndex++;
   }
-  LOG(INFO) << "R3BSofAT: " << cl2->GetEntriesFast() << " merged entries" << FairLogger::endl;
+  LOG(INFO) << "R3BSofAT: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -206,8 +206,7 @@ R3BSofATPoint* R3BSofAT::AddPoint(Int_t trackID,
   Int_t size = clref.GetEntriesFast();
   if (fVerboseLevel > 1)
     LOG(INFO) << "R3BSofAT: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
-	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV"
-              << FairLogger::endl;
+	      << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
   return new (clref[size]) R3BSofATPoint(trackID, detID, volid, copy, ident, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 

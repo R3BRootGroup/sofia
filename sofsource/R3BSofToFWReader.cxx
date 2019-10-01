@@ -30,10 +30,11 @@ R3BSofToFWReader::~R3BSofToFWReader()
 Bool_t R3BSofToFWReader::Init(ext_data_struct_info *a_struct_info)
 {
   int ok;
+  LOG(INFO) << "R3BSofToFWReader::Init";
   EXT_STR_h101_SOFTOFW_ITEMS_INFO(ok, *a_struct_info, fOffset,EXT_STR_h101_SOFTOFW, 0);
   if (!ok) {
     perror("ext_data_struct_info_item");
-    fLogger->Error(MESSAGE_ORIGIN,"Failed to setup structure information.");
+   LOG(ERROR)<<"R3BSofToFWReader::Failed to setup structure information.";
     return kFALSE;
   }
 

@@ -30,10 +30,11 @@ R3BSofComRefReader::~R3BSofComRefReader()
 Bool_t R3BSofComRefReader::Init(ext_data_struct_info *a_struct_info)
 {
   int ok;
+  LOG(INFO) << "R3BSofComRefReader::Init";
   EXT_STR_h101_SOFCOMREF_ITEMS_INFO(ok, *a_struct_info, fOffset,EXT_STR_h101_SOFCOMREF, 0);
   if (!ok) {
     perror("ext_data_struct_info_item");
-    fLogger->Error(MESSAGE_ORIGIN,"Failed to setup structure information.");
+    LOG(ERROR)<<"R3BSofComRefReader::Failed to setup structure information.";
     return kFALSE;
   }
 

@@ -28,7 +28,7 @@ R3BSofTcalContFact::R3BSofTcalContFact()
   fName="R3BSofTcalContFact";
   fTitle="Factory for Tcal parameter containers in libR3BSofTcal"; 
   setAllContainers();
-  LOG(INFO) << "Enter in the R3BSofTcalContFact constructor" << FairLogger::endl;
+  LOG(INFO) << "Enter in the R3BSofTcalContFact constructor";
   FairRuntimeDb::instance()->addContFactory(this);
 }
 
@@ -82,7 +82,7 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
    * of this container, the name is concatinated with the context. */
 
   const char* name=c->GetName();
-  LOG(INFO) << "R3BSofTcalContFact: Create container name: " << name << FairLogger::endl;
+  LOG(INFO) << "R3BSofTcalContFact: Create container name: " << name;
   FairParSet* p=0;
 
   if (strcmp(name,"SofSciTcalPar")==0){

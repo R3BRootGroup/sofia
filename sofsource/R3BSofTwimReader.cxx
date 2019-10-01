@@ -28,10 +28,11 @@ R3BSofTwimReader::~R3BSofTwimReader()
 Bool_t R3BSofTwimReader::Init(ext_data_struct_info *a_struct_info)
 {
   int ok;
+  LOG(INFO) << "R3BSofTwimReader::Init";
   EXT_STR_h101_SOFTWIM_ITEMS_INFO(ok, *a_struct_info, fOffset,EXT_STR_h101_SOFTWIM, 0);
   if (!ok) {
     perror("ext_data_struct_info_item");
-    LOG(ERROR) << "Failed to setup structure information." ;
+    LOG(ERROR) << "R3BSofTwimReader::Failed to setup structure information." ;
     return kFALSE;
   }
 

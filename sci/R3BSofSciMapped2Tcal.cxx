@@ -33,11 +33,11 @@ R3BSofSciMapped2Tcal::~R3BSofSciMapped2Tcal()
 InitStatus R3BSofSciMapped2Tcal::Init()
 {
 
-  LOG(INFO) << "R3BSofSciMapped2Tcal: Init" << FairLogger::endl;
+  LOG(INFO) << "R3BSofSciMapped2Tcal: Init";
 
   FairRootManager* rm = FairRootManager::Instance();
   if (!rm) { 
-    LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() Couldn't instance the FairRootManager" << FairLogger::endl;
+    LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() Couldn't instance the FairRootManager";
     return kFATAL;
   }
 
@@ -48,32 +48,32 @@ InitStatus R3BSofSciMapped2Tcal::Init()
   // Common reference signal
   fMappedItemsComRef = (TClonesArray*)rm->GetObject("SofComRef");  // see Instance->Register in R3BSofComRefReader.cxx  
   if (!fMappedItemsComRef){
-    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofComRef Mapped Items"<<FairLogger::endl;
+    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofComRef Mapped Items";
     return kFATAL;
   }
   else
-    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofComRef Mapped items found" << FairLogger::endl;
+    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofComRef Mapped items found";
 
 
   // scintillator at S2 and cave C
   fMappedItemsSci = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
   if (!fMappedItemsSci){
-    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSci container"<<FairLogger::endl;
+    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSci container";
     return kFATAL;
   }
   else
-    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofSci Mapped items found" << FairLogger::endl;
+    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofSci Mapped items found";
   
 
   // --- -------------------------- --- //
   // --- CHECK THE TCALPAR VALIDITY --- //
   // --- -------------------------- --- //
   if(fTcalPar->GetNumSignals()==0){
-    LOG(ERROR) << " There are no Tcal parameters for SofSci" << FairLogger::endl;
+    LOG(ERROR) << " There are no Tcal parameters for SofSci";
     return kFATAL;
   }
   else
-    LOG(INFO) << " Number of signals for SofSci with defined tcal parameters : " << fTcalPar->GetNumSignals()<< FairLogger::endl;
+    LOG(INFO) << " Number of signals for SofSci with defined tcal parameters : " << fTcalPar->GetNumSignals();
   
 
   // --- ---------------- --- //
@@ -83,7 +83,7 @@ InitStatus R3BSofSciMapped2Tcal::Init()
   // Register output array in tree
   rm->Register("SofSciTcal","TcalDim", fTcalItems, kTRUE);
 
-  LOG(INFO) << "R3BSofSciMapped2Tcal: Init DONE !" << FairLogger::endl;
+  LOG(INFO) << "R3BSofSciMapped2Tcal: Init DONE !";
 
   return kSUCCESS;
 }
@@ -93,11 +93,11 @@ void R3BSofSciMapped2Tcal::SetParContainers()
 {
   fTcalPar = (R3BSofTcalPar*)FairRuntimeDb::instance()->getContainer("SofSciTcalPar");
   if (!fTcalPar){
-    LOG(ERROR) << "R3BSofSciMapped2Tcal::SetParContainers() : Could not get access to SofSciTcalPar-Container." << FairLogger::endl;
+    LOG(ERROR) << "R3BSofSciMapped2Tcal::SetParContainers() : Could not get access to SofSciTcalPar-Container.";
     return;
   }
   else
-    LOG(INFO) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with " << fTcalPar->GetNumSignals() << " signals" << FairLogger::endl;
+    LOG(INFO) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with " << fTcalPar->GetNumSignals() << " signals";
 }
 
 
@@ -128,7 +128,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
     iTf  = hit->GetTimeFine();
     iTc  = hit->GetTimeCoarse();
     if((iDet<1)||(iDet>fTcalPar->GetNumDetectors())) {
-      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofComRefMappedData, iDet = " << iDet << "is out of range, item skipped " << FairLogger::endl;
+      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofComRefMappedData, iDet = " << iDet << "is out of range, item skipped ";
       continue;
     }
     tns = CalculateTimeNs(iDet,iCh,iTf,iTc);
@@ -147,11 +147,11 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
     iTf  = hit->GetTimeFine();
     iTc  = hit->GetTimeCoarse();
     if((iDet<1)||(iDet>fTcalPar->GetNumDetectors())) {
-      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << iDet << "is out of range, item skipped " << FairLogger::endl;
+      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << iDet << "is out of range, item skipped ";
       continue;
     }
     if((iCh<2)||(iCh>fTcalPar->GetNumChannels())) {
-      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << iCh << "is out of range, item skipped " << FairLogger::endl;
+      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << iCh << "is out of range, item skipped ";
       continue;
     }
     tns = CalculateTimeNs(iDet,iCh,iTf,iTc);

@@ -45,11 +45,11 @@ void R3BSofTcalPar::clear() {
 
 // ----  Method putParams ------------------------------------------------------
 void R3BSofTcalPar::putParams(FairParamList* list) {
-  LOG(INFO) <<"R3BSofTcalPar::putParams() called" <<FairLogger::endl;
+  LOG(INFO) <<"R3BSofTcalPar::putParams() called";
   if (!list){ return; }
   
   Int_t array_size = fNumSignals * fNumTcalParsPerSignal;
-  LOG(INFO) <<"Array Size: "<<array_size <<FairLogger::endl;
+  LOG(INFO) <<"Array Size: "<<array_size;
   
   fAllSignalsTcalParams->Set(array_size);
   
@@ -64,7 +64,7 @@ void R3BSofTcalPar::putParams(FairParamList* list) {
 
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofTcalPar::getParams(FairParamList* list) {
-  LOG(INFO) <<"R3BSofTcalPar::getParams() called" <<FairLogger::endl;
+  LOG(INFO) <<"R3BSofTcalPar::getParams() called";
   if (!list){ return kFALSE;}
   if (!list->fill("nDetectorsTcalPar", &fNumDetectors) ) {return kFALSE;}  
   if (!list->fill("nSectionsTcalPar", &fNumSections) ) {return kFALSE;}
@@ -73,11 +73,11 @@ Bool_t R3BSofTcalPar::getParams(FairParamList* list) {
   if (!list->fill("nTcalParsPerSignal", &fNumTcalParsPerSignal) ) {return kFALSE;}
   
   Int_t array_size = fNumSignals*fNumTcalParsPerSignal;
-  LOG(INFO) <<"Array Size: "<<array_size <<FairLogger::endl;
+  LOG(INFO) <<"Array Size: "<<array_size;
   fAllSignalsTcalParams->Set(array_size);
   
   if (!(list->fill("TcalPar",fAllSignalsTcalParams))){
-    LOG(INFO)<< "---Could not initialize fAllSignalsTcalParams"<<FairLogger::endl;
+    LOG(INFO)<< "---Could not initialize fAllSignalsTcalParams";
     return kFALSE;
   }
   
@@ -86,7 +86,7 @@ Bool_t R3BSofTcalPar::getParams(FairParamList* list) {
 
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTcalPar::printParams() {	
-  LOG(INFO) << "R3BSofTcalPar: SofTcal Parameters: "<<FairLogger::endl;
+  LOG(INFO) << "R3BSofTcalPar: SofTcal Parameters: ";
   Int_t array_size = fNumSignals*fNumTcalParsPerSignal;
   
   for(Int_t d=0;d<fNumDetectors;d++) {

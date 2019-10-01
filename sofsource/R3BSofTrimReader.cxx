@@ -28,10 +28,11 @@ R3BSofTrimReader::~R3BSofTrimReader()
 Bool_t R3BSofTrimReader::Init(ext_data_struct_info *a_struct_info)
 {
   int ok;
+  LOG(INFO) << "R3BSofTrimReader::Init";
   EXT_STR_h101_SOFTRIM_ITEMS_INFO(ok, *a_struct_info, fOffset,EXT_STR_h101_SOFTRIM, 0);
   if (!ok) {
     perror("ext_data_struct_info_item");
-    LOG(ERROR) << "Failed to setup structure information.";
+    LOG(ERROR) << "R3BSofTrimReader::Failed to setup structure information." ;
     return kFALSE;
   }
 

@@ -67,7 +67,7 @@ R3BSofSciMapped2TcalPar::~R3BSofSciMapped2TcalPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofSciMapped2TcalPar::Init() {
 
-  LOG(INFO) << "R3BSofSciMapped2TcalPar: Init" << FairLogger::endl;
+  LOG(INFO) << "R3BSofSciMapped2TcalPar: Init";
 
   FairRootManager* rm = FairRootManager::Instance();
   if (!rm) { return kFATAL;}
@@ -79,14 +79,14 @@ InitStatus R3BSofSciMapped2TcalPar::Init() {
   // Common reference signal
   fMappedComRef = (TClonesArray*)rm->GetObject("SofComRef");  // see Instance->Register in R3BSofComRefReader.cxx  
   if (!fMappedComRef){
-    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofComRef container"<<FairLogger::endl;
+    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofComRef container";
     return kFATAL;
   }
 
   // scintillator at S2 and cave C
   fMappedSci = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
   if (!fMappedSci){
-    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSci container"<<FairLogger::endl;
+    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSci container";
     return kFATAL;
   }
 
@@ -100,7 +100,7 @@ InitStatus R3BSofSciMapped2TcalPar::Init() {
 
   fTcalPar=(R3BSofTcalPar*)rtdb->getContainer("SofSciTcalPar");
   if (!fTcalPar) {
-    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciTcalPar container"<<FairLogger::endl;
+    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciTcalPar container";
     return kFATAL;
   }
 
@@ -155,7 +155,7 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
   for (UInt_t ihit=0; ihit<nHitsComRef; ihit++){
     R3BSofComRefMappedData* hitComRef = (R3BSofComRefMappedData*)fMappedComRef->At(ihit);
     if (!hitComRef){ 
-      LOG(WARNING) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitComRef" << FairLogger::endl;
+      LOG(WARNING) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitComRef";
       continue; 
     }           
     
@@ -181,7 +181,7 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     if((iSignalComRef==0)||(iSignalComRef==3))
       fh_TimeFineBin[iSignalComRef]->Fill(hitComRef->GetTimeFine());
     else
-      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Signal number out of range for ComRef: "<< iSignalComRef << " instead of 0 or 3"<< FairLogger::endl;
+      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Signal number out of range for ComRef: "<< iSignalComRef << " instead of 0 or 3";
   }// end of loop over the number of hits per event in MappedComRef
 
 
@@ -196,7 +196,7 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
   for (UInt_t ihit=0; ihit<nHitsSci; ihit++){
     R3BSofSciMappedData* hitSci = (R3BSofSciMappedData*)fMappedSci->At(ihit);
     if (!hitSci){
-      LOG(WARNING) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitSci" << FairLogger::endl;
+      LOG(WARNING) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitSci";
       continue; // should not happen
     }           
 
@@ -240,7 +240,7 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     if((0<iSignalSci)&&(iSignalSci<fNumSignals)&&(iSignalSci!=3))
       fh_TimeFineBin[iSignalSci]->Fill(hitSci->GetTimeFine());
     else
-      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: "<< iSignalSci << " instead of [0,"<< fNumSignals << "]" << FairLogger::endl;
+      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: "<< iSignalSci << " instead of [0,"<< fNumSignals << "]";
       
   }// end of loop over the number of hits per event in MappedSci
 }
@@ -265,7 +265,7 @@ void R3BSofSciMapped2TcalPar::FinishTask()
 //------------------
 void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
 {
-  LOG(INFO) << "R3BSofSciMapped2TcalPar: CalculateVftxTcalParams()" << FairLogger::endl;
+  LOG(INFO) << "R3BSofSciMapped2TcalPar: CalculateVftxTcalParams()";
   
   fTcalPar->SetNumDetectors(fNumDetectors);
   fTcalPar->SetNumSections(fNumSections);
