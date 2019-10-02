@@ -33,7 +33,7 @@ void run_sim(Int_t nEvents = 1)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString generator = generator2;
+    TString generator = generator1;
     //TString inputFile = "p2p_U238_300.txt";
     TString inputFile = "p2p_U238_500.txt";
 
@@ -41,13 +41,12 @@ void run_sim(Int_t nEvents = 1)
     Int_t randomSeed = 335566; // 0 for time-dependent random numbers
 
     // Target type
-    Bool_t  fTarget = false;
+    Bool_t  fTarget = true;
     TString target1 = "LeadTarget";
     TString target2 = "Para";
     TString target3 = "Para45";
     TString target4 = "LiH";
-    TString target5 = "SofH2";
-    TString targetType = target5;
+    TString targetType = target4;
 
     // ------------------------------------------------------------------------
     // Stable part ------------------------------------------------------------
@@ -80,12 +79,12 @@ void run_sim(Int_t nEvents = 1)
 
     // To skip the detector comment out the line with: run->AddModule(...
 
-    // Target
-    if (fTarget)
-    run->AddModule(new R3BTarget(targetType, "target_" + targetType + ".geo.root", { 0., 0., -50. }));
 
-    // R3B SiTracker Cooling definition
-    //run->AddModule(new R3BVacVesselCool("LiH", "vacvessel_v13a.geo.root", { 0., 0., -50. }));
+    //Vacuum chamber and target definition
+    if(fTarget){
+    TString fVacuumChamberGeo = "targetvacuumchamber_s455.geo.root";
+    run->AddModule(new R3BVacVesselCool(targetType,geodir+fVacuumChamberGeo, { 0., 0., -65.5 }));
+    }
 
     // GLAD
     run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
@@ -99,21 +98,21 @@ void run_sim(Int_t nEvents = 1)
     //run->AddModule(new R3BSTaRTra("startra_v13a.geo.root", { 0., 0., -50. }));
 
     // CALIFA
-    R3BCalifa* califa = new R3BCalifa("califa_s444.geo.root", { 0., 0., 0. });
+  /*  R3BCalifa* califa = new R3BCalifa("califa_s444.geo.root", { 0., 0., 0. });
     califa->SelectGeometryVersion(10);
     // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
     califa->SetNonUniformity(1.0);
     run->AddModule(califa);
-
+*/
     // NeuLAND
     //run->AddModule(new R3BLand("neuland_s2018.geo.root", { 0., 0., 1400. + 12 * 5. }));
 
     // --- SOFIA detectors ---
     //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
 
-    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root"));
+    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
 
-    run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 100. }));
+    run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 95. }));
 
     run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
 
@@ -151,7 +150,7 @@ void run_sim(Int_t nEvents = 1)
         boxGen->SetPRange(momentum, momentum * 1.2);
         boxGen->SetPhiRange(0, 360);
         boxGen->SetXYZ(0.0, 0.0, -1.5);
-        primGen->AddGenerator(boxGen);
+        //primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
         R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 1, 0., 0., 1.);
@@ -164,7 +163,7 @@ void run_sim(Int_t nEvents = 1)
         boxGen_n->SetPRange(momentum, momentum * 1.2);
         boxGen_n->SetPhiRange(0, 360);
         boxGen_n->SetXYZ(0.0, 0.0, -1.5);
-        primGen->AddGenerator(boxGen_n);
+        //primGen->AddGenerator(boxGen_n);
     }
 
     if (generator.CompareTo("ascii") == 0)
