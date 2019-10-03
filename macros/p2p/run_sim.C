@@ -11,7 +11,7 @@
 //
 //--------------------------------------------------------------------
 
-void run_sim(Int_t nEvents = 1)
+void run_sim(Int_t nEvents = 0)
 {
   //-------------------------------------------------
   // Monte Carlo type     |           (TString)
@@ -23,7 +23,7 @@ void run_sim(Int_t nEvents = 1)
     TString parFile = "par.root";
 
   // Magnetic field
-    Bool_t magnet = kTRUE;
+    Bool_t magnet = false;
     Float_t fieldScale = -1.0;
 
   //-------------------------------------------------
@@ -41,12 +41,15 @@ void run_sim(Int_t nEvents = 1)
     Int_t randomSeed = 335566; // 0 for time-dependent random numbers
 
     // Target type
-    Bool_t  fTarget = true;
+    Bool_t  fTarget = false;
     TString target1 = "LeadTarget";
     TString target2 = "Para";
     TString target3 = "Para45";
     TString target4 = "LiH";
     TString targetType = target4;
+
+    Bool_t  fTracker = true;          // Tracker
+    TString fTrackerGeo = "targetvacuumchamber_ams_s455.geo.root";
 
     // ------------------------------------------------------------------------
     // Stable part ------------------------------------------------------------
@@ -79,15 +82,19 @@ void run_sim(Int_t nEvents = 1)
 
     // To skip the detector comment out the line with: run->AddModule(...
 
-
     //Vacuum chamber and target definition
-    if(fTarget){
+    if(fTarget && !fTracker){
     TString fVacuumChamberGeo = "targetvacuumchamber_s455.geo.root";
     run->AddModule(new R3BVacVesselCool(targetType,geodir+fVacuumChamberGeo, { 0., 0., -65.5 }));
     }
 
+    // Tracker
+    if (fTracker) {
+    run->AddModule(new R3BTra(geodir+fTrackerGeo, { 0., 0., -65.5 }));
+    }
+
     // GLAD
-    run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
+   // run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
 
     // R3B detectors
     // PSP
@@ -110,13 +117,13 @@ void run_sim(Int_t nEvents = 1)
     // --- SOFIA detectors ---
     //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
 
-    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
+    //run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
 
-    run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 95. }));
+    //run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 95. }));
 
-    run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
+    //run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
 
-    run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v0.geo.root"));
+    //run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v0.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
@@ -142,19 +149,19 @@ void run_sim(Int_t nEvents = 1)
     {
         // 2- Define the BOX generator
         Int_t pdgId = 2212;     // proton beam
-        Double32_t theta1 = 0.; // polar angle distribution
-        Double32_t theta2 = 2.;
+        Double32_t theta1 = 23.; // polar angle distribution
+        Double32_t theta2 = 60.;
         Double32_t momentum = 1.5;
         FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 3);
         boxGen->SetThetaRange(theta1, theta2);
         boxGen->SetPRange(momentum, momentum * 1.2);
         boxGen->SetPhiRange(0, 360);
-        boxGen->SetXYZ(0.0, 0.0, -1.5);
-        //primGen->AddGenerator(boxGen);
+        boxGen->SetXYZ(0.0, 0.0, -65.5);
+        primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 1, 0., 0., 1.);
-        ionGen->SetSpotRadius(1, 0., 0.);
+        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 1, 1., 0., 1.);
+        ionGen->SetSpotRadius(0.1, -65.5, 0.);
         primGen->AddGenerator(ionGen);
 
         // neutrons
