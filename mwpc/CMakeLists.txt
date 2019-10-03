@@ -13,6 +13,7 @@ ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BSOF_SOURCE_DIR}/mwpc
 ${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})

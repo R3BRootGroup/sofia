@@ -11,8 +11,8 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
-${R3BROOT_SOURCE_DIR}/passive
 ${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/sci
 )
@@ -40,7 +40,7 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofSciLinkDef.h)
 set(LIBRARY_NAME R3BSofSci)
 set(DEPENDENCIES
-    R3Bbase R3BPassive R3BSofData R3BSofTcal)
+    R3Bbase R3BSofData R3BSofTcal)
 
 if(FAIRDB_FOUND)
 set(DEPENDENCIES

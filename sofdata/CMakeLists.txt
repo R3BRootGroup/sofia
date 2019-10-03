@@ -12,6 +12,12 @@ ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
 ${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/atData
+${R3BSOF_SOURCE_DIR}/sofdata/sciData
+${R3BSOF_SOURCE_DIR}/sofdata/trimData
+${R3BSOF_SOURCE_DIR}/sofdata/twimData
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
+${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -25,19 +31,20 @@ ${FAIRROOT_LIBRARY_DIR}
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-R3BSofATPoint.cxx
-R3BSofMWPCPoint.cxx
-R3BSofTWIMPoint.cxx
-R3BSofToFWPoint.cxx
-R3BSofMWPCPoint2.cxx
+atData/R3BSofATPoint.cxx
+mwpcData/R3BSofMWPCPoint.cxx
+mwpcData/R3BSofMWPCPoint2.cxx
+twimData/R3BSofTWIMPoint.cxx
+tofwData/R3BSofToFWPoint.cxx
+sciData/R3BSofSciMappedData.cxx
+sciData/R3BSofSciTcalData.cxx
+sciData/R3BSofSciCalData.cxx
+tofwData/R3BSofToFWMappedData.cxx
+tofwData/R3BSofToFWCalData.cxx
+twimData/R3BSofTwimMappedData.cxx
+twimData/R3BSofTwimCalData.cxx
+trimData/R3BSofTrimMappedData.cxx
 R3BSofComRefMappedData.cxx
-R3BSofSciMappedData.cxx
-R3BSofSciTcalData.cxx
-R3BSofSciCalData.cxx
-R3BSofToFWMappedData.cxx
-R3BSofToFWCalData.cxx
-R3BSofMusicMappedData.cxx
-R3BSofTwimCalData.cxx
 )
 
 

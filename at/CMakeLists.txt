@@ -12,8 +12,9 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/passive
-${R3BROOT_SOURCE_DIR}/sofia/at
-${R3BROOT_SOURCE_DIR}/sofia/sofdata
+${R3BSOF_SOURCE_DIR}/at
+${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/atData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})

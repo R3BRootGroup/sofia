@@ -13,6 +13,12 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bsource
 ${R3BSOF_SOURCE_DIR}/sofsource
 ${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/atData
+${R3BSOF_SOURCE_DIR}/sofdata/sciData
+${R3BSOF_SOURCE_DIR}/sofdata/trimData
+${R3BSOF_SOURCE_DIR}/sofdata/twimData
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
+${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 )
 
 set(LINK_DIRECTORIES

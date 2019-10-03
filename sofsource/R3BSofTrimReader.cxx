@@ -2,7 +2,7 @@
 
 #include "FairRootManager.h"
 #include "R3BSofTrimReader.h"
-#include "R3BSofMusicMappedData.h"
+#include "R3BSofTrimMappedData.h"
 
 extern "C" {
 #include "ext_data_client.h"
@@ -18,7 +18,7 @@ R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, UInt_t offset)
   , fData(data)
   , fOffset(offset)
   , fLogger(FairLogger::GetLogger())
-  , fArray(new TClonesArray("R3BSofMusicMappedData"))
+  , fArray(new TClonesArray("R3BSofTrimMappedData"))
 {
 }
 
@@ -91,7 +91,7 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     if(multPerAnode[6]!=data->SOFTRIM_S[section].TREF)
       LOG(ERROR) << "R3BSofTrimReader::ReadData ERROR ! multiplicity of Tref not consistent!";
     for(int hit=curTref; hit<nextTref;hit++)
-      R3BSofMusicMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofMusicMappedData(section+1,7,data->SOFTRIM_S[section].TREFv[hit],0);
+      R3BSofTrimMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofTrimMappedData(section+1,7,data->SOFTRIM_S[section].TREFv[hit],0);
   }
 
 
@@ -124,7 +124,7 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     if(multPerAnode[idAnodeTime-1]!=(nextAnodeEnergyStart-curAnodeEnergyStart))
       LOG(ERROR) << "R3BSofTrimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
     for(int hit=curAnodeTimeStart; hit<nextAnodeTimeStart;hit++){
-      R3BSofMusicMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofMusicMappedData(section+1,idAnodeEnergy,data->SOFTRIM_S[section].Tv[hit],data->SOFTRIM_S[section].Ev[hit]);
+      R3BSofTrimMappedData * mapped = new ((*fArray)[fArray->GetEntriesFast()])R3BSofTrimMappedData(section+1,idAnodeEnergy,data->SOFTRIM_S[section].Tv[hit],data->SOFTRIM_S[section].Ev[hit]);
     }
     curAnodeEnergyStart=nextAnodeEnergyStart;
     curAnodeTimeStart=nextAnodeTimeStart;
