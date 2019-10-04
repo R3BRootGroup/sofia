@@ -23,7 +23,9 @@
 #pragma link C++ class R3BSofToFWMappedData+;
 #pragma link C++ class R3BSofToFWCalData+;
 
-#pragma link C++ class R3BSofMusicMappedData+;
+#pragma link C++ class R3BSofTrimMappedData+;
+
+#pragma link C++ class R3BSofTwimMappedData+;
 #pragma link C++ class R3BSofTwimCalData+;
 
 #endif

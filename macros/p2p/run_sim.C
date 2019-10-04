@@ -23,7 +23,7 @@ void run_sim(Int_t nEvents = 0)
     TString parFile = "par.root";
 
   // Magnetic field
-    Bool_t magnet = false;
+    Bool_t magnet = kTRUE;
     Float_t fieldScale = -1.0;
 
   //-------------------------------------------------
@@ -33,12 +33,12 @@ void run_sim(Int_t nEvents = 0)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString generator = generator1;
+    TString generator = generator2;
     //TString inputFile = "p2p_U238_300.txt";
     TString inputFile = "p2p_U238_500.txt";
 
     Bool_t storeTrajectories = kTRUE;
-    Int_t randomSeed = 335566; // 0 for time-dependent random numbers
+    //Int_t randomSeed = 335566; // 0 for time-dependent random numbers
 
     // Target type
     Bool_t  fTarget = false;
@@ -90,11 +90,13 @@ void run_sim(Int_t nEvents = 0)
 
     // Tracker
     if (fTracker) {
-    run->AddModule(new R3BTra(geodir+fTrackerGeo, { 0., 0., -65.5 }));
+    R3BTra* tra = new R3BTra(geodir+fTrackerGeo, { 0., 0., -65.5 });
+    tra->SetEnergyCut(1e-6);    
+    run->AddModule(tra);
     }
 
     // GLAD
-   // run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
+    run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
 
     // R3B detectors
     // PSP
@@ -117,13 +119,13 @@ void run_sim(Int_t nEvents = 0)
     // --- SOFIA detectors ---
     //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
 
-    //run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
+    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
 
-    //run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 95. }));
+    run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 95. }));
 
-    //run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
+    run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
 
-    //run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v0.geo.root"));
+    run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v0.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
@@ -176,9 +178,17 @@ void run_sim(Int_t nEvents = 0)
     if (generator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator(inputdir+inputFile);
-        //gen->SetXYZ(0.,0.,-50.+1.2/2.0);
+        gen->SetXYZ(0.,0.,-65.5);
         //gen->SetDxDyDz(0.45,0.45,1.2/2.0);
         primGen->AddGenerator(gen);
+
+
+        // 238-U fragment at 500AMeV
+        R3BIonGenerator* ionGen = new R3BIonGenerator(92, 238, 92, 1, 0., 0., 258.);
+        ionGen->SetSpotRadius(0.1, -65.5, 0.);
+       // primGen->AddGenerator(ionGen);
+
+
     }
 
     if (generator.CompareTo("r3b") == 0)
