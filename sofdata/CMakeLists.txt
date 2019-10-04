@@ -35,6 +35,13 @@ atData/R3BSofATPoint.cxx
 atData/R3BSofAtMappedData.cxx
 mwpcData/R3BSofMWPCPoint.cxx
 mwpcData/R3BSofMWPCPoint2.cxx
+
+mwpcData/R3BSofMwpcbMappedData.cxx
+mwpcData/R3BSofMwpc1MappedData.cxx
+mwpcData/R3BSofMwpc2MappedData.cxx
+mwpcData/R3BSofMwpc3MappedData.cxx
+
+
 twimData/R3BSofTWIMPoint.cxx
 tofwData/R3BSofToFWPoint.cxx
 sciData/R3BSofSciMappedData.cxx
