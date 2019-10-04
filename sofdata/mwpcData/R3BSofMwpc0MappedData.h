@@ -1,12 +1,12 @@
-#ifndef R3BSofMwpcbMappedData_H
-#define R3BSofMwpcbMappedData_H
+#ifndef R3BSofMwpc0MappedData_H
+#define R3BSofMwpc0MappedData_H
 #include "TObject.h"
 
-class R3BSofMwpcbMappedData : public TObject {
+class R3BSofMwpc0MappedData : public TObject {
 
 public:
   /** Default constructor **/
-  R3BSofMwpcbMappedData();
+  R3BSofMwpc0MappedData();
 
 
   /** Constructor with arguments
@@ -14,13 +14,13 @@ public:
    *@param pad     Pad number
    *@param charge  Charge of each pad [channels]
    **/
-  R3BSofMwpcbMappedData(UChar_t plane, 
+  R3BSofMwpc0MappedData(UChar_t plane, 
                         UChar_t pad,
 	                UShort_t charge);
 
 
   /** Destructor **/
-  virtual ~R3BSofMwpcbMappedData() { }
+  virtual ~R3BSofMwpc0MappedData() { }
 
 
   /** Accessors **/
@@ -41,7 +41,7 @@ public:
   UChar_t fPad;
   UShort_t fCharge;
 
-  ClassDef(R3BSofMwpcbMappedData,1)
+  ClassDef(R3BSofMwpc0MappedData,1)
 };
 
 #endif

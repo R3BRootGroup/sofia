@@ -22,7 +22,7 @@
 #pragma link C++ class R3BSofSciTcalData+;
 #pragma link C++ class R3BSofSciCalData+;
 
-#pragma link C++ class R3BSofMwpcbMappedData+;
+#pragma link C++ class R3BSofMwpc0MappedData+;
 #pragma link C++ class R3BSofMwpc1MappedData+;
 #pragma link C++ class R3BSofMwpc2MappedData+;
 #pragma link C++ class R3BSofMwpc3MappedData+;
