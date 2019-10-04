@@ -7,15 +7,17 @@
 
 // -----   Default constructor   -------------------------------------------
 R3BSofAtMappedData::R3BSofAtMappedData() 
-  : fEnergy(0) 
+  : fSecID(0),
+    fEnergy(0) 
 {
 }
 // -------------------------------------------------------------------------
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofAtMappedData::R3BSofAtMappedData(UShort_t energy) 
-  : fEnergy(energy)
+R3BSofAtMappedData::R3BSofAtMappedData(UChar_t secID, UShort_t energy) 
+  : fSecID(secID)
+  , fEnergy(energy)
 {
 }
 // -------------------------------------------------------------------------
