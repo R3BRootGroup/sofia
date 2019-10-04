@@ -124,7 +124,7 @@ void create_targetvacuumchamber_ams_geo(const char* geoTag="s455")
 
 
   // Defintion of the Mother Volume
-  TGeoShape *pVCTube = new TGeoTube("CenterPart", 0., 29.26, 442./2.0);
+  TGeoShape *pVCTube = new TGeoTube("CenterPart", 0., 29.26, 140.2/2.0);
   
   TGeoCombiTrans *t_tube = new TGeoCombiTrans("t_tube",0.,0.,0.,fRefRot);
   t_tube->RegisterYourself();
@@ -492,7 +492,116 @@ void create_targetvacuumchamber_ams_geo(const char* geoTag="s455")
 
   //-------- AMS detectors ----------------------------------------------------
   //
-  TGeoVolumeAssembly *AmsDet = new TGeoVolumeAssembly("AmsDet");
+
+
+  Int_t nbdet=6;
+  Double_t offsetZ_target_ams=0.75;
+
+  TGeoVolumeAssembly *AmsDet[nbdet]; //= new TGeoVolumeAssembly("AmsDet");
+
+
+  TGeoVolume *Strip[1024];
+  Char_t buffer[126];
+
+  for(Int_t n=0;n<nbdet;n++){
+
+  sprintf(buffer,"Det%i",n+1);
+  AmsDet[n] = new TGeoVolumeAssembly(buffer);
+
+  }
+
+  for(Int_t i=0;i<1024;i++){
+
+   sprintf(buffer,"Strip%i",i);
+
+   if(i<640){
+   dx = 0.0110;
+   dy = 3.9936;
+   dz = 0.0150;
+   Strip[i] = gGeoManager->MakeBox(buffer,pMedSi,dx/2.,dy/2.,dz/2.);
+   Strip[i]->SetVisLeaves(kTRUE);
+   Strip[i]->SetLineColor(19);
+   dx = -7.040/2.0+0.0110/2.0+0.0110*i;
+   dy = 0.000;
+   dz = -0.0150/2.0;
+   }else{
+   dx = 7.040;
+   dy = 0.0104;
+   dz = 0.0150;
+   Strip[i] = gGeoManager->MakeBox(buffer,pMedSi,dx/2.,dy/2.,dz/2.);
+   Strip[i]->SetVisLeaves(kTRUE);
+   Strip[i]->SetLineColor(14);
+   dx = 0.000;
+   dy = -3.9936/2.0+0.0104/2.0+0.0104*(i-640);
+   dz = 0.0150/2.0;
+   }
+
+
+   TGeoCombiTrans* pMatrix = new TGeoCombiTrans("",dx,dy,dz,fRefRot);
+   for(Int_t n=0;n<nbdet;n++)
+   AmsDet[n]->AddNode(Strip[i],n,pMatrix);
+
+  }
+
+
+  //Set up the AMS detectors in the World
+
+  dx = 4.889000;
+  dy = 0.000000;
+  dz = 2.683000+offsetZ_target_ams;
+  TGeoRotation *arot0 = new TGeoRotation();
+  arot0->RotateY(45.0);
+  TGeoCombiTrans* pMatrixd0 = new TGeoCombiTrans("",dx,dy,dz,arot0);
+  pWorld->AddNode(AmsDet[0],0,pMatrixd0);
+
+  dx = 7.189000;
+  dy = 3.9936/2.;
+  dz = 7.834000+offsetZ_target_ams;
+  TGeoRotation *arot1 = new TGeoRotation();
+  arot1->RotateY(45.0);
+  TGeoCombiTrans* pMatrixd1 = new TGeoCombiTrans("",dx,dy,dz,arot1);
+  pWorld->AddNode(AmsDet[1],0,pMatrixd1);
+
+
+  dx = 7.189000;
+  dy = -3.9936/2.;
+  dz = 7.834000+offsetZ_target_ams;
+  TGeoRotation *arot2 = new TGeoRotation();
+  arot2->RotateY(45.0);
+  TGeoCombiTrans* pMatrixd2 = new TGeoCombiTrans("",dx,dy,dz,arot2);
+  pWorld->AddNode(AmsDet[2],0,pMatrixd2);
+
+
+  dx = -4.889000;
+  dy = 0.000000;
+  dz = 2.683000+offsetZ_target_ams;
+  TGeoRotation *arot3 = new TGeoRotation();
+  arot3->RotateY(-45.0);
+  TGeoCombiTrans* pMatrixd3 = new TGeoCombiTrans("",dx,dy,dz,arot3);
+  pWorld->AddNode(AmsDet[3],0,pMatrixd3);
+
+
+  dx = -7.189000;
+  dy = 3.9936/2.;
+  dz = 7.834000+offsetZ_target_ams;
+  TGeoRotation *arot4 = new TGeoRotation();
+  arot4->RotateY(-45.0);
+  TGeoCombiTrans* pMatrixd4 = new TGeoCombiTrans("",dx,dy,dz,arot4);
+  pWorld->AddNode(AmsDet[4],0,pMatrixd4);
+
+
+  dx = -7.189000;
+  dy = -3.9936/2.;
+  dz = 7.834000+offsetZ_target_ams;
+  TGeoRotation *arot5 = new TGeoRotation();
+  arot5->RotateY(-45.0);
+  TGeoCombiTrans* pMatrixd5 = new TGeoCombiTrans("",dx,dy,dz,arot5);
+  pWorld->AddNode(AmsDet[5],0,pMatrixd5);
+
+
+
+/*
+
 
 
   // AMS detectors have two sides, S and K, with a thickness of 150micras
@@ -592,6 +701,8 @@ void create_targetvacuumchamber_ams_geo(const char* geoTag="s455")
   arot5->RotateY(-45.0);
   TGeoCombiTrans* pMatrixd5 = new TGeoCombiTrans("",dx,dy,dz,arot5);
   pWorld->AddNode(AmsDet,5,pMatrixd5);
+
+*/
 
    
   // ---------------   Finish   -----------------------------------------------

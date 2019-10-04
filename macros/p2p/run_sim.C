@@ -33,7 +33,7 @@ void run_sim(Int_t nEvents = 0)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString generator = generator2;
+    TString generator = generator1;
     //TString inputFile = "p2p_U238_300.txt";
     TString inputFile = "p2p_U238_500.txt";
 
@@ -107,12 +107,12 @@ void run_sim(Int_t nEvents = 0)
     //run->AddModule(new R3BSTaRTra("startra_v13a.geo.root", { 0., 0., -50. }));
 
     // CALIFA
-  /*  R3BCalifa* califa = new R3BCalifa("califa_s444.geo.root", { 0., 0., 0. });
+    R3BCalifa* califa = new R3BCalifa("califa_demo.geo.root", { 0., 0., -65.5 });
     califa->SelectGeometryVersion(10);
     // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
     califa->SetNonUniformity(1.0);
     run->AddModule(califa);
-*/
+
     // NeuLAND
     //run->AddModule(new R3BLand("neuland_s2018.geo.root", { 0., 0., 1400. + 12 * 5. }));
 
@@ -151,19 +151,19 @@ void run_sim(Int_t nEvents = 0)
     {
         // 2- Define the BOX generator
         Int_t pdgId = 2212;     // proton beam
-        Double32_t theta1 = 23.; // polar angle distribution
-        Double32_t theta2 = 60.;
+        Double32_t theta1 = 22.; // polar angle distribution
+        Double32_t theta2 = 85.;
         Double32_t momentum = 1.5;
-        FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 3);
+        FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 1);
         boxGen->SetThetaRange(theta1, theta2);
         boxGen->SetPRange(momentum, momentum * 1.2);
-        boxGen->SetPhiRange(0, 360);
+        boxGen->SetPhiRange(0.,360.);
         boxGen->SetXYZ(0.0, 0.0, -65.5);
-        primGen->AddGenerator(boxGen);
+        //primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 1, 1., 0., 1.);
-        ionGen->SetSpotRadius(0.1, -65.5, 0.);
+        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 1, 0., 0., 1.39/1.3-1.39/1.3*0.01);
+        ionGen->SetSpotRadius(0.1, +65.5, 0.);
         primGen->AddGenerator(ionGen);
 
         // neutrons
@@ -248,6 +248,10 @@ void run_sim(Int_t nEvents = 0)
 
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
     //FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+
+    // Add analysis task ------------------------------------
+    //R3BAmsStripCal2Hit* Cal2Hit = new R3BAmsStripCal2Hit();
+    //run->AddTask(Cal2Hit);
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();
