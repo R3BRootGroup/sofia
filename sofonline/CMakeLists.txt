@@ -12,6 +12,7 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofonline
 )
 
@@ -27,6 +28,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 R3BSofOnlineSpectra.cxx
+R3BSofAtOnlineSpectra.cxx
 )
 
 # fill list of header files from list of source files
