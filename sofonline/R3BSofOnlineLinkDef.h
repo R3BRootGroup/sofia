@@ -5,5 +5,6 @@
 #pragma link off all functions;
 
 #pragma link C++ class R3BSofOnlineSpectra+;
+#pragma link C++ class R3BSofAtOnlineSpectra+;
 
 #endif
