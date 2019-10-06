@@ -41,6 +41,15 @@ mwpcData/R3BSofMwpc1MappedData.cxx
 mwpcData/R3BSofMwpc2MappedData.cxx
 mwpcData/R3BSofMwpc3MappedData.cxx
 
+mwpcData/R3BSofMwpc0CalData.cxx
+#mwpcData/R3BSofMwpc1CalData.cxx
+#mwpcData/R3BSofMwpc2CalData.cxx
+#mwpcData/R3BSofMwpc3CalData.cxx
+
+mwpcData/R3BSofMwpc0HitData.cxx
+#mwpcData/R3BSofMwpc1HitData.cxx
+#mwpcData/R3BSofMwpc2HitData.cxx
+#mwpcData/R3BSofMwpc3HitData.cxx
 
 twimData/R3BSofTWIMPoint.cxx
 tofwData/R3BSofToFWPoint.cxx

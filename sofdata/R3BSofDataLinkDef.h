@@ -27,6 +27,16 @@
 #pragma link C++ class R3BSofMwpc2MappedData+;
 #pragma link C++ class R3BSofMwpc3MappedData+;
 
+#pragma link C++ class R3BSofMwpc0CalData+;
+//#pragma link C++ class R3BSofMwpc1CalData+;
+//#pragma link C++ class R3BSofMwpc2CalData+;
+//#pragma link C++ class R3BSofMwpc3CalData+;
+
+#pragma link C++ class R3BSofMwpc0HitData+;
+//#pragma link C++ class R3BSofMwpc1HitData+;
+//#pragma link C++ class R3BSofMwpc2HitData+;
+//#pragma link C++ class R3BSofMwpc3HitData+;
+
 #pragma link C++ class R3BSofToFWMappedData+;
 #pragma link C++ class R3BSofToFWCalData+;
 
