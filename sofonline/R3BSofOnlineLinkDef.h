@@ -7,4 +7,6 @@
 #pragma link C++ class R3BSofOnlineSpectra+;
 #pragma link C++ class R3BSofAtOnlineSpectra+;
 
+#pragma link C++ class R3BSofTwimOnlineSpectra+;
+
 #endif
