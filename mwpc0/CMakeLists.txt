@@ -29,11 +29,12 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofMwpc0.cxx
+#R3BSofMwpc0Mapped2Cal.cxx
+
 #R3BSofMWPCHitPar.cxx
 #R3BSofMWPCCalPar.cxx
 #R3BSofMWPCMappedPar.cxx
 #R3BSofMWPCCal2Hit.cxx
-#R3BSofMWPCMapped2Cal.cxx
 #R3BSofMWPCCal2HitPar.cxx
 #R3BSofMWPCMapped2CalPar.cxx
 )
