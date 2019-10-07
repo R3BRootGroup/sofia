@@ -1,9 +1,9 @@
 //
-//   ----- General Macro for R3B simulation
+//   ----- General Macro for R3B-SOFIA simulations
 //
 //         Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
 //
-//         Last Update: 08/12/17 (Jose Luis)
+//         Last Update: 06/10/19 (Jose Luis)
 //
 //         Comments:
 //               
@@ -49,8 +49,29 @@ Bool_t fLabTrans = kTRUE;
 TGeoCombiTrans* GetGlobalPosition(TGeoCombiTrans *fRef);
 
 
-void create_mwpc1_geo(const char* geoTag = "mwpc1")
+void create_mwpc1and2_geo(TString geoTag = "1")
 {
+// --------------------------------------------------------------------------
+// Configurable geometry for the MWPC1 and MWPC2 detectors.
+// Use this macro to create root files with the different configurations 
+// and positions of the MWPCs.
+//
+// Execute macro:  root -l
+//                 .L create_mwpc1and2_geo.C
+//                 create_mwpc1and2_geo()
+// --------------------------------------------------------------------------
+
+  std::cout << "Introduce geoTag (1 or 2):"<<std::endl;
+  std::cin  >> geoTag;
+
+  TString detName="MWPC"+geoTag;
+  TString WorldName=detName+"World";
+
+
+  if(detName!="MWPC1"&&detName!="MWPC2"){
+  std::cout << "ERROR: Detector name not valid, should be MWPC1 or MWPC2"<<std::endl;
+  return;
+  }
 
   fGlobalTrans->SetTranslation(0.0,0.0,0.0);
 
@@ -164,9 +185,9 @@ void create_mwpc1_geo(const char* geoTag = "mwpc1")
 									   6.0/2.0);
 	
 	TGeoVolume*
-	pWorld  = new TGeoVolume("MWPC1World",pCBWorld, pMedAr);
+	pWorld  = new TGeoVolume(WorldName,pCBWorld, pMedAr);
 	
-	TGeoCombiTrans *t0 = new TGeoCombiTrans(0.0,0.0,115.0,rot_mwpc);
+	TGeoCombiTrans *t0 = new TGeoCombiTrans(0.0,0.0,0.0,rot_mwpc);
 	TGeoCombiTrans *pGlobalc = GetGlobalPosition(t0);
 	
 	// add the sphere as Mother Volume
@@ -408,7 +429,7 @@ void create_mwpc1_geo(const char* geoTag = "mwpc1")
    TGeoShape *Detector1 = new TGeoBBox("Detector_1", dx/2.,dy/2.,dz/2.);
    // Volume: 
    TGeoVolume*
-   Detector_log1 = new TGeoVolume("MWPC11",Detector1, pMedAr);
+   Detector_log1 = new TGeoVolume(detName,Detector1, pMedAr);
    Detector_log1->SetVisLeaves(kTRUE);
    Detector_log1->SetLineColor(3);
 
@@ -1052,6 +1073,7 @@ void create_mwpc1_geo(const char* geoTag = "mwpc1")
   TFile* geoFile = new TFile(geoFileName, "RECREATE");
   top->Write();
   geoFile->Close();
+  std::cout << "Creating geometry: "<<geoFileName<< std::endl;
   // --------------------------------------------------------------------------
 }
 

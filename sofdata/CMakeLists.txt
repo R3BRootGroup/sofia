@@ -34,7 +34,7 @@ set(SRCS
 atData/R3BSofATPoint.cxx
 atData/R3BSofAtMappedData.cxx
 mwpcData/R3BSofMWPCPoint.cxx
-mwpcData/R3BSofMWPCPoint2.cxx
+#mwpcData/R3BSofMWPCPoint2.cxx
 
 mwpcData/R3BSofMwpc0MappedData.cxx
 mwpcData/R3BSofMwpc1MappedData.cxx

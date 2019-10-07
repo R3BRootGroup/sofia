@@ -37,9 +37,8 @@ Bool_t fLocalTrans = kFALSE;
 TGeoCombiTrans* GetGlobalPosition(TGeoCombiTrans *fRef);
 
 
-void create_tofsofia_geo(const char* geoTag="v0")
+void create_tofsofia_geo(const char* geoTag="v19")
 {
-
 // --------------------------------------------------------------------------
 // Configurable geometry for the SOFIA ToF-Wall.
 // Use this macro to create root files with the different configurations 
@@ -130,7 +129,7 @@ void create_tofsofia_geo(const char* geoTag="v0")
 
   TGeoRotation *rotg = new TGeoRotation();
   TGeoRotation *rot_tof = new TGeoRotation("Tofrot");
-  rot_tof->RotateY(-45.0);
+  rot_tof->RotateY(-34.0);
 
   
   TGeoCombiTrans*

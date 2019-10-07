@@ -4,8 +4,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-#pragma link C++ class R3BSofMWPC+;
-#pragma link C++ class R3BSofMWPC2+;
+#pragma link C++ class R3BSofMwpc3+;
 
 //#pragma link C++ class R3BSofMWPCHitPar+;
 //#pragma link C++ class R3BSofMWPCCalPar+;

@@ -11,7 +11,7 @@
 #pragma link C++ class R3BSofMWPCPoint+;
 #pragma link C++ class R3BSofTWIMPoint+;
 #pragma link C++ class R3BSofToFWPoint+;
-#pragma link C++ class R3BSofMWPCPoint2+;
+//#pragma link C++ class R3BSofMWPCPoint2+;
 
 
 //General
