@@ -1,43 +1,43 @@
 // -------------------------------------------------------------------------
-// -----                        R3BSofMWPC2 header file                -----
-// -----                  Created 06/12/17  by JL Rodriguez            -----
+// -----                        R3BSofMwpc0 header file                -----
+// -----                  Created 06/10/19  by JL Rodriguez            -----
 // -------------------------------------------------------------------------
-#ifndef R3BSofMWPC2_H
-#define R3BSofMWPC2_H
+#ifndef R3BSofMwpc0_H
+#define R3BSofMwpc0_H
 
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
 
 class TClonesArray;
-class R3BSofMWPCPoint2;
+class R3BSofMWPCPoint;
 class FairVolume;
 
-class R3BSofMWPC2 : public R3BDetector
+class R3BSofMwpc0 : public R3BDetector
 {
   public:
     /** Default constructor **/
-    R3BSofMWPC2();
+    R3BSofMwpc0();
 
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param trans   position
      *@param rot     rotation
      */
-    R3BSofMWPC2(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot = TGeoRotation());
+    R3BSofMwpc0(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot = TGeoRotation());
 
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param combi   position + rotation
      */
-    R3BSofMWPC2(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
+    R3BSofMwpc0(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
 
     /** Destructor **/
-    ~R3BSofMWPC2();
+    ~R3BSofMwpc0();
 
     /** Virtual method ProcessHits
      **
      ** Defines the action to be taken when a step is inside the
-     ** active volume. Creates a R3BSofMWPCPoint2 and adds it to the
+     ** active volume. Creates a R3BSofMWPCPoint and adds it to the
      ** collection.
      *@param vol  Pointer to the active volume
      **/
@@ -119,7 +119,7 @@ class R3BSofMWPC2 : public R3BDetector
      **
      ** Adds a TraPoint to the HitCollection
      **/
-    R3BSofMWPCPoint2* AddPoint(Int_t trackID,
+    R3BSofMWPCPoint* AddPoint(Int_t trackID,
                         Int_t detID,
                         Int_t detCopyID, 
                         TVector3 posIn,
@@ -136,10 +136,10 @@ class R3BSofMWPC2 : public R3BDetector
      **/
     void ResetParameters();
 
-    ClassDef(R3BSofMWPC2, 1);
+    ClassDef(R3BSofMwpc0, 1);
 };
 
-inline void R3BSofMWPC2::ResetParameters()
+inline void R3BSofMwpc0::ResetParameters()
 {
     fTrackID = fVolumeID = 0;
     fDetCopyID = 0; 

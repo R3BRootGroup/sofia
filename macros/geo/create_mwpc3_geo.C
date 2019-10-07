@@ -3,7 +3,7 @@
 //
 //         Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
 //
-//         Last Update: 08/12/17 (Jose Luis)
+//         Last Update: 07/10/19 (Jose Luis)
 //
 //         Comments:
 //
@@ -49,8 +49,18 @@ Bool_t fLabTrans = kTRUE;
 TGeoCombiTrans* GetGlobalPosition(TGeoCombiTrans *fRef);
 
 
-void create_mwpc2_geo(const char* geoTag = "mwpc2")
+void create_mwpc3_geo(const char* geoTag = "3")
 {
+// --------------------------------------------------------------------------
+// Configurable geometry for the MWPC3 detectors.
+// Use this macro to create root files with the different configurations 
+// and positions of the MWPC3.
+//
+// Execute macro:  root -l
+//                 .L create_mwpc3_geo.C
+//                 create_mwpc3_geo()
+// --------------------------------------------------------------------------
+
 
   fGlobalTrans->SetTranslation(0.0,0.0,0.0);
 
@@ -67,7 +77,7 @@ void create_mwpc2_geo(const char* geoTag = "mwpc2")
 
 
   // -------   Geometry file name (output)   ----------------------------------
-  TString geoFileName = geoPath + "/geometry/mwpc2_";
+  TString geoFileName = geoPath + "/sofia/geometry/mwpc_";
   geoFileName = geoFileName + geoTag + ".geo.root";
   // --------------------------------------------------------------------------
 
@@ -165,19 +175,16 @@ void create_mwpc2_geo(const char* geoTag = "mwpc2")
 	TGeoVolume *pAWorld  =  gGeoManager->GetTopVolume();
 
         TGeoRotation *rot_mwpc = new TGeoRotation("MWPCrot");
-        rot_mwpc->RotateY(-45.0);
+        rot_mwpc->RotateY(-34.0);
     
         // Defintion of the Mother Volume
-	
-	//Double_t length = 54.;
-	
-	TGeoShape *pCBWorld = new TGeoBBox("MWPC2_box",
+	TGeoShape *pCBWorld = new TGeoBBox("MWPC3_box",
 									   100.0/2.0,
 									   100.0/2.0,
 									   9.0/2.0);
 	
 	TGeoVolume*
-	pWorld  = new TGeoVolume("MWPC2World",pCBWorld, pMedAr);
+	pWorld  = new TGeoVolume("MWPC3World",pCBWorld, pMedAr);
 	
 	TGeoCombiTrans *t0 = new TGeoCombiTrans(-120.7-60.-15.-45,0.0,690.,rot_mwpc);
 	TGeoCombiTrans *pGlobalc = GetGlobalPosition(t0);
@@ -1094,6 +1101,7 @@ void create_mwpc2_geo(const char* geoTag = "mwpc2")
   TFile* geoFile = new TFile(geoFileName, "RECREATE");
   top->Write();
   geoFile->Close();
+  std::cout << "Creating geometry: "<<geoFileName<< std::endl;
   // --------------------------------------------------------------------------
 }
 

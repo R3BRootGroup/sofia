@@ -1,9 +1,9 @@
 // -------------------------------------------------------------------------
-// -----                        R3BSofMWPC header file                 -----
-// -----                  Created 06/12/17  by JL Rodriguez            -----
+// -----                        R3BSofMwpc1 header file                -----
+// -----                  Created 06/10/19  by JL Rodriguez            -----
 // -------------------------------------------------------------------------
-#ifndef R3BSofMWPC_H
-#define R3BSofMWPC_H
+#ifndef R3BSofMwpc1_H
+#define R3BSofMwpc1_H
 
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
@@ -12,27 +12,27 @@ class TClonesArray;
 class R3BSofMWPCPoint;
 class FairVolume;
 
-class R3BSofMWPC : public R3BDetector
+class R3BSofMwpc1 : public R3BDetector
 {
   public:
     /** Default constructor **/
-    R3BSofMWPC();
+    R3BSofMwpc1();
 
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param trans   position
      *@param rot     rotation
      */
-    R3BSofMWPC(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot = TGeoRotation());
+    R3BSofMwpc1(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot = TGeoRotation());
 
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param combi   position + rotation
      */
-    R3BSofMWPC(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
+    R3BSofMwpc1(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
 
     /** Destructor **/
-    ~R3BSofMWPC();
+    ~R3BSofMwpc1();
 
     /** Virtual method ProcessHits
      **
@@ -136,10 +136,10 @@ class R3BSofMWPC : public R3BDetector
      **/
     void ResetParameters();
 
-    ClassDef(R3BSofMWPC, 1);
+    ClassDef(R3BSofMwpc1, 1);
 };
 
-inline void R3BSofMWPC::ResetParameters()
+inline void R3BSofMwpc1::ResetParameters()
 {
     fTrackID = fVolumeID = 0;
     fDetCopyID = 0; 

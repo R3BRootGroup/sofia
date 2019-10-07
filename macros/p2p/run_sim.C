@@ -116,16 +116,19 @@ void run_sim(Int_t nEvents = 0)
     // NeuLAND
     //run->AddModule(new R3BLand("neuland_s2018.geo.root", { 0., 0., 1400. + 12 * 5. }));
 
-    // --- SOFIA detectors ---
-    //run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
+    // --- SOFIA + (p2p) detectors ---
+
+    //run->AddModule(new R3BSofMwpc0(geodir+"mwpc_0.geo.root", { 0., 0., -110. }));
+
+    run->AddModule(new R3BSofMwpc1(geodir+"mwpc_1.geo.root", { 0., 0., 16. }));
 
     run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
 
-    run->AddModule(new R3BSofMWPC(geodir+"mwpc_1.geo.root", { 0., 0., 95. }));
+    run->AddModule(new R3BSofMwpc2(geodir+"mwpc_2.geo.root", { 0., 0., 95. }));
 
-    run->AddModule(new R3BSofMWPC2(geodir+"mwpc_2.geo.root"));
+    run->AddModule(new R3BSofMwpc3(geodir+"mwpc_3.geo.root"));
 
-    run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v0.geo.root"));
+    run->AddModule(new R3BSofTofWall(geodir+"sof_tof_v19.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
