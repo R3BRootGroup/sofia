@@ -1,4 +1,4 @@
-void run_sim()
+void run_sim(Int_t nEvents = 0)
 {
     TString transport = "TGeant4";
 
@@ -14,7 +14,6 @@ void run_sim()
     TString generator = generator1;
     TString inputFile = "";
 
-    Int_t nEvents = 1;
     Bool_t storeTrajectories = kTRUE;
     Int_t randomSeed = 335566; // 0 for time-dependent random numbers
 
@@ -27,7 +26,6 @@ void run_sim()
 
     // ------------------------------------------------------------------------
     // Stable part ------------------------------------------------------------
-
     TString dir = getenv("VMCWORKDIR");
     char str[1000];
     sprintf(str, "GEOMPATH=%s/sofia/geometry", dir.Data());
@@ -43,7 +41,7 @@ void run_sim()
     // -----   Create simulation run   ----------------------------------------
     FairRunSim* run = new FairRunSim();
     run->SetName(transport);            // Transport engine
-    run->SetOutputFile(outFile.Data()); // Output file
+    run->SetSink(new FairRootFileSink(outFile)); // Output file
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
     // -----   Create media   -------------------------------------------------
@@ -57,21 +55,8 @@ void run_sim()
 
     // To skip the detector comment out the line with: run->AddModule(...
 
-    // Target
-    //run->AddModule(new R3BTarget(targetType, "target_" + targetType + ".geo.root"));
-
     // GLAD
     run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
-
-    // PSP
-    run->AddModule(new R3BPsp("psp_v13a.geo.root", {}, -221., -89., 94.1));
-
-    // R3B SiTracker Cooling definition
-    //run->AddModule(new R3BVacVesselCool(targetType, "vacvessel_v14a.geo.root"));
-
-    // STaRTrack
-    //run->AddModule(new R3BStartrack("startrack_v16-300_2layers.geo.root", { 0., 0., 20. }));
-    //run->AddModule(new R3BSTaRTra("startra_v16-300_2layers.geo.root", { 0., 0., 20. }));
 
     // CALIFA
     R3BCalifa* califa = new R3BCalifa("califa_10_v8.11.geo.root");
@@ -79,30 +64,27 @@ void run_sim()
     // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
     califa->SetNonUniformity(1.0);
     //run->AddModule(califa);
-    
-    // Fi4 detector
-    run->AddModule(new R3BFi4("fi4_v17a.geo.root", {-73.274339-TMath::Tan(TMath::DegToRad()*16.7)*100, 0.069976, 513.649524+100.}, {"" ,-90.,16.7,90.}));
-
-    // Fi6 detector
-    run->AddModule(new R3BFi6("fi6_v17a.geo.root", {-73.274339-TMath::Tan(TMath::DegToRad()*16.7)*500, 0.069976, 513.649524+500.}, {"" ,-90.,16.7,90.}));
-
-    // Fi5 detector
-    run->AddModule(new R3BFi5("fi5_v17a.geo.root", {-73.274339-TMath::Tan(TMath::DegToRad()*16.7)*300, 0.069976, 513.649524+300.}, {"" ,-90.,16.7,90.}));
-
-    // sfi detector
-    run->AddModule(new R3Bsfi("sfi_v17a.geo.root", {0, 0, -200}));
-
-    // Tof
-    run->AddModule(new R3BTof("tof_v17a.geo.root", { -417.359574, 2.400000, 960.777114 }, { "", -90., +31., 90. }));
-
-    // dTof
-    run->AddModule(new R3BdTof("dtof_v17a.geo.root", { -155.824045+(2.7*10)*TMath::Cos(16.7*TMath::DegToRad()), 0.523976, 761.870346 }, { "", -90., +16.7, 90. }));
 
     // NeuLAND
     // run->AddModule(new R3BNeuland("neuland_test.geo.root", { 0., 0., 1400. + 12 * 5. }));
 
     // --- SOFIA detectors ---
-    run->AddModule(new R3BSofAT("sof_at_v17a.geo.root", { 0., 0., 20. }));
+
+    // Target
+    run->AddModule(new R3BSofAT("sof_at_v19a.geo.root", { 0., 0., -65.5 }));
+
+    // TWIM
+    run->AddModule(new R3BSofTWIM("twinmusic_v0.geo.root", { 0., 0., 50. }));
+
+    // MWPC1
+    run->AddModule(new R3BSofMWPC("mwpc_1.geo.root", { 0., 0., 95. }));
+
+    // MWPC2
+    run->AddModule(new R3BSofMWPC2("mwpc_2.geo.root"));
+
+    // ToF Wall
+    run->AddModule(new R3BSofTofWall("sof_tof_v0.geo.root"));
+
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
@@ -130,8 +112,8 @@ void run_sim()
         Int_t pdgId = 2212;     // proton beam
         Double32_t theta1 = 0.; // polar angle distribution
         Double32_t theta2 = 2.;
-        Double32_t momentum = 1.5;
-        FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 3);
+        Double32_t momentum = 1.;
+        FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 1);
         boxGen->SetThetaRange(theta1, theta2);
         boxGen->SetPRange(momentum, momentum * 1.2);
         boxGen->SetPhiRange(0, 360);
@@ -141,7 +123,7 @@ void run_sim()
         // 128-Sn fragment
         R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
         ionGen->SetSpotRadius(0.1, -300., 0.);
-        primGen->AddGenerator(ionGen);
+        //primGen->AddGenerator(ionGen);
 
         // neutrons
         FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
@@ -149,7 +131,7 @@ void run_sim()
         boxGen_n->SetPRange(momentum, momentum * 1.2);
         boxGen_n->SetPhiRange(0, 360);
         boxGen_n->SetXYZ(0.0, 0.0, -1.5);
-        primGen->AddGenerator(boxGen_n);
+        //primGen->AddGenerator(boxGen_n);
     }
 
     if (generator.CompareTo("ascii") == 0)

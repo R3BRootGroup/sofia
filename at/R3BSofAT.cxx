@@ -67,7 +67,7 @@ void R3BSofAT::Initialize() {
   FairDetector::Initialize();
 
   LOG(INFO) << "R3BSofAT: initialisation";
-  LOG(DEBUG) << "-I- R3BSofAT: Vol (McId) def";
+  LOG(DEBUG) << "-I- R3BSofAT: Vol (McId) def"<< gMC->VolId("SOFATLog");
 }
 
 // -----   Public method ProcessHits  --------------------------------------
