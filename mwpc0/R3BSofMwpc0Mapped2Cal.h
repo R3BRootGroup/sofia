@@ -9,7 +9,6 @@
 
 #include "FairTask.h"
 #include "TH1F.h"
-#include "R3BSofMwpc0Mapped2CalPar.h"
 #include "R3BSofMwpc0CalData.h"
 #include "R3BSofMwpc0MappedData.h"
 #include <TRandom.h>
@@ -55,7 +54,8 @@ class R3BSofMwpc0Mapped2Cal : public FairTask {
  
   UChar_t NumPadX;
   UChar_t NumPadY;
-  TArrayF* CalParams;
+  UChar_t NumParams;
+  TArrayI* CalParams;
 
   Bool_t fOnline;//Don't store data for online
   
@@ -70,6 +70,6 @@ class R3BSofMwpc0Mapped2Cal : public FairTask {
  public:
   //Class definition
   ClassDef(R3BSofMwpc0Mapped2Cal, 1)
-    };
+};
 
 #endif

@@ -5,6 +5,7 @@
 #pragma link off all functions;
 
 #pragma link C++ class R3BSofMwpc0+;
+#pragma link C++ class R3BSofMwpc0CalPar+;
 #pragma link C++ class R3BSofMwpc0Mapped2Cal+;
 
 

@@ -17,8 +17,8 @@
 #include <iomanip>
 
 //MWPC headers
-#include "R3BSofMwpc0CalData.h"
 #include "R3BSofMwpc0MappedData.h"
+#include "R3BSofMwpc0CalData.h"
 #include "R3BSofMwpc0Mapped2Cal.h"
 #include "R3BSofMwpc0CalPar.h"
 
@@ -27,6 +27,7 @@ R3BSofMwpc0Mapped2Cal::R3BSofMwpc0Mapped2Cal() :
   FairTask("R3B MWPC0 Calibrator",1),
   NumPadX(0),
   NumPadY(0),
+  NumParams(0),
   CalParams(NULL),
   fCal_Par(NULL),
   fMwpcMappedDataCA(NULL),
@@ -35,11 +36,12 @@ R3BSofMwpc0Mapped2Cal::R3BSofMwpc0Mapped2Cal() :
 {
 }
 
-//R3BSofMwpc0Mapped2CalPar: Standard Constructor --------------------------
+//R3BSofMwpc0Mapped2Cal: Standard Constructor --------------------------
 R3BSofMwpc0Mapped2Cal::R3BSofMwpc0Mapped2Cal(const char* name, Int_t iVerbose) :
   FairTask(name, iVerbose),
   NumPadX(0),
   NumPadY(0),
+  NumParams(0),
   CalParams(NULL),
   fCal_Par(NULL),
   fMwpcMappedDataCA(NULL),
@@ -68,10 +70,10 @@ void R3BSofMwpc0Mapped2Cal::SetParContainers() {
   
   fCal_Par=(R3BSofMwpc0CalPar*)rtdb->getContainer("mwpc0CalPar");
   if (!fCal_Par) {
-    LOG(ERROR)<<"R3BSofMwpc0Mapped2CalPar::Init() Couldn't get handle on mwpc0CalPar container";
+    LOG(ERROR)<<"R3BSofMwpc0Mapped2Cal::Init() Couldn't get handle on mwpc0CalPar container";
   }
   else{
-    LOG(INFO)<<"R3BSofMwpc0Mapped2CalPar:: mwpc0CalPar container open";
+    LOG(INFO)<<"R3BSofMwpc0Mapped2Cal:: mwpc0CalPar container open";
   }
 }
 
@@ -86,10 +88,10 @@ void R3BSofMwpc0Mapped2Cal::SetParameter(){
   LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: NumPadX: "<< NumPadX;
   LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: NumPadY: "<< NumPadY;
   
-  CalParams= new TArrayF();
+  CalParams= new TArrayI();
   Int_t array_size = (NumPadX+NumPadY)*NumParams;
   CalParams->Set(array_size);	
-  CalParams=fCal_Par->GetMwpwCalParams();//Array with the Cal parameters
+  CalParams=fCal_Par->GetPadCalParams();//Array with the Cal parameters
 
 }
 
@@ -145,8 +147,8 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
   mappedData=new R3BSofMwpc0MappedData*[nHits];
   UChar_t planeId;
   UChar_t padId;
-  Double_t charge;
-  Double_t pedestal=0.;
+  UShort_t charge;
+  UShort_t pedestal=0;
 
   for(Int_t i = 0; i < nHits; i++) {
     mappedData[i] = (R3BSofMwpc0MappedData*)(fMwpcMappedDataCA->At(i));
@@ -159,10 +161,10 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
      pedestal=CalParams->GetAt(NumPadX+padId);
     else LOG(ERROR)<<"Plane "<<planeId<<" does not exist in MWPC0";
 
-    charge = mappedData[i]->GetEnergy()-pedestal;
+    charge = mappedData[i]->GetQ()-pedestal;
 
-    //We accept the hit if the energy is larger than zero
-    if(energy>0){
+    //We accept the hit if the charge is larger than zero
+    if(charge>0){
      AddCalData(planeId,padId,charge);
     }
   }
@@ -186,7 +188,7 @@ void R3BSofMwpc0Mapped2Cal::Reset()
 
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BAmsStripCalData* R3BSofMwpc0Mapped2Cal::AddCalData(UChar_t plane, UChar_t pad, UShort_t charge)
+R3BSofMwpc0CalData* R3BSofMwpc0Mapped2Cal::AddCalData(UChar_t plane, UChar_t pad, UShort_t charge)
 {
   //It fills the R3BSofMwpc0CalData
   TClonesArray& clref = *fMwpcCalDataCA;
