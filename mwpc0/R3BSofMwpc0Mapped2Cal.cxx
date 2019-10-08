@@ -79,15 +79,15 @@ void R3BSofMwpc0Mapped2Cal::SetParContainers() {
 void R3BSofMwpc0Mapped2Cal::SetParameter(){
   
   //--- Parameter Container ---
-  NumPadX = fCal_Par->GetNumDets();//Number of Detectors
-  NumPadY = fCal_Par->GetNumStrips();//Number of Strips
-  //NumParams=fCal_Par->GetNumParametersFit();//Number of Parameters
+  NumPadX = fCal_Par->GetNumPadsX();//Number of Detectors
+  NumPadY = fCal_Par->GetNumPadsY();//Number of Strips
+  NumParams=fCal_Par->GetNumParametersFit();//Number of Parameters
 
   LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: NumPadX: "<< NumPadX;
   LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: NumPadY: "<< NumPadY;
   
   CalParams= new TArrayF();
-  Int_t array_size = NumPadX+NumPadY;
+  Int_t array_size = (NumPadX+NumPadY)*NumParams;
   CalParams->Set(array_size);	
   CalParams=fCal_Par->GetMwpwCalParams();//Array with the Cal parameters
 
