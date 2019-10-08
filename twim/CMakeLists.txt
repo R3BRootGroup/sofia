@@ -30,6 +30,8 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofTWIM.cxx
+#R3BSofTwimContFact.cxx
+#R3BSofTwimMapped2Cal.cxx
 )
 
 # fill list of header files from list of source files
