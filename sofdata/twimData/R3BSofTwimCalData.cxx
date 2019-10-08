@@ -7,8 +7,8 @@
 
 // -----   Default constructor   -------------------------------------------
 R3BSofTwimCalData::R3BSofTwimCalData()
-: fSecID(-1),
-  fAnodeID(-1),
+: fSecID(0),
+  fAnodeID(0),
   fDT(0.),
   fEnergy(0.) 
 {
@@ -17,8 +17,8 @@ R3BSofTwimCalData::R3BSofTwimCalData()
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTwimCalData::R3BSofTwimCalData(Int_t secID, Int_t anodeID,
-			                   Double_t dt, Double_t energy) 
+R3BSofTwimCalData::R3BSofTwimCalData(UChar_t secID, UChar_t anodeID,
+			                Double_t dt, Double_t energy) 
   : fSecID(secID)
   , fAnodeID(anodeID)
   , fDT(dt)
