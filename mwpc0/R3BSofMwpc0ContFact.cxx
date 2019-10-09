@@ -54,23 +54,6 @@ FairParSet* R3BSofMwpc0ContFact::createContainer(FairContainer* cnt) {
 void  R3BSofMwpc0ContFact::activateParIo(FairParIo* io) {
 
 
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ClassImp(R3BSofMwpc0ContFact)
