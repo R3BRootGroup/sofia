@@ -63,7 +63,7 @@ Bool_t R3BSofMwpc0CalPar::getParams(FairParamList* list) {
   if (!list->fill("mwpc0PadXNumberPar", &fNumPadsX) ) {
     return kFALSE;
   }
-	if (!list->fill("mwpc0PadYNumberPar", &fNumPadsY) ) {
+  if (!list->fill("mwpc0PadYNumberPar", &fNumPadsY) ) {
     return kFALSE;
   }
   if (!list->fill("mwpc0ParamsFitPar", &fNumParamsFit) ) {

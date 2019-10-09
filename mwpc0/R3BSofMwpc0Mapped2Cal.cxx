@@ -58,7 +58,6 @@ R3BSofMwpc0Mapped2Cal::~R3BSofMwpc0Mapped2Cal()
   if(fMwpcCalDataCA) delete fMwpcCalDataCA;
 }
 
-
 void R3BSofMwpc0Mapped2Cal::SetParContainers() {
   
   //Parameter Container
@@ -77,22 +76,21 @@ void R3BSofMwpc0Mapped2Cal::SetParContainers() {
   }
 }
 
-
 void R3BSofMwpc0Mapped2Cal::SetParameter(){
   
   //--- Parameter Container ---
-  NumPadX = fCal_Par->GetNumPadsX();//Number of Detectors
-  NumPadY = fCal_Par->GetNumPadsY();//Number of Strips
-  NumParams=fCal_Par->GetNumParametersFit();//Number of Parameters
+  NumPadX = fCal_Par->GetNumPadsX();//Number of Pads in X
+  NumPadY = fCal_Par->GetNumPadsY();//Number of Pads in Y
+  NumParams=fCal_Par->GetNumParametersFit();//Number of parameters in the Fit
 
   LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: NumPadX: "<< NumPadX;
   LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: NumPadY: "<< NumPadY;
+  LOG(INFO)<<"R3BSofMwpc0Mapped2Cal: Number of fit parameters: "<< NumParams;
   
   CalParams= new TArrayI();
   Int_t array_size = (NumPadX+NumPadY)*NumParams;
   CalParams->Set(array_size);	
   CalParams=fCal_Par->GetPadCalParams();//Array with the Cal parameters
-
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -135,12 +133,12 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
   Reset();
   
   if (!fCal_Par) {
-    LOG(ERROR)<<"NO Container Parameter!!";
+    LOG(WARNING)<<"NO Container Parameter!, pedestals will be set to zero";
   }  
   
   //Reading the Input -- Mapped Data --
   Int_t nHits = fMwpcMappedDataCA->GetEntries();
-  if(nHits!=(NumPadX+NumPadY) && nHits>0)LOG(WARNING) << "R3BSofMwpc0Mapped2Cal: nHits!=(NumPadX+NumPadY)";
+  if(nHits>(NumPadX+NumPadY) && nHits>0)LOG(WARNING) << "R3BSofMwpc0Mapped2Cal: nHits>(NumPadX+NumPadY)";
   if(!nHits) return;
   
   R3BSofMwpc0MappedData** mappedData;
@@ -149,18 +147,19 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
   UChar_t padId;
   UShort_t charge;
   UShort_t pedestal=0;
+  Int_t nbpad=0;
 
   for(Int_t i = 0; i < nHits; i++) {
     mappedData[i] = (R3BSofMwpc0MappedData*)(fMwpcMappedDataCA->At(i));
     planeId = mappedData[i]->GetPlane();
     padId = mappedData[i]->GetPad();
-
     if(planeId==1)
-     pedestal=CalParams->GetAt(padId);
+     nbpad=padId*NumParams;
     else if(planeId==3)
-     pedestal=CalParams->GetAt(NumPadX+padId);
+     nbpad=(padId+NumPadX)*NumParams;
     else LOG(ERROR)<<"Plane "<<planeId<<" does not exist in MWPC0";
 
+    pedestal=CalParams->GetAt(nbpad);
     charge = mappedData[i]->GetQ()-pedestal;
 
     //We accept the hit if the charge is larger than zero
@@ -168,7 +167,6 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
      AddCalData(planeId,padId,charge);
     }
   }
-
   if(mappedData) delete mappedData;
   return;
 }
@@ -176,7 +174,6 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
 // -----   Protected method Finish   --------------------------------------------
 void R3BSofMwpc0Mapped2Cal::Finish()
 {
-  
 }
 
 // -----   Public method Reset   ------------------------------------------------
@@ -185,7 +182,6 @@ void R3BSofMwpc0Mapped2Cal::Reset()
   LOG(DEBUG) << "Clearing Mwpc0CalData Structure";
   if(fMwpcCalDataCA)fMwpcCalDataCA->Clear();
 }
-
 
 // -----   Private method AddCalData  --------------------------------------------
 R3BSofMwpc0CalData* R3BSofMwpc0Mapped2Cal::AddCalData(UChar_t plane, UChar_t pad, UShort_t charge)

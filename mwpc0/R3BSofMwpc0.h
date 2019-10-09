@@ -117,7 +117,7 @@ class R3BSofMwpc0 : public R3BDetector
 
     /** Private method AddPoint
      **
-     ** Adds a TraPoint to the HitCollection
+     ** Adds a MWPCPoint to the HitCollection
      **/
     R3BSofMWPCPoint* AddPoint(Int_t trackID,
                         Int_t detID,

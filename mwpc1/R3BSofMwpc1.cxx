@@ -5,30 +5,11 @@
 #include "R3BSofMwpc1.h"
 #include "FairGeoInterface.h"
 #include "FairGeoLoader.h"
-#include "FairGeoNode.h"
-#include "FairGeoRootBuilder.h"
-#include "FairRootManager.h"
-#include "FairRun.h"
-#include "FairRuntimeDb.h"
+#include "TGeoManager.h"
 #include "FairVolume.h"
 #include "R3BMCStack.h"
 #include "R3BSofMWPCPoint.h"
 #include "TClonesArray.h"
-#include "TGeoArb8.h"
-#include "TGeoBBox.h"
-#include "TGeoBoolNode.h"
-#include "TGeoCompositeShape.h"
-#include "TGeoCone.h"
-#include "TGeoMCGeometry.h"
-#include "TGeoManager.h"
-#include "TGeoMaterial.h"
-#include "TGeoMatrix.h"
-#include "TGeoMedium.h"
-#include "TGeoPara.h"
-#include "TGeoPgon.h"
-#include "TGeoShapeAssembly.h"
-#include "TGeoSphere.h"
-#include "TGeoTube.h"
 #include "TObjArray.h"
 #include "TParticle.h"
 #include "TVirtualMC.h"
@@ -45,7 +26,7 @@ R3BSofMwpc1::R3BSofMwpc1(const TString& geoFile, const TGeoTranslation& trans, c
 }
 
 R3BSofMwpc1::R3BSofMwpc1(const TString& geoFile, const TGeoCombiTrans& combi)
-    : R3BDetector("R3BSofMwpc1", kFI3aPoint, geoFile, combi)//FIXME
+    : R3BDetector("R3BSofMwpc1", kSOFMWPC1, geoFile, combi)
     , fSofMWPCCollection(new TClonesArray("R3BSofMWPCPoint"))
     , fPosIndex(0)
     , kGeoSaved(kFALSE)
@@ -153,7 +134,7 @@ Bool_t R3BSofMwpc1::ProcessHits(FairVolume* vol)
 
         // Increment number of TraPoints for this track
         R3BStack* stack = (R3BStack*)gMC->GetStack();
-        stack->AddPoint(kFI13);//FIXME
+        stack->AddPoint(kSOFMWPC1);
 
         ResetParameters();
     }

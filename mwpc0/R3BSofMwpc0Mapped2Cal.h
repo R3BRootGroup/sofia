@@ -52,9 +52,9 @@ class R3BSofMwpc0Mapped2Cal : public FairTask {
   
   void SetParameter();
  
-  UChar_t NumPadX;
-  UChar_t NumPadY;
-  UChar_t NumParams;
+  Int_t NumPadX;
+  Int_t NumPadY;
+  Int_t NumParams;
   TArrayI* CalParams;
 
   Bool_t fOnline;//Don't store data for online

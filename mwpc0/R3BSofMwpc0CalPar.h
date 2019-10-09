@@ -25,7 +25,7 @@ class R3BSofMwpc0CalPar : public FairParGenericSet {
 
   /** Standard constructor **/
   R3BSofMwpc0CalPar(const char* name = "mwpc0CalPar", 
-                     const char* title = "Sofia Mwpc0 Cal Parameters",
+                     const char* title = "Mwpc0 Cal Parameters",
                      const char* context ="Mwpc0CalParContext");
 
   /** Destructor **/
@@ -44,15 +44,15 @@ class R3BSofMwpc0CalPar : public FairParGenericSet {
   void printParams();
 
   /** Accessor functions **/
-  const UChar_t GetNumPadsX(){return fNumPadsX;}
-  const UChar_t GetNumPadsY(){return fNumPadsY;}
-  const UChar_t GetNumParametersFit(){return fNumParamsFit;}
+  const Int_t GetNumPadsX(){return fNumPadsX;}
+  const Int_t GetNumPadsY(){return fNumPadsY;}
+  const Int_t GetNumParametersFit(){return fNumParamsFit;}
 
   TArrayI* GetPadCalParams(){return fPadCalParams;}
 
-  void SetNumPadsX(UChar_t numberPadsX){fNumPadsX=numberPadsX;}
-  void SetNumPadsY(UChar_t numberPadsY){fNumPadsY=numberPadsY;}
-  void SetNumParametersFit(UChar_t numberParams){fNumParamsFit=numberParams;}
+  void SetNumPadsX(Int_t numberPadsX){fNumPadsX=numberPadsX;}
+  void SetNumPadsY(Int_t numberPadsY){fNumPadsY=numberPadsY;}
+  void SetNumParametersFit(Int_t numberParams){fNumParamsFit=numberParams;}
   void SetPadCalParams(Int_t cc, Int_t ii ){fPadCalParams->AddAt(cc, ii);}
 
   /** Create more Methods if you need them! **/
@@ -60,9 +60,9 @@ class R3BSofMwpc0CalPar : public FairParGenericSet {
 private:
 
   TArrayI* fPadCalParams;
-  UChar_t fNumPadsX;
-  UChar_t fNumPadsY;
-  UChar_t fNumParamsFit;
+  Int_t fNumPadsX;
+  Int_t fNumPadsY;
+  Int_t fNumParamsFit;
 
   const R3BSofMwpc0CalPar& operator = (const R3BSofMwpc0CalPar&); // An assignment operator
 

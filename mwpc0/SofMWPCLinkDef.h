@@ -8,6 +8,7 @@
 #pragma link C++ class R3BSofMwpc0ContFact+;
 #pragma link C++ class R3BSofMwpc0CalPar+;
 #pragma link C++ class R3BSofMwpc0Mapped2Cal+;
+#pragma link C++ class R3BSofMwpc0Mapped2CalPar+;
 #pragma link C++ class R3BSofMwpc0Cal2Hit+;
 
 //#pragma link C++ class R3BSofMWPCHitPar+;
