@@ -20,7 +20,7 @@
 
 class TClonesArray;
 class R3BEventHeader;
-//class R3BSofAtOnlineSpectra;
+class R3BSofAtOnlineSpectra;
 
 /**
  * This taks reads FRS data and plots online histograms 
@@ -88,7 +88,6 @@ class R3BSofOnlineSpectra : public FairTask {
 
   // check for trigger should be done globablly (somewhere else)
   R3BEventHeader* fEventHeader;         /**< Event header.      */
-//  R3BSofAtOnlineSpectra* fAtOnline;     /**< At online header.  */
   Int_t fTrigger;                       /**< Trigger value.     */
   Int_t fNEvents;        	   	/**< Event counter.     */
 
@@ -99,7 +98,7 @@ class R3BSofOnlineSpectra : public FairTask {
   TH1F* fh1_trigger, *fh1_wr;
  
   public:
-  ClassDef(R3BSofOnlineSpectra, 1)
+  ClassDef(R3BSofOnlineSpectra, 0)
 };
 
 #endif

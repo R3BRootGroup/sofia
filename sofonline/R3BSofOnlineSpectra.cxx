@@ -9,7 +9,7 @@
  */
 
 #include "R3BSofOnlineSpectra.h"
-//#include "R3BSofAtOnlineSpectra.h"
+#include "R3BSofAtOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "THttpServer.h"
 
@@ -43,7 +43,6 @@ using namespace std;
 R3BSofOnlineSpectra::R3BSofOnlineSpectra()
   : FairTask("SofiaOnlineSpectra", 1)
   , fEventHeader(nullptr)
-//  , fAtOnline(nullptr)
   , fNEvents(0) 
 {
 }
@@ -51,7 +50,6 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
 R3BSofOnlineSpectra::R3BSofOnlineSpectra(const char* name, Int_t iVerbose)
   : FairTask(name, iVerbose)
   , fEventHeader(nullptr)
-//  , fAtOnline(nullptr)
   , fNEvents(0)
 {
 }
@@ -72,9 +70,10 @@ InitStatus R3BSofOnlineSpectra::Init() {
   if (NULL == mgr)
      LOG(FATAL)<<"R3BSofOnlineSpectra::Init FairRootManager not found";
   fEventHeader = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
-  //fAtOnline = (R3BSofAtOnlineSpectra*)mgr->GetObject("R3BSofAtOnlineSpectra");
 
   FairRunOnline *run = FairRunOnline::Instance();
+  if (NULL == run)
+     LOG(FATAL)<<"R3BSofOnlineSpectra::Init FairRunOnline not found";
   run->GetHttpServer()->Register("",this);
 
   // Triggers
@@ -108,8 +107,6 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
 {
   LOG(INFO) << "R3BSofOnlineSpectra::Reset_General_Histo";
   fh1_trigger->Reset();
-  //fAtOnline->Reset_Histo();
-
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option) {

@@ -80,6 +80,7 @@ class R3BSofAtOnlineSpectra : public FairTask {
    */
   virtual void Reset_Histo();
 
+
   private:
   
   TClonesArray* fMappedItemsAt;         /**< Array with mapped items. */
@@ -87,7 +88,8 @@ class R3BSofAtOnlineSpectra : public FairTask {
   // check for trigger should be done globablly (somewhere else)
   R3BEventHeader* header;               /**< Event header.      */
   Int_t fNEvents;        	   	/**< Event counter.     */
-  
+  Int_t fReset;
+
   //Canvas
   TCanvas* cAtMap;
 
@@ -95,11 +97,11 @@ class R3BSofAtOnlineSpectra : public FairTask {
   TH2F* fh2_atmap[3];
   TH1F* fh1_atmapevt;
 
-  //Histograms for Mapped data
-  TH2F* fh2_atcal[3];
+  //Histograms for cal data
+  //TH2F* fh2_atcal[3];
   
   public:
-  ClassDef(R3BSofAtOnlineSpectra, 1)
+  ClassDef(R3BSofAtOnlineSpectra, 0)
 };
 
 #endif
