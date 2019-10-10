@@ -41,7 +41,6 @@ R3BSofMwpc0Mapped2CalPar::R3BSofMwpc0Mapped2CalPar() :
   fMapHistos_bins(27000),
   fPad_Par(NULL),
   fMwpcMappedDataCA(NULL) {
-  
 }
 
 //R3BSofMwpc0Mapped2CalPar: Standard Constructor --------------------------
@@ -59,7 +58,10 @@ R3BSofMwpc0Mapped2CalPar::R3BSofMwpc0Mapped2CalPar(const char* name, Int_t iVerb
 }
 
 //R3BSofMwpc0Mapped2CalPar: Destructor ----------------------------------------
-R3BSofMwpc0Mapped2CalPar::~R3BSofMwpc0Mapped2CalPar() {
+R3BSofMwpc0Mapped2CalPar::~R3BSofMwpc0Mapped2CalPar() 
+{
+  LOG(INFO) << "R3BSofMwpc0Mapped2CalPar: Delete instance";
+  if(fMwpcMappedDataCA) delete fMwpcMappedDataCA;
 }
 
 // -----   Public method Init   --------------------------------------------

@@ -82,6 +82,8 @@ void run_sim(Int_t nEvents = 0)
 
     // To skip the detector comment out the line with: run->AddModule(...
 
+    //run->AddModule(new R3BMusic("music_s467.geo.root", { 0., 0., -60. }));
+
     //Vacuum chamber and target definition
     if(fTarget && !fTracker){
     TString fVacuumChamberGeo = "targetvacuumchamber_s455.geo.root";
