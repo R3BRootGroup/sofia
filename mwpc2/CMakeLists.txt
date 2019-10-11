@@ -1,4 +1,4 @@
-# Create a library called "libR3BSofMWPC" which includes the source files given in
+# Create a library called "libR3BSofMWPC2" which includes the source files given in
 # the array .
 # The extension is already found.  Any number of sources could be listed here.
 
@@ -29,13 +29,11 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofMwpc2.cxx
-#R3BSofMWPCHitPar.cxx
-#R3BSofMWPCCalPar.cxx
-#R3BSofMWPCMappedPar.cxx
-#R3BSofMWPCCal2Hit.cxx
-#R3BSofMWPCMapped2Cal.cxx
-#R3BSofMWPCCal2HitPar.cxx
-#R3BSofMWPCMapped2CalPar.cxx
+R3BSofMwpc2ContFact.cxx
+R3BSofMwpc2CalPar.cxx
+R3BSofMwpc2Mapped2CalPar.cxx
+R3BSofMwpc2Mapped2Cal.cxx
+R3BSofMwpc2Cal2Hit.cxx
 )
 
 # fill list of header files from list of source files
