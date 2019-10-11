@@ -9,7 +9,7 @@
  */
 
 #include "R3BSofMwpc0OnlineSpectra.h"
-#include "R3BSofMwpc0CalData.h"
+#include "R3BSofMwpcCalData.h"
 #include "R3BEventHeader.h"
 #include "THttpServer.h"
 
@@ -163,8 +163,8 @@ void R3BSofMwpc0OnlineSpectra::Exec(Option_t* option) {
     Int_t nHits = fCalItemsMwpc0->GetEntriesFast();
     Int_t maxpadx=-1,maxpady=-1, maxqx=0,maxqy=0;
     for (Int_t ihit = 0; ihit < nHits; ihit++){
-      R3BSofMwpc0CalData* hit = 
-	(R3BSofMwpc0CalData*)fCalItemsMwpc0->At(ihit);
+      R3BSofMwpcCalData* hit = 
+	(R3BSofMwpcCalData*)fCalItemsMwpc0->At(ihit);
       if (!hit) continue;
         if(hit->GetPlane()==1){
           fh1_mwpc0_cal[0]->Fill(hit->GetPad());

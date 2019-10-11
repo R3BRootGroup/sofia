@@ -9,8 +9,8 @@
 
 #include "FairTask.h"
 #include "TH1F.h"
-#include "R3BSofMwpc0CalData.h"
-#include "R3BSofMwpc0MappedData.h"
+#include "R3BSofMwpcCalData.h"
+#include "R3BSofMwpcMappedData.h"
 #include <TRandom.h>
 
 class TClonesArray;
@@ -60,12 +60,12 @@ class R3BSofMwpc0Mapped2Cal : public FairTask {
   Bool_t fOnline;//Don't store data for online
   
   R3BSofMwpc0CalPar* fCal_Par;     /**< Parameter container. >*/ 
-  TClonesArray* fMwpcMappedDataCA; /**< Array with Mapped- input data. >*/
-  TClonesArray* fMwpcCalDataCA;    /**< Array with Cal- output data. >*/
+  TClonesArray* fMwpcMappedDataCA; /**< Array with Mapped input data. >*/
+  TClonesArray* fMwpcCalDataCA;    /**< Array with Cal output data. >*/
   
   /** Private method AddCalData **/
-  // Adds a SofMwpc0CalData to the MwpcCalCollection
-  R3BSofMwpc0CalData* AddCalData(UChar_t plane, UChar_t pad, UShort_t charge);
+  // Adds a SofMwpcCalData to the MwpcCalCollection
+  R3BSofMwpcCalData* AddCalData(UChar_t plane, UChar_t pad, UShort_t charge);
 
  public:
   //Class definition

@@ -1,23 +1,23 @@
-#ifndef R3BSofMwpc0HitData_H
-#define R3BSofMwpc0HitData_H
+#ifndef R3BSofMwpcHitData_H
+#define R3BSofMwpcHitData_H
 #include "TObject.h"
 
-class R3BSofMwpc0HitData : public TObject {
+class R3BSofMwpcHitData : public TObject {
 
 public:
   /** Default constructor **/
-  R3BSofMwpc0HitData();
+  R3BSofMwpcHitData();
 
 
   /** Constructor with arguments
    *@param fX  Position X in [mm]   
    *@param fY  Position Y in [mm]
    **/
-  R3BSofMwpc0HitData(Double_t X, Double_t Y);
+  R3BSofMwpcHitData(Double_t X, Double_t Y);
 
 
   /** Destructor **/
-  virtual ~R3BSofMwpc0HitData() { }
+  virtual ~R3BSofMwpcHitData() { }
 
 
   /** Accessors **/
@@ -34,7 +34,7 @@ public:
 
   Double_t fX, fY;
 
-  ClassDef(R3BSofMwpc0HitData,1)
+  ClassDef(R3BSofMwpcHitData,1)
 };
 
 #endif

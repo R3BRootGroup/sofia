@@ -16,8 +16,8 @@
 #include <iomanip>
 
 //MWPC headers
-#include "R3BSofMwpc0CalData.h"
-#include "R3BSofMwpc0HitData.h"
+#include "R3BSofMwpcCalData.h"
+#include "R3BSofMwpcHitData.h"
 #include "R3BSofMwpc0Cal2Hit.h"
 
 //R3BSofMwpc0Cal2Hit: Default Constructor --------------------------
@@ -66,7 +66,7 @@ InitStatus R3BSofMwpc0Cal2Hit::Init()
    
   //OUTPUT DATA
   //Hit data
-  fMwpcHitDataCA = new TClonesArray("R3BSofMwpc0HitData",10);
+  fMwpcHitDataCA = new TClonesArray("R3BSofMwpcHitData",10);
 
   if(!fOnline){
   rootManager->Register("Mwpc0HitData", "MWPC0 Hit", fMwpcHitDataCA, kTRUE);
@@ -94,8 +94,8 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
   if(!nHits) return;
   
   // Data from cal level
-  R3BSofMwpc0CalData** calData;
-  calData=new R3BSofMwpc0CalData*[nHits];
+  R3BSofMwpcCalData** calData;
+  calData=new R3BSofMwpcCalData*[nHits];
   UChar_t planeId;
   UChar_t padId;
   Int_t padmx=-1, padmy=-1;
@@ -106,7 +106,7 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
   for(Int_t i = 0; i < NbPadsY; i++)fy[i]=0;
 
   for(Int_t i = 0; i < nHits; i++) {
-    calData[i] = (R3BSofMwpc0CalData*)(fMwpcCalDataCA->At(i));
+    calData[i] = (R3BSofMwpcCalData*)(fMwpcCalDataCA->At(i));
     planeId = calData[i]->GetPlane();
     padId = calData[i]->GetPad();
     q = calData[i]->GetQ();
@@ -177,12 +177,12 @@ void R3BSofMwpc0Cal2Hit::Reset()
 
 
 // -----   Private method AddHitData  --------------------------------------------
-R3BSofMwpc0HitData* R3BSofMwpc0Cal2Hit::AddHitData(Double_t x, Double_t y)
+R3BSofMwpcHitData* R3BSofMwpc0Cal2Hit::AddHitData(Double_t x, Double_t y)
 {
-  //It fills the R3BSofMwpc0HitData
+  //It fills the R3BSofMwpcHitData
   TClonesArray& clref = *fMwpcHitDataCA;
   Int_t size = clref.GetEntriesFast();
-  return new(clref[size]) R3BSofMwpc0HitData(x,y);
+  return new(clref[size]) R3BSofMwpcHitData(x,y);
 }
 
 ClassImp(R3BSofMwpc0Cal2Hit)

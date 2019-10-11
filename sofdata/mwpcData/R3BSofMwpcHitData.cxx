@@ -1,28 +1,25 @@
 // -------------------------------------------------------------------------
-// -----                     R3BSofMwpc2MappedData source file         -----
+// -----                     R3BSofMwpcHitData source file             -----
 // -------------------------------------------------------------------------
 
-#include "R3BSofMwpc2MappedData.h"
+#include "R3BSofMwpcHitData.h"
 
 
 // -----   Default constructor   -------------------------------------------
-R3BSofMwpc2MappedData::R3BSofMwpc2MappedData() 
-: fPlane(0),
-  fPad(0),
-  fCharge(0) 
+R3BSofMwpcHitData::R3BSofMwpcHitData() 
+: fX(0.),
+  fY(0.)
 {
 }
 // -------------------------------------------------------------------------
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofMwpc2MappedData::R3BSofMwpc2MappedData(UChar_t plane, UChar_t pad,
-					     UShort_t charge) 
-  : fPlane(plane)
-  , fPad(pad)
-  , fCharge(charge)
+R3BSofMwpcHitData::R3BSofMwpcHitData(Double_t x, Double_t y) 
+  : fX(x)
+  , fY(y)
 {
 }
 // -------------------------------------------------------------------------
 
-ClassImp(R3BSofMwpc2MappedData)
+ClassImp(R3BSofMwpcHitData)

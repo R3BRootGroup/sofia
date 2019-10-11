@@ -1,26 +1,26 @@
-#ifndef R3BSofMwpc3MappedData_H
-#define R3BSofMwpc3MappedData_H
+#ifndef R3BSofMwpcMappedData_H
+#define R3BSofMwpcMappedData_H
 #include "TObject.h"
 
-class R3BSofMwpc3MappedData : public TObject {
+class R3BSofMwpcMappedData : public TObject {
 
 public:
   /** Default constructor **/
-  R3BSofMwpc3MappedData();
+  R3BSofMwpcMappedData();
 
 
   /** Constructor with arguments
-   *@param plane   1 for X and 3 for Y
+   *@param plane   1 for Xdown, 2 for Xup, and 3 for Y
    *@param pad     Pad number
    *@param charge  Charge of each pad [channels]
    **/
-  R3BSofMwpc3MappedData(UChar_t plane, 
+  R3BSofMwpcMappedData(UChar_t plane, 
                         UChar_t pad,
 	                UShort_t charge);
 
 
   /** Destructor **/
-  virtual ~R3BSofMwpc3MappedData() { }
+  virtual ~R3BSofMwpcMappedData() { }
 
 
   /** Accessors **/
@@ -30,9 +30,9 @@ public:
 
 
   /** Modifiers **/
-  void SetPlane(UChar_t plane)     { fPlane = plane;   };
-  void SetPad(UChar_t pad)         { fPad = pad;       };
-  void SetQ(UShort_t charge)       { fCharge = charge; };
+  void SetPlane(UChar_t plane)   { fPlane = plane;   };
+  void SetPad(UChar_t pad)       { fPad = pad;       };
+  void SetQ(UShort_t charge)     { fCharge = charge; };
 
 
  protected:
@@ -41,7 +41,7 @@ public:
   UChar_t fPad;
   UShort_t fCharge;
 
-  ClassDef(R3BSofMwpc3MappedData,1)
+  ClassDef(R3BSofMwpcMappedData,1)
 };
 
 #endif
