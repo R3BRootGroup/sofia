@@ -12,7 +12,7 @@
 #include "TObject.h"
 #include <TObjString.h>
 #include "TObjArray.h"
-#include "TArrayI.h
+#include "TArrayI.h"
 
 
 class FairParamList;

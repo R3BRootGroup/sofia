@@ -17,8 +17,8 @@
 #include <iomanip>
 
 //MWPC headers
-#include "R3BSofMwpc3MappedData.h"     // TODO
-#include "R3BSofMwpc3CalData.h"        // TODO
+#include "R3BSofMwpcMappedData.h"
+#include "R3BSofMwpcCalData.h"
 #include "R3BSofMwpc3Mapped2Cal.h"
 #include "R3BSofMwpc3CalPar.h"
 
@@ -105,12 +105,12 @@ InitStatus R3BSofMwpc3Mapped2Cal::Init()
   FairRootManager* rootManager = FairRootManager::Instance();
   if (!rootManager) { return kFATAL;}
 
-  fMwpcMappedDataCA = (TClonesArray*)rootManager->GetObject("Mwpc3MappedData");
+  fMwpcMappedDataCA = (TClonesArray*)rootManager->GetObject("MwpcMappedData");
   if (!fMwpcMappedDataCA) { return kFATAL;}
 
   //OUTPUT DATA
   //Calibrated data
-  fMwpcCalDataCA = new TClonesArray("R3BSofMwpc3CalData",10);
+  fMwpcCalDataCA = new TClonesArray("R3BSofMwpcCalData",10);
 
   if(!fOnline){
   rootManager->Register("Mwpc3CalData", "MWPC3 Cal", fMwpcCalDataCA, kTRUE);
@@ -146,8 +146,8 @@ void R3BSofMwpc3Mapped2Cal::Exec(Option_t* option)
   if(nHits>(NumPadX+NumPadY) && nHits>0)LOG(WARNING) << "R3BSofMwpc3Mapped2Cal: nHits>(NumPadX+NumPadY)";
   if(!nHits) return;
 
-  R3BSofMwpc3MappedData** mappedData;
-  mappedData=new R3BSofMwpc3MappedData*[nHits];
+  R3BSofMwpcMappedData** mappedData;
+  mappedData=new R3BSofMwpcMappedData*[nHits];
   UChar_t planeId;
   UChar_t padId;
   UShort_t charge;
@@ -155,7 +155,7 @@ void R3BSofMwpc3Mapped2Cal::Exec(Option_t* option)
   Int_t nbpad=0;
 
   for(Int_t i = 0; i < nHits; i++) {
-    mappedData[i] = (R3BSofMwpc3MappedData*)(fMwpcMappedDataCA->At(i));
+    mappedData[i] = (R3BSofMwpcMappedData*)(fMwpcMappedDataCA->At(i));
     planeId = mappedData[i]->GetPlane();
     padId = mappedData[i]->GetPad();
     if(planeId==1)
@@ -184,17 +184,17 @@ void R3BSofMwpc3Mapped2Cal::Finish()
 /* ---- Public method Reset ----*/
 void R3BSofMwpc3Mapped2Cal::Reset()
 {
-  LOG(DEBUG) << "Clearing Mwpc3CalData Structure";
+  LOG(DEBUG) << "Clearing MwpcCalData Structure";
   if(fMwpcCalDataCA)fMwpcCalDataCA->Clear();
 }
 
 /* ----   Private method AddCalData  ---- */
-R3BSofMwpc3CalData* R3BSofMwpc3Mapped2Cal::AddCalData(UChar_t plane, UChar_t pad, UShort_t charge)
+R3BSofMwpcCalData* R3BSofMwpc3Mapped2Cal::AddCalData(UChar_t plane, UChar_t pad, UShort_t charge)
 {
-  //It fills the R3BSofMwpc3CalData
+  //It fills the R3BSofMwpcCalData
   TClonesArray& clref = *fMwpcCalDataCA;
   Int_t size = clref.GetEntriesFast();
-  return new(clref[size]) R3BSofMwpc3CalData(plane,pad,charge);
+  return new(clref[size]) R3BSofMwpcCalData(plane,pad,charge);
 }
 
 ClassImp(R3BSofMwpc3Mapped2Cal)

@@ -29,13 +29,11 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofMwpc3.cxx
-#R3BSofMWPCHitPar.cxx
-#R3BSofMWPCCalPar.cxx
-#R3BSofMWPCMappedPar.cxx
-#R3BSofMWPCCal2Hit.cxx
-#R3BSofMWPCMapped2Cal.cxx
-#R3BSofMWPCCal2HitPar.cxx
-#R3BSofMWPCMapped2CalPar.cxx
+R3BSofMwpc3CalPar.cxx
+R3BSofMwpc3ContFact.cxx
+R3BSofMwpc3Mapped2Cal.cxx
+
+
 )
 
 # fill list of header files from list of source files
