@@ -2,7 +2,7 @@
 // -----         R3BSofMwpc2Mapped2CalPar source file                  -----
 // -----             Created 10/10/19  by J.L. Rodriguez-Sanchez       -----
 // -------------------------------------------------------------------------
-#include "R3BSofMwpc0MappedData.h"
+#include "R3BSofMwpcMappedData.h"
 #include "R3BSofMwpc2Mapped2CalPar.h"
 #include "R3BEventHeader.h"
 #include "R3BSofMwpc2CalPar.h"
@@ -108,11 +108,11 @@ void R3BSofMwpc2Mapped2CalPar::Exec(Option_t* opt) {
   Int_t nHits = fMwpcMappedDataCA->GetEntries();
   if(!nHits) return;
   
-  R3BSofMwpc0MappedData* MapHit;
+  R3BSofMwpcMappedData* MapHit;
   UChar_t planeid, padid;
   
   for(Int_t i = 0; i < nHits; i++) {
-    MapHit = (R3BSofMwpc0MappedData*)(fMwpcMappedDataCA->At(i));
+    MapHit = (R3BSofMwpcMappedData*)(fMwpcMappedDataCA->At(i));
     planeid = MapHit->GetPlane();
     padid = MapHit->GetPad();
     

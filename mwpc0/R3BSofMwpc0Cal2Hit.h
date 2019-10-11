@@ -9,8 +9,8 @@
 
 #include "FairTask.h"
 #include "TH1F.h"
-#include "R3BSofMwpc0CalData.h"
-#include "R3BSofMwpc0HitData.h"
+#include "R3BSofMwpcCalData.h"
+#include "R3BSofMwpcHitData.h"
 #include <TRandom.h>
 
 #define NbPadsX 64
@@ -61,8 +61,8 @@ class R3BSofMwpc0Cal2Hit : public FairTask {
   TClonesArray* fMwpcHitDataCA;  /**< Array with Hit output data. >*/
   
   /** Private method AddHitData **/
-  // Adds a SofMwpc0HitData to the MwpcHitCollection
-  R3BSofMwpc0HitData* AddHitData(Double_t x, Double_t y);
+  // Adds a SofMwpcHitData to the MwpcHitCollection
+  R3BSofMwpcHitData* AddHitData(Double_t x, Double_t y);
 
   /** Private method to obtain the position X **/
   Double_t GetPostionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright);

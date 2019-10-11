@@ -9,8 +9,8 @@
 
 #include "FairTask.h"
 #include "TH1F.h"
-#include "R3BSofMwpc0CalData.h"
-#include "R3BSofMwpc0MappedData.h"
+#include "R3BSofMwpcCalData.h"
+#include "R3BSofMwpcMappedData.h"
 #include <TRandom.h>
 
 class TClonesArray;
@@ -65,7 +65,7 @@ class R3BSofMwpc2Mapped2Cal : public FairTask {
   
   /** Private method AddCalData **/
   // Adds a SofMwpcCalData to the MwpcCalCollection
-  R3BSofMwpc0CalData* AddCalData(UChar_t plane, UChar_t pad, UShort_t charge);
+  R3BSofMwpcCalData* AddCalData(UChar_t plane, UChar_t pad, UShort_t charge);
 
  public:
   //Class definition

@@ -1,12 +1,12 @@
 // -------------------------------------------------------------------------
-// -----                     R3BSofMwpc0CalData source file            -----
+// -----                     R3BSofMwpcMappedData source file          -----
 // -------------------------------------------------------------------------
 
-#include "R3BSofMwpc0CalData.h"
+#include "R3BSofMwpcMappedData.h"
 
 
 // -----   Default constructor   -------------------------------------------
-R3BSofMwpc0CalData::R3BSofMwpc0CalData() 
+R3BSofMwpcMappedData::R3BSofMwpcMappedData() 
 : fPlane(0),
   fPad(0),
   fCharge(0) 
@@ -16,7 +16,7 @@ R3BSofMwpc0CalData::R3BSofMwpc0CalData()
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofMwpc0CalData::R3BSofMwpc0CalData(UChar_t plane, UChar_t pad,
+R3BSofMwpcMappedData::R3BSofMwpcMappedData(UChar_t plane, UChar_t pad,
 					     UShort_t charge) 
   : fPlane(plane)
   , fPad(pad)
@@ -25,4 +25,4 @@ R3BSofMwpc0CalData::R3BSofMwpc0CalData(UChar_t plane, UChar_t pad,
 }
 // -------------------------------------------------------------------------
 
-ClassImp(R3BSofMwpc0CalData)
+ClassImp(R3BSofMwpcMappedData)
