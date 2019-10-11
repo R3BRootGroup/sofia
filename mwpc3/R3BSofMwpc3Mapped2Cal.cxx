@@ -94,8 +94,6 @@ void R3BSofMwpc3Mapped2Cal::SetParameter(){
   CalParams=fCal_Par->GetPadCalParams();//Array with the Cal parameters
 }
 
-
-
 /* ---- Public method Init  ---- */
 InitStatus R3BSofMwpc3Mapped2Cal::Init()
 {
@@ -105,7 +103,7 @@ InitStatus R3BSofMwpc3Mapped2Cal::Init()
   FairRootManager* rootManager = FairRootManager::Instance();
   if (!rootManager) { return kFATAL;}
 
-  fMwpcMappedDataCA = (TClonesArray*)rootManager->GetObject("MwpcMappedData");
+  fMwpcMappedDataCA = (TClonesArray*)rootManager->GetObject("Mwpc3MappedData");
   if (!fMwpcMappedDataCA) { return kFATAL;}
 
   //OUTPUT DATA
@@ -129,8 +127,6 @@ InitStatus R3BSofMwpc3Mapped2Cal::ReInit()
   return kSUCCESS;
 }
 
-
-
 /* ---- Public method Execution ---- */
 void R3BSofMwpc3Mapped2Cal::Exec(Option_t* option)
 {
@@ -138,7 +134,7 @@ void R3BSofMwpc3Mapped2Cal::Exec(Option_t* option)
   Reset();
 
   if (!fCal_Par) {
-    LOG(WARNING)<<"NO Container Parameter!, pedestals will be set to zero";
+    LOG(ERROR)<<"NO Container Parameter!, pedestals will be set to zero";
   }
 
   //Reading the Input -- Mapped Data --

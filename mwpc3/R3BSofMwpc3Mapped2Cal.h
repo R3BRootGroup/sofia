@@ -64,7 +64,7 @@ class R3BSofMwpc3Mapped2Cal : public FairTask {
   TClonesArray* fMwpcCalDataCA;    /* ---- Array with Cal- output data ---- */
 
   /* ---- Private method AddCalData ---- */
-  // Adds a SofMwpc3CalData to the MwpcCalCollection
+  // Adds a SofMwpcCalData to the MwpcCalCollection
   R3BSofMwpcCalData* AddCalData(UChar_t plane, UChar_t pad, UShort_t charge);
 
  public:

@@ -1,9 +1,8 @@
 // --------------------------------------------------------
 // -----                                              -----
-// -----		      R3BSofMwpc3CalPar 			            -----
-// ----- 	Created 11/10/2019 by G.García Jiménez		  -----
+// -----		 R3BSofMwpc3CalPar            -----
+// -----       Created 11/10/2019 by G.García Jiménez -----
 // --------------------------------------------------------
-
 
 #include "R3BSofMwpc3CalPar.h"
 #include "FairLogger.h"
@@ -21,10 +20,10 @@ using std::endl;
 R3BSofMwpc3CalPar::R3BSofMwpc3CalPar(const char* name, const char* title,
 					               const char* context)
  : FairParGenericSet(name,title,context)
- , fNumPadsX(120)
- , fNumPadsY(288)
- , fNumParamsFit(1) {
-   fPadCalParams= new TArrayI(408); //(120 Pads in X + 288 Pads in Y) x 1 Calibration Parameter (Pedestal)
+ , fNumPadsX(288)
+ , fNumPadsY(120)
+ , fNumParamsFit(2) {
+   fPadCalParams= new TArrayI(816); //(288 Pads in X + 120 Pads in Y) x 2 Calibration Parameter (Pedestal)
 }
 
 
@@ -89,14 +88,13 @@ Bool_t R3BSofMwpc3CalPar::getParams(FairParamList* list) {
 
 /* ----  Method printParams ---- */
 void R3BSofMwpc3CalPar::printParams() {
-  LOG(INFO) << "R3BSofMwpc3CalPar: SOFIA MWPC3 Calibration Parameters: ";
+  LOG(INFO)<<"R3BSofMwpc3CalPar: SOFIA MWPC3 Calibration Parameters: ";
   Int_t array_size = (fNumPadsX + fNumPadsY)*fNumParamsFit;
-
   for(Int_t i=0;i<(fNumPadsX +fNumPadsY);i++) {
-    if (i<fNumPadsX) { cout << "MWPC3 Plane X Pad Number: " << i+1 << endl;}
-		else {cout << "MWPC3 Plane Y Pad Number: " << i+1-fNumPadsX << endl;}
+    if (i<fNumPadsX) { LOG(INFO)<<"MWPC3 Plane X Pad Number: " << i+1; }
+		else { LOG(INFO)<<"MWPC3 Plane Y Pad Number: " << i+1-fNumPadsX;}
     for(Int_t j=0;j<fNumParamsFit;j++) {
-      cout << "FitParam("<<j<<") = "<<fPadCalParams->GetAt(i*fNumParamsFit+j) << endl;
+       LOG(INFO)<<"FitParam("<<j<<") = "<<fPadCalParams->GetAt(i*fNumParamsFit+j);
     }
   }
 }
