@@ -90,26 +90,19 @@ void run_sim(Int_t nEvents = 0)
     run->AddModule(new R3BVacVesselCool(targetType,geodir+fVacuumChamberGeo, { 0., 0., -65.5 }));
     }
 
-    // Tracker
+    // GLAD
+    run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
+
+    // R3B detectors
+    // AMS-Tracker + Vacuum chamber + LH2 target
     if (fTracker) {
     R3BTra* tra = new R3BTra(geodir+fTrackerGeo, { 0., 0., -65.5 });
     tra->SetEnergyCut(1e-6);    
     run->AddModule(tra);
     }
 
-    // GLAD
-    run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
-
-    // R3B detectors
-    // PSP
-    //run->AddModule(new R3BPsp("psp_v13a.geo.root", {}, -221., -89., 94.1));
-
-    // STaRTrack
-    //run->AddModule(new R3BStartrack("startrack_v16-300_2layers.geo.root", { 0., 0., -50. +20.}));
-    //run->AddModule(new R3BSTaRTra("startra_v13a.geo.root", { 0., 0., -50. }));
-
     // CALIFA
-    R3BCalifa* califa = new R3BCalifa("califa_demo.geo.root", { 0., 0., -65.5 });
+    R3BCalifa* califa = new R3BCalifa("califa_15_v8.11_iPhos1.03.geo.root", { 0., 0., -66.5 });
     califa->SelectGeometryVersion(10);
     // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
     califa->SetNonUniformity(1.0);

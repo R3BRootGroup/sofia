@@ -40,7 +40,7 @@
 using namespace std;
 
 R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
-  : FairTask("SofiaTwimOnlineSpectra", 1)
+  : FairTask("SofTwimOnlineSpectra", 1)
   , fMappedItemsTwim(NULL)
   , fNEvents(0) 
 {

@@ -40,7 +40,7 @@
 using namespace std;
 
 R3BSofMwpc0OnlineSpectra::R3BSofMwpc0OnlineSpectra()
-  : FairTask("SofiaMwpc0OnlineSpectra", 1)
+  : FairTask("SofMwpc0OnlineSpectra", 1)
   , fCalItemsMwpc0(NULL)
   , fNEvents(0) 
 {

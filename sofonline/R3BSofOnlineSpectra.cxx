@@ -10,6 +10,8 @@
 
 #include "R3BSofOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
+#include "R3BSofMwpc0OnlineSpectra.h"
+#include "R3BSofTwimOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "THttpServer.h"
 
@@ -43,6 +45,9 @@ using namespace std;
 R3BSofOnlineSpectra::R3BSofOnlineSpectra()
   : FairTask("SofiaOnlineSpectra", 1)
   , fEventHeader(nullptr)
+  , fAtOnline(NULL)
+  , fMwpc0Online(NULL)
+  , fTwimOnline(NULL)
   , fNEvents(0) 
 {
 }
@@ -50,6 +55,9 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
 R3BSofOnlineSpectra::R3BSofOnlineSpectra(const char* name, Int_t iVerbose)
   : FairTask(name, iVerbose)
   , fEventHeader(nullptr)
+  , fAtOnline(NULL)
+  , fMwpc0Online(NULL)
+  , fTwimOnline(NULL)
   , fNEvents(0)
 {
 }
@@ -75,6 +83,21 @@ InitStatus R3BSofOnlineSpectra::Init() {
   if (NULL == run)
      LOG(FATAL)<<"R3BSofOnlineSpectra::Init FairRunOnline not found";
   run->GetHttpServer()->Register("",this);
+
+  //Looking for AT online
+  fAtOnline = (R3BSofAtOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofAtOnlineSpectra");
+  if (!fAtOnline)
+     LOG(WARNING)<<"R3BSofOnlineSpectra::Init SofAtOnlineSpectra not found";
+
+  //Looking for Mwpc0 online
+  fMwpc0Online = (R3BSofMwpc0OnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0OnlineSpectra");
+  if (!fMwpc0Online)
+     LOG(WARNING)<<"R3BSofOnlineSpectra::Init SofMwpc0OnlineSpectra not found";
+
+  //Looking for Twim online
+  fTwimOnline = (R3BSofTwimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTwimOnlineSpectra");
+  if (!fTwimOnline)
+     LOG(WARNING)<<"R3BSofOnlineSpectra::Init SofTwimOnlineSpectra not found";
 
   // Triggers
   cTrigger = new TCanvas("Triggers", "Trigger information", 10, 10, 800, 700);
@@ -107,6 +130,15 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
 {
   LOG(INFO) << "R3BSofOnlineSpectra::Reset_General_Histo";
   fh1_trigger->Reset();
+  //Reset AT histograms if they exist somewhere
+  if (fAtOnline)
+   fAtOnline->Reset_Histo();
+  //Reset Mwpc0 histograms if they exist somewhere
+  if (fMwpc0Online)
+   fMwpc0Online->Reset_Histo();
+  //Reset Twim histograms if they exist somewhere
+  if (fTwimOnline)
+   fTwimOnline->Reset_Histo();
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option) {

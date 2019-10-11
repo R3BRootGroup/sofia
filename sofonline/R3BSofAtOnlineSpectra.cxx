@@ -40,7 +40,7 @@
 using namespace std;
 
 R3BSofAtOnlineSpectra::R3BSofAtOnlineSpectra()
-  : FairTask("SofiaAtOnlineSpectra", 1)
+  : FairTask("SofAtOnlineSpectra", 1)
   , fMappedItemsAt(NULL)
   , fNEvents(0) 
 {
