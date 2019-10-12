@@ -13,7 +13,7 @@
 #include "R3BSofMwpcHitData.h"
 #include <TRandom.h>
 
-#define NbPadsX 128
+#define NbPadsX 64  //FIXME:in November this should be OK!
 #define NbPadsY 40
 
 class TClonesArray;

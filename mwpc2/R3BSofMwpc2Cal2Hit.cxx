@@ -98,9 +98,9 @@ void R3BSofMwpc2Cal2Hit::Exec(Option_t* option)
   calData=new R3BSofMwpcCalData*[nHits];
   UChar_t planeId;
   UChar_t padId;
-  Int_t padmxu=-1,padmxd=-1, padmy=-1;
+  Int_t padmx=-1,padmxu=-1,padmxd=-1, padmy=-1;
   Int_t q=0,qmxu=0,qmxd=0,qleft=0,qright=0;
-  Int_t qmy=0,qdown=0,qup=0;
+  Int_t qmx=0,qmy=0,qdown=0,qup=0;
   Double_t x=0.,y=0.;
 
   for(Int_t i = 0; i < NbPadsX; i++)fx[i]=0;
@@ -109,18 +109,36 @@ void R3BSofMwpc2Cal2Hit::Exec(Option_t* option)
   for(Int_t i = 0; i < nHits; i++) {
     calData[i] = (R3BSofMwpcCalData*)(fMwpcCalDataCA->At(i));
     planeId = calData[i]->GetPlane();
-    padId = calData[i]->GetPad();
+    padId = calData[i]->GetPad();//From 0 to 63 for X down and up
     q = calData[i]->GetQ();
-    if(planeId==1)
-      fx[padId]=q;
-    else if(planeId==2)
-      fx[padId+NbPadsX/2]=q;
+
+    //FIXME: in November this should be OK!
+    if(planeId==1||planeId==2)
+      fx[padId]+=q;//Xup+Xdown
     else 
       fy[padId]=q;
+
+    if(q>qmx&&(planeId==1||planeId==2)){
+     qmx=q;
+     padmx=padId;
+    }
+    if(q>qmy&&planeId==3){
+     qmy=q;
+     padmy=padId;
+    }
   }
   //Add Hit data ----
-  if(padmxu>-1&&padmy>-1){
-  //TODO: Look for right combinations
+  if(padmx>-1&&padmy>-1){
+   //FIXME: in November this should be OK!
+   //Obtain position X ----
+   qleft=fx[padmx-1];
+   qright=fx[padmx+1];
+   x=GetPostionX(qmx,padmx,qleft,qright);
+   //Obtain position Y ----
+   qdown=fy[padmy-1];
+   qup=fy[padmy+1];
+   y=GetPostionY(qmy,padmy,qdown,qup);
+
    AddHitData(x,y);
   }
 
@@ -145,7 +163,6 @@ Double_t R3BSofMwpc2Cal2Hit::GetPostionY(Int_t qmax, Int_t padmax, Int_t qdown, 
  Double_t a2= (a3/TMath::Pi()) * TMath::ATanH( (TMath::Sqrt(qmax/qdown)-TMath::Sqrt(qmax/qup)) / (2*TMath::SinH(TMath::Pi()*fwy/a3)) );
 
  return (padmax*fwy-(fSize/2)+(fwy/2)+a2);
-
 }
 
 // -----   Public method Finish  ------------------------------------------------
