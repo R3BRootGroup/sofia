@@ -30,7 +30,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 R3BSofOnlineSpectra.cxx
-R3BSofMwpc0OnlineSpectra.cxx
+R3BSofMwpcOnlineSpectra.cxx
 R3BSofAtOnlineSpectra.cxx
 R3BSofTwimOnlineSpectra.cxx
 )

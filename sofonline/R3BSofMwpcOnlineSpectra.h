@@ -1,11 +1,11 @@
 // ------------------------------------------------------------
-// -----                  R3BSofMwpc0OnlineSpectra        -----
+// -----                  R3BSofMwpcOnlineSpectra         -----
 // -----    Created 29/09/19  by J.L. Rodriguez-Sanchez   -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
-#ifndef R3BSofMwpc0OnlineSpectra_H
-#define R3BSofMwpc0OnlineSpectra_H
+#ifndef R3BSofMwpcOnlineSpectra_H
+#define R3BSofMwpcOnlineSpectra_H
 
 #include "FairTask.h"
 #include <sstream>
@@ -22,30 +22,31 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads FRS data and plots online histograms 
+ * This taks reads MWPC data and plots online histograms 
  */
-class R3BSofMwpc0OnlineSpectra : public FairTask {
+class R3BSofMwpcOnlineSpectra : public FairTask {
   
  public:
   /**
    * Default constructor.
    * Creates an instance of the task with default parameters.
    */
-  R3BSofMwpc0OnlineSpectra();
+  R3BSofMwpcOnlineSpectra();
   
   /**
    * Standard constructor.
    * Creates an instance of the task.
    * @param name a name of the task.
    * @param iVerbose a verbosity level.
+   * @param namedet a name of the detector.
    */
-  R3BSofMwpc0OnlineSpectra(const char* name, Int_t iVerbose = 1);
+  R3BSofMwpcOnlineSpectra(const TString& name, Int_t iVerbose = 1, const TString& namedet="MWPC");
   
   /**
    * Destructor.
    * Frees the memory used by the object.
    */
-  virtual ~R3BSofMwpc0OnlineSpectra();
+  virtual ~R3BSofMwpcOnlineSpectra();
   
   /**
    * Method for task initialization.
@@ -82,24 +83,25 @@ class R3BSofMwpc0OnlineSpectra : public FairTask {
 
   private:
   
-  TClonesArray* fCalItemsMwpc0;         /**< Array with cal items. */
+  TClonesArray* fCalItemsMwpc;          /**< Array with cal items. */
   
   // check for trigger should be done globablly (somewhere else)
   R3BEventHeader* header;               /**< Event header.      */
   Int_t fNEvents;        	   	/**< Event counter.     */
+  TString fNameDet;
   
   //Canvas
-  TCanvas* cMWPC0Cal, *cMWPC0Cal2D;
+  TCanvas* cMWPCCal, *cMWPCCal2D;
 
   //Histograms for Mapped data
-  TH2F* fh2_mwpc0_cal;
-  TH1F* fh1_mwpc0_cal[2];
+  TH2F* fh2_mwpc_cal;
+  TH1F* fh1_mwpc_cal[2];
 
   //Histograms for Mapped data
   //TH2F* fh2_atcal[3];
   
   public:
-  ClassDef(R3BSofMwpc0OnlineSpectra, 1)
+  ClassDef(R3BSofMwpcOnlineSpectra, 1)
 };
 
 #endif

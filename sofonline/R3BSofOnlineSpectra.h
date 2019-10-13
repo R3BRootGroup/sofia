@@ -21,11 +21,11 @@
 class TClonesArray;
 class R3BEventHeader;
 class R3BSofAtOnlineSpectra;
-class R3BSofMwpc0OnlineSpectra;
+class R3BSofMwpcOnlineSpectra;
 class R3BSofTwimOnlineSpectra;
 
 /**
- * This taks reads FRS data and plots online histograms 
+ * This taks reads General SOFIA data and plots online histograms 
  */
 class R3BSofOnlineSpectra : public FairTask {
   
@@ -42,7 +42,7 @@ class R3BSofOnlineSpectra : public FairTask {
    * @param name a name of the task.
    * @param iVerbose a verbosity level.
    */
-  R3BSofOnlineSpectra(const char* name, Int_t iVerbose = 1);
+  R3BSofOnlineSpectra(const TString& name, Int_t iVerbose = 1);
   
   /**
    * Destructor.
@@ -94,7 +94,7 @@ class R3BSofOnlineSpectra : public FairTask {
   Int_t fNEvents;        	   	/**< Event counter.     */
 
   R3BSofAtOnlineSpectra* fAtOnline;
-  R3BSofMwpc0OnlineSpectra* fMwpc0Online;
+  R3BSofMwpcOnlineSpectra* fMwpc0Online;
   R3BSofTwimOnlineSpectra* fTwimOnline;
 
   //Canvas

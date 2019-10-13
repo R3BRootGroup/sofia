@@ -10,7 +10,7 @@
 
 #include "R3BSofOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
-#include "R3BSofMwpc0OnlineSpectra.h"
+#include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "THttpServer.h"
@@ -52,7 +52,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
 {
 }
 
-R3BSofOnlineSpectra::R3BSofOnlineSpectra(const char* name, Int_t iVerbose)
+R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
   : FairTask(name, iVerbose)
   , fEventHeader(nullptr)
   , fAtOnline(NULL)
@@ -90,7 +90,7 @@ InitStatus R3BSofOnlineSpectra::Init() {
      LOG(WARNING)<<"R3BSofOnlineSpectra::Init SofAtOnlineSpectra not found";
 
   //Looking for Mwpc0 online
-  fMwpc0Online = (R3BSofMwpc0OnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0OnlineSpectra");
+  fMwpc0Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0OnlineSpectra");
   if (!fMwpc0Online)
      LOG(WARNING)<<"R3BSofOnlineSpectra::Init SofMwpc0OnlineSpectra not found";
 
