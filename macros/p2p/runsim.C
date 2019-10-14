@@ -11,7 +11,7 @@
 //
 //--------------------------------------------------------------------
 
-void run_sim(Int_t nEvents = 0)
+void runsim(Int_t nEvents = 0)
 {
   //-------------------------------------------------
   // Monte Carlo type     |           (TString)
@@ -117,7 +117,7 @@ void run_sim(Int_t nEvents = 0)
 
     run->AddModule(new R3BSofMwpc1(geodir+"mwpc_1.geo.root", { 0., 0., 16. }));
 
-    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v0.geo.root", { 0., 0., 50. }));
+    run->AddModule(new R3BSofTWIM(geodir+"twinmusic_v19a.geo.root", { 0., 0., 50. }));
 
     run->AddModule(new R3BSofMwpc2(geodir+"mwpc_2.geo.root", { 0., 0., 95. }));
 
