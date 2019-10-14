@@ -19,8 +19,7 @@ public:
    *@param theta    Angle theta in [mrad]
    *@param z        Atomic number Z in charge units
    **/
-  R3BSofTwimHitData(UChar_t secID, UChar_t anodeID, 
-                                    Double_t theta,
+  R3BSofTwimHitData(UChar_t secID, Double_t theta,
 	                                Double_t z);
 
   /** Destructor **/
