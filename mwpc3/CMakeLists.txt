@@ -32,6 +32,8 @@ R3BSofMwpc3.cxx
 R3BSofMwpc3CalPar.cxx
 R3BSofMwpc3ContFact.cxx
 R3BSofMwpc3Mapped2Cal.cxx
+R3BSofMwpc3Mapped2CalPar.cxx
+R3BSofMwpc3Cal2Hit.cxx
 
 
 )
