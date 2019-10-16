@@ -5,15 +5,10 @@
 #pragma link off all functions;
 
 #pragma link C++ class R3BSofMwpc1+;
-
-//#pragma link C++ class R3BSofMWPCHitPar+;
-//#pragma link C++ class R3BSofMWPCCalPar+;
-//#pragma link C++ class R3BSofMWPCMappedPar+;
-
-//#pragma link C++ class R3BSofMWPCCal2Hit+;
-//#pragma link C++ class R3BSofMWPCMapped2Cal+;
-
-//#pragma link C++ class R3BSofMWPCCal2HitPar+;
-//#pragma link C++ class R3BSofMWPCMapped2CalPar+;
+#pragma link C++ class R3BSofMwpc1Cal2Hit+;
+#pragma link C++ class R3BSofMwpc1Mapped2CalPar+;
+#pragma link C++ class R3BSofMwpc1Mapped2Cal+;
+#pragma link C++ class R3BSofMwpc1ContFact+;
+#pragma link C++ class R3BSofMwpc1CalPar+;
 
 #endif
