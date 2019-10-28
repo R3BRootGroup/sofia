@@ -41,7 +41,7 @@ R3BSofMwpc2Cal2Hit.cxx
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
 set(LINKDEF SofMWPCLinkDef.h)
-set(LIBRARY_NAME R3BSofMWPC2)
+set(LIBRARY_NAME R3BSofMwpc2)
 set(DEPENDENCIES
     R3Bbase R3BData R3BSofData)
 

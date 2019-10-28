@@ -82,7 +82,7 @@ void runsim(Int_t nEvents = 0)
 
     // To skip the detector comment out the line with: run->AddModule(...
 
-    //run->AddModule(new R3BMusic("music_s467.geo.root", { 0., 0., -60. }));
+    run->AddModule(new R3BMusic("music_s467.geo.root", { 0., 0., -65.5-60.-35. }));
 
     //Vacuum chamber and target definition
     if(fTarget && !fTracker){
@@ -159,10 +159,27 @@ void runsim(Int_t nEvents = 0)
         boxGen->SetXYZ(0.0, 0.0, -65.5);
         //primGen->AddGenerator(boxGen);
 
+
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 1, 0., 0., 1.39/1.3-1.39/1.3*0.01);
-        ionGen->SetSpotRadius(0.1, +65.5, 0.);
-        primGen->AddGenerator(ionGen);
+        R3BIonGenerator* ionGen1 = new R3BIonGenerator(50, 128, 50, 1, 0., 0., 1.39/1.3-1.39/1.3*0.01);
+        ionGen1->SetSpotRadius(0.1, +65.5, 0.);
+        primGen->AddGenerator(ionGen1);
+
+        // 127-Sn fragment
+        R3BIonGenerator* ionGen2 = new R3BIonGenerator(50, 127, 50, 1, 0., 0., 1.39/1.3-1.39/1.3*0.01);
+        ionGen2->SetSpotRadius(0.1, +65.5, 0.);
+        primGen->AddGenerator(ionGen2);
+
+        // 126-Sn fragment
+        R3BIonGenerator* ionGen3 = new R3BIonGenerator(50, 126, 50, 1, 0., 0., 1.39/1.3-1.39/1.3*0.01);
+        ionGen3->SetSpotRadius(0.1, +65.5, 0.);
+        primGen->AddGenerator(ionGen3);
+
+        // 125-Sn fragment
+        R3BIonGenerator* ionGen4 = new R3BIonGenerator(50, 125, 50, 1, 0., 0., 1.39/1.3-1.39/1.3*0.01);
+        ionGen4->SetSpotRadius(0.1, +65.5, 0.);
+        primGen->AddGenerator(ionGen4);
+
 
         // neutrons
         FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);

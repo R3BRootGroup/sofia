@@ -155,22 +155,9 @@ void create_mwpc3_geo(const char* geoTag = "3")
 	TGeoRotation * zeroRot = new TGeoRotation; //zero rotation
 	TGeoCombiTrans * tZero = new TGeoCombiTrans("tZero", 0., 0., 0., zeroRot);
 	tZero->RegisterYourself();
-  
-  
 	//-------------------------------------------------------------------
-  
-	// Fill Chamber: Vacuum or Air. Needed still: an external call interface for choosing which.
-	TGeoMedium * pMedFill=pMedVac;
-  //pMedFill = new TGeoMedium("Fill_Air", numed,pMat2, par);
-  //pMedFill = (TGeoMedium*) pMedAir->Clone();
-  //pMedFill->SetName("Fill_Air");
-//  pMedFill = (TGeoMedium*) pMedVac->Clone();
-//  pMedFill->SetName("Fill_Vacuum");
-  
-	//-------------------------------------------------------------------
-   
-  
-       //WORLD
+
+        //WORLD
 	
 	TGeoVolume *pAWorld  =  gGeoManager->GetTopVolume();
 
@@ -191,9 +178,6 @@ void create_mwpc3_geo(const char* geoTag = "3")
 	
 	// add the sphere as Mother Volume
 	pAWorld->AddNodeOverlap(pWorld, 0, pGlobalc);
-
-
-   // Base de aluminio  pieza 1
 
  
    // TRANSFORMATION MATRICES
@@ -229,18 +213,12 @@ void create_mwpc3_geo(const char* geoTag = "3")
    base_log2->SetLineColor(2);
 
    // Position Mother Volume
-  // pWorld->AddNode(base_log2, 0, pGlobal1);
-
-
-   
    TGeoSubtraction* basesub1 = new TGeoSubtraction(base1,base2,pMatrix1,pMatrix1);
    TGeoShape *basesub_1 = new TGeoCompositeShape("GE", basesub1);
    TGeoVolume*
    basesub_log1 = new TGeoVolume("",basesub_1, pMedAl);
    basesub_log1->SetVisLeaves(kTRUE);
    basesub_log1->SetLineColor(4);
-
-  // pWorld->AddNode(basesub_log1, 0, pGlobal1);
 
    // TRANSFORMATION MATRICES
    // Combi transformation: 
@@ -435,20 +413,11 @@ void create_mwpc3_geo(const char* geoTag = "3")
    TGeoShape *Detector1 = new TGeoBBox("Detector_1", dx/2.,dy/2.,dz/2.);
    // Volume: 
    TGeoVolume*
-   Detector_log1 = new TGeoVolume("MWPC21",Detector1, pMedAr);
+   Detector_log1 = new TGeoVolume("MWPC3",Detector1, pMedAr);
    Detector_log1->SetVisLeaves(kTRUE);
    Detector_log1->SetLineColor(3);
 
    pWorld->AddNode(Detector_log1, 0, pGlobal2);
-
- //  AddSensitiveVolume(Detector_log1);
- //  fNbOfSensitiveVol+=1;
-
-
-
-   // Separador pieza 3
-
-
 
    // TRANSFORMATION MATRICES
    // Combi transformation: 
@@ -719,13 +688,6 @@ void create_mwpc3_geo(const char* geoTag = "3")
    Detector_log2->SetLineColor(3);
 
    //pWorld->AddNode(Detector_log2, 0, pGlobal5);
-
- //  AddSensitiveVolume(Detector_log2);
- //  fNbOfSensitiveVol+=1;
-
-
-   //  Cuadro final pieza 5
-
  
    // TRANSFORMATION MATRICES
    // Combi transformation: 
