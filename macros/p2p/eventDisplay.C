@@ -6,7 +6,7 @@ void eventDisplay()
 
   FairRuntimeDb* rtdb = fRun->GetRuntimeDb();
   FairParRootFileIo*  parIo1 = new FairParRootFileIo();
-  parIo1->open("par.root");
+  parIo1->open("simpar.root");
   rtdb->setFirstInput(parIo1);
   //rtdb->print();
 
