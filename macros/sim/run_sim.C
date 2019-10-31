@@ -40,7 +40,7 @@ void run_sim(Int_t nEvents = 0)
 
     // -----   Create simulation run   ----------------------------------------
     FairRunSim* run = new FairRunSim();
-    run->SetName(transport);            // Transport engine
+    run->SetName(transport);                     // Transport engine
     run->SetSink(new FairRootFileSink(outFile)); // Output file
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
@@ -63,7 +63,7 @@ void run_sim(Int_t nEvents = 0)
     califa->SelectGeometryVersion(10);
     // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
     califa->SetNonUniformity(1.0);
-    //run->AddModule(califa);
+    // run->AddModule(califa);
 
     // NeuLAND
     // run->AddModule(new R3BNeuland("neuland_test.geo.root", { 0., 0., 1400. + 12 * 5. }));
@@ -84,7 +84,6 @@ void run_sim(Int_t nEvents = 0)
 
     // ToF Wall
     run->AddModule(new R3BSofTofWall("sof_tof_v0.geo.root"));
-
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
@@ -123,7 +122,7 @@ void run_sim(Int_t nEvents = 0)
         // 128-Sn fragment
         R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
         ionGen->SetSpotRadius(0.1, -300., 0.);
-        //primGen->AddGenerator(ionGen);
+        // primGen->AddGenerator(ionGen);
 
         // neutrons
         FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
@@ -131,7 +130,7 @@ void run_sim(Int_t nEvents = 0)
         boxGen_n->SetPRange(momentum, momentum * 1.2);
         boxGen_n->SetPhiRange(0, 360);
         boxGen_n->SetXYZ(0.0, 0.0, -1.5);
-        //primGen->AddGenerator(boxGen_n);
+        // primGen->AddGenerator(boxGen_n);
     }
 
     if (generator.CompareTo("ascii") == 0)

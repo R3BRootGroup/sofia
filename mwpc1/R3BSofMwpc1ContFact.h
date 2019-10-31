@@ -11,15 +11,17 @@
 
 class FairContainer;
 
-class R3BSofMwpc1ContFact : public FairContFact {
-private:
-  void setAllContainers();
-public:
-  R3BSofMwpc1ContFact();
-  ~R3BSofMwpc1ContFact() {}
-  FairParSet* createContainer(FairContainer*);
-  void  activateParIo(FairParIo* io);
-  ClassDef(R3BSofMwpc1ContFact,0) // Factory for all MWPC1 parameter containers
+class R3BSofMwpc1ContFact : public FairContFact
+{
+  private:
+    void setAllContainers();
+
+  public:
+    R3BSofMwpc1ContFact();
+    ~R3BSofMwpc1ContFact() {}
+    FairParSet* createContainer(FairContainer*);
+    void activateParIo(FairParIo* io);
+    ClassDef(R3BSofMwpc1ContFact, 0) // Factory for all MWPC1 parameter containers
 };
 
-#endif  /* !R3BSofMwpc1ContFact_H */
+#endif /* !R3BSofMwpc1ContFact_H */

@@ -8,68 +8,64 @@
 #define R3BSofMwpc1CalPar_H
 
 #include "FairParGenericSet.h"
+#include "TArrayI.h"
+#include "TObjArray.h"
 #include "TObject.h"
 #include <TObjString.h>
-#include "TObjArray.h"
-#include "TArrayI.h"
-
 
 class FairParamList;
 
-class R3BSofMwpc1CalPar : public FairParGenericSet {
+class R3BSofMwpc1CalPar : public FairParGenericSet
+{
 
- public:
+  public:
+    /** Default Constructor **/
+    R3BSofMwpc1CalPar();
 
-  /** Default Constructor **/
-  R3BSofMwpc1CalPar();
+    /** Standard constructor **/
+    R3BSofMwpc1CalPar(const char* name = "mwpc1CalPar",
+                      const char* title = "Mwpc1 Cal Parameters",
+                      const char* context = "Mwpc1CalParContext");
 
-  /** Standard constructor **/
-  R3BSofMwpc1CalPar(const char* name = "mwpc1CalPar",
-                       const char* title = "Mwpc1 Cal Parameters",
-                       const char* context ="Mwpc1CalParContext");
+    /** Destructor **/
+    virtual ~R3BSofMwpc1CalPar();
 
-  /** Destructor **/
-  virtual ~R3BSofMwpc1CalPar();
+    /** Method to reset all parameters **/
+    virtual void clear();
 
-  /** Method to reset all parameters **/
-  virtual void clear();
+    /** Method to store all parameters using FairRuntimeDB **/
+    virtual void putParams(FairParamList* list);
 
-  /** Method to store all parameters using FairRuntimeDB **/
-  virtual void putParams(FairParamList* list);
+    /** Method to retrieve all parameters using FairRuntimeDB**/
+    Bool_t getParams(FairParamList* list);
 
-  /** Method to retrieve all parameters using FairRuntimeDB**/
-  Bool_t getParams(FairParamList* list);
+    /** Method to print values of parameters to the standard output **/
+    void printParams();
 
-  /** Method to print values of parameters to the standard output **/
-  void printParams();
+    /** Accessor functions **/
+    const Int_t GetNumPadsX() { return fNumPadsX; }
+    const Int_t GetNumPadsY() { return fNumPadsY; }
+    const Int_t GetNumParametersFit() { return fNumParamsFit; }
 
-  /** Accessor functions **/
-  const Int_t GetNumPadsX(){return fNumPadsX;}
-  const Int_t GetNumPadsY(){return fNumPadsY;}
-  const Int_t GetNumParametersFit(){return fNumParamsFit;}
+    TArrayI* GetPadCalParams() { return fPadCalParams; }
 
-  TArrayI* GetPadCalParams(){return fPadCalParams;}
+    void SetNumPadsX(Int_t numberPadsX) { fNumPadsX = numberPadsX; }
+    void SetNumPadsY(Int_t numberPadsY) { fNumPadsY = numberPadsY; }
+    void SetNumParametersFit(Int_t numberParams) { fNumParamsFit = numberParams; }
+    void SetPadCalParams(Int_t cc, Int_t ii) { fPadCalParams->AddAt(cc, ii); }
 
-  void SetNumPadsX(Int_t numberPadsX){fNumPadsX=numberPadsX;}
-  void SetNumPadsY(Int_t numberPadsY){fNumPadsY=numberPadsY;}
-  void SetNumParametersFit(Int_t numberParams){fNumParamsFit=numberParams;}
-  void SetPadCalParams(Int_t cc, Int_t ii ){fPadCalParams->AddAt(cc, ii);}
+    /** Create more Methods if you need them! **/
 
-  /** Create more Methods if you need them! **/
+  private:
+    TArrayI* fPadCalParams;
+    Int_t fNumPadsX;
+    Int_t fNumPadsY;
+    Int_t fNumParamsFit;
 
- private:
+    const R3BSofMwpc1CalPar& operator=(const R3BSofMwpc1CalPar&); // An assignment operator
 
-  TArrayI* fPadCalParams;
-  Int_t fNumPadsX;
-  Int_t fNumPadsY;
-  Int_t fNumParamsFit;
+    R3BSofMwpc1CalPar(const R3BSofMwpc1CalPar&); // A copy constructor
 
-  const R3BSofMwpc1CalPar& operator = (const R3BSofMwpc1CalPar&); // An assignment operator
-
-  R3BSofMwpc1CalPar( const R3BSofMwpc1CalPar&);                // A copy constructor
-
-  ClassDef(R3BSofMwpc1CalPar,0);
-
-
-  };
+    ClassDef(R3BSofMwpc1CalPar, 0);
+};
 #endif

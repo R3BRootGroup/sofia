@@ -4,15 +4,13 @@
 // -----             by modifying J.L classes for MWPC0             -----
 // ----------------------------------------------------------------------
 
-
 #ifndef R3BSOFMWPC3CAL2HIT_H
 #define R3BSOFMWPC3CAL2HIT_H
 
-
 #include "FairTask.h"
-#include "TH1F.h"
 #include "R3BSofMwpcCalData.h"
 #include "R3BSofMwpcHitData.h"
+#include "TH1F.h"
 #include <TRandom.h>
 
 #define NbPadsX 288
@@ -20,62 +18,61 @@
 
 class TClonesArray;
 
-class R3BSofMwpc3Cal2Hit : public FairTask {
+class R3BSofMwpc3Cal2Hit : public FairTask
+{
 
+  public:
+    /* Default Constructor */
+    R3BSofMwpc3Cal2Hit();
 
- public:
+    /** Standard constructor **/
+    R3BSofMwpc3Cal2Hit(const char* name, Int_t iVerbose = 1);
 
-   /* Default Constructor */
-   R3BSofMwpc3Cal2Hit();
+    /** Destructor **/
+    virtual ~R3BSofMwpc3Cal2Hit();
 
-   /** Standard constructor **/
-   R3BSofMwpc3Cal2Hit(const char* name, Int_t iVerbose=1);
+    /** Virtual method Exec **/
+    virtual void Exec(Option_t* option);
 
-   /** Destructor **/
-   virtual ~R3BSofMwpc3Cal2Hit();
+    /** Virtual method Reset **/
+    virtual void Reset();
 
-   /** Virtual method Exec **/
-   virtual void Exec(Option_t* option);
+    // Fair specific
+    /** Virtual method Init **/
+    virtual InitStatus Init();
 
-   /** Virtual method Reset **/
-   virtual void Reset();
+    /** Virtual method ReInit **/
+    virtual InitStatus ReInit();
 
-   //Fair specific
-   /** Virtual method Init **/
-   virtual InitStatus Init();
+    /** Virtual method Finish **/
+    virtual void Finish();
 
-   /** Virtual method ReInit **/
-   virtual InitStatus ReInit();
+    void SetOnline(Bool_t option) { fOnline = option; }
 
-   /** Virtual method Finish **/
-   virtual void Finish();
+    ClassDef(R3BSofMwpc3Cal2Hit, 1)
 
-   void SetOnline(Bool_t option){ fOnline=option; }
+        private :
 
-   ClassDef(R3BSofMwpc3Cal2Hit, 1)
+        Double_t fSizeX; // Detector size in X and Y
+    Double_t fSizeY;     // Detector size in X and Y
+    Double_t fwx;        // Pad width in X
+    Double_t fwy;        // Pad width in Y
+    Int_t fx[NbPadsX], fy[NbPadsY];
 
- private:
+    Bool_t fOnline; // Don't store data for online
 
-   Double_t fSizeX; //Detector size in X and Y
-   Double_t fSizeY; //Detector size in X and Y
-   Double_t fwx;   //Pad width in X
-   Double_t fwy;   //Pad width in Y
-   Int_t fx[NbPadsX], fy[NbPadsY];
+    TClonesArray* fMwpcCalDataCA; /**< Array with Cal input data. >*/
+    TClonesArray* fMwpcHitDataCA; /**< Array with Hit output data. >*/
 
-   Bool_t fOnline; //Don't store data for online
+    /** Private method AddHitData **/
 
-   TClonesArray* fMwpcCalDataCA;  /**< Array with Cal input data. >*/
-   TClonesArray* fMwpcHitDataCA;  /**< Array with Hit output data. >*/
+    // Adds a SofMwpcHitData to the MwpcHitCollection
+    R3BSofMwpcHitData* AddHitData(Double_t x, Double_t y);
 
-   /** Private method AddHitData **/
-
-   // Adds a SofMwpcHitData to the MwpcHitCollection
-   R3BSofMwpcHitData* AddHitData(Double_t x, Double_t y);
-
-   /** Private method to obtain the position X **/
-   Double_t GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright);
-   /** Private method to obtain the position Y **/
-   Double_t GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup);
+    /** Private method to obtain the position X **/
+    Double_t GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright);
+    /** Private method to obtain the position Y **/
+    Double_t GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup);
 };
 
 #endif

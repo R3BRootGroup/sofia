@@ -7,43 +7,38 @@
 #define R3BSofTwimHitData_H
 #include "TObject.h"
 
-class R3BSofTwimHitData :  public TObject {
+class R3BSofTwimHitData : public TObject
+{
 
-public:
-  /** Default constructor **/
-  R3BSofTwimHitData();
+  public:
+    /** Default constructor **/
+    R3BSofTwimHitData();
 
+    /** Constructor with arguments
+     *@param secID    Section ID
+     *@param theta    Angle theta in [mrad]
+     *@param z        Atomic number Z in charge units
+     **/
+    R3BSofTwimHitData(UChar_t secID, Double_t theta, Double_t z);
 
-  /** Constructor with arguments
-   *@param secID    Section ID 
-   *@param theta    Angle theta in [mrad]
-   *@param z        Atomic number Z in charge units
-   **/
-  R3BSofTwimHitData(UChar_t secID, Double_t theta,
-	                                Double_t z);
+    /** Destructor **/
+    virtual ~R3BSofTwimHitData() {}
 
-  /** Destructor **/
-  virtual ~R3BSofTwimHitData() { }
+    /** Accessors **/
+    inline const UChar_t& GetSecID() const { return fSecID; }
+    inline const Double_t& GetTheta() const { return fTheta; }
+    inline const Double_t& GetZcharge() const { return fZ; }
 
+    /** Modifiers **/
+    void SetSecID(UChar_t id) { fSecID = id; };
+    void SetTheta(Double_t theta) { fTheta = theta; };
+    void SetZcharge(Double_t z) { fZ = z; };
 
-  /** Accessors **/
-  inline const UChar_t&     GetSecID()     const { return fSecID; }
-  inline const Double_t&    GetTheta()     const { return fTheta; }
-  inline const Double_t&    GetZcharge()   const { return fZ;     }
+  protected:
+    UChar_t fSecID;
+    Double_t fTheta, fZ;
 
-
-  /** Modifiers **/
-  void SetSecID(UChar_t id)      { fSecID = id;    };
-  void SetTheta(Double_t theta)  { fTheta = theta; };
-  void SetZcharge(Double_t z)    { fZ = z;         };
-
-
- protected:
-
-  UChar_t fSecID;
-  Double_t fTheta, fZ;
-
-  ClassDef(R3BSofTwimHitData,1)
+    ClassDef(R3BSofTwimHitData, 1)
 };
 
 #endif

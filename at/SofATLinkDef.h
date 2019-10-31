@@ -4,7 +4,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-#pragma link C++ class R3BSofAT+;
+#pragma link C++ class R3BSofAT + ;
 
 //#pragma link C++ class R3BSofATHitPar+;
 //#pragma link C++ class R3BSofATCalPar+;

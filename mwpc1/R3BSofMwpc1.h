@@ -97,38 +97,38 @@ class R3BSofMwpc1 : public R3BDetector
   private:
     /** Track information to be stored until the track leaves the
     active volume. **/
-    Int_t fTrackID;                 //!  track index
-    Int_t fVolumeID;                //!  volume id
-    Int_t fDetCopyID;               //!  Det volume id
-    Int_t fsector;                  //!  volume id
-    TLorentzVector fPosIn, fPosOut; //!  position
-    TLorentzVector fMomIn, fMomOut; //!  momentum
-    Double32_t fTime_in;            //!  time when entering active volume
-    Double32_t fTime_out;           //!  time when exiting active volume
-    Double32_t fTime;               //!  time
-    Double32_t fLength_in;          //!  length when entering active volume
-    Double32_t fLength_out;         //!  length when exiting active volume
-    Double32_t fLength;             //!  length
-    Double32_t fELoss;              //!  energy loss
-    Int_t fPosIndex;                //!
-    TClonesArray* fSofMWPCCollection;   //!  The hit collection
-    Bool_t kGeoSaved;               //!
-    TList* flGeoPar;                //!
+    Int_t fTrackID;                   //!  track index
+    Int_t fVolumeID;                  //!  volume id
+    Int_t fDetCopyID;                 //!  Det volume id
+    Int_t fsector;                    //!  volume id
+    TLorentzVector fPosIn, fPosOut;   //!  position
+    TLorentzVector fMomIn, fMomOut;   //!  momentum
+    Double32_t fTime_in;              //!  time when entering active volume
+    Double32_t fTime_out;             //!  time when exiting active volume
+    Double32_t fTime;                 //!  time
+    Double32_t fLength_in;            //!  length when entering active volume
+    Double32_t fLength_out;           //!  length when exiting active volume
+    Double32_t fLength;               //!  length
+    Double32_t fELoss;                //!  energy loss
+    Int_t fPosIndex;                  //!
+    TClonesArray* fSofMWPCCollection; //!  The hit collection
+    Bool_t kGeoSaved;                 //!
+    TList* flGeoPar;                  //!
 
     /** Private method AddPoint
      **
      ** Adds a TraPoint to the HitCollection
      **/
     R3BSofMWPCPoint* AddPoint(Int_t trackID,
-                        Int_t detID,
-                        Int_t detCopyID, 
-                        TVector3 posIn,
-                        TVector3 pos_out,
-                        TVector3 momIn,
-                        TVector3 momOut,
-                        Double_t time,
-                        Double_t length,
-                        Double_t eLoss);
+                              Int_t detID,
+                              Int_t detCopyID,
+                              TVector3 posIn,
+                              TVector3 pos_out,
+                              TVector3 momIn,
+                              TVector3 momOut,
+                              Double_t time,
+                              Double_t length,
+                              Double_t eLoss);
 
     /** Private method ResetParameters
      **
@@ -142,7 +142,7 @@ class R3BSofMwpc1 : public R3BDetector
 inline void R3BSofMwpc1::ResetParameters()
 {
     fTrackID = fVolumeID = 0;
-    fDetCopyID = 0; 
+    fDetCopyID = 0;
     fPosIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fPosOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);

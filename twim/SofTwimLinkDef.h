@@ -4,9 +4,9 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-#pragma link C++ class R3BSofTWIM+;
-#pragma link C++ class R3BSofTwimContFact+;
-#pragma link C++ class R3BSofTwimMapped2Cal+;
+#pragma link C++ class R3BSofTWIM + ;
+#pragma link C++ class R3BSofTwimContFact + ;
+#pragma link C++ class R3BSofTwimMapped2Cal + ;
 
 //#pragma link C++ class R3BSofTWIMHitPar+;
 //#pragma link C++ class R3BSofTWIMCalPar+;

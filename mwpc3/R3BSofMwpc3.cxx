@@ -5,11 +5,11 @@
 #include "R3BSofMwpc3.h"
 #include "FairGeoInterface.h"
 #include "FairGeoLoader.h"
-#include "TGeoManager.h"
 #include "FairVolume.h"
 #include "R3BMCStack.h"
 #include "R3BSofMWPCPoint.h"
 #include "TClonesArray.h"
+#include "TGeoManager.h"
 #include "TObjArray.h"
 #include "TParticle.h"
 #include "TVirtualMC.h"
@@ -57,10 +57,7 @@ void R3BSofMwpc3::Initialize()
     LOG(DEBUG) << "R3BSofMwpc3: Sens. Vol. (McId) " << gMC->VolId("MWPC3");
 }
 
-void R3BSofMwpc3::SetSpecialPhysicsCuts()
-{
-    LOG(INFO) << "-I- R3BSofMwpc3: Adding customized Physics cut ... ";
-}
+void R3BSofMwpc3::SetSpecialPhysicsCuts() { LOG(INFO) << "-I- R3BSofMwpc3: Adding customized Physics cut ... "; }
 
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofMwpc3::ProcessHits(FairVolume* vol)
@@ -82,7 +79,7 @@ Bool_t R3BSofMwpc3::ProcessHits(FairVolume* vol)
     {
         fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
         fVolumeID = vol->getMCid();
-        fDetCopyID = 2;//vol->getCopyNo();
+        fDetCopyID = 2; // vol->getCopyNo();
         gMC->TrackPosition(fPosOut);
         gMC->TrackMomentum(fMomOut);
         //        if (fELoss == 0.)
@@ -122,15 +119,15 @@ Bool_t R3BSofMwpc3::ProcessHits(FairVolume* vol)
         }
 
         AddPoint(fTrackID,
-               fVolumeID,
-               fDetCopyID,
-               TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
-               TVector3(fPosOut.X(), fPosOut.Y(), fPosOut.Z()),
-               TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()),
-               TVector3(fMomOut.Px(), fMomOut.Py(), fMomOut.Pz()),
-               fTime,
-               fLength,
-               fELoss);
+                 fVolumeID,
+                 fDetCopyID,
+                 TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
+                 TVector3(fPosOut.X(), fPosOut.Y(), fPosOut.Z()),
+                 TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()),
+                 TVector3(fMomOut.Px(), fMomOut.Py(), fMomOut.Pz()),
+                 fTime,
+                 fLength,
+                 fELoss);
 
         // Increment number of TraPoints for this track
         R3BStack* stack = (R3BStack*)gMC->GetStack();
@@ -157,8 +154,10 @@ void R3BSofMwpc3::EndOfEvent()
 // ----------------------------------------------------------------------------
 
 // -----   Public method Register   -------------------------------------------
-void R3BSofMwpc3::Register() { FairRootManager::Instance()->Register("SofMwpc3Point", 
-                                           GetName(), fSofMWPCCollection, kTRUE); }
+void R3BSofMwpc3::Register()
+{
+    FairRootManager::Instance()->Register("SofMwpc3Point", GetName(), fSofMWPCCollection, kTRUE);
+}
 // ----------------------------------------------------------------------------
 
 // -----   Public method GetCollection   --------------------------------------
@@ -207,39 +206,32 @@ void R3BSofMwpc3::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 
 // -----   Private method AddPoint   --------------------------------------------
 R3BSofMWPCPoint* R3BSofMwpc3::AddPoint(Int_t trackID,
-                            Int_t detID,
-                            Int_t detCopyID,
-                            TVector3 posIn,
-                            TVector3 posOut,
-                            TVector3 momIn,
-                            TVector3 momOut,
-                            Double_t time,
-                            Double_t length,
-                            Double_t eLoss)
+                                       Int_t detID,
+                                       Int_t detCopyID,
+                                       TVector3 posIn,
+                                       TVector3 posOut,
+                                       TVector3 momIn,
+                                       TVector3 momOut,
+                                       Double_t time,
+                                       Double_t length,
+                                       Double_t eLoss)
 {
     TClonesArray& clref = *fSofMWPCCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
         LOG(INFO) << "R3BSofMwpc3: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
-    return new (clref[size]) R3BSofMWPCPoint(trackID,
-                                         detID,
-                                         detCopyID,
-                                         posIn,
-                                         posOut,
-                                         momIn,
-                                         momOut,
-                                         time,
-                                         length,
-                                         eLoss);
+    return new (clref[size])
+        R3BSofMWPCPoint(trackID, detID, detCopyID, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
 Bool_t R3BSofMwpc3::CheckIfSensitive(std::string name)
 {
-  if (TString(name).Contains("MWPC3")) {
-    LOG(INFO) << "Found MWPC3 geometry from ROOT file: " << name;
-    return kTRUE;
-  }
+    if (TString(name).Contains("MWPC3"))
+    {
+        LOG(INFO) << "Found MWPC3 geometry from ROOT file: " << name;
+        return kTRUE;
+    }
     return kFALSE;
 }
 

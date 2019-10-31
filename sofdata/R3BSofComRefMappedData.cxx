@@ -1,8 +1,8 @@
 #include "R3BSofComRefMappedData.h"
 
-// for the data analysis of the COMMON REFERENCE TIME SIGNAL sent to S2 and Cave C for the reconstruction of the ToF of the secondary beam
+// for the data analysis of the COMMON REFERENCE TIME SIGNAL sent to S2 and Cave C for the reconstruction of the ToF of
+// the secondary beam
 // Introduced by Audrey, April 2017
-
 
 R3BSofComRefMappedData::R3BSofComRefMappedData()
     : fDetector(0)
@@ -12,10 +12,7 @@ R3BSofComRefMappedData::R3BSofComRefMappedData()
 {
 }
 
-R3BSofComRefMappedData::R3BSofComRefMappedData(UShort_t detector,
-					       UInt_t tc,
-					       UInt_t tf,
-					       Bool_t valid)
+R3BSofComRefMappedData::R3BSofComRefMappedData(UShort_t detector, UInt_t tc, UInt_t tf, Bool_t valid)
     : fDetector(detector)
     , fTimeCoarse(tc)
     , fTimeFine(tf)

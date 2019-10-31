@@ -3,7 +3,6 @@
 // for the data analysis of the SOFIA SINGLE SCINTILLATORS
 // Introduced by Audrey, April 2017
 
-
 R3BSofSciMappedData::R3BSofSciMappedData()
     : fDetector(0)
     , fPmt(0)
@@ -12,10 +11,7 @@ R3BSofSciMappedData::R3BSofSciMappedData()
 {
 }
 
-R3BSofSciMappedData::R3BSofSciMappedData(UShort_t detector,
-					 UShort_t pmt,
-					 UInt_t tc,
-					 UInt_t tf)
+R3BSofSciMappedData::R3BSofSciMappedData(UShort_t detector, UShort_t pmt, UInt_t tc, UInt_t tf)
     : fDetector(detector)
     , fPmt(pmt)
     , fTimeCoarse(tc)

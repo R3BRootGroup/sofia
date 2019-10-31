@@ -75,7 +75,7 @@ The data coming from ucesb will adhere to this format.
 You can skip parts of the following step, if you do the header writing like this
 
     ./sNNN --ntuple=<signals>,id=h101_<detector>,ext_h101_<detector>.h
-    # Example
+#Example
     ./s483 --ntuple=RAW:TOFD,id=h101_tofd,ext_h101_tofd.h
 
 This will already insert the correct detector names for you, if you like and only extract signals related to the specific detector.
