@@ -9,7 +9,8 @@
 // ----------------------------------------------------------------------
 
 #include "R3BSofTwimContFact.h"
-#include "R3BSofTwimCalPar.h"
+//#include "R3BSofTwimCalPar.h"
+#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
@@ -37,6 +38,11 @@ void R3BSofTwimContFact::setAllContainers()
     p1->addContext("TWIMCalParContext");
 
     containers->Add(p1);
+
+    FairContainer* p2 = new FairContainer("twimGeoPar", "TWIM geometry parameters", "TestDefaultContext");
+    p2->addContext("TestNonDefaultContext");
+
+    containers->Add(p2);
 }
 
 FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
@@ -50,7 +56,12 @@ FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
     FairParSet* p = 0;
     if (strcmp(name, "twimCalPar") == 0)
     {
-        p = new R3BSofTwimCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+       // p = new R3BSofTwimCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());//FIXME
+    }
+
+    if (strcmp(name, "twimGeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;
 }

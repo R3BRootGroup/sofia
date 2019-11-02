@@ -1,11 +1,12 @@
-// --------------------------------------------------------
-// -----                                              -----
-// -----		      R3BSofMwpc3ContFact 			          -----
-// ----- 	Created 11/10/2019 by G.García Jiménez		  -----
-// --------------------------------------------------------
+// ---------------------------------------------------------
+// -----                                               -----
+// -----		R3BSofMwpc3ContFact 	       -----
+// ----- 	Created 11/10/2019 by G.García Jiménez -----
+// ---------------------------------------------------------
 
 #include "R3BSofMwpc3ContFact.h"
 #include "R3BSofMwpc3CalPar.h"
+#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
@@ -33,6 +34,11 @@ void R3BSofMwpc3ContFact::setAllContainers()
     p1->addContext("Mwpc3CalParContext");
 
     containers->Add(p1);
+
+    FairContainer* p2 = new FairContainer("mwpc3GeoPar", "MWPC3 geometry parameters", "TestDefaultContext");
+    p2->addContext("TestNonDefaultContext");
+
+    containers->Add(p2);
 }
 
 FairParSet* R3BSofMwpc3ContFact::createContainer(FairContainer* c)
@@ -48,6 +54,12 @@ FairParSet* R3BSofMwpc3ContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofMwpc3CalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+
+    if (strcmp(name, "mwpc3GeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+
     return p;
 }
 

@@ -5,8 +5,9 @@
 #pragma link off all functions;
 
 #pragma link C++ class R3BSofTofWall + ;
-
+#pragma link C++ class R3BSofTofWDigitizer + ;
 #pragma link C++ class R3BSofToFWMapped2TcalPar + ;
+#pragma link C++ class R3BSofTofWContFact + ;
 
 //#pragma link C++ class R3BSofTofWallHitPar+;
 //#pragma link C++ class R3BSofTofWallCalPar+;

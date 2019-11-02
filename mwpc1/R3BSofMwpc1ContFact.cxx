@@ -1,11 +1,12 @@
 // ----------------------------------------------------------------------
 //								    -----
-//  Factory for the parameter containers in libR3BSofMwpc2          -----
+//  Factory for the parameter containers in libR3BSofMwpc1          -----
 //								    -----
 // ----------------------------------------------------------------------
 
 #include "R3BSofMwpc1ContFact.h"
 #include "R3BSofMwpc1CalPar.h"
+#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
@@ -33,6 +34,11 @@ void R3BSofMwpc1ContFact::setAllContainers()
     p1->addContext("Mwpc1CalParContext");
 
     containers->Add(p1);
+
+    FairContainer* p2 = new FairContainer("mwpc1GeoPar", "MWPC1 geometry parameters", "TestDefaultContext");
+    p2->addContext("TestNonDefaultContext");
+
+    containers->Add(p2);
 }
 
 FairParSet* R3BSofMwpc1ContFact::createContainer(FairContainer* c)
@@ -48,20 +54,26 @@ FairParSet* R3BSofMwpc1ContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofMwpc1CalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+
+    if (strcmp(name, "mwpc1GeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+
     return p;
 }
 
 void R3BSofMwpc1ContFact::activateParIo(FairParIo* io)
 {
     // activates the input/output class for the parameters
-    // needed by the Mwpc2
+    // needed by the Mwpc1
     /*
     if (strcmp(io->IsA()->GetName(),"FairParRootFileIo")==0) {
-      R3BSofMwpc2ParRootFileIo* p=new R3BSofMwpc2ParRootFileIo(((FairParRootFileIo*)io)->getParRootFile());
+      R3BSofMwpc1ParRootFileIo* p=new R3BSofMwpc1ParRootFileIo(((FairParRootFileIo*)io)->getParRootFile());
       io->setDetParIo(p);
     }
     if (strcmp(io->IsA()->GetName(),"FairParAsciiFileIo")==0) {
-      R3BSofMwpc2ParAsciiFileIo* p=new R3BSofMwpc2ParAsciiFileIo(((FairParAsciiFileIo*)io)->getFile());
+      R3BSofMwpc1ParAsciiFileIo* p=new R3BSofMwpc1ParAsciiFileIo(((FairParAsciiFileIo*)io)->getFile());
       io->setDetParIo(p);
       }
     */
