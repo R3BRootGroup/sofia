@@ -11,6 +11,8 @@
 #pragma link C++ class R3BSofMwpc0Mapped2CalPar + ;
 #pragma link C++ class R3BSofMwpc0Cal2Hit + ;
 
+#pragma link C++ class R3BSofMwpcDigitizer + ;
+
 //#pragma link C++ class R3BSofMWPCHitPar+;
 //#pragma link C++ class R3BSofMWPCCalPar+;
 //#pragma link C++ class R3BSofMWPCMappedPar+;

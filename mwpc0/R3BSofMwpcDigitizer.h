@@ -1,30 +1,30 @@
 // ----------------------------------------------------------------
-// -----          R3BSofTofWDigitizer source file             -----
+// -----          R3BSofMwpcDigitizer source file             -----
 // -----         Created 03/11/19  by JL Rodriguez            -----
 // ----------------------------------------------------------------
 
-#ifndef R3BSofTofWDigitizer_H
-#define R3BSofTofWDigitizer_H 1
+#ifndef R3BSofMwpcDigitizer_H
+#define R3BSofMwpcDigitizer_H 1
 
 #include "FairTask.h"
-#include "R3BSofTofWHitData.h"
+#include "R3BSofMwpcHitData.h"
 #include <map>
 #include <string>
 
 class TClonesArray;
 
-class R3BSofTofWDigitizer : public FairTask
+class R3BSofMwpcDigitizer : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofTofWDigitizer();
+    R3BSofMwpcDigitizer();
 
     /** Standard constructor **/
-    R3BSofTofWDigitizer(const char* name, Int_t iVerbose = 1);
+    R3BSofMwpcDigitizer(const TString& name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    ~R3BSofTofWDigitizer();
+    ~R3BSofMwpcDigitizer();
 
     /** Virtual method Init **/
     virtual InitStatus Init();
@@ -39,30 +39,29 @@ class R3BSofTofWDigitizer : public FairTask
     virtual void Reset();
 
     /** Setters for sigmas **/
+    void SetSigma_x(Float_t sigma_x) { fsigma_x = sigma_x; }
     void SetSigma_y(Float_t sigma_y) { fsigma_y = sigma_y; }
-    void SetSigma_t(Float_t sigma_t) { fsigma_t = sigma_t; }
     void SetPosX(Float_t x) { fPosX = x; }
     void SetPosZ(Float_t z) { fPosZ = z; }
     void SetAngle(Float_t a) { fangle = a; }
-    void SetSigma_ELoss(Float_t sigma_ELoss) { fsigma_ELoss = sigma_ELoss; }
 
   private:
-    TClonesArray* fMCTrack; 
-    TClonesArray* fTofPoints;
-    TClonesArray* fTofHits;
+    TClonesArray* fMCTrack;
+    TClonesArray* fMwpcPoints;
+    TClonesArray* fMwpcHits;
+    Float_t fsigma_x;
     Float_t fsigma_y;
-    Float_t fsigma_t;
-    Float_t fsigma_ELoss;
     Float_t fangle;
     Float_t fPosX, fPosZ;
+    TString fName;
 
     /** Private method AddHitData **/
-    // Adds a R3BSofTofWHitData to the TofWHitCollection
-    R3BSofTofWHitData* AddHitData(UChar_t paddle, Double_t x, Double_t y, Double_t time);
+    // Adds a R3BSofMwpcHitData to the MwpcHitCollection
+    R3BSofMwpcHitData* AddHitData(Double_t x, Double_t y);
 
   public:
     // Class definition
-    ClassDef(R3BSofTofWDigitizer, 1);
+    ClassDef(R3BSofMwpcDigitizer, 1);
 };
 
 #endif

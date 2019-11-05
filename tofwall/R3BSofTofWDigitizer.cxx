@@ -22,10 +22,12 @@
 #include <string>
 
 #include "R3BSofToFWPoint.h"
+#include "R3BMCTrack.h"
 
 // R3BSofTofWDigitizer: Default Constructor --------------------------
 R3BSofTofWDigitizer::R3BSofTofWDigitizer()
     : FairTask("R3BSof Tof Digitization scheme", 1)
+    , fMCTrack(NULL)
     , fTofPoints(NULL)
     , fTofHits(NULL)
     , fsigma_y(0.1)   // sigma=1mm
@@ -40,6 +42,7 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer()
 // R3BSofTofWDigitizer: Standard Constructor --------------------------
 R3BSofTofWDigitizer::R3BSofTofWDigitizer(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
+    , fMCTrack(NULL)
     , fTofPoints(NULL)
     , fTofHits(NULL)
     , fsigma_y(0.1)
@@ -72,6 +75,7 @@ InitStatus R3BSofTofWDigitizer::Init()
     if (!ioman)
         LOG(fatal) << "Init: No FairRootManager";
 
+    fMCTrack = (TClonesArray*) ioman->GetObject("MCTrack");
     fTofPoints = (TClonesArray*)ioman->GetObject("SofTofWallPoint");
 
     // Register output array fTofHits
@@ -93,11 +97,18 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
     R3BSofToFWPoint** pointData;
     pointData = new R3BSofToFWPoint*[nHits];
     UChar_t paddle = 0;
+    Int_t TrackId = 0, PID = 0, mother=-1;
     Double_t x = 0., y = 0., z = 0., time = 0.;
     for (Int_t i = 0; i < nHits; i++)
     {
         pointData[i] = (R3BSofToFWPoint*)(fTofPoints->At(i));
-        if (pointData[i]->GetZFF() > 10)
+        TrackId = pointData[i]->GetTrackID();
+
+        R3BMCTrack *Track = (R3BMCTrack*) fMCTrack->At(TrackId);   
+        PID = Track->GetPdgCode();
+        mother = Track->GetMotherId();
+
+        if (PID > 1000080160 && mother<0)//Z=8 and A=16
         {
             Double_t fX_in = pointData[i]->GetXIn();
             Double_t fY_in = pointData[i]->GetYIn();

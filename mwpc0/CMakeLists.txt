@@ -29,6 +29,7 @@ R3BSofMwpc0CalPar.cxx
 R3BSofMwpc0Mapped2Cal.cxx
 R3BSofMwpc0Mapped2CalPar.cxx
 R3BSofMwpc0Cal2Hit.cxx
+R3BSofMwpcDigitizer.cxx
 #R3BSofMWPCHitPar.cxx
 #R3BSofMWPCCalPar.cxx
 #R3BSofMWPCMappedPar.cxx
