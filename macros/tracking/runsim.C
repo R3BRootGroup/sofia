@@ -27,27 +27,27 @@ void runsim(Int_t nEvents = 0)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString fGenerator = generator2; // Event generator type: box, gammas, r3b, ion, ascii
+    TString fGenerator = generator1; // Event generator type: box, gammas, r3b, ion, ascii
 
     TString fEventFile = "p2p_U238_500.txt"; // Input event file in the case of ascii generator
 
     Int_t fFieldMap = -1;          // Magentic field map selector
     Double_t fMeasCurrent = 2000.; // Magnetic field current
-    Float_t fFieldScale = -1.;     // Magnetic field scale factor
+    Float_t fFieldScale = -0.8;    // Magnetic field scale factor
 
     // ---------------  Detector selection: true - false ----------------------
     // ---- R3B and SOFIA detectors as well as passive elements
 
-    Bool_t fR3BMusic = true; // R3B Music Detector
+    Bool_t fR3BMusic = false; // R3B Music Detector
     TString fR3BMusicGeo = "music_s467.geo.root";
 
     Bool_t fMwpc0 = false; // MWPC0 Detector
     TString fMwpc0Geo = "";
 
-    Bool_t fTracker = true; // AMS-Tracker + Vacuum chamber + LH2 target
+    Bool_t fTracker = false; // AMS-Tracker + Vacuum chamber + LH2 target
     TString fTrackerGeo = "targetvacuumchamber_ams_s455.geo.root";
 
-    Bool_t fCalifa = true; // Califa Calorimeter
+    Bool_t fCalifa = false; // Califa Calorimeter
     TString fCalifaGeo = "califa_2020.geo.root";
     Int_t fCalifaGeoVer = 10;
     Double_t fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
@@ -55,7 +55,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fMwpc1 = true; // MWPC1 Detector
     TString fMwpc1Geo = "mwpc_1.geo.root";
 
-    Bool_t fTwim = true; // Twin-Music Detector
+    Bool_t fTwim = false; // Twin-Music Detector
     TString fTwimGeo = "twinmusic_v19a.geo.root";
 
     Bool_t fMwpc2 = true; // MWPC2 Detector
@@ -183,7 +183,7 @@ void runsim(Int_t nEvents = 0)
     if (fGlad && !fAladin)
     {
         fFieldMap = 1;
-        run->AddModule(new R3BGladMagnet(fGladGeo));
+        // run->AddModule(new R3BGladMagnet(fGladGeo));
     }
 
     // MWPC3 definition
@@ -269,7 +269,7 @@ void runsim(Int_t nEvents = 0)
 
         // 128-Sn fragment
         R3BIonGenerator* ionGen = new R3BIonGenerator(18, 40, 18, 1, 0., 0., 0.951);
-        ionGen->SetSpotRadius(0.0, -300., 0.);
+        ionGen->SetSpotRadius(0.0, -65.5, 0.);
         primGen->AddGenerator(ionGen);
 
         // neutrons
