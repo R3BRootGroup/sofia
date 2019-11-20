@@ -6,12 +6,11 @@
 
 extern "C" {
 #include "ext_data_client.h"
-#include "ext_h101_sofsci.h"
+#include "ext_h101_sofmwpc.h"
 }
 
 #define NUM_SOFMWPC_DETECTORS   4
 #define NUM_SOFMWPC_PLANES_MAX  3
-#define NUM_SOFMWPC_PADS_MAX   64
 #include <iostream>
 
 using namespace std;
@@ -70,26 +69,27 @@ Bool_t R3BSofMwpcReader::Read()
 
     // loop over all detectors
     for (int d = 0; d < NUM_SOFMWPC_DETECTORS; d++){
-      for (int p = 0; p < NUM_SOFMWPC_PLANES; p++){
+      for (int p = 0; p < NUM_SOFMWPC_PLANES_MAX; p++){
 	  uint32_t numberOfPadsPerPlane = data->SOFMWPC[d].Plane[p].Q;
 	  for (int mult = 0; mult < numberOfPadsPerPlane; mult++){
 	    uint16_t pad  = data->SOFMWPC[d].Plane[p].QI[mult];
 	    uint16_t qval = data->SOFMWPC[d].Plane[p].Qv[mult];
+	    R3BSofMwpcMappedData* mapped;
 	    switch(d){
 	    case 1: 
-	      R3BSofMwpcMappedData* mapped = new ((*fArrayMwpc0)[fArrayMwpc0->GetEntriesFast()])
+	      mapped = new ((*fArrayMwpc0)[fArrayMwpc0->GetEntriesFast()])
                 R3BSofMwpcMappedData(p+1,pad,qval);
 	      break;
 	    case 2: 
-	      R3BSofMwpcMappedData* mapped = new ((*fArrayMwpc1)[fArrayMwpc1->GetEntriesFast()])
+	      mapped = new ((*fArrayMwpc1)[fArrayMwpc1->GetEntriesFast()])
                 R3BSofMwpcMappedData(p+1,pad,qval);
 	      break;
 	    case 3: 
-	      R3BSofMwpcMappedData* mapped = new ((*fArrayMwpc2)[fArrayMwpc2->GetEntriesFast()])
+	      mapped = new ((*fArrayMwpc2)[fArrayMwpc2->GetEntriesFast()])
                 R3BSofMwpcMappedData(p+1,pad,qval);
 	      break;
 	    case 4: 
-	      R3BSofMwpcMappedData* mapped = new ((*fArrayMwpc3)[fArrayMwpc3->GetEntriesFast()])
+	      mapped = new ((*fArrayMwpc3)[fArrayMwpc3->GetEntriesFast()])
                 R3BSofMwpcMappedData(p+1,pad,qval);
 	      break;
 	    default:
