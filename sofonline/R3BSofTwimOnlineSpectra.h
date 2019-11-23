@@ -18,14 +18,14 @@
 #include <iostream>
 #include <sstream>
 
-#define NbSections 4
+#define NbSections 1
 #define NbAnodes 16
 
 class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads FRS data and plots online histograms
+ * This taks reads TWIM data and plots online histograms
  */
 class R3BSofTwimOnlineSpectra : public FairTask
 {
@@ -93,9 +93,17 @@ class R3BSofTwimOnlineSpectra : public FairTask
 
     // Canvas
     TCanvas* cTwimMap_E[NbSections];
+    TCanvas* cTwimMap_EvsDT[NbSections];
+    TCanvas* cTwimMap_DT[NbSections];
+    TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2;
 
     // Histograms for Mapped data
     TH1F* fh1_twimmap_E[NbSections][NbAnodes];
+    TH1F* fh1_twimmap_DT[NbSections][NbAnodes];
+    TH1F* fh1_Twimmap_mult[NbSections];
+    TH1F* fh1_twim_ESum[3];
+    TH2F* fh2_twim_ESum;
+    TH2F* fh2_twim_EneRawVsDriftTime[NbSections][NbAnodes];
 
     // Histograms for Cal data
 

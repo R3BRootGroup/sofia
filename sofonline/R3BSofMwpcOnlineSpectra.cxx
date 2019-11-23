@@ -33,7 +33,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
-#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
@@ -149,10 +148,26 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh2_mwpc_cal->GetYaxis()->SetTitleSize(0.045);
     fh2_mwpc_cal->Draw("col");
 
+    TCanvas* c = new TCanvas(fNameDet + "_Q", "", 10, 10, 800, 700);
+    Name1 = "fh2_" + fNameDet + "_Q";
+    Name2 = fNameDet + ": Pad vs Q";
+    fh2_mwpc_q = new TH2F(Name1, Name2, 288, 0.5, 64.5, 2000, 0, 4000);
+    fh2_mwpc_q->GetXaxis()->SetTitle("Pad number");
+    fh2_mwpc_q->GetYaxis()->SetTitle("Charge [channels]");
+    fh2_mwpc_q->GetYaxis()->SetTitleOffset(1.1);
+    fh2_mwpc_q->GetXaxis()->CenterTitle(true);
+    fh2_mwpc_q->GetYaxis()->CenterTitle(true);
+    fh2_mwpc_q->GetXaxis()->SetLabelSize(0.045);
+    fh2_mwpc_q->GetXaxis()->SetTitleSize(0.045);
+    fh2_mwpc_q->GetYaxis()->SetLabelSize(0.045);
+    fh2_mwpc_q->GetYaxis()->SetTitleSize(0.045);
+    fh2_mwpc_q->Draw("col");
+
     // MAIN FOLDER-AT
     TFolder* mainfolMW0 = new TFolder(fNameDet, fNameDet + " info");
     mainfolMW0->Add(cMWPCCal);
     mainfolMW0->Add(cMWPCCal2D);
+    mainfolMW0->Add(c);
     run->AddObject(mainfolMW0);
 
     // Register command to reset histograms
@@ -169,6 +184,8 @@ void R3BSofMwpcOnlineSpectra::Reset_Histo()
     for (Int_t i = 0; i < 2; i++)
         fh1_mwpc_cal[i]->Reset();
     fh2_mwpc_cal->Reset();
+
+    fh2_mwpc_q->Reset();
 }
 
 void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
@@ -190,6 +207,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             if (hit->GetPlane() == 1)
             {
                 fh1_mwpc_cal[0]->Fill(hit->GetPad());
+                fh2_mwpc_q->Fill(hit->GetPad() + gRandom->Uniform(-0.5, 0.5), hit->GetQ());
                 if (hit->GetQ() > maxqx)
                 {
                     maxpadx = hit->GetPad();
@@ -229,6 +247,7 @@ void R3BSofMwpcOnlineSpectra::FinishTask()
     {
         cMWPCCal->Write();
         cMWPCCal2D->Write();
+        fh2_mwpc_q->Write();
     }
 }
 

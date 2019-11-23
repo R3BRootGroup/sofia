@@ -94,6 +94,9 @@ class R3BSofOnlineSpectra : public FairTask
 
     R3BSofAtOnlineSpectra* fAtOnline;
     R3BSofMwpcOnlineSpectra* fMwpc0Online;
+    R3BSofMwpcOnlineSpectra* fMwpc1Online;
+    R3BSofMwpcOnlineSpectra* fMwpc2Online;
+    R3BSofMwpcOnlineSpectra* fMwpc3Online;
     R3BSofTwimOnlineSpectra* fTwimOnline;
 
     // Canvas
