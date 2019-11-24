@@ -11,7 +11,8 @@ typedef struct EXT_STR_h101_t {
   EXT_STR_h101_SOFMWPC_onion_t mwpc;
 } EXT_STR_h101;
 
-void eng_online() {
+void eng_online() 
+{
   TStopwatch timer;
   timer.Start();
   
@@ -71,6 +72,12 @@ void eng_online() {
   FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
   // Add analysis task ------------------------------------
+
+  //Musics
+  //R3BMusicMapped2Cal* MusMap2Cal = new R3BMusicMapped2Cal();
+  //MusMap2Cal->SetOnline(true);
+  //run->AddTask(MusMap2Cal);
+
   R3BSofMwpc0Mapped2Cal* aMap2Cal = new R3BSofMwpc0Mapped2Cal();
   //Map2Cal->SetOnline(true);
   run->AddTask(aMap2Cal);
@@ -94,7 +101,7 @@ void eng_online() {
   //run->AddTask(cMap2Cal);777
 
   FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();//Ascii
-  parIo1->open("./parameters/Mwpc_dummy_CalibParam.par","in");
+  parIo1->open("./parameters/CalibParam.par","in");
   rtdb->setFirstInput(parIo1);
   rtdb->print();
 
@@ -103,8 +110,8 @@ void eng_online() {
   //R3BSofAtOnlineSpectra* atonline= new R3BSofAtOnlineSpectra();
   //run->AddTask(atonline);
 
-  R3BMusOnlineSpectra* musonline= new R3BMusOnlineSpectra();
-  run->AddTask(musonline);
+  //R3BMusicOnlineSpectra* musonline= new R3BMusicOnlineSpectra();
+  //run->AddTask(musonline);
   R3BSofTwimOnlineSpectra* twonline= new R3BSofTwimOnlineSpectra();
   run->AddTask(twonline);
   R3BSofMwpcOnlineSpectra* mw0online= new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra",1,"Mwpc0");

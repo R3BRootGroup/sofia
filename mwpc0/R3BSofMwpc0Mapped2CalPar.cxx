@@ -124,7 +124,7 @@ void R3BSofMwpc0Mapped2CalPar::Exec(Option_t* opt)
         return;
 
     R3BSofMwpcMappedData* MapHit;
-    UChar_t planeid, padid;
+    UShort_t planeid, padid;
 
     for (Int_t i = 0; i < nHits; i++)
     {

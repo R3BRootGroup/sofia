@@ -13,7 +13,7 @@ R3BSofAtMappedData::R3BSofAtMappedData()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofAtMappedData::R3BSofAtMappedData(UChar_t secID, UShort_t energy)
+R3BSofAtMappedData::R3BSofAtMappedData(UShort_t secID, UShort_t energy)
     : fSecID(secID)
     , fEnergy(energy)
 {

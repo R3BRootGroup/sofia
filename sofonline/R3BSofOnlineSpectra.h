@@ -23,6 +23,7 @@ class R3BEventHeader;
 class R3BSofAtOnlineSpectra;
 class R3BSofMwpcOnlineSpectra;
 class R3BSofTwimOnlineSpectra;
+class R3BMusicOnlineSpectra;
 
 /**
  * This taks reads General SOFIA data and plots online histograms
@@ -98,6 +99,7 @@ class R3BSofOnlineSpectra : public FairTask
     R3BSofMwpcOnlineSpectra* fMwpc2Online;
     R3BSofMwpcOnlineSpectra* fMwpc3Online;
     R3BSofTwimOnlineSpectra* fTwimOnline;
+    R3BMusicOnlineSpectra* fMusicOnline;
 
     // Canvas
     TCanvas *cTrigger, *cWr;
