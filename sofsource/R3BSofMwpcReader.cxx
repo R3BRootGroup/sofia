@@ -20,6 +20,7 @@ R3BSofMwpcReader::R3BSofMwpcReader(EXT_STR_h101_SOFMWPC* data, UInt_t offset)
     : R3BReader("R3BSofMwpcReader")
     , fData(data)
     , fOffset(offset)
+    , fOnline(kFALSE)
     , fArrayMwpc0(new TClonesArray("R3BSofMwpcMappedData")) // class name
     , fArrayMwpc1(new TClonesArray("R3BSofMwpcMappedData")) // class name
     , fArrayMwpc2(new TClonesArray("R3BSofMwpcMappedData")) // class name
@@ -30,6 +31,7 @@ R3BSofMwpcReader::R3BSofMwpcReader(EXT_STR_h101_SOFMWPC* data, UInt_t offset)
 
 R3BSofMwpcReader::~R3BSofMwpcReader()
 {
+    LOG(INFO) << "R3BSofMwpcReader: Delete instance";
     if (fArrayMwpc0)
     {
         delete fArrayMwpc0;
@@ -61,14 +63,24 @@ Bool_t R3BSofMwpcReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    FairRootManager::Instance()->Register("Mwpc0MappedData", "MWPC0", fArrayMwpc0, kTRUE);
-    // fArrayMwpc0->Clear();
-    FairRootManager::Instance()->Register("Mwpc1MappedData", "MWPC1", fArrayMwpc1, kTRUE);
-    // fArrayMwpc1->Clear();
-    FairRootManager::Instance()->Register("Mwpc2MappedData", "MWPC2", fArrayMwpc2, kTRUE);
-    // fArrayMwpc2->Clear();
-    FairRootManager::Instance()->Register("Mwpc3MappedData", "MWPC3", fArrayMwpc3, kTRUE);
-    // fArrayMwpc3->Clear();
+    if (!fOnline)
+    {
+        FairRootManager::Instance()->Register("Mwpc0MappedData", "MWPC0", fArrayMwpc0, kTRUE);
+        FairRootManager::Instance()->Register("Mwpc1MappedData", "MWPC1", fArrayMwpc1, kTRUE);
+        FairRootManager::Instance()->Register("Mwpc2MappedData", "MWPC2", fArrayMwpc2, kTRUE);
+        FairRootManager::Instance()->Register("Mwpc3MappedData", "MWPC3", fArrayMwpc3, kTRUE);
+    }
+    else
+    {
+        FairRootManager::Instance()->Register("Mwpc0MappedData", "MWPC0", fArrayMwpc0, kFALSE);
+        FairRootManager::Instance()->Register("Mwpc1MappedData", "MWPC1", fArrayMwpc1, kFALSE);
+        FairRootManager::Instance()->Register("Mwpc2MappedData", "MWPC2", fArrayMwpc2, kFALSE);
+        FairRootManager::Instance()->Register("Mwpc3MappedData", "MWPC3", fArrayMwpc3, kFALSE);
+    }
+    fArrayMwpc0->Clear();
+    fArrayMwpc1->Clear();
+    fArrayMwpc2->Clear();
+    fArrayMwpc3->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.

@@ -25,7 +25,7 @@ R3BSofTwimReader::R3BSofTwimReader(EXT_STR_h101_SOFTWIM* data, UInt_t offset)
 
 R3BSofTwimReader::~R3BSofTwimReader()
 {
-
+    LOG(INFO) << "R3BSofTwimReader: Delete instance";
     if (fArray)
     {
         delete fArray;

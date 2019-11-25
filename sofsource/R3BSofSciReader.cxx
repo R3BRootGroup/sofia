@@ -21,17 +21,24 @@ R3BSofSciReader::R3BSofSciReader(EXT_STR_h101_SOFSCI* data, UInt_t offset)
     : R3BReader("R3BSofSciReader")
     , fData(data)
     , fOffset(offset)
-    , fLogger(FairLogger::GetLogger())
+    , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofSciMappedData")) // class name
     , fNumEntries(0)
 {
 }
 
-R3BSofSciReader::~R3BSofSciReader() {}
+R3BSofSciReader::~R3BSofSciReader()
+{
+    LOG(INFO) << "R3BSofSciReader: Delete instance";
+    if (fArray)
+    {
+        delete fArray;
+    }
+}
 
 Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
 {
-    int ok;
+    Int_t ok;
     LOG(INFO) << "R3BSofSciReader::Init";
     EXT_STR_h101_SOFSCI_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFSCI, 0);
     if (!ok)
@@ -42,7 +49,14 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    FairRootManager::Instance()->Register("SofSciMappedData", "SofSci", fArray, kTRUE);
+    if (!fOnline)
+    {
+        FairRootManager::Instance()->Register("SofSciMappedData", "SofSci", fArray, kTRUE);
+    }
+    else
+    {
+        FairRootManager::Instance()->Register("SofSciMappedData", "SofSci", fArray, kFALSE);
+    }
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
@@ -92,7 +106,7 @@ Bool_t R3BSofSciReader::Read()
         {
             // loop over channels with hits
             uint32_t curChannelStart = 0;
-            for (int pmmult = 0; pmmult < numberOfPMTsWithHits_TF; pmmult++)
+            for (Int_t pmmult = 0; pmmult < numberOfPMTsWithHits_TF; pmmult++)
             {
                 uint32_t pmtid_TF = data->SOFSCI[d].TFMI[pmmult];
                 uint32_t pmtid_TC = data->SOFSCI[d].TCMI[pmmult];
@@ -103,10 +117,10 @@ Bool_t R3BSofSciReader::Read()
                 }
                 uint32_t nextChannelStart = data->SOFSCI[d].TFME[pmmult];
                 // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
-                for (int hit = curChannelStart; hit < nextChannelStart; hit++)
+                for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++)
                 {
                     auto item = new ((*fArray)[fNumEntries++])
-                        R3BSofSciMappedData(d + 1, pmtid_TF, data->SOFSCI[d].TCv[hit], data->SOFSCI[d].TFv[hit]);
+                        R3BSofSciMappedData(d, pmtid_TF, data->SOFSCI[d].TCv[hit], data->SOFSCI[d].TFv[hit]);
                 }
                 curChannelStart = nextChannelStart;
             }

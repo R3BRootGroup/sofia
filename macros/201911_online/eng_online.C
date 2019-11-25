@@ -7,6 +7,8 @@
 typedef struct EXT_STR_h101_t {
   EXT_STR_h101_unpack_t unpack;
   EXT_STR_h101_MUSIC_onion_t music;
+  EXT_STR_h101_SOFSCI_onion_t sci;
+  EXT_STR_h101_SOFTOFW_onion_t tofw;
   EXT_STR_h101_SOFTWIM_onion_t twim;
   EXT_STR_h101_SOFMWPC_onion_t mwpc;
 } EXT_STR_h101;
@@ -22,7 +24,7 @@ void eng_online()
   // Create source using ucesb for input ------------------
   
   TString filename = "--stream=lxir123:7803";
-  //TString filename = "~/lmd/sofia2019/main0035_0003.lmd";
+  //TString filename = "~/lmd/sofia2019/main0028_00*.lmd";
 
   TString outputFileName = "data_online.root";
   
@@ -45,18 +47,26 @@ void eng_online()
   R3BMusicReader* unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music,
 					offsetof(EXT_STR_h101, music));
 
+  R3BSofSciReader* unpacksci = new R3BSofSciReader((EXT_STR_h101_SOFSCI_t*)&ucesb_struct.sci,
+					offsetof(EXT_STR_h101, sci));
+
   R3BSofMwpcReader* unpackmwpc = new R3BSofMwpcReader((EXT_STR_h101_SOFMWPC_t*)&ucesb_struct.mwpc,
 					offsetof(EXT_STR_h101, mwpc));
 
   R3BSofTwimReader* unpacktwim = new R3BSofTwimReader((EXT_STR_h101_SOFTWIM_t*)&ucesb_struct.twim,
 					offsetof(EXT_STR_h101, twim));
 
+  R3BSofToFWReader* unpacktofw = new R3BSofToFWReader((EXT_STR_h101_SOFTOFW_t*)&ucesb_struct.tofw,
+					offsetof(EXT_STR_h101, tofw));
+
 
   // Add readers ------------------------------------------ 
   source->AddReader(unpackreader);
   source->AddReader(unpackmusic);
+  //source->AddReader(unpacksci);
   source->AddReader(unpackmwpc);
   source->AddReader(unpacktwim);
+  source->AddReader(unpacktofw);
 
 
   // Create online run ------------------------------------ 
@@ -74,9 +84,9 @@ void eng_online()
   // Add analysis task ------------------------------------
 
   //Musics
-  //R3BMusicMapped2Cal* MusMap2Cal = new R3BMusicMapped2Cal();
+  R3BMusicMapped2Cal* MusMap2Cal = new R3BMusicMapped2Cal();
   //MusMap2Cal->SetOnline(true);
-  //run->AddTask(MusMap2Cal);
+  run->AddTask(MusMap2Cal);
 
   R3BSofMwpc0Mapped2Cal* aMap2Cal = new R3BSofMwpc0Mapped2Cal();
   //Map2Cal->SetOnline(true);
@@ -110,8 +120,8 @@ void eng_online()
   //R3BSofAtOnlineSpectra* atonline= new R3BSofAtOnlineSpectra();
   //run->AddTask(atonline);
 
-  //R3BMusicOnlineSpectra* musonline= new R3BMusicOnlineSpectra();
-  //run->AddTask(musonline);
+  R3BMusicOnlineSpectra* musonline= new R3BMusicOnlineSpectra();
+  run->AddTask(musonline);
   R3BSofTwimOnlineSpectra* twonline= new R3BSofTwimOnlineSpectra();
   run->AddTask(twonline);
   R3BSofMwpcOnlineSpectra* mw0online= new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra",1,"Mwpc0");

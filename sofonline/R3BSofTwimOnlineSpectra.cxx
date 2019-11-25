@@ -327,7 +327,7 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
                 e1 = e1 + hit->GetEnergy();
                 n1++;
             }
-            else
+            else if (hit->GetAnodeID() < NbAnodes)
             {
                 e2 = e2 + hit->GetEnergy();
                 n2++;

@@ -31,18 +31,19 @@ class R3BSofTrimReader : public R3BReader
     Bool_t Read();
     void Reset();
 
-    uint32_t multPerAnode[NUM_SOFTRIM_ANODES];
+    /** Accessor to select online mode **/
+    void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
     Bool_t ReadData(EXT_STR_h101_SOFTRIM_onion*, UShort_t);
+    uint32_t multPerAnode[NUM_SOFTRIM_ANODES];
 
-  private:
     /* Reader specific data structure from ucesb */
     EXT_STR_h101_SOFTRIM* fData;
     /* Data offset */
     UInt_t fOffset;
-    /* FairLogger */
-    FairLogger* fLogger;
+    // Don't store data for online
+    Bool_t fOnline;
     /* the structs of type R3BSofTrimMappedData Item */
     TClonesArray* fArray; /**< Output array. */
 

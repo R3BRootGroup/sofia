@@ -4,7 +4,8 @@
 #include "R3BSofTrimMappedData.h"
 #include "R3BSofTrimReader.h"
 
-extern "C" {
+extern "C"
+{
 #include "ext_data_client.h"
 #include "ext_h101_softrim.h"
 }
@@ -17,16 +18,23 @@ R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, UInt_t offset)
     : R3BReader("R3BSofTrimReader")
     , fData(data)
     , fOffset(offset)
-    , fLogger(FairLogger::GetLogger())
+    , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofTrimMappedData"))
 {
 }
 
-R3BSofTrimReader::~R3BSofTrimReader() {}
+R3BSofTrimReader::~R3BSofTrimReader()
+{
+    LOG(INFO) << "R3BSofTrimReader: Delete instance";
+    if (fArray)
+    {
+        delete fArray;
+    }
+}
 
 Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
 {
-    int ok;
+    Int_t ok;
     LOG(INFO) << "R3BSofTrimReader::Init";
     EXT_STR_h101_SOFTRIM_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTRIM, 0);
     if (!ok)
@@ -37,7 +45,14 @@ Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    FairRootManager::Instance()->Register("SofTrimMappedData", "SofTrim", fArray, kTRUE);
+    if (!fOnline)
+    {
+        FairRootManager::Instance()->Register("SofTrimMappedData", "SofTrim", fArray, kTRUE);
+    }
+    else
+    {
+        FairRootManager::Instance()->Register("SofTrimMappedData", "SofTrim", fArray, kFALSE);
+    }
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
@@ -102,10 +117,10 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
 
     // --- ANODES --- //
     // return the number of anodes in the section with data
-    // 0<=nAnodesEnergy<=6
-    // 0<=nAnodesTime<=6
-    UShort_t nAnodesEnergy = data->SOFTRIM_S[section].EM;
-    UShort_t nAnodesTime = data->SOFTRIM_S[section].TM;
+    // 0<nAnodesEnergy<=6
+    // 0<nAnodesTime<=6
+    UShort_t nAnodesEnergy = data->SOFTRIM_S[section].EM - 1;
+    UShort_t nAnodesTime = data->SOFTRIM_S[section].TM - 1;
 
     // mail from R. Schneider from June 16, 2016: "if you have several hits of one channel in the window of interest,
     // you get an energy and a timing for each hit."
@@ -128,8 +143,8 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
                        << " AND TIME #" << idAnodeTime;
         uint32_t nextAnodeTimeStart = data->SOFTRIM_S[section].TME[a];
         uint32_t nextAnodeEnergyStart = data->SOFTRIM_S[section].EME[a];
-        multPerAnode[idAnodeTime - 1] = nextAnodeTimeStart - curAnodeTimeStart;
-        if (multPerAnode[idAnodeTime - 1] != (nextAnodeEnergyStart - curAnodeEnergyStart))
+        multPerAnode[idAnodeTime] = nextAnodeTimeStart - curAnodeTimeStart;
+        if (multPerAnode[idAnodeTime] != (nextAnodeEnergyStart - curAnodeEnergyStart))
             LOG(ERROR) << "R3BSofTrimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
         for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
         {
