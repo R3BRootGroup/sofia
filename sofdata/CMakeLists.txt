@@ -43,7 +43,6 @@ twimData/R3BSofTwimMappedData.cxx
 twimData/R3BSofTwimCalData.cxx
 twimData/R3BSofTwimHitData.cxx
 trimData/R3BSofTrimMappedData.cxx
-R3BSofComRefMappedData.cxx
 )
 
 

@@ -39,8 +39,7 @@ class R3BSofSciMapped2Tcal : public FairTask
   Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
 
  private:
-  TClonesArray*  fMappedItemsComRef;  // input data - SofComRef
-  TClonesArray*  fMappedItemsSci;     // input data - SofSci
+  TClonesArray*  fMapped;             // input data - SofSci
   R3BSofTcalPar* fTcalPar;            // tcal parameters container - SofSci
   TClonesArray*  fTcalItems;          // output data
   

@@ -3,9 +3,6 @@
 
 #include "TObject.h"
 
-// for the data analysis of the SOFIA SINGLE SCINTILLATORS
-// Introduced by Audrey, October 2018
-
 class R3BSofSciTcalData : public TObject
 {
   public:
@@ -25,7 +22,7 @@ class R3BSofSciTcalData : public TObject
 
   private:
     UShort_t fDetector; // 1..n (2014, n=2, 1=S2, 2=Cave C)
-    UShort_t fPmt;      // 1..2
+    UShort_t fPmt;      // 1..3
     Double_t fRawTimeNs;
 
   public:

@@ -36,7 +36,6 @@ class R3BSofTcalPar : public FairParGenericSet
 
     /** Accessor functions **/
     const Double_t GetNumDetectors() { return fNumDetectors; }
-    const Double_t GetNumSections() { return fNumSections; }
     const Double_t GetNumChannels() { return fNumChannels; }
     const Double_t GetNumSignals() { return fNumSignals; }
     const Double_t GetNumTcalParsPerSignal() { return fNumTcalParsPerSignal; }
@@ -44,11 +43,10 @@ class R3BSofTcalPar : public FairParGenericSet
     Double_t GetSignalTcalParams(UInt_t rank) { return (Double_t)fAllSignalsTcalParams->GetAt(rank); }
 
     void SetNumDetectors(Int_t NumberOfDetectors) { fNumDetectors = NumberOfDetectors; }
-    void SetNumSections(Int_t NumberOfSections) { fNumSections = NumberOfSections; }
     void SetNumChannels(Int_t NumberOfChannels) { fNumChannels = NumberOfChannels; }
-    void SetNumSignals(Int_t NumberOfDetectors, Int_t NumberOfSections, Int_t NumberOfChannels)
+    void SetNumSignals(Int_t NumberOfDetectors, Int_t NumberOfChannels)
     {
-        fNumSignals = NumberOfDetectors * NumberOfSections * NumberOfChannels;
+        fNumSignals = NumberOfDetectors * NumberOfChannels;
     }
     void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) { fNumTcalParsPerSignal = NumberOfTcalParsPerSignal; }
     void SetSignalTcalParams(Double_t ft_ns, UInt_t rank) { fAllSignalsTcalParams->AddAt(ft_ns, rank); }
@@ -58,9 +56,8 @@ class R3BSofTcalPar : public FairParGenericSet
   private:
     TArrayF* fAllSignalsTcalParams; // Calibration Parameters for all signals of one detector
     Int_t fNumDetectors;            // number of detectors (=2 for Sci, =28 for ToFW, =1 for Trim, =2 for Twim)
-    Int_t fNumSections;             // number of sections  (=1 for Sci, =1 for ToFW, =3 for Trim, =2 for Twim)
     Int_t fNumChannels;             // number of channels  (=3 for Sci, =2 for ToFW, =6 for Twim, =16 for Twim)
-    Int_t fNumSignals;              // =fNumDetectors * fNumSections * fNumChannels
+    Int_t fNumSignals;              // =fNumDetectors * fNumChannels
     Int_t fNumTcalParsPerSignal;
     const R3BSofTcalPar& operator=(const R3BSofTcalPar&); /*< an assignment operator>*/
 

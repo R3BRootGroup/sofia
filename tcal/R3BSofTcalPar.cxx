@@ -18,11 +18,10 @@ using std::endl;
 R3BSofTcalPar::R3BSofTcalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
     , fNumDetectors(0) // will be set to the proper value in R3BSofXXXMapped2TcalPar::CalculateVftxTcalParams()
-    , fNumSections(0)
     , fNumChannels(0)
     , fNumTcalParsPerSignal(0)
 {
-    fNumSignals = fNumDetectors * fNumSections * fNumChannels;
+    fNumSignals = fNumDetectors * fNumChannels;
     fAllSignalsTcalParams = new TArrayF(MAX_TCALPAR);
 }
 
@@ -60,7 +59,6 @@ void R3BSofTcalPar::putParams(FairParamList* list)
 
     list->add("TcalPar", *fAllSignalsTcalParams);
     list->add("nDetectorsTcalPar", fNumDetectors);
-    list->add("nSectionsTcalPar", fNumSections);
     list->add("nChannelsTcalPar", fNumChannels);
     list->add("nSignalsTcalPar", fNumSignals);
     list->add("nTcalParsPerSignal", fNumTcalParsPerSignal);
@@ -75,10 +73,6 @@ Bool_t R3BSofTcalPar::getParams(FairParamList* list)
         return kFALSE;
     }
     if (!list->fill("nDetectorsTcalPar", &fNumDetectors))
-    {
-        return kFALSE;
-    }
-    if (!list->fill("nSectionsTcalPar", &fNumSections))
     {
         return kFALSE;
     }
@@ -116,23 +110,19 @@ void R3BSofTcalPar::printParams()
 
     for (Int_t d = 0; d < fNumDetectors; d++)
     {
-        for (Int_t s = 0; s < fNumSections; s++)
-        {
-            for (Int_t ch = 0; ch < fNumChannels; ch++)
-            {
-                Int_t sig = d * fNumSections * fNumChannels + s * fNumChannels + ch;
-                cout << "--- --------------------------------------------" << endl;
-                cout << "--- Vftx Tcal Param for signal number: " << sig << endl;
-                cout << "---       detector " << d + 1 << endl;
-                cout << "---       section " << s + 1 << endl;
-                cout << "---       channel " << ch + 1 << endl;
-                cout << "--- --------------------------------------------" << endl;
-                for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
-                {
-                    cout << "FineTime at Bin (" << bin << ") = " << fAllSignalsTcalParams->GetAt(sig * 1000 + bin)
-                         << endl;
-                }
-            }
-        }
+      for (Int_t ch = 0; ch < fNumChannels; ch++)
+	{
+	  Int_t sig = d * fNumChannels + ch;
+	  cout << "--- --------------------------------------------" << endl;
+	  cout << "--- Vftx Tcal Param for signal number: " << sig << endl;
+	  cout << "---       detector " << d + 1 << endl;
+	  cout << "---       channel " << ch + 1 << endl;
+	  cout << "--- --------------------------------------------" << endl;
+	  for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
+	    {
+	      cout << "FineTime at Bin (" << bin << ") = " << fAllSignalsTcalParams->GetAt(sig * 1000 + bin)
+		   << endl;
+	    }
+	}
     }
 }

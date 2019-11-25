@@ -4,13 +4,15 @@
 #include "R3BSofSciMappedData.h"
 #include "R3BSofSciReader.h"
 
-extern "C" {
+extern "C"
+{
 #include "ext_data_client.h"
 #include "ext_h101_sofsci.h"
 }
 
-#define NUM_SOFSCI_DETECTORS 2
-#define NUM_SOFSCI_CHANNELS 2
+//#define NUM_SOFSCI_DETECTORS 2
+#define NUM_SOFSCI_DETECTORS 1 // for the engineering run
+#define NUM_SOFSCI_CHANNELS 3
 #include <iostream>
 
 using namespace std;
@@ -57,45 +59,59 @@ Bool_t R3BSofSciReader::Read()
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFSCI_onion* data = (EXT_STR_h101_SOFSCI_onion*)fData;
 
-    /*
-      typedef struct EXT_STR_h101_SOFSCI_onion_t
-      {
-        struct {
-          uint32_t TFM;             : number of PTMTs with FT hits - this is not the number of hits
-      uint32_t TFMI[2 / TFM /]; : PMT number
-      uint32_t TFME[2 / TFM /]; : index (address?) of the first hit for the next PMT in the data word
-      uint32_t TF;              : total number of hits
-      uint32_t TFv[80 / TF /];  : fine time value for this hit
-      uint32_t TCM;             : this is = TFM
-      uint32_t TCMI[2 / TCM /]; : this is = TFMI[]
-      uint32_t TCME[2 / TCM /]; : this is = TFME[]
-      uint32_t TC;              : this is = TF
-      uint32_t TCv[80 / TC /];  : coarse time value for this hit
-        } SOFSCI[2];
-      } EXT_STR_h101_SOFSCI_onion;
-  */
+    /* REMINDER :
+       typedef struct EXT_STR_h101_SOFSCI_onion_t
+       {
+
+       struct {
+       uint32_t TFM;             : number of PTMTs with FT hits - this is not the number of hits
+       uint32_t TFMI[3 // TFM ]; : PMT number [1: RIGHT, 2:LEFT, 3:TREF]
+       uint32_t TFME[3 // TFM ]; : index (address?) of the first hit for the next PMT in the data word
+       uint32_t TF;              : total number of hits
+       uint32_t TFv[30 // TF ];  : fine time value for this hit
+       uint32_t TCM;             : this is equal to TFM
+       uint32_t TCMI[3 // TCM ]; : this is equal to TFMI
+       uint32_t TCME[3 // TCM ]; : this is equal to TFME
+       uint32_t TC;              : this is equal to TF
+       uint32_t TCv[30 // TC ];  : coarse time value for this hit
+       } SOFSCI[1]; [1] for engineering run, [2] for experiment
+
+       } EXT_STR_h101_SOFSCI_onion;
+    */
 
     // loop over all detectors
     for (int d = 0; d < NUM_SOFSCI_DETECTORS; d++)
     {
-
-        uint32_t numberOfPMTsWithHits = data->SOFSCI[d].TFM; // also = data->SOFSCI[d].TCM;
-
-        // loop over channels with hits
-        uint32_t curChannelStart = 0;
-        for (int pmmult = 0; pmmult < numberOfPMTsWithHits; pmmult++)
+        uint32_t numberOfPMTsWithHits_TF = data->SOFSCI[d].TFM;
+        uint32_t numberOfPMTsWithHits_TC = data->SOFSCI[d].TCM;
+        if (numberOfPMTsWithHits_TF != numberOfPMTsWithHits_TC)
         {
-            uint32_t pmtval = data->SOFSCI[d].TFMI[pmmult];
-            uint32_t nextChannelStart = data->SOFSCI[d].TFME[pmmult];
-            // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
-            for (int hit = curChannelStart; hit < nextChannelStart; hit++)
-            {
-                auto item = new ((*fArray)[fNumEntries++])
-                    R3BSofSciMappedData(d + 1, pmtval, data->SOFSCI[d].TCv[hit], data->SOFSCI[d].TFv[hit]);
-            }
-            curChannelStart = nextChannelStart;
+            LOG(ERROR) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between TF and TC for SofSci !";
         }
-    }
+        else
+        {
+            // loop over channels with hits
+            uint32_t curChannelStart = 0;
+            for (int pmmult = 0; pmmult < numberOfPMTsWithHits_TF; pmmult++)
+            {
+                uint32_t pmtid_TF = data->SOFSCI[d].TFMI[pmmult];
+                uint32_t pmtid_TC = data->SOFSCI[d].TCMI[pmmult];
+                if (pmtid_TF != pmtid_TC)
+                {
+                    LOG(ERROR) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between the PMT id for TF "
+                                  "and TC for SofSci !";
+                }
+                uint32_t nextChannelStart = data->SOFSCI[d].TFME[pmmult];
+                // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
+                for (int hit = curChannelStart; hit < nextChannelStart; hit++)
+                {
+                    auto item = new ((*fArray)[fNumEntries++])
+                        R3BSofSciMappedData(d + 1, pmtid_TF, data->SOFSCI[d].TCv[hit], data->SOFSCI[d].TFv[hit]);
+                }
+                curChannelStart = nextChannelStart;
+            }
+        }
+    } // end of for(d)
     return kTRUE;
 }
 

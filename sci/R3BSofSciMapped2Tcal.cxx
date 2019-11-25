@@ -1,6 +1,5 @@
 #include "R3BSofSciMapped2Tcal.h"
 #include "R3BSofSciMappedData.h"
-#include "R3BSofComRefMappedData.h"
 
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
@@ -11,8 +10,7 @@
 
 R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
   : FairTask("R3BSofSciMapped2Tcal",1)
-  , fMappedItemsComRef(NULL)
-  , fMappedItemsSci(NULL)
+  , fMapped(NULL)
   , fTcalPar(NULL)
   , fTcalItems(new TClonesArray("R3BSofSciTcalData"))
   , fNumTcalItems(0)
@@ -45,19 +43,9 @@ InitStatus R3BSofSciMapped2Tcal::Init()
   // --- INPUT MAPPED DATA --- //
   // --- ----------------- --- //
 
-  // Common reference signal
-  fMappedItemsComRef = (TClonesArray*)rm->GetObject("SofComRef");  // see Instance->Register in R3BSofComRefReader.cxx  
-  if (!fMappedItemsComRef){
-    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofComRef Mapped Items";
-    return kFATAL;
-  }
-  else
-    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofComRef Mapped items found";
-
-
   // scintillator at S2 and cave C
-  fMappedItemsSci = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
-  if (!fMappedItemsSci){
+  fMapped = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
+  if (!fMapped){
     LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSci container";
     return kFATAL;
   }
@@ -116,41 +104,19 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
   UInt_t iTc;
   Double_t tns;
 
-  // --- -------------------------------------------- --- //
-  // --- START WITH THE COMMON REFERENCE SIGNALS DATA --- //
-  // --- -------------------------------------------- --- //
-  Int_t nHitsPerEvent_SofComRef = fMappedItemsComRef->GetEntries();
-  for(int ihit=0; ihit<nHitsPerEvent_SofComRef; ihit++){
-    R3BSofComRefMappedData* hit = (R3BSofComRefMappedData*)fMappedItemsComRef->At(ihit);
-    if(!hit) continue;
-    iDet = hit->GetDetector();
-    iCh  = 1;
-    iTf  = hit->GetTimeFine();
-    iTc  = hit->GetTimeCoarse();
-    if((iDet<1)||(iDet>fTcalPar->GetNumDetectors())) {
-      LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofComRefMappedData, iDet = " << iDet << "is out of range, item skipped ";
-      continue;
-    }
-    tns = CalculateTimeNs(iDet,iCh,iTf,iTc);
-    new((*fTcalItems)[fNumTcalItems++]) R3BSofSciTcalData(iDet,iCh,tns);
-  }
-
-  // --- ------------------------------------ --- //
-  // --- CONTINUE WITH THE SCINTILLATORS DATA --- //
-  // --- ------------------------------------ --- //
-  Int_t nHitsPerEvent_SofSci = fMappedItemsSci->GetEntries();
+  Int_t nHitsPerEvent_SofSci = fMapped->GetEntries();
   for(int ihit=0; ihit<nHitsPerEvent_SofSci; ihit++){
-    R3BSofSciMappedData* hit = (R3BSofSciMappedData*)fMappedItemsSci->At(ihit);
+    R3BSofSciMappedData* hit = (R3BSofSciMappedData*)fMapped->At(ihit);
     if(!hit) continue;
     iDet = hit->GetDetector();
-    iCh  = hit->GetPmt()+1;
+    iCh  = hit->GetPmt();
     iTf  = hit->GetTimeFine();
     iTc  = hit->GetTimeCoarse();
     if((iDet<1)||(iDet>fTcalPar->GetNumDetectors())) {
       LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << iDet << "is out of range, item skipped ";
       continue;
     }
-    if((iCh<2)||(iCh>fTcalPar->GetNumChannels())) {
+    if((iCh<1)||(iCh>fTcalPar->GetNumChannels())) {
       LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << iCh << "is out of range, item skipped ";
       continue;
     }

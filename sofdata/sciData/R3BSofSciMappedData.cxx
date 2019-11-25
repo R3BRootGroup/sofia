@@ -1,8 +1,5 @@
 #include "R3BSofSciMappedData.h"
 
-// for the data analysis of the SOFIA SINGLE SCINTILLATORS
-// Introduced by Audrey, April 2017
-
 R3BSofSciMappedData::R3BSofSciMappedData()
     : fDetector(0)
     , fPmt(0)
