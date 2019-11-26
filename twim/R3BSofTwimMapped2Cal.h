@@ -1,15 +1,14 @@
-// ----------------------------------------------------------------------
-// -----                                                            -----
-// -----                     R3BSofTwimMapped2Cal                  -----
-// -----             Created 07/10/19  by J.L. Rodriguez-Sanchez    -----
-// ----------------------------------------------------------------------
+// -----------------------------------------------------------------
+// -----                                                       -----
+// -----                R3BSofTwimMapped2Cal                   -----
+// -----        Created 24/11/19  by J.L. Rodriguez-Sanchez    -----
+// -----------------------------------------------------------------
 
 #ifndef R3BSofTwimMapped2Cal_H
 #define R3BSofTwimMapped2Cal_H
 
 #include "FairTask.h"
 #include "R3BSofTwimCalData.h"
-#include "R3BSofTwimMapped2CalPar.h"
 #include "R3BSofTwimMappedData.h"
 #include "TH1F.h"
 #include <TRandom.h>
@@ -61,12 +60,12 @@ class R3BSofTwimMapped2Cal : public FairTask
     Bool_t fOnline; // Don't store data for online
 
     R3BSofTwimCalPar* fCal_Par;      /**< Parameter container. >*/
-    TClonesArray* fTwimMappedDataCA; /**< Array with Mapped- input data. >*/
-    TClonesArray* fTwimCalDataCA;    /**< Array with Cal- output data. >*/
+    TClonesArray* fTwimMappedDataCA; /**< Array with Mapped-input data. >*/
+    TClonesArray* fTwimCalDataCA;    /**< Array with Cal-output data. >*/
 
     /** Private method AddCalData **/
     // Adds a SofTwimCalData to the TwimCalCollection
-    R3BSofTwimCalData* AddCalData(UChar_t secID, UChar_t anodeID, Double_t dtime, Double_t energy);
+    R3BSofTwimCalData* AddCalData(UShort_t secID, UShort_t anodeID, Double_t dtime, Double_t energy);
 
   public:
     // Class definition
