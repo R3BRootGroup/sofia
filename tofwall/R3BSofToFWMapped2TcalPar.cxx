@@ -27,7 +27,6 @@
 R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar()
     : FairTask("R3BSofToFWMapped2TcalPar", 1)
     , fNumDetectors(28)
-    , fNumSections(1)
     , fNumChannels(2)
     , fNumTcalParsPerSignal(1000)
     , fMinStatistics(0)
@@ -35,14 +34,13 @@ R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar()
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 {
-    fNumSignals = fNumDetectors * fNumSections * fNumChannels;
+    fNumSignals = fNumDetectors * fNumChannels;
 }
 
 // R3BSofToFWMapped2TcalPar: Standard Constructor --------------------------
 R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNumDetectors(28)
-    , fNumSections(1)
     , fNumChannels(2)
     , fNumTcalParsPerSignal(1000)
     , fMinStatistics(0)
@@ -51,7 +49,7 @@ R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar(const char* name, Int_t iVerb
     , fOutputFile(NULL)
 
 {
-    fNumSignals = fNumDetectors * fNumSections * fNumChannels;
+    fNumSignals = fNumDetectors * fNumChannels;
 }
 
 // R3BSofToFWMapped2TcalPar: Destructor ----------------------------------------
@@ -187,9 +185,8 @@ void R3BSofToFWMapped2TcalPar::CalculateVftxTcalParams()
     LOG(INFO) << "R3BSofToFWMapped2TcalPar: CalculateVftxTcalParams()";
 
     fTcalPar->SetNumDetectors(fNumDetectors);
-    fTcalPar->SetNumSections(fNumSections);
     fTcalPar->SetNumChannels(fNumChannels);
-    fTcalPar->SetNumSignals(fNumDetectors, fNumSections, fNumChannels);
+    fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
     fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
 
     UInt_t IntegralTot;

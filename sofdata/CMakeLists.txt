@@ -38,11 +38,11 @@ sciData/R3BSofSciTcalData.cxx
 sciData/R3BSofSciCalData.cxx
 tofwData/R3BSofToFWMappedData.cxx
 tofwData/R3BSofToFWCalData.cxx
+tofwData/R3BSofTofWHitData.cxx
 twimData/R3BSofTwimMappedData.cxx
 twimData/R3BSofTwimCalData.cxx
 twimData/R3BSofTwimHitData.cxx
 trimData/R3BSofTrimMappedData.cxx
-R3BSofComRefMappedData.cxx
 )
 
 

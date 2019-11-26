@@ -8,6 +8,7 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
+${R3BROOT_SOURCE_DIR}/tracking
 ${R3BSOF_SOURCE_DIR}/mwpc0
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
@@ -28,6 +29,7 @@ R3BSofMwpc0CalPar.cxx
 R3BSofMwpc0Mapped2Cal.cxx
 R3BSofMwpc0Mapped2CalPar.cxx
 R3BSofMwpc0Cal2Hit.cxx
+R3BSofMwpcDigitizer.cxx
 #R3BSofMWPCHitPar.cxx
 #R3BSofMWPCCalPar.cxx
 #R3BSofMWPCMappedPar.cxx

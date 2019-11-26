@@ -19,8 +19,6 @@ struct EXT_STR_h101_SOFTWIM_t;
 typedef struct EXT_STR_h101_SOFTWIM_t EXT_STR_h101_SOFTWIM;
 typedef struct EXT_STR_h101_SOFTWIM_onion_t EXT_STR_h101_SOFTWIM_onion;
 
-class FairLogger;
-
 class R3BSofTwimReader : public R3BReader
 {
   public:
@@ -32,18 +30,20 @@ class R3BSofTwimReader : public R3BReader
     Bool_t Read();
     void Reset();
 
-    uint32_t multPerAnode[NUM_SOFTWIM_ANODES];
+    /** Accessor to select online mode **/
+    void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
     Bool_t ReadData(EXT_STR_h101_SOFTWIM_onion*, UShort_t);
 
-  private:
+    uint32_t multPerAnode[NUM_SOFTWIM_ANODES];
+
     /* Reader specific data structure from ucesb */
     EXT_STR_h101_SOFTWIM* fData;
     /* Data offset */
     UInt_t fOffset;
-    /* FairLogger */
-    FairLogger* fLogger;
+    // Don't store data for online
+    Bool_t fOnline;
     /* the structs of type R3BSofTwimMappedData Item */
     TClonesArray* fArray; /**< Output array. */
 

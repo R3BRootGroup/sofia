@@ -33,7 +33,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
-#include <fstream>
 #include <iostream>
 #include <sstream>
 
@@ -117,10 +116,152 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         }
     }
 
+    // TWIM: Map data
+    for (Int_t i = 0; i < NbSections; i++)
+    {
+        sprintf(Name1, "Twim_EvsDT_Sec_%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTwimMap_EvsDT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimMap_EvsDT[i]->Divide(4, 4);
+    }
+
+    for (Int_t i = 0; i < NbSections; i++)
+    {
+        for (Int_t j = 0; j < NbAnodes; j++)
+        {
+            sprintf(Name1, "fh1_twim_EvsDT_sec%d_a%d", i + 1, j + 1);
+            sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
+            fh2_twim_EneRawVsDriftTime[i][j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, -20000, 20000);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetTitle("Energy [channels]");
+            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitle("Drift time [channels]");
+            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->CenterTitle(true);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->CenterTitle(true);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetLabelSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetTitleSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetLabelSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitleSize(0.045);
+            cTwimMap_EvsDT[i]->cd(j + 1);
+            fh2_twim_EneRawVsDriftTime[i][j]->Draw("col");
+        }
+    }
+
+    for (Int_t i = 0; i < NbSections; i++)
+    {
+        sprintf(Name1, "Twim_DTmap_Sec_%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTwimMap_DT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimMap_DT[i]->Divide(4, 4);
+    }
+
+    for (Int_t i = 0; i < NbSections; i++)
+    {
+        for (Int_t j = 0; j < NbAnodes; j++)
+        {
+            sprintf(Name1, "fh1_twim_DTmap_sec%d_a%d", i + 1, j + 1);
+            sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
+            fh1_twimmap_DT[i][j] = new TH1F(Name1, Name2, 6000, -20000, 20000);
+            fh1_twimmap_DT[i][j]->GetXaxis()->SetTitle("Drift time [channels]");
+            fh1_twimmap_DT[i][j]->GetYaxis()->SetTitle("Counts");
+            fh1_twimmap_DT[i][j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_twimmap_DT[i][j]->GetXaxis()->CenterTitle(true);
+            fh1_twimmap_DT[i][j]->GetYaxis()->CenterTitle(true);
+            fh1_twimmap_DT[i][j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_twimmap_DT[i][j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_twimmap_DT[i][j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_twimmap_DT[i][j]->GetYaxis()->SetTitleSize(0.045);
+            cTwimMap_DT[i]->cd(j + 1);
+            fh1_twimmap_DT[i][j]->Draw("");
+        }
+    }
+
+    TCanvas* cTwim_Mult[NbSections];
+    for (Int_t i = 0; i < NbSections; i++)
+    {
+        sprintf(Name1, "Twim_multiplicity_Sec_%d", i + 1);
+        sprintf(Name2, "TWIM: Multiplicity per anode in section %d", i + 1);
+        cTwim_Mult[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        sprintf(Name1, "fh1_Twim_mult_sec_%d", i + 1);
+        sprintf(Name2, "Twim: Multiplicity section %d", i + 1);
+        fh1_Twimmap_mult[i] = new TH1F(Name1, Name2, NbAnodes + 1, 0, NbAnodes + 1);
+        fh1_Twimmap_mult[i]->GetXaxis()->SetTitle("Anode");
+        fh1_Twimmap_mult[i]->GetYaxis()->SetTitle("Counts");
+        fh1_Twimmap_mult[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_Twimmap_mult[i]->GetXaxis()->CenterTitle(true);
+        fh1_Twimmap_mult[i]->GetYaxis()->CenterTitle(true);
+        fh1_Twimmap_mult[i]->GetXaxis()->SetLabelSize(0.045);
+        fh1_Twimmap_mult[i]->GetXaxis()->SetTitleSize(0.045);
+        fh1_Twimmap_mult[i]->GetYaxis()->SetLabelSize(0.045);
+        fh1_Twimmap_mult[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_Twimmap_mult[i]->Draw("");
+    }
+
+    cTwimMap_ESum = new TCanvas("twim_ESum_1,2", "twim_ESum_1,2", 10, 10, 800, 700);
+    cTwimMap_ESum->Divide(1, 2);
+    cTwimMap_ESum->cd(1);
+    fh1_twim_ESum[0] = new TH1F("fh1_twim_ESum1", "twim:ESum:first", 8192, 0, 8192);
+    fh1_twim_ESum[0]->GetXaxis()->SetTitle("Energy [channels]");
+    fh1_twim_ESum[0]->GetYaxis()->SetTitle("Counts");
+    fh1_twim_ESum[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_twim_ESum[0]->GetXaxis()->CenterTitle(true);
+    fh1_twim_ESum[0]->GetYaxis()->CenterTitle(true);
+    fh1_twim_ESum[0]->GetXaxis()->SetLabelSize(0.045);
+    fh1_twim_ESum[0]->GetXaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[0]->GetYaxis()->SetLabelSize(0.045);
+    fh1_twim_ESum[0]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[0]->Draw("");
+    cTwimMap_ESum->cd(2);
+    fh1_twim_ESum[1] = new TH1F("fh1_twim_ESum2", "twim:ESum:Second", 8192, 0, 8192);
+    fh1_twim_ESum[1]->GetXaxis()->SetTitle("Energy [channels]");
+    fh1_twim_ESum[1]->GetYaxis()->SetTitle("Counts");
+    fh1_twim_ESum[1]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_twim_ESum[1]->GetXaxis()->CenterTitle(true);
+    fh1_twim_ESum[1]->GetYaxis()->CenterTitle(true);
+    fh1_twim_ESum[1]->GetXaxis()->SetLabelSize(0.045);
+    fh1_twim_ESum[1]->GetXaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[1]->GetYaxis()->SetLabelSize(0.045);
+    fh1_twim_ESum[1]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[1]->Draw("");
+
+    cTwimMap_ESum1 = new TCanvas("twim_ESum", "twim_ESum", 10, 10, 800, 700);
+    fh1_twim_ESum[2] = new TH1F("fh1_twim_ESum", "twim:ESum", 8192, 0, 8192);
+    fh1_twim_ESum[2]->GetXaxis()->SetTitle("Energy [channels]");
+    fh1_twim_ESum[2]->GetYaxis()->SetTitle("Counts");
+    fh1_twim_ESum[2]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_twim_ESum[2]->GetXaxis()->CenterTitle(true);
+    fh1_twim_ESum[2]->GetYaxis()->CenterTitle(true);
+    fh1_twim_ESum[2]->GetXaxis()->SetLabelSize(0.045);
+    fh1_twim_ESum[2]->GetXaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[2]->GetYaxis()->SetLabelSize(0.045);
+    fh1_twim_ESum[2]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[2]->Draw("");
+
+    cTwimMap_ESum2 = new TCanvas("twim_E1vsE2", "twim_E1vsE2", 10, 10, 800, 700);
+    fh2_twim_ESum = new TH2F("fh2_twim_ESum", "twim: ESum1 vs Esum2", 2192, 0, 8192, 2192, 0, 8192);
+    fh2_twim_ESum->GetXaxis()->SetTitle("Energy1 [channels]");
+    fh2_twim_ESum->GetYaxis()->SetTitle("Energy2 [channels]");
+    fh2_twim_ESum->GetYaxis()->SetTitleOffset(1.1);
+    fh2_twim_ESum->GetXaxis()->CenterTitle(true);
+    fh2_twim_ESum->GetYaxis()->CenterTitle(true);
+    fh2_twim_ESum->GetXaxis()->SetLabelSize(0.045);
+    fh2_twim_ESum->GetXaxis()->SetTitleSize(0.045);
+    fh2_twim_ESum->GetYaxis()->SetLabelSize(0.045);
+    fh2_twim_ESum->GetYaxis()->SetTitleSize(0.045);
+    fh2_twim_ESum->Draw("col");
+
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
     for (Int_t i = 0; i < NbSections; i++)
         mainfolTwim->Add(cTwimMap_E[i]);
+    for (Int_t i = 0; i < NbSections; i++)
+        mainfolTwim->Add(cTwimMap_DT[i]);
+    for (Int_t i = 0; i < NbSections; i++)
+        mainfolTwim->Add(cTwim_Mult[i]);
+    mainfolTwim->Add(cTwimMap_ESum);
+    mainfolTwim->Add(cTwimMap_ESum1);
+    mainfolTwim->Add(cTwimMap_ESum2);
+    for (Int_t i = 0; i < NbSections; i++)
+        mainfolTwim->Add(cTwimMap_EvsDT[i]);
     run->AddObject(mainfolTwim);
 
     // Register command to reset histograms
@@ -134,8 +275,19 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     LOG(INFO) << "R3BSofTwimOnlineSpectra::Reset_Histo";
     // Map data
     for (Int_t i = 0; i < NbSections; i++)
+    {
+        fh1_Twimmap_mult[i]->Reset();
         for (Int_t j = 0; j < NbAnodes; j++)
+        {
             fh1_twimmap_E[i][j]->Reset();
+            fh1_twimmap_DT[i][j]->Reset();
+            fh2_twim_EneRawVsDriftTime[i][j]->Reset();
+        }
+    }
+    fh1_twim_ESum[0]->Reset();
+    fh1_twim_ESum[1]->Reset();
+    fh1_twim_ESum[2]->Reset();
+    fh2_twim_ESum->Reset();
 }
 
 void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
@@ -147,14 +299,50 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
     // Fill mapped data
     if (fMappedItemsTwim && fMappedItemsTwim->GetEntriesFast())
     {
+        Double_t e1 = 0., e2 = 0., E[NbSections][NbAnodes], DT[NbSections][NbAnodes + NbSections];
+        Double_t n1 = 0., n2 = 0.;
+        for (Int_t j = 0; j < NbSections; j++)
+            for (Int_t i = 0; i < NbAnodes; i++)
+                E[j][i] = 0.; // mult=1 !!!
+        for (Int_t j = 0; j < NbSections; j++)
+            for (Int_t i = 0; i < NbAnodes + NbSections; i++)
+                DT[j][i] = 0.; // mult=1 !!!
         Int_t nHits = fMappedItemsTwim->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BSofTwimMappedData* hit = (R3BSofTwimMappedData*)fMappedItemsTwim->At(ihit);
             if (!hit)
                 continue;
+            fh1_Twimmap_mult[hit->GetSecID()]->Fill(hit->GetAnodeID());
             fh1_twimmap_E[hit->GetSecID()][hit->GetAnodeID()]->Fill(hit->GetEnergy());
+            if (DT[hit->GetSecID()][hit->GetAnodeID()] == 0 && E[hit->GetSecID()][hit->GetAnodeID()] == 0 &&
+                hit->GetEnergy() < 8192 && hit->GetEnergy() > 0)
+            {
+                E[hit->GetSecID()][hit->GetAnodeID()] = hit->GetEnergy(); // mult=1 !!!
+                DT[hit->GetSecID()][hit->GetAnodeID()] = hit->GetTime();  // mult=1 !!!
+            }
+
+            if (hit->GetAnodeID() < NbAnodes / 2)
+            {
+                e1 = e1 + hit->GetEnergy();
+                n1++;
+            }
+            else if (hit->GetAnodeID() < NbAnodes)
+            {
+                e2 = e2 + hit->GetEnergy();
+                n2++;
+            }
         }
+        for (Int_t j = 0; j < NbSections; j++)
+            for (Int_t i = 0; i < NbAnodes; i++)
+            {
+                fh1_twimmap_DT[j][i]->Fill(DT[j][i] - DT[j][NbAnodes]);
+                fh2_twim_EneRawVsDriftTime[j][i]->Fill(E[j][i], DT[j][i] - DT[j][NbAnodes]);
+            }
+        fh1_twim_ESum[0]->Fill(e1 / n1);
+        fh1_twim_ESum[1]->Fill(e2 / n2);
+        fh1_twim_ESum[2]->Fill((e1 + e2) / (n1 + n2));
+        fh2_twim_ESum->Fill(e1 / n1, e2 / n2);
     }
 
     fNEvents += 1;
@@ -175,7 +363,16 @@ void R3BSofTwimOnlineSpectra::FinishTask()
     if (fMappedItemsTwim)
     {
         for (Int_t i = 0; i < NbSections; i++)
+        {
+            fh1_Twimmap_mult[i]->Write();
             cTwimMap_E[i]->Write();
+            cTwimMap_DT[i]->Write();
+            cTwimMap_EvsDT[i]->Write();
+        }
+        fh1_twim_ESum[0]->Write();
+        fh1_twim_ESum[1]->Write();
+        fh1_twim_ESum[2]->Write();
+        fh2_twim_ESum->Write();
     }
 }
 

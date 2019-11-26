@@ -13,6 +13,7 @@
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
+#include "R3BMusicOnlineSpectra.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -35,7 +36,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
-#include <fstream>
 #include <iostream>
 #include <sstream>
 
@@ -46,7 +46,11 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fEventHeader(nullptr)
     , fAtOnline(NULL)
     , fMwpc0Online(NULL)
+    , fMwpc1Online(NULL)
+    , fMwpc2Online(NULL)
+    , fMwpc3Online(NULL)
     , fTwimOnline(NULL)
+    , fMusicOnline(NULL)
     , fNEvents(0)
 {
 }
@@ -56,7 +60,11 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fEventHeader(nullptr)
     , fAtOnline(NULL)
     , fMwpc0Online(NULL)
+    , fMwpc1Online(NULL)
+    , fMwpc2Online(NULL)
+    , fMwpc3Online(NULL)
     , fTwimOnline(NULL)
+    , fMusicOnline(NULL)
     , fNEvents(0)
 {
 }
@@ -91,10 +99,30 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fMwpc0Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::Init SofMwpc0OnlineSpectra not found";
 
+    // Looking for Mwpc1 online
+    fMwpc1Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1OnlineSpectra");
+    if (!fMwpc1Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init SofMwpc1OnlineSpectra not found";
+
+    // Looking for Mwpc2 online
+    fMwpc2Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc2OnlineSpectra");
+    if (!fMwpc2Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init SofMwpc2OnlineSpectra not found";
+
+    // Looking for Mwpc3 online
+    fMwpc3Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc3OnlineSpectra");
+    if (!fMwpc3Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init SofMwpc3OnlineSpectra not found";
+
     // Looking for Twim online
     fTwimOnline = (R3BSofTwimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTwimOnlineSpectra");
     if (!fTwimOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::Init SofTwimOnlineSpectra not found";
+
+    // Looking for Music online
+    fMusicOnline = (R3BMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("R3BMusicOnlineSpectra");
+    if (!fMusicOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init R3BMusicOnlineSpectra not found";
 
     // Triggers
     cTrigger = new TCanvas("Triggers", "Trigger information", 10, 10, 800, 700);
@@ -133,9 +161,21 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Mwpc0 histograms if they exist somewhere
     if (fMwpc0Online)
         fMwpc0Online->Reset_Histo();
+    // Reset Mwpc1 histograms if they exist somewhere
+    if (fMwpc1Online)
+        fMwpc1Online->Reset_Histo();
+    // Reset Mwpc2 histograms if they exist somewhere
+    if (fMwpc2Online)
+        fMwpc2Online->Reset_Histo();
+    // Reset Mwpc3 histograms if they exist somewhere
+    if (fMwpc3Online)
+        fMwpc3Online->Reset_Histo();
     // Reset Twim histograms if they exist somewhere
     if (fTwimOnline)
         fTwimOnline->Reset_Histo();
+    // Reset Music histograms if they exist somewhere
+    if (fMusicOnline)
+        fMusicOnline->Reset_Histo();
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option)
@@ -154,7 +194,7 @@ void R3BSofOnlineSpectra::FinishEvent() {}
 
 void R3BSofOnlineSpectra::FinishTask()
 {
-    // Write trigger canva in the root file
+    // Write trigger canvas in the root file
     cTrigger->Write();
 }
 

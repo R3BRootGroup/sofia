@@ -1,7 +1,6 @@
 #include "R3BSofSciMapped2TcalPar.h"
 
 #include "R3BSofSciMappedData.h"
-#include "R3BSofComRefMappedData.h"
 #include "R3BSofTcalPar.h"
 
 #include "R3BEventHeader.h"
@@ -29,33 +28,29 @@
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar() 
   : FairTask("R3BSofSciMapped2TcalPar",1)
   , fNumDetectors(2)
-  , fNumSections(1)
   , fNumChannels(3)
   , fNumTcalParsPerSignal(1000)
   , fMinStatistics(0)
-  , fMappedSci(NULL)
-  , fMappedComRef(NULL)
+  , fMapped(NULL)
   , fTcalPar(NULL)
   , fOutputFile(NULL) 
 {
-  fNumSignals = fNumDetectors * fNumSections * fNumChannels;
+  fNumSignals = fNumDetectors * fNumChannels;
 }
 
 //R3BSofSciMapped2TcalPar: Standard Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbose) 
   : FairTask(name, iVerbose)
   , fNumDetectors(2)
-  , fNumSections(1)
   , fNumChannels(3)
   , fNumTcalParsPerSignal(1000)
   , fMinStatistics(0)
-  , fMappedSci(NULL)
-  , fMappedComRef(NULL)
+  , fMapped(NULL)
   , fTcalPar(NULL)
   , fOutputFile(NULL) 
 
 {
-  fNumSignals = fNumDetectors * fNumSections * fNumChannels;
+  fNumSignals = fNumDetectors * fNumChannels;
 }
 
 //R3BSofSciMapped2TcalPar: Destructor ----------------------------------------
@@ -76,16 +71,9 @@ InitStatus R3BSofSciMapped2TcalPar::Init() {
   // --- INPUT MAPPED DATA --- //
   // --- ----------------- --- //
 
-  // Common reference signal
-  fMappedComRef = (TClonesArray*)rm->GetObject("SofComRef");  // see Instance->Register in R3BSofComRefReader.cxx  
-  if (!fMappedComRef){
-    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofComRef container";
-    return kFATAL;
-  }
-
   // scintillator at S2 and cave C
-  fMappedSci = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
-  if (!fMappedSci){
+  fMapped = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
+  if (!fMapped){
     LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSci container";
     return kFATAL;
   }
@@ -110,9 +98,8 @@ InitStatus R3BSofSciMapped2TcalPar::Init() {
   // --- In 1-based numbering:  --- //
   // --- detector 1 : at S2     --- //
   // --- detector 2 : at cave C --- //
-  // --- channel 1  : ComRef    --- //
-  // --- channel 2  : Pmt Down  --- //
-  // --- channel 3  : Pmt Up    --- //
+  // --- channel 1  : Pmt R     --- //
+  // --- channel 2  : Pmt L     --- //
   // --- ---------------------- --- //
   char name[100];  
   fh_TimeFineBin = new TH1F*[fNumSignals];
@@ -138,52 +125,6 @@ InitStatus R3BSofSciMapped2TcalPar::ReInit() {
 
 // -----   Public method Exec   --------------------------------------------
 void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
-  
-  // --- ----------------------------------- --- //
-  // --- LOOP OVER MAPPED HITS FOR SofComRef --- //
-  // --- ----------------------------------- --- //
-  // --- The common reference is the 
-  // --- accepted trigger (also called 
-  // --- master start, MT) 
-  // --- sent at S2 and cave C
-  // --- ----------------------------------- --- //
-
-  // nHitsComRef = number of hits per event
-  // for the common reference, this nHitsComRef is equal to 2 (one hit at S2 and one hit at cave C)
-  UInt_t nHitsComRef = fMappedComRef->GetEntries(); 
-  UInt_t iSignalComRef;
-  for (UInt_t ihit=0; ihit<nHitsComRef; ihit++){
-    R3BSofComRefMappedData* hitComRef = (R3BSofComRefMappedData*)fMappedComRef->At(ihit);
-    if (!hitComRef){ 
-      LOG(WARNING) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitComRef";
-      continue; 
-    }           
-    
-    // *** ******************************************* *** //
-    // ***         Numbers of det and channel          *** //
-    // ***   in Mapped and TcalPAr Data are 1-based    *** //
-    // *** ******************************************* *** //
-    // *** Common Reference at S2 (Mapped Data):       *** //
-    // ***     * det=1                                 *** //
-    // *** Common Reference at S2 (Tcal Data):         *** //
-    // ***     * det=1                                 *** //
-    // ***     * channel=1                             *** //
-    // ***     * signal=0                              *** //
-    // *** ******************************************* *** //
-    // *** Common Reference at Cave C (Mapped Data):   *** //
-    // ***     * det=2                                 *** //
-    // *** Common Reference at Cave C (Tcal Data):     *** //
-    // ***     * det=2                                 *** //
-    // ***     * channel=1                             *** //
-    // ***     * signal=3                              *** //
-    // *** ******************************************* *** //
-    iSignalComRef   = (hitComRef->GetDetector()-1)*fNumChannels;
-    if((iSignalComRef==0)||(iSignalComRef==3))
-      fh_TimeFineBin[iSignalComRef]->Fill(hitComRef->GetTimeFine());
-    else
-      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Signal number out of range for ComRef: "<< iSignalComRef << " instead of 0 or 3";
-  }// end of loop over the number of hits per event in MappedComRef
-
 
   // --- -------------------------------- --- //
   // --- LOOP OVER MAPPED HITS FOR SofSci --- //
@@ -191,10 +132,10 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
   
   // nHitsSci = number of hits per event
   // for the scintillator this number of hits can be very large especially for the detector at S2
-  UInt_t nHitsSci = fMappedSci->GetEntries();    // can be very high especially for S2 detector
+  UInt_t nHitsSci = fMapped->GetEntries();    // can be very high especially for S2 detector
   UInt_t iSignalSci;
   for (UInt_t ihit=0; ihit<nHitsSci; ihit++){
-    R3BSofSciMappedData* hitSci = (R3BSofSciMappedData*)fMappedSci->At(ihit);
+    R3BSofSciMappedData* hitSci = (R3BSofSciMappedData*)fMapped->At(ihit);
     if (!hitSci){
       LOG(WARNING) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitSci";
       continue; // should not happen
@@ -209,13 +150,21 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     // ***     * channel=1                             *** //
     // *** SofSci at S2, Pmt Right (Tcal Data)         *** //
     // ***     * det=1                                 *** //
-    // ***     * channel=2                             *** //
-    // ***     * signal=1                              *** //
+    // ***     * channel=1                             *** //
+    // ***     * signal=0                              *** //
     // *** ******************************************* *** //
     // *** SofSci at S2, Pmt Left (Mapped Data)        *** //
     // ***     * det=1                                 *** //
     // ***     * channel=2                             *** //
     // *** SofSci at S2, Pmt Left (Tcal Data)          *** //
+    // ***     * det=1                                 *** //
+    // ***     * channel=2                             *** //
+    // ***     * signal=1                              *** //
+    // *** ******************************************* *** //
+    // *** SofSci at S2, Common Ref (Mapped Data)      *** //
+    // ***     * det=1                                 *** //
+    // ***     * channel=3                             *** //
+    // *** SofSci at S2, Common Ref (Tcal Data)        *** //
     // ***     * det=1                                 *** //
     // ***     * channel=3                             *** //
     // ***     * signal=2                              *** //
@@ -225,18 +174,26 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     // ***     * channel=1                             *** //
     // *** SofSci at Cave C, Pmt Right(Tcal Data)      *** //
     // ***     * det=2                                 *** //
-    // ***     * channel=2                             *** //
-    // ***     * signal=4                              *** //
+    // ***     * channel=1                             *** //
+    // ***     * signal=3                              *** //
     // *** ******************************************* *** //
     // *** SofSci at Cave C, Pmt Left (Mapped Data)    *** //
     // ***     * det=2                                 *** //
     // ***     * channel=2                             *** //
     // *** SofSci at Cave C, Pmt Left (Tcal Data)      *** //
     // ***     * det=2                                 *** //
+    // ***     * channel=2                             *** //
+    // ***     * signal=4                              *** //
+    // *** ******************************************* *** //
+    // *** SofSci at Cave C, Common Ref (Mapped Data)  *** //
+    // ***     * det=2                                 *** //
+    // ***     * channel=3                             *** //
+    // *** SofSci at Cave C, Common Ref (Tcal Data)    *** //
+    // ***     * det=2                                 *** //
     // ***     * channel=3                             *** //
     // ***     * signal=5                              *** //
     // *** ******************************************* *** //
-    iSignalSci = (hitSci->GetDetector()-1)*fNumChannels + hitSci->GetPmt();
+    iSignalSci = (hitSci->GetDetector()-1)*fNumChannels + (hitSci->GetPmt()-1);
     if((0<iSignalSci)&&(iSignalSci<fNumSignals)&&(iSignalSci!=3))
       fh_TimeFineBin[iSignalSci]->Fill(hitSci->GetTimeFine());
     else
@@ -268,9 +225,8 @@ void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
   LOG(INFO) << "R3BSofSciMapped2TcalPar: CalculateVftxTcalParams()";
   
   fTcalPar->SetNumDetectors(fNumDetectors);
-  fTcalPar->SetNumSections(fNumSections);
   fTcalPar->SetNumChannels(fNumChannels);
-  fTcalPar->SetNumSignals(fNumDetectors,fNumSections,fNumChannels);
+  fTcalPar->SetNumSignals(fNumDetectors,fNumChannels);
   fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
 
   UInt_t IntegralTot;

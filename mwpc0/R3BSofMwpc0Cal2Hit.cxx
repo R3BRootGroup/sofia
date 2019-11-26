@@ -25,13 +25,10 @@ R3BSofMwpc0Cal2Hit::R3BSofMwpc0Cal2Hit()
     : FairTask("R3B Hit-MWPC0 Task", 1)
     , fMwpcCalDataCA(NULL)
     , fMwpcHitDataCA(NULL)
-    , fwx(3.125)
-    , // in mm
-    fwy(5.000)
-    , // in mm
-    fSize(200.0)
-    , // in mm
-    fOnline(kFALSE)
+    , fwx(3.125)   // in mm
+    , fwy(3.125)   // in mm
+    , fSize(200.0) // in mm
+    , fOnline(kFALSE)
 {
 }
 
@@ -40,13 +37,10 @@ R3BSofMwpc0Cal2Hit::R3BSofMwpc0Cal2Hit(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMwpcCalDataCA(NULL)
     , fMwpcHitDataCA(NULL)
-    , fwx(3.125)
-    , // in mm
-    fwy(5.000)
-    , // in mm
-    fSize(200.0)
-    , // in mm
-    fOnline(kFALSE)
+    , fwx(3.125)   // in mm
+    , fwy(3.125)   // in mm
+    , fSize(200.0) // in mm
+    , fOnline(kFALSE)
 {
 }
 
@@ -111,8 +105,8 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
     // Data from cal level
     R3BSofMwpcCalData** calData;
     calData = new R3BSofMwpcCalData*[nHits];
-    UChar_t planeId;
-    UChar_t padId;
+    UShort_t planeId;
+    UShort_t padId;
     Int_t padmx = -1, padmy = -1;
     Int_t q = 0, qmx = 0, qmy = 0, qleft = 0, qright = 0, qdown = 0, qup = 0;
     Double_t x = 0., y = 0.;

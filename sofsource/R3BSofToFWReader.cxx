@@ -4,7 +4,8 @@
 #include "R3BSofToFWMappedData.h"
 #include "R3BSofToFWReader.h"
 
-extern "C" {
+extern "C"
+{
 #include "ext_data_client.h"
 #include "ext_h101_softofw.h"
 }
@@ -19,16 +20,23 @@ R3BSofToFWReader::R3BSofToFWReader(EXT_STR_h101_SOFTOFW* data, UInt_t offset)
     : R3BReader("R3BSofToFWReader")
     , fData(data)
     , fOffset(offset)
-    , fLogger(FairLogger::GetLogger())
+    , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofToFWMappedData"))
 {
 }
 
-R3BSofToFWReader::~R3BSofToFWReader() {}
+R3BSofToFWReader::~R3BSofToFWReader()
+{
+    LOG(INFO) << "R3BSofToFWReader: Delete instance";
+    if (fArray)
+    {
+        delete fArray;
+    }
+}
 
 Bool_t R3BSofToFWReader::Init(ext_data_struct_info* a_struct_info)
 {
-    int ok;
+    Int_t ok;
     LOG(INFO) << "R3BSofToFWReader::Init";
     EXT_STR_h101_SOFTOFW_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTOFW, 0);
     if (!ok)
@@ -39,7 +47,15 @@ Bool_t R3BSofToFWReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    FairRootManager::Instance()->Register("SofToFWMappedData", "SofToFW", fArray, kTRUE);
+    if (!fOnline)
+    {
+        FairRootManager::Instance()->Register("SofToFWMappedData", "SofToFW", fArray, kTRUE);
+    }
+    else
+    {
+        FairRootManager::Instance()->Register("SofToFWMappedData", "SofToFW", fArray, kFALSE);
+    }
+    fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
@@ -79,7 +95,7 @@ Bool_t R3BSofToFWReader::Read()
     */
 
     // loop over all detectors
-    for (int d = 0; d < NUM_SOFTOFW_DETECTORS; d++)
+    for (Int_t d = 0; d < NUM_SOFTOFW_DETECTORS; d++)
     {
 
         uint32_t NumberOfPMTsWithHits = data->SOFTOFW_P[d].TFM; // could also be data->SOFTOFW_P[d].TCM;
@@ -92,14 +108,14 @@ Bool_t R3BSofToFWReader::Read()
 
         // loop over channels with hits
         uint32_t curChannelStart = 0;
-        for (int pmmult = 0; pmmult < NumberOfPMTsWithHits; pmmult++)
+        for (Int_t pmmult = 0; pmmult < NumberOfPMTsWithHits; pmmult++)
         {
             uint32_t pmtval = data->SOFTOFW_P[d].TFMI[pmmult];
             uint32_t nextChannelStart = data->SOFTOFW_P[d].TFME[pmmult];
             // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
             for (int hit = curChannelStart; hit < nextChannelStart; hit++)
             {
-                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofToFWMappedData(d + 1,
+                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofToFWMappedData(d,
                                                                                pmtval,
                                                                                data->SOFTOFW_P[d].TCv[hit],
                                                                                data->SOFTOFW_P[d].TFv[hit],

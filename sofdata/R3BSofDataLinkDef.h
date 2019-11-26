@@ -15,7 +15,6 @@
 // General
 #pragma link C++ class R3BSofAtMappedData + ;
 
-#pragma link C++ class R3BSofComRefMappedData + ;
 #pragma link C++ class R3BSofSciMappedData + ;
 #pragma link C++ class R3BSofSciTcalData + ;
 #pragma link C++ class R3BSofSciCalData + ;
@@ -26,6 +25,7 @@
 
 #pragma link C++ class R3BSofToFWMappedData + ;
 #pragma link C++ class R3BSofToFWCalData + ;
+#pragma link C++ class R3BSofTofWHitData + ;
 
 #pragma link C++ class R3BSofTrimMappedData + ;
 

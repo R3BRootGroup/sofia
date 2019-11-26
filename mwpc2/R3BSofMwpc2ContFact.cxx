@@ -6,6 +6,7 @@
 
 #include "R3BSofMwpc2ContFact.h"
 #include "R3BSofMwpc2CalPar.h"
+#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
@@ -33,6 +34,11 @@ void R3BSofMwpc2ContFact::setAllContainers()
     p1->addContext("Mwpc2CalParContext");
 
     containers->Add(p1);
+
+    FairContainer* p2 = new FairContainer("mwpc2GeoPar", "MWPC2 geometry parameters", "TestDefaultContext");
+    p2->addContext("TestNonDefaultContext");
+
+    containers->Add(p2);
 }
 
 FairParSet* R3BSofMwpc2ContFact::createContainer(FairContainer* c)
@@ -48,6 +54,12 @@ FairParSet* R3BSofMwpc2ContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofMwpc2CalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+
+    if (strcmp(name, "mwpc2GeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+
     return p;
 }
 
