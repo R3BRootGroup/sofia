@@ -23,11 +23,12 @@
 #include <iostream>
 #include <stdlib.h>
 
+// for the engineering run (fNumDetectors(1) instead of fNumDetectors(2)
 
 //R3BSofSciMapped2TcalPar: Default Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar() 
   : FairTask("R3BSofSciMapped2TcalPar",1)
-  , fNumDetectors(2)
+  , fNumDetectors(1)
   , fNumChannels(3)
   , fNumTcalParsPerSignal(1000)
   , fMinStatistics(0)
@@ -41,7 +42,7 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar()
 //R3BSofSciMapped2TcalPar: Standard Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbose) 
   : FairTask(name, iVerbose)
-  , fNumDetectors(2)
+  , fNumDetectors(1)
   , fNumChannels(3)
   , fNumTcalParsPerSignal(1000)
   , fMinStatistics(0)
@@ -72,9 +73,9 @@ InitStatus R3BSofSciMapped2TcalPar::Init() {
   // --- ----------------- --- //
 
   // scintillator at S2 and cave C
-  fMapped = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
+  fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData");        // see Instance->Register in R3BSofSciReader.cxx
   if (!fMapped){
-    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSci container";
+    LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciMappedData container";
     return kFATAL;
   }
 
@@ -194,10 +195,10 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt) {
     // ***     * signal=5                              *** //
     // *** ******************************************* *** //
     iSignalSci = (hitSci->GetDetector()-1)*fNumChannels + (hitSci->GetPmt()-1);
-    if((0<iSignalSci)&&(iSignalSci<fNumSignals)&&(iSignalSci!=3))
+    if((0<=iSignalSci)&&(iSignalSci<=fNumSignals))
       fh_TimeFineBin[iSignalSci]->Fill(hitSci->GetTimeFine());
     else
-      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: "<< iSignalSci << " instead of [0,"<< fNumSignals << "]";
+      LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: "<< iSignalSci << " instead of [0,"<< fNumSignals << "]: det=" << hitSci->GetDetector() << ",  fNumChannels = " << fNumChannels << ",  pmt = " << hitSci->GetPmt() ;
       
   }// end of loop over the number of hits per event in MappedSci
 }

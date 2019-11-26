@@ -23,15 +23,16 @@ void eng_online()
 
   // Create source using ucesb for input ------------------
   
-  TString filename = "--stream=lxir123:7803";
-  //TString filename = "~/lmd/sofia2019/main0028_00*.lmd";
+  //TString filename = "--stream=lxir123:7803";
+  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_00*.lmd";
 
   TString outputFileName = "data_online.root";
   
   TString ntuple_options = "RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100Mi";
-  TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng/201911_eng --input-buffer=100Mi";
+  //TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng/201911_eng --input-buffer=100Mi";
+  TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100M";
   ucesb_path.ReplaceAll("//","/");
   
   EXT_STR_h101 ucesb_struct;
@@ -86,7 +87,7 @@ void eng_online()
   //Musics
   R3BMusicMapped2Cal* MusMap2Cal = new R3BMusicMapped2Cal();
   //MusMap2Cal->SetOnline(true);
-  run->AddTask(MusMap2Cal);
+  //run->AddTask(MusMap2Cal);
 
   R3BSofMwpc0Mapped2Cal* aMap2Cal = new R3BSofMwpc0Mapped2Cal();
   //Map2Cal->SetOnline(true);

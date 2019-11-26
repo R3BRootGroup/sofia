@@ -118,11 +118,13 @@ void R3BSofTcalPar::printParams()
 	  cout << "---       detector " << d + 1 << endl;
 	  cout << "---       channel " << ch + 1 << endl;
 	  cout << "--- --------------------------------------------" << endl;
-	  for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
+	  /*
+	    for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
 	    {
-	      cout << "FineTime at Bin (" << bin << ") = " << fAllSignalsTcalParams->GetAt(sig * 1000 + bin)
-		   << endl;
+	    cout << "FineTime at Bin (" << bin << ") = " << fAllSignalsTcalParams->GetAt(sig * 1000 + bin)
+	    << endl;
 	    }
+	  */
 	}
     }
 }

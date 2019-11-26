@@ -27,6 +27,7 @@ set(SRCS
 R3BSofTofWall.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofToFWMapped2TcalPar.cxx
+R3BSofToFWMapped2Tcal.cxx
 R3BSofTofWContFact.cxx
 )
 

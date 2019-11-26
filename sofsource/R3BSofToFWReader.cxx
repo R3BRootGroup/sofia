@@ -60,9 +60,12 @@ Bool_t R3BSofToFWReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFTOFW_onion* data = (EXT_STR_h101_SOFTOFW_onion*)fData;
-    for (int d = 0; d < NUM_SOFTOFW_DETECTORS; d++)
+    for (int d = 0; d < NUM_SOFTOFW_DETECTORS; d++){
         data->SOFTOFW_P[d].TFM = 0;
-
+        data->SOFTOFW_P[d].TCM = 0;
+        data->SOFTOFW_P[d].E[0] = 0;
+        data->SOFTOFW_P[d].E[1] = 0;
+    }
     return kTRUE;
 }
 
@@ -79,18 +82,18 @@ Bool_t R3BSofToFWReader::Read()
       // RAW //
       struct {
       uint32_t TFM;
-      uint32_t TFMI[2 // TFM //];
-      uint32_t TFME[2 // TFM //];
+      uint32_t TFMI[2 //TFM ];
+      uint32_t TFME[2 // TFM ];
       uint32_t TF;
-      uint32_t TFv[10 // TF //];
+      uint32_t TFv[20 // TF ];
       uint32_t TCM;
-      uint32_t TCMI[2 // TCM //];
-      uint32_t TCME[2 // TCM //];
+      uint32_t TCMI[2 // TCM ];
+      uint32_t TCME[2 // TCM ];
       uint32_t TC;
-      uint32_t TCv[10 // TC //];
+      uint32_t TCv[20 // TC ];
       uint32_t E[2];
       } SOFTOFW_P[28];
-
+      
       } EXT_STR_h101_SOFTOFW_onion;
     */
 
@@ -111,16 +114,21 @@ Bool_t R3BSofToFWReader::Read()
         for (Int_t pmmult = 0; pmmult < NumberOfPMTsWithHits; pmmult++)
         {
             uint32_t pmtval = data->SOFTOFW_P[d].TFMI[pmmult];
+	    if (pmtval!=data->SOFTOFW_P[d].TCMI[pmmult]){
+	      LOG(ERROR) << "R3BSofToFWReader::Reader() mismatch in PMt id for ToFW between TF / TC "
+			 << "TF: PMT = " << data->SOFTOFW_P[d].TFMI[pmmult]
+			 << "TC: PMT = " << data->SOFTOFW_P[d].TCMI[pmmult];
+	    }
             uint32_t nextChannelStart = data->SOFTOFW_P[d].TFME[pmmult];
             // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
             for (int hit = curChannelStart; hit < nextChannelStart; hit++)
             {
-                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofToFWMappedData(d,
-                                                                               pmtval,
-                                                                               data->SOFTOFW_P[d].TCv[hit],
-                                                                               data->SOFTOFW_P[d].TFv[hit],
-                                                                               data->SOFTOFW_P[d].E[pmmult],
-                                                                               FLAG_P);
+	      new ((*fArray)[fArray->GetEntriesFast()]) R3BSofToFWMappedData(d+1, // do not change into d !!!!!!! 
+									     pmtval,
+									     data->SOFTOFW_P[d].TCv[hit],
+									     data->SOFTOFW_P[d].TFv[hit],
+									     data->SOFTOFW_P[d].E[pmmult],
+									     FLAG_P);
             }
             curChannelStart = nextChannelStart;
         }
