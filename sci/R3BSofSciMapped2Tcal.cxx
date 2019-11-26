@@ -12,8 +12,8 @@ R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
   : FairTask("R3BSofSciMapped2Tcal",1)
   , fMapped(NULL)
   , fTcalPar(NULL)
-  , fTcalItems(new TClonesArray("R3BSofSciTcalData"))
-  , fNumTcalItems(0)
+  , fTcal(new TClonesArray("R3BSofSciTcalData"))
+  , fNumTcal(0)
   , fNevent(0)
 {
 }
@@ -21,9 +21,9 @@ R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
 
 R3BSofSciMapped2Tcal::~R3BSofSciMapped2Tcal()
 {
-  if(fTcalItems){
-    delete fTcalItems;
-    fTcalItems=NULL;
+  if(fTcal){
+    delete fTcal;
+    fTcal=NULL;
   }
 }
 
@@ -44,13 +44,13 @@ InitStatus R3BSofSciMapped2Tcal::Init()
   // --- ----------------- --- //
 
   // scintillator at S2 and cave C
-  fMapped = (TClonesArray*)rm->GetObject("SofSci");        // see Instance->Register in R3BSofSciReader.cxx
+  fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData");  // see Instance->Register("SofSciMappedData", "SofSci", fArray, kTRUE); in R3BSofSciReader.cxx
   if (!fMapped){
-    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSci container";
+    LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSciMappedData container";
     return kFATAL;
   }
   else
-    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofSci Mapped items found";
+    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofSciMappedData items found";
   
 
   // --- -------------------------- --- //
@@ -69,7 +69,7 @@ InitStatus R3BSofSciMapped2Tcal::Init()
   // --- ---------------- --- //
   
   // Register output array in tree
-  rm->Register("SofSciTcal","TcalDim", fTcalItems, kTRUE);
+  rm->Register("SofSciTcalData","SofSci", fTcal, kTRUE);
 
   LOG(INFO) << "R3BSofSciMapped2Tcal: Init DONE !";
 
@@ -121,7 +121,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
       continue;
     }
     tns = CalculateTimeNs(iDet,iCh,iTf,iTc);
-    new((*fTcalItems)[fNumTcalItems++]) R3BSofSciTcalData(iDet,iCh,tns);
+    new((*fTcal)[fNumTcal++]) R3BSofSciTcalData(iDet,iCh,tns);
   }
     
   ++fNevent;
@@ -130,8 +130,8 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
 
 void R3BSofSciMapped2Tcal::FinishEvent()
 {
-  fTcalItems->Clear();
-  fNumTcalItems = 0;
+  fTcal->Clear();
+  fNumTcal = 0;
 }
 
 

@@ -50,19 +50,7 @@ void R3BSofTcalContFact::setAllContainers()
     p2->addContext("SofTcalParContext");
     containers->Add(p2);
 
-    // --- ---------------------------------------------- --- //
-    // --- for the Triple-MUSIC when readout by MADC+VFTX --- //
-    // --- ---------------------------------------------- --- //
-    FairContainer* p3 = new FairContainer("SofTrimTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
-    p3->addContext("SofTcalParContext");
-    containers->Add(p3);
 
-    // --- -------------------------------------------- --- //
-    // --- for the Twin-MUSIC when readout by MADC+VFTX --- //
-    // --- -------------------------------------------- --- //
-    FairContainer* p4 = new FairContainer("SofTwimTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
-    p4->addContext("SofTcalParContext");
-    containers->Add(p4);
 }
 
 FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
@@ -83,14 +71,7 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "SofTrimTcalPar") == 0)
-    {
-        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    if (strcmp(name, "SofTwimTcalPar") == 0)
-    {
-        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
+
 
     return p;
 }

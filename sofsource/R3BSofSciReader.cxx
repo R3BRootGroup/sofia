@@ -120,7 +120,10 @@ Bool_t R3BSofSciReader::Read()
                 for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++)
                 {
                     auto item = new ((*fArray)[fNumEntries++])
-                        R3BSofSciMappedData(d, pmtid_TF, data->SOFSCI[d].TCv[hit], data->SOFSCI[d].TFv[hit]);
+		      R3BSofSciMappedData(d+1, // do not change into d !!!!!!! (Audrey) 
+					    pmtid_TF, 
+					    data->SOFSCI[d].TCv[hit], 
+					    data->SOFSCI[d].TFv[hit]);
                 }
                 curChannelStart = nextChannelStart;
             }
