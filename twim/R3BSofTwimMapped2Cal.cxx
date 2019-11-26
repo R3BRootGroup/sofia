@@ -1,7 +1,7 @@
-// -------------------------------------------------------------------------
-// -----         R3BSofTwimMapped2Cal source file                     -----
-// -----             Created 07/10/19  by J.L. Rodriguez-Sanchez       -----
-// -------------------------------------------------------------------------
+// ----------------------------------------------------------------
+// -----         R3BSofTwimMapped2Cal source file             -----
+// -----    Created 24/11/19  by J.L. Rodriguez-Sanchez       -----
+// ----------------------------------------------------------------
 
 // ROOT headers
 #include "TClonesArray.h"
@@ -62,7 +62,6 @@ R3BSofTwimMapped2Cal::~R3BSofTwimMapped2Cal()
 
 void R3BSofTwimMapped2Cal::SetParContainers()
 {
-
     // Parameter Container
     // Reading amsStripCalPar from FairRuntimeDb
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
@@ -155,15 +154,15 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
 
     // Reading the Input -- Mapped Data --
     Int_t nHits = fTwimMappedDataCA->GetEntries();
-    if (nHits != (NumSec * NumAnodes) && nHits > 0)
-        LOG(WARNING) << "R3BSofTwimMapped2Cal: nHits!=NumSec*NumAnodes"; // FIXME: what happens with multihit ??
+    // if (nHits != (NumSec * NumAnodes) && nHits > 0)
+    //     LOG(WARNING) << "R3BSofTwimMapped2Cal: nHits!=NumSec*NumAnodes"; // FIXME: what happens with multihit ??
     if (!nHits)
         return;
 
     R3BSofTwimMappedData** mappedData;
     mappedData = new R3BSofTwimMappedData*[nHits];
-    UChar_t secId;
-    UChar_t anodeId;
+    UShort_t secId;
+    UShort_t anodeId;
     Double_t energy;
     Double_t pedestal = 0.;
     Double_t dtime = 0.;
@@ -171,8 +170,8 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     for (Int_t i = 0; i < nHits; i++)
     {
         mappedData[i] = (R3BSofTwimMappedData*)(fTwimMappedDataCA->At(i));
-        secId = mappedData[i]->Get();
-        anodeId = mappedData[i]->Get();
+        secId = mappedData[i]->GetSecID();
+        anodeId = mappedData[i]->GetAnodeID();
         energy = mappedData[i]->GetEnergy() - pedestal;
 
         // TODO: Add drift time calculation!!
@@ -201,7 +200,7 @@ void R3BSofTwimMapped2Cal::Reset()
 }
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BSofTwimCalData* R3BSofTwimMapped2Cal::AddCalData(UChar_t secID, UChar_t anodeID, Double_t dtime, Double_t energy)
+R3BSofTwimCalData* R3BSofTwimMapped2Cal::AddCalData(UShort_t secID, UShort_t anodeID, Double_t dtime, Double_t energy)
 {
     // It fills the R3BSofTwimCalData
     TClonesArray& clref = *fTwimCalDataCA;
