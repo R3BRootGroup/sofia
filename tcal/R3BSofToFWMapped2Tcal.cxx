@@ -60,9 +60,11 @@ InitStatus R3BSofToFWMapped2Tcal::Init()
     LOG(ERROR) << " There are no Tcal parameters for SofToFW";
     return kFATAL;
   }
-  else
-    LOG(INFO) << " Number of signals for SofToFW with defined tcal parameters : " << fTcalPar->GetNumSignals();
-  
+  else{
+    LOG(INFO) << "R3BSofToFWMapped2Tcal::Init() : fNumSignals=" << fTcalPar->GetNumSignals();
+    LOG(INFO) << " R3BSofToFWMapped2Tcal::Init() : fNumDetectors=" << fTcalPar->GetNumDetectors();
+    LOG(INFO) << "  R3BSofToFWMapped2Tcal::Init() : fNumChannels=" << fTcalPar->GetNumChannels();
+  }
 
   // --- ---------------- --- //
   // --- OUTPUT TCAL DATA --- //

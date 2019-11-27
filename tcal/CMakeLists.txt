@@ -9,6 +9,8 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/passive
 ${R3BSOF_SOURCE_DIR}/sofdata
+${R3BSOF_SOURCE_DIR}/sofdata/sciData
+${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/tcal
 )
 
@@ -22,6 +24,10 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 R3BSofTcalPar.cxx
 R3BSofTcalContFact.cxx
+R3BSofSciMapped2TcalPar.cxx
+R3BSofSciMapped2Tcal.cxx
+R3BSofToFWMapped2TcalPar.cxx
+R3BSofToFWMapped2Tcal.cxx
 )
 
 # fill list of header files from list of source files

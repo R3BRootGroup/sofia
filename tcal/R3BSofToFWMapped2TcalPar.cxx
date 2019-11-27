@@ -96,6 +96,12 @@ InitStatus R3BSofToFWMapped2TcalPar::Init()
         LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Init() Couldn't get handle on SofToFWTcalPar container";
         return kFATAL;
     }
+    else{
+      fTcalPar->SetNumDetectors(fNumDetectors);
+      fTcalPar->SetNumChannels(fNumChannels);
+      fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
+      fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
+    }
 
     // --- ---------------------- --- //
     // --- HISTOGRAMS DECLARATION --- //
@@ -186,11 +192,6 @@ void R3BSofToFWMapped2TcalPar::FinishTask()
 void R3BSofToFWMapped2TcalPar::CalculateVftxTcalParams()
 {
     LOG(INFO) << "R3BSofToFWMapped2TcalPar: CalculateVftxTcalParams()";
-
-    fTcalPar->SetNumDetectors(fNumDetectors);
-    fTcalPar->SetNumChannels(fNumChannels);
-    fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
-    fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
 
     UInt_t IntegralTot;
     UInt_t IntegralPartial;

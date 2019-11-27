@@ -10,4 +10,6 @@
 
 #pragma link C++ class R3BSofTwimOnlineSpectra + ;
 
+#pragma link C++ class R3BSofSciOnlineSpectra + ;
+
 #endif

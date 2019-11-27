@@ -17,6 +17,7 @@
 
 #pragma link C++ class R3BSofSciMappedData + ;
 #pragma link C++ class R3BSofSciTcalData + ;
+#pragma link C++ class R3BSofSciSingleTcalData + ;
 #pragma link C++ class R3BSofSciCalData + ;
 
 #pragma link C++ class R3BSofMwpcMappedData + ;

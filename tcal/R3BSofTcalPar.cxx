@@ -17,7 +17,7 @@ using std::endl;
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofTcalPar::R3BSofTcalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
-    , fNumDetectors(0) // will be set to the proper value in R3BSofXXXMapped2TcalPar::CalculateVftxTcalParams()
+    , fNumDetectors(0) 
     , fNumChannels(0)
     , fNumTcalParsPerSignal(0)
 {

@@ -92,6 +92,12 @@ InitStatus R3BSofSciMapped2TcalPar::Init() {
     LOG(ERROR)<<"R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciTcalPar container";
     return kFATAL;
   }
+  else{
+    fTcalPar->SetNumDetectors(fNumDetectors);
+    fTcalPar->SetNumChannels(fNumChannels);
+    fTcalPar->SetNumSignals(fNumDetectors,fNumChannels);
+    fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
+  }
 
   // --- ---------------------- --- //
   // --- HISTOGRAMS DECLARATION --- //
@@ -225,10 +231,6 @@ void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
 {
   LOG(INFO) << "R3BSofSciMapped2TcalPar: CalculateVftxTcalParams()";
   
-  fTcalPar->SetNumDetectors(fNumDetectors);
-  fTcalPar->SetNumChannels(fNumChannels);
-  fTcalPar->SetNumSignals(fNumDetectors,fNumChannels);
-  fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
 
   UInt_t IntegralTot;
   UInt_t IntegralPartial;

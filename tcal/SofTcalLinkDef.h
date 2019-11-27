@@ -6,5 +6,10 @@
 
 #pragma link C++ class R3BSofTcalContFact + ;
 #pragma link C++ class R3BSofTcalPar + ;
+#pragma link C++ class R3BSofSciMapped2TcalPar + ;
+#pragma link C++ class R3BSofSciMapped2Tcal + ;
+#pragma link C++ class R3BSofToFWMapped2TcalPar + ;
+#pragma link C++ class R3BSofToFWMapped2Tcal + ;
+
 
 #endif

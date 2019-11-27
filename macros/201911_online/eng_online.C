@@ -18,21 +18,24 @@ void eng_online()
   TStopwatch timer;
   timer.Start();
   
-  const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
-  //const Int_t nev = 10; // Only 10 events to read  
+  //const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
+  const Int_t nev = 100000; // Only nev events to read  
 
   // Create source using ucesb for input ------------------
   
   //TString filename = "--stream=lxir123:7803";
-  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_00*.lmd";
+  //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main*.lmd";
+  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
-  TString outputFileName = "data_online.root";
+  //TString outputFileName = "data_online.root";
+  TString outputFileName = "../SofMacrosOutput/201911_online/data_online.root";
   
   TString ntuple_options = "RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100Mi";
   //TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng/201911_eng --input-buffer=100Mi";
-  TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100M";
+  TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --allow-errors --input-buffer=100M";
+  //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100M";
   ucesb_path.ReplaceAll("//","/");
   
   EXT_STR_h101 ucesb_struct;
@@ -64,9 +67,9 @@ void eng_online()
   // Add readers ------------------------------------------ 
   source->AddReader(unpackreader);
   source->AddReader(unpackmusic);
-  //source->AddReader(unpacksci);
+  source->AddReader(unpacksci);
   source->AddReader(unpackmwpc);
-  source->AddReader(unpacktwim);
+  //source->AddReader(unpacktwim);
   source->AddReader(unpacktofw);
 
 
@@ -81,6 +84,11 @@ void eng_online()
 
   // Runtime data base ------------------------------------ 
   FairRuntimeDb* rtdb = run->GetRuntimeDb();
+
+  FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();//Ascii
+  parIo1->open("./parameters/CalibParam.par","in");
+  rtdb->setFirstInput(parIo1);
+  rtdb->print();
 
   // Add analysis task ------------------------------------
 
@@ -97,11 +105,9 @@ void eng_online()
   //Map2Cal->SetOnline(true);
   //run->AddTask(Calh);
 
-
   R3BSofMwpc2Mapped2Cal* Map2Cal = new R3BSofMwpc2Mapped2Cal();
   //Map2Cal->SetOnline(true);
   run->AddTask(Map2Cal);
-
 
   //R3BSofMwpc2Cal2Hit* Calh2 = new R3BSofMwpc2Cal2Hit();
   //Map2Cal->SetOnline(true);
@@ -109,12 +115,19 @@ void eng_online()
 
   //R3BSofMwpc3Mapped2Cal* cMap2Cal = new R3BSofMwpc3Mapped2Cal();
   //Map2Cal->SetOnline(true);
-  //run->AddTask(cMap2Cal);777
+  //run->AddTask(cMap2Cal);
 
-  FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();//Ascii
-  parIo1->open("./parameters/CalibParam.par","in");
-  rtdb->setFirstInput(parIo1);
-  rtdb->print();
+  // --- Mapped 2 Tcal for SofSci
+  R3BSofSciMapped2Tcal* SofSciMap2Tcal = new R3BSofSciMapped2Tcal();
+  run->AddTask(SofSciMap2Tcal);
+
+  // --- Mapped 2 Tcal for SofToFW
+  R3BSofToFWMapped2Tcal* SofToFWMap2Tcal = new R3BSofToFWMapped2Tcal();
+  run->AddTask(SofToFWMap2Tcal);
+  
+  // --- Tcal 2 SingleTcal for SofSci
+  R3BSofSciTcal2SingleTcal* SofSciTcal2STcal = new R3BSofSciTcal2SingleTcal();
+  run->AddTask(SofSciTcal2STcal);
 
 
   // Add online task ------------------------------------
@@ -123,14 +136,16 @@ void eng_online()
 
   R3BMusicOnlineSpectra* musonline= new R3BMusicOnlineSpectra();
   run->AddTask(musonline);
-  R3BSofTwimOnlineSpectra* twonline= new R3BSofTwimOnlineSpectra();
-  run->AddTask(twonline);
+  //R3BSofTwimOnlineSpectra* twonline= new R3BSofTwimOnlineSpectra();
+  //run->AddTask(twonline);
   R3BSofMwpcOnlineSpectra* mw0online= new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra",1,"Mwpc0");
   run->AddTask(mw0online);
   R3BSofMwpcOnlineSpectra* mw2online= new R3BSofMwpcOnlineSpectra("SofMwpc2OnlineSpectra",1,"Mwpc2");
   run->AddTask(mw2online);
   //R3BSofMwpcOnlineSpectra* mw3online= new R3BSofMwpcOnlineSpectra("SofMwpc3OnlineSpectra",1,"Mwpc3");
   //run->AddTask(mw3online);
+  R3BSofSciOnlineSpectra* scionline= new R3BSofSciOnlineSpectra();
+  run->AddTask(scionline);
 
   R3BSofOnlineSpectra* sofonline= new R3BSofOnlineSpectra();
   run->AddTask(sofonline);

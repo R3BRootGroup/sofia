@@ -1,29 +1,58 @@
 #include "R3BSofSciMapped2Tcal.h"
-#include "R3BSofSciMappedData.h"
+#include <iomanip>
 
-#include "FairRunAna.h"
-#include "FairRunOnline.h"
-#include "FairRuntimeDb.h"
-#include "FairRootManager.h"
-#include "FairLogger.h"
-
-
+// --- Default Constructor
 R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
   : FairTask("R3BSofSciMapped2Tcal",1)
-  , fMapped(NULL)
-  , fTcalPar(NULL)
-  , fTcal(new TClonesArray("R3BSofSciTcalData"))
   , fNumTcal(0)
   , fNevent(0)
+  , fTcal(NULL)
+  , fMapped(NULL)
+  , fTcalPar(NULL)
+  , fOnline (kFALSE)
 {
 }
 
+// --- Standard Constructor
+R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal(const char* name, Int_t iVerbose)
+  : FairTask(name,iVerbose)
+  , fNumTcal(0)
+  , fNevent(0)
+  , fTcal(NULL)
+  , fMapped(NULL)
+  , fTcalPar(NULL)
+  , fOnline (kFALSE)
+{
+}
 
+// --- Destructor
 R3BSofSciMapped2Tcal::~R3BSofSciMapped2Tcal()
 {
+  LOG(INFO) << "R3BSofSciMapped2Tcal: Delete instance";
+  if(fMapped){
+    delete fMapped;
+  }
   if(fTcal){
     delete fTcal;
-    fTcal=NULL;
+  }
+}
+
+// --- Parameter container : reading SofSciTcalPar from FairRuntimeDb
+void R3BSofSciMapped2Tcal::SetParContainers()
+{
+  FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+  if(!rtdb){
+    LOG(ERROR) << "FairRuntimeDb not opened!";
+  }
+
+  fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofSciTcalPar");
+  if (!fTcalPar){
+    LOG(ERROR) << "R3BSofSciMapped2Tcal::SetParContainers() : Could not get access to SofSciTcalPar-Container.";
+    return;
+  }
+  else{
+    LOG(INFO) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with " 
+	      << fTcalPar->GetNumSignals() << " signals";
   }
 }
 
@@ -42,51 +71,38 @@ InitStatus R3BSofSciMapped2Tcal::Init()
   // --- ----------------- --- //
   // --- INPUT MAPPED DATA --- //
   // --- ----------------- --- //
-
-  // scintillator at S2 and cave C
-  fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData");  // see Instance->Register("SofSciMappedData", "SofSci", fArray, kTRUE); in R3BSofSciReader.cxx
+  fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData"); 
   if (!fMapped){
     LOG(ERROR)<<"R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSciMappedData container";
     return kFATAL;
   }
   else
-    LOG(INFO) << " R3BSofSciMapped2Tcal::Init() SofSciMappedData items found";
+    LOG(INFO) << "R3BSofSciMapped2Tcal::Init() SofSciMappedData items found";
   
+  // --- ---------------- --- //
+  // --- OUTPUT TCAL DATA --- //
+  // --- ---------------- --- //
+  fTcal = new TClonesArray("R3BSofSciTcalData");
+  rm->Register("SofSciTcalData","SofSci", fTcal, kTRUE);
+  LOG(INFO) << "R3BSofSciMapped2Tcal::Init() output R3BSofSciTcalData ";
+
 
   // --- -------------------------- --- //
   // --- CHECK THE TCALPAR VALIDITY --- //
   // --- -------------------------- --- //
   if(fTcalPar->GetNumSignals()==0){
-    LOG(ERROR) << " There are no Tcal parameters for SofSci";
+    LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() : There are no Tcal parameters for SofSci";
     return kFATAL;
   }
-  else
-    LOG(INFO) << " Number of signals for SofSci with defined tcal parameters : " << fTcalPar->GetNumSignals();
-  
-
-  // --- ---------------- --- //
-  // --- OUTPUT TCAL DATA --- //
-  // --- ---------------- --- //
-  
-  // Register output array in tree
-  rm->Register("SofSciTcalData","SofSci", fTcal, kTRUE);
-
-  LOG(INFO) << "R3BSofSciMapped2Tcal: Init DONE !";
-
+  else{
+    LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): fNumSignals=" << fTcalPar->GetNumSignals();
+    LOG(INFO) << " R3BSofSciMapped2Tcal::Init(): fNumDetectors=" << fTcalPar->GetNumDetectors(); 
+    LOG(INFO) << "  R3BSofSciMapped2Tcal::Init(): fNumChannels=" << fTcalPar->GetNumChannels();
+  }
   return kSUCCESS;
 }
 
 
-void R3BSofSciMapped2Tcal::SetParContainers()
-{
-  fTcalPar = (R3BSofTcalPar*)FairRuntimeDb::instance()->getContainer("SofSciTcalPar");
-  if (!fTcalPar){
-    LOG(ERROR) << "R3BSofSciMapped2Tcal::SetParContainers() : Could not get access to SofSciTcalPar-Container.";
-    return;
-  }
-  else
-    LOG(INFO) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with " << fTcalPar->GetNumSignals() << " signals";
-}
 
 
 InitStatus R3BSofSciMapped2Tcal::ReInit()

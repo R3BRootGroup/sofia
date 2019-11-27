@@ -35,6 +35,7 @@ twimData/R3BSofTWIMPoint.cxx
 tofwData/R3BSofToFWPoint.cxx
 sciData/R3BSofSciMappedData.cxx
 sciData/R3BSofSciTcalData.cxx
+sciData/R3BSofSciSingleTcalData.cxx
 sciData/R3BSofSciCalData.cxx
 tofwData/R3BSofToFWMappedData.cxx
 tofwData/R3BSofToFWTcalData.cxx
