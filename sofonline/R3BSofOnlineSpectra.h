@@ -24,6 +24,7 @@ class R3BSofAtOnlineSpectra;
 class R3BSofMwpcOnlineSpectra;
 class R3BSofTwimOnlineSpectra;
 class R3BSofSciOnlineSpectra;
+class R3BSofToFWOnlineSpectra;
 class R3BMusicOnlineSpectra;
 
 /**
@@ -101,6 +102,7 @@ class R3BSofOnlineSpectra : public FairTask
     R3BSofMwpcOnlineSpectra* fMwpc3Online;
     R3BSofTwimOnlineSpectra* fTwimOnline;
     R3BSofSciOnlineSpectra* fSciOnline;
+    R3BSofToFWOnlineSpectra* fToFWOnline;
     R3BMusicOnlineSpectra* fMusicOnline;
 
     // Canvas

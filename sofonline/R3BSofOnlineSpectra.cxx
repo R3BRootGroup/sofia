@@ -14,6 +14,7 @@
 #include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
+#include "R3BSofToFWOnlineSpectra.h"
 #include "R3BMusicOnlineSpectra.h"
 #include "THttpServer.h"
 
@@ -52,6 +53,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fMwpc3Online(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
+    , fToFWOnline(NULL)
     , fMusicOnline(NULL)
     , fNEvents(0)
 {
@@ -67,6 +69,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fMwpc3Online(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
+    , fToFWOnline(NULL)
     , fMusicOnline(NULL)
     , fNEvents(0)
 {
@@ -127,6 +130,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fSciOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::Init SofSciOnlineSpectra not found";
 
+    // Looking for ToFW online
+    fToFWOnline = (R3BSofToFWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofToFWOnlineSpectra");
+    if (!fToFWOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init SofToFWOnlineSpectra not found";
+
     // Looking for Music online
     fMusicOnline = (R3BMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("R3BMusicOnlineSpectra");
     if (!fMusicOnline)
@@ -184,6 +192,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Sci histograms if they exist somewhere
     if (fSciOnline)
         fSciOnline->Reset_Histo();
+    // Reset ToFW histograms if they exist somewhere
+    if (fToFWOnline)
+        fToFWOnline->Reset_Histo();
     // Reset Music histograms if they exist somewhere
     if (fMusicOnline)
         fMusicOnline->Reset_Histo();

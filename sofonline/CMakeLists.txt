@@ -14,6 +14,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/twimData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
+${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofonline
 )
 
@@ -30,6 +31,7 @@ R3BSofMwpcOnlineSpectra.cxx
 R3BSofAtOnlineSpectra.cxx
 R3BSofTwimOnlineSpectra.cxx
 R3BSofSciOnlineSpectra.cxx
+R3BSofToFWOnlineSpectra.cxx
 )
 
 # fill list of header files from list of source files

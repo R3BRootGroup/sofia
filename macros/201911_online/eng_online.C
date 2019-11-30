@@ -19,7 +19,7 @@ void eng_online()
   timer.Start();
   
   //const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
-  const Int_t nev = 100000; // Only nev events to read  
+  const Int_t nev = 5000000; // Only nev events to read  
 
   // Create source using ucesb for input ------------------
   
@@ -146,6 +146,8 @@ void eng_online()
   //run->AddTask(mw3online);
   R3BSofSciOnlineSpectra* scionline= new R3BSofSciOnlineSpectra();
   run->AddTask(scionline);
+  R3BSofToFWOnlineSpectra* tofwonline= new R3BSofToFWOnlineSpectra();
+  run->AddTask(tofwonline);
 
   R3BSofOnlineSpectra* sofonline= new R3BSofOnlineSpectra();
   run->AddTask(sofonline);
