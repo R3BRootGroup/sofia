@@ -52,10 +52,11 @@ class R3BSofTwimMapped2Cal : public FairTask
   private:
     void SetParameter();
 
-    UChar_t NumSec;
-    UChar_t NumAnodes;
-    UChar_t NumParams;
+    UShort_t NumSec;
+    UShort_t NumAnodes;
+    UShort_t NumParams;
     TArrayF* CalParams;
+    Int_t fE[16 * 4], fDT[16 * 4];
 
     Bool_t fOnline; // Don't store data for online
 

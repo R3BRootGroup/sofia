@@ -40,9 +40,11 @@ class R3BSofTwimHitPar : public FairParGenericSet
     void printParams();
 
     /** Accessor functions **/
+    const Int_t GetNumSec() { return fNumSec; }
     const Double_t GetNumParametersFit() { return fNumParamsFit; }
     TArrayF* GetDetectorHitParams() { return fDetHitParams; }
 
+    void SetNumSec(Int_t nbsec) { fNumSec = nbsec; }
     void SetNumParametersFit(Int_t numberParams) { fNumParamsFit = numberParams; }
     void SetDetectorHitParams(Double_t cc, Int_t ii) { fDetHitParams->AddAt(cc, ii); }
 
@@ -50,8 +52,9 @@ class R3BSofTwimHitPar : public FairParGenericSet
 
   private:
     TArrayF* fDetHitParams; // Calibration Parameters for detector
-    Int_t fNumParamsFit;    /* number of cal parameters in the fit
-                               gaus: A_fit & B_fit & C_fit*/
+    Int_t fNumSec;
+    Int_t fNumParamsFit; /* number of cal parameters in the fit
+                            gaus: A_fit & B_fit & C_fit*/
 
     const R3BSofTwimHitPar& operator=(const R3BSofTwimHitPar&); /*< an assignment operator>*/
 

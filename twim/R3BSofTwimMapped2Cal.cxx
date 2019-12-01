@@ -24,9 +24,9 @@
 
 // R3BSofTwimMapped2Cal: Default Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
-    : FairTask("R3B TWIM Calibrator", 1)
-    , NumSec(0)
-    , NumAnodes(0)
+    : FairTask("R3BSof Twim Cal Calibrator", 1)
+    , NumSec(1)
+    , NumAnodes(16)
     , NumParams(0)
     , CalParams(NULL)
     , fCal_Par(NULL)
@@ -39,8 +39,8 @@ R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
 // R3BSofTwimMapped2CalPar: Standard Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , NumSec(0)
-    , NumAnodes(0)
+    , NumSec(1)
+    , NumAnodes(16)
     , NumParams(0)
     , CalParams(NULL)
     , fCal_Par(NULL)
@@ -167,19 +167,32 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     Double_t pedestal = 0.;
     Double_t dtime = 0.;
 
+    for (Int_t i = 0; i < NumAnodes + NumSec; i++)
+    {
+        fE[i] = 0.;
+        fDT[i] = 0.;
+    }
+
     for (Int_t i = 0; i < nHits; i++)
     {
         mappedData[i] = (R3BSofTwimMappedData*)(fTwimMappedDataCA->At(i));
         secId = mappedData[i]->GetSecID();
         anodeId = mappedData[i]->GetAnodeID();
-        energy = mappedData[i]->GetEnergy() - pedestal;
+        energy = mappedData[i]->GetEnergy() - pedestal; // FIXME
+        dtime = mappedData[i]->GetTime();
 
-        // TODO: Add drift time calculation!!
+        if (fDT[anodeId] == 0)
+            fDT[anodeId] = dtime; // mult=1
+        if (fE[anodeId] == 0)
+            fE[anodeId] = energy; // mult=1
+    }
 
+    for (Int_t i = 0; i < NumAnodes; i++)
+    {
         // We accept the hit if the energy is larger than zero
-        if (energy > 0)
+        if (fE[i] > 0)
         {
-            AddCalData(secId, anodeId, dtime, energy);
+            AddCalData(0, i, fDT[i] - fDT[NumAnodes], fE[i]); // Only one section
         }
     }
 

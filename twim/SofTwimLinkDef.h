@@ -11,8 +11,7 @@
 #pragma link C++ class R3BSofTwimHitPar + ;
 #pragma link C++ class R3BSofTwimCalPar + ;
 #pragma link C++ class R3BSofTwimContFact + ;
-
-//#pragma link C++ class R3BSofTWIMCal2Hit+;
+#pragma link C++ class R3BSofTwimCal2Hit + ;
 
 //#pragma link C++ class R3BSofTWIMCal2HitPar+;
 //#pragma link C++ class R3BSofTWIMMapped2CalPar+;

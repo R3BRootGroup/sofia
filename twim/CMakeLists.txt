@@ -29,6 +29,7 @@ R3BSofTwimContFact.cxx
 R3BSofTwimCalPar.cxx
 R3BSofTwimHitPar.cxx
 R3BSofTwimMapped2Cal.cxx
+R3BSofTwimCal2Hit.cxx
 )
 
 # fill list of header files from list of source files

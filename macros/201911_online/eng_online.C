@@ -23,19 +23,18 @@ void eng_online()
 
   // Create source using ucesb for input ------------------
   
-  //TString filename = "--stream=lxir123:7803";
-  //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main*.lmd";
-  TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
+  TString filename = "--stream=lxir123:7803";
+  //TString filename = "~/lmd/sofia2019/main0028_00*.lmd";
+  //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
-  //TString outputFileName = "data_online.root";
-  TString outputFileName = "../SofMacrosOutput/201911_online/data_online.root";
+  TString outputFileName = "data_online.root";
+  //TString outputFileName = "../SofMacrosOutput/201911_online/data_online.root";
   
   TString ntuple_options = "RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
   //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100Mi";
-  //TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng/201911_eng --input-buffer=100Mi";
-  TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --allow-errors --input-buffer=100M";
-  //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --input-buffer=100M";
+  TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng/201911_eng --input-buffer=100Mi";
+  //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --allow-errors --input-buffer=100M";
   ucesb_path.ReplaceAll("//","/");
   
   EXT_STR_h101 ucesb_struct;
@@ -69,7 +68,7 @@ void eng_online()
   source->AddReader(unpackmusic);
   source->AddReader(unpacksci);
   source->AddReader(unpackmwpc);
-  //source->AddReader(unpacktwim);
+  source->AddReader(unpacktwim);
   source->AddReader(unpacktofw);
 
 
@@ -95,7 +94,11 @@ void eng_online()
   //Musics
   R3BMusicMapped2Cal* MusMap2Cal = new R3BMusicMapped2Cal();
   //MusMap2Cal->SetOnline(true);
-  //run->AddTask(MusMap2Cal);
+  run->AddTask(MusMap2Cal);
+
+  R3BMusicCal2Hit* MusCal2Hit = new R3BMusicCal2Hit();
+  //MusMap2Cal->SetOnline(true);
+  run->AddTask(MusCal2Hit);
 
   R3BSofMwpc0Mapped2Cal* aMap2Cal = new R3BSofMwpc0Mapped2Cal();
   //Map2Cal->SetOnline(true);
@@ -104,6 +107,13 @@ void eng_online()
   //R3BSofMwpc0Cal2Hit* Calh = new R3BSofMwpc0Cal2Hit();
   //Map2Cal->SetOnline(true);
   //run->AddTask(Calh);
+
+  //TWIM
+  R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
+  run->AddTask(TwimMap2Cal);
+
+  R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
+  run->AddTask(TwimCal2Hit);
 
   R3BSofMwpc2Mapped2Cal* Map2Cal = new R3BSofMwpc2Mapped2Cal();
   //Map2Cal->SetOnline(true);
@@ -136,8 +146,8 @@ void eng_online()
 
   R3BMusicOnlineSpectra* musonline= new R3BMusicOnlineSpectra();
   run->AddTask(musonline);
-  //R3BSofTwimOnlineSpectra* twonline= new R3BSofTwimOnlineSpectra();
-  //run->AddTask(twonline);
+  R3BSofTwimOnlineSpectra* twonline= new R3BSofTwimOnlineSpectra();
+  run->AddTask(twonline);
   R3BSofMwpcOnlineSpectra* mw0online= new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra",1,"Mwpc0");
   run->AddTask(mw0online);
   R3BSofMwpcOnlineSpectra* mw2online= new R3BSofMwpcOnlineSpectra("SofMwpc2OnlineSpectra",1,"Mwpc2");
