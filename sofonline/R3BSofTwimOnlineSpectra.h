@@ -86,6 +86,8 @@ class R3BSofTwimOnlineSpectra : public FairTask
 
   private:
     TClonesArray* fMappedItemsTwim; /**< Array with mapped items. */
+    TClonesArray* fCalItemsTwim;    /**< Array with cal items. */
+    TClonesArray* fHitItemsTwim;    /**< Array with hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -104,6 +106,9 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TH1F* fh1_twim_ESum[3];
     TH2F* fh2_twim_ESum;
     TH2F* fh2_twim_EneRawVsDriftTime[NbSections][NbAnodes];
+
+    // Histograms for Hit data
+    TH1F* fh1_Twimhit_z;
 
     // Histograms for Cal data
 

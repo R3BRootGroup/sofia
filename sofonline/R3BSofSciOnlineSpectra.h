@@ -18,7 +18,7 @@
 #include <sstream>
 
 #define NbDetectors 1
-#define NbChannels  3       
+#define NbChannels 3
 
 class TClonesArray;
 class R3BEventHeader;
@@ -85,8 +85,8 @@ class R3BSofSciOnlineSpectra : public FairTask
 
   private:
     TClonesArray* fMappedItemsSci; /**< Array with mapped items. */
-    TClonesArray* fTcalItemsSci; /**< Array with tcal items. */
-    //TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
+    TClonesArray* fTcalItemsSci;   /**< Array with tcal items. */
+    // TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -97,15 +97,14 @@ class R3BSofSciOnlineSpectra : public FairTask
     TCanvas* cSciRawPos[NbDetectors];
 
     // Histograms for Mapped data : Fine Time and Mult
-    TH1I* fh1_finetime[NbDetectors*NbChannels];
+    TH1I* fh1_finetime[NbDetectors * NbChannels];
     TH2I* fh2_mult[NbDetectors];
 
     // Histograms for PosRaw Data at Tcal and SingleTcal
-    TH1F * fh1_RawPos_AtTcalMult1[NbDetectors];
+    TH1F* fh1_RawPos_AtTcalMult1[NbDetectors];
     //    TH1F * fh1_RawPos_AtSingleTcal[NbDetectors];
 
-    // check how many raw pos found 
-    
+    // check how many raw pos found
 
   public:
     ClassDef(R3BSofSciOnlineSpectra, 1)

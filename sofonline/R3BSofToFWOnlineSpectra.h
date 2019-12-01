@@ -18,7 +18,7 @@
 #include <sstream>
 
 #define NbDets 28
-#define NbChs  2
+#define NbChs 2
 
 class TClonesArray;
 class R3BEventHeader;
@@ -84,8 +84,8 @@ class R3BSofToFWOnlineSpectra : public FairTask
     virtual void Reset_Histo();
 
   private:
-    TClonesArray* fMappedItemsToFW; /**< Array with mapped items. */
-    TClonesArray* fTcalItemsToFW; /**< Array with tcal items. */
+    TClonesArray* fMappedItemsToFW;    /**< Array with mapped items. */
+    TClonesArray* fTcalItemsToFW;      /**< Array with tcal items. */
     TClonesArray* fSingleTcalItemsSci; /**< Array with single tcal items of Sci */
 
     // check for trigger should be done globablly (somewhere else)
@@ -99,14 +99,14 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TCanvas* cToFWRawTof[NbDets];
 
     // Histograms for Mapped data : Fine Time and Mult
-    TH1I* fh1_finetime[NbDets*NbChs];
+    TH1I* fh1_finetime[NbDets * NbChs];
     TH2I* fh2_mult[NbChs];
 
-    // Histograms for PosRaw Data 
-    TH1F * fh1_RawPos_AtTcalMult1[NbDets];
+    // Histograms for PosRaw Data
+    TH1F* fh1_RawPos_AtTcalMult1[NbDets];
 
     // Histograms for ToFraw
-    TH1D * fh1_RawTof_AtTcalMult1[NbDets];
+    TH1D* fh1_RawTof_AtTcalMult1[NbDets];
 
   public:
     ClassDef(R3BSofToFWOnlineSpectra, 1)

@@ -10,6 +10,8 @@
 
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BEventHeader.h"
+#include "R3BSofTwimCalData.h"
+#include "R3BSofTwimHitData.h"
 #include "R3BSofTwimMappedData.h"
 #include "THttpServer.h"
 
@@ -41,6 +43,8 @@ using namespace std;
 R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
     : FairTask("SofTwimOnlineSpectra", 1)
     , fMappedItemsTwim(NULL)
+    , fCalItemsTwim(NULL)
+    , fHitItemsTwim(NULL)
     , fNEvents(0)
 {
 }
@@ -48,6 +52,8 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
 R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMappedItemsTwim(NULL)
+    , fCalItemsTwim(NULL)
+    , fHitItemsTwim(NULL)
     , fNEvents(0)
 {
 }
@@ -57,6 +63,10 @@ R3BSofTwimOnlineSpectra::~R3BSofTwimOnlineSpectra()
     LOG(INFO) << "R3BSofTwimOnlineSpectra::Delete instance";
     if (fMappedItemsTwim)
         delete fMappedItemsTwim;
+    if (fCalItemsTwim)
+        delete fCalItemsTwim;
+    if (fHitItemsTwim)
+        delete fHitItemsTwim;
 }
 
 InitStatus R3BSofTwimOnlineSpectra::Init()
@@ -81,6 +91,16 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     {
         return kFATAL;
     }
+
+    // get access to cal data of the TWIM
+    fCalItemsTwim = (TClonesArray*)mgr->GetObject("TwimCalData");
+    if (!fCalItemsTwim)
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra: TwimCalData not found";
+
+    // get access to hit data of the TWIM
+    fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
+    if (!fHitItemsTwim)
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra: TwimHitData not found";
 
     // Create histograms for detectors
     char Name1[255];
@@ -249,6 +269,21 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_twim_ESum->GetYaxis()->SetTitleSize(0.045);
     fh2_twim_ESum->Draw("col");
 
+    // Hit data
+
+    TCanvas* cTwim_Z = new TCanvas("Twim_charge_z", "Twim: Charge Z", 10, 10, 800, 700);
+    fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 240, 0, 40);
+    fh1_Twimhit_z->GetXaxis()->SetTitle("Charge (Z)");
+    fh1_Twimhit_z->GetYaxis()->SetTitle("Counts");
+    fh1_Twimhit_z->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Twimhit_z->GetXaxis()->CenterTitle(true);
+    fh1_Twimhit_z->GetYaxis()->CenterTitle(true);
+    fh1_Twimhit_z->GetXaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_z->GetXaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_z->GetYaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_z->GetYaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_z->Draw("");
+
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
     for (Int_t i = 0; i < NbSections; i++)
@@ -262,6 +297,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     mainfolTwim->Add(cTwimMap_ESum2);
     for (Int_t i = 0; i < NbSections; i++)
         mainfolTwim->Add(cTwimMap_EvsDT[i]);
+    mainfolTwim->Add(cTwim_Z);
     run->AddObject(mainfolTwim);
 
     // Register command to reset histograms
@@ -297,7 +333,7 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BSofTwimOnlineSpectra::Exec FairRootManager not found";
 
     // Fill mapped data
-    if (fMappedItemsTwim && fMappedItemsTwim->GetEntriesFast())
+    if (fMappedItemsTwim && fMappedItemsTwim->GetEntriesFast() > 0)
     {
         Double_t e1 = 0., e2 = 0., E[NbSections][NbAnodes], DT[NbSections][NbAnodes + NbSections];
         Double_t n1 = 0., n2 = 0.;
@@ -345,21 +381,40 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
         fh2_twim_ESum->Fill(e1 / n1, e2 / n2);
     }
 
+    // Fill hit data
+    if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fHitItemsTwim->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+            if (!hit)
+                continue;
+            fh1_Twimhit_z->Fill(hit->GetZcharge());
+        }
+    }
+
     fNEvents += 1;
 }
 
 void R3BSofTwimOnlineSpectra::FinishEvent()
 {
-
     if (fMappedItemsTwim)
     {
         fMappedItemsTwim->Clear();
+    }
+    if (fCalItemsTwim)
+    {
+        fCalItemsTwim->Clear();
+    }
+    if (fHitItemsTwim)
+    {
+        fHitItemsTwim->Clear();
     }
 }
 
 void R3BSofTwimOnlineSpectra::FinishTask()
 {
-
     if (fMappedItemsTwim)
     {
         for (Int_t i = 0; i < NbSections; i++)
@@ -373,6 +428,10 @@ void R3BSofTwimOnlineSpectra::FinishTask()
         fh1_twim_ESum[1]->Write();
         fh1_twim_ESum[2]->Write();
         fh2_twim_ESum->Write();
+    }
+    if (fHitItemsTwim)
+    {
+        fh1_Twimhit_z->Write();
     }
 }
 
