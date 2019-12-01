@@ -9,13 +9,15 @@
  */
 
 #include "R3BSofOnlineSpectra.h"
+#include "R3BAmsOnlineSpectra.h"
+#include "R3BCalifaOnlineSpectra.h"
 #include "R3BEventHeader.h"
+#include "R3BMusicOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofMwpcOnlineSpectra.h"
-#include "R3BSofTwimOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofToFWOnlineSpectra.h"
-#include "R3BMusicOnlineSpectra.h"
+#include "R3BSofTwimOnlineSpectra.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -55,6 +57,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fSciOnline(NULL)
     , fToFWOnline(NULL)
     , fMusicOnline(NULL)
+    , fAmsOnline(NULL)
+    , fCalifaOnline(NULL)
     , fNEvents(0)
 {
 }
@@ -71,6 +75,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fSciOnline(NULL)
     , fToFWOnline(NULL)
     , fMusicOnline(NULL)
+    , fAmsOnline(NULL)
+    , fCalifaOnline(NULL)
     , fNEvents(0)
 {
 }
@@ -140,6 +146,16 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fMusicOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::Init R3BMusicOnlineSpectra not found";
 
+    // Looking for AMS online
+    fAmsOnline = (R3BAmsOnlineSpectra*)FairRunOnline::Instance()->GetTask("AmsOnlineSpectra");
+    if (!fAmsOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init AmsOnlineSpectra not found";
+
+    // Looking for CALIFA online
+    fCalifaOnline = (R3BCalifaOnlineSpectra*)FairRunOnline::Instance()->GetTask("CALIFAOnlineSpectra");
+    if (!fCalifaOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init CALIFAOnlineSpectra not found";
+
     // Triggers
     cTrigger = new TCanvas("Triggers", "Trigger information", 10, 10, 800, 700);
     fh1_trigger = new TH1F("fh1_trigger", "Trigger information", 16, -0.5, 15.5);
@@ -198,6 +214,12 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Music histograms if they exist somewhere
     if (fMusicOnline)
         fMusicOnline->Reset_Histo();
+    // Reset AMS histograms if they exist somewhere
+    if (fAmsOnline)
+        fAmsOnline->Reset_AMS_Histo();
+    // Reset Califa histograms if they exist somewhere
+    if (fCalifaOnline)
+        fCalifaOnline->Reset_CALIFA_Histo();
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option)

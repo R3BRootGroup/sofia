@@ -26,6 +26,8 @@ class R3BSofTwimOnlineSpectra;
 class R3BSofSciOnlineSpectra;
 class R3BSofToFWOnlineSpectra;
 class R3BMusicOnlineSpectra;
+class R3BAmsOnlineSpectra;
+class R3BCalifaOnlineSpectra;
 
 /**
  * This taks reads General SOFIA data and plots online histograms
@@ -104,6 +106,8 @@ class R3BSofOnlineSpectra : public FairTask
     R3BSofSciOnlineSpectra* fSciOnline;
     R3BSofToFWOnlineSpectra* fToFWOnline;
     R3BMusicOnlineSpectra* fMusicOnline;
+    R3BAmsOnlineSpectra* fAmsOnline;
+    R3BCalifaOnlineSpectra* fCalifaOnline;
 
     // Canvas
     TCanvas *cTrigger, *cWr;
