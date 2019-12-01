@@ -97,24 +97,47 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
 
     // --- TREF --- //
     // return the number of Tref in the section with data
-    // 0<=nTref<=1
+    // 0<nTref<=2
     UShort_t nTref = data->SOFTWIM_S[section].TREFM;
-    if (nTref > 1)
+    if (nTref > 2)
         LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! ONLY ONE Tref signal PER SECTION BUT HERE MULTIPLE SIGNALS "
                       "IS FOUND!";
+
     uint32_t curTref = 0;
-    uint32_t nextTref;
-    if (nTref == 1)
+    uint32_t nextTref = 0;
+    UShort_t idAnodeTref = 0;
+    UShort_t nAnodesTref = data->SOFTWIM_S[section].TREFM;
+
+    // std::cout<<" id"<< nAnodesTref <<std::endl;
+
+    for (UShort_t a = 0; a < nAnodesTref; a++)
     {
-        nextTref = data->SOFTWIM_S[section].TREFME[0];
-        multPerAnode[16] = nextTref - curTref;
-        if (multPerAnode[16] != data->SOFTWIM_S[section].TREF)
-            LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! multiplicity of Tref not consistent!";
+        idAnodeTref = data->SOFTWIM_S[section].TREFMI[a] + 15;
+        nextTref = data->SOFTWIM_S[section].TREFME[a];
+        multPerAnode[idAnodeTref] = nextTref - curTref;
         for (int hit = curTref; hit < nextTref; hit++)
             new ((*fArray)[fArray->GetEntriesFast()])
-                R3BSofTwimMappedData(section, 16, data->SOFTWIM_S[section].TREFv[hit], 0);
+                R3BSofTwimMappedData(section, idAnodeTref, data->SOFTWIM_S[section].TREFv[hit], 0);
+        curTref = nextTref;
     }
 
+    // --- TREF --- //
+    // return the number of Tref in the section with data
+    // 0<=nTref<=1
+    /*   UShort_t nTref = data->SOFTWIM_S[section].TREFM;
+       if (nTref > 1)
+           LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! ONLY ONE Tref signal PER SECTION BUT HERE MULTIPLE SIGNALS
+       " "IS FOUND!"; uint32_t curTref = 0; uint32_t nextTref; if (nTref == 1)
+       {
+           nextTref = data->SOFTWIM_S[section].TREFME[0];
+           multPerAnode[16] = nextTref - curTref;
+           if (multPerAnode[16] != data->SOFTWIM_S[section].TREF)
+               LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! multiplicity of Tref not consistent!";
+           for (int hit = curTref; hit < nextTref; hit++)
+               new ((*fArray)[fArray->GetEntriesFast()])
+                   R3BSofTwimMappedData(section, 16, data->SOFTWIM_S[section].TREFv[hit], 0);
+       }
+   */
     // --- ANODES --- //
     // return the number of anodes in the section with data
     // 0<=nAnodesEnergy<=16

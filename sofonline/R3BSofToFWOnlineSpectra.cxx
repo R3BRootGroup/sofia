@@ -12,6 +12,7 @@
 #include "R3BSofSciSingleTcalData.h"
 #include "R3BSofToFWMappedData.h"
 #include "R3BSofToFWTcalData.h"
+#include "R3BSofTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -41,6 +42,7 @@ R3BSofToFWOnlineSpectra::R3BSofToFWOnlineSpectra()
     : FairTask("SofToFWOnlineSpectra", 1)
     , fMappedItemsToFW(NULL)
     , fTcalItemsToFW(NULL)
+    , fHitItemsTwim(NULL)
     , fNEvents(0)
 {
 }
@@ -49,6 +51,7 @@ R3BSofToFWOnlineSpectra::R3BSofToFWOnlineSpectra(const char* name, Int_t iVerbos
     : FairTask(name, iVerbose)
     , fMappedItemsToFW(NULL)
     , fTcalItemsToFW(NULL)
+    , fHitItemsTwim(NULL)
     , fNEvents(0)
 {
 }
@@ -60,6 +63,8 @@ R3BSofToFWOnlineSpectra::~R3BSofToFWOnlineSpectra()
         delete fMappedItemsToFW;
     if (fTcalItemsToFW)
         delete fTcalItemsToFW;
+    if (fHitItemsTwim)
+        delete fHitItemsTwim;
 }
 
 InitStatus R3BSofToFWOnlineSpectra::Init()
@@ -104,6 +109,11 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     {
         return kFATAL;
     }
+
+    // get access to hit data of the TWIM
+    fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
+    if (!fHitItemsTwim)
+        LOG(WARNING) << "R3BSofToFWOnlineSpectra: TwimHitData not found";
 
     // --- ------------------------------- --- //
     // --- Create histograms for detectors --- //
@@ -177,6 +187,26 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         fh1_RawTof_AtTcalMult1[i]->Draw("");
     }
 
+    // === Twim vs TIME-OF-Flight === //
+    for (Int_t i = 0; i < NbDets; i++)
+    {
+        sprintf(Name1, "Twim_vs_ToF_Plastic_%i", i + 1);
+        cTwimvsTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
+        sprintf(Name1, "fh2_Twim_vs_ToF_Plastic_%i", i + 1);
+        sprintf(Name2, "Twim vs ToF for plastic %i", i + 1);
+        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 100000, -100, 100, 200, 0, 40);
+        fh2_Twim_Tof[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
+        fh2_Twim_Tof[i]->GetYaxis()->SetTitle("Charge Z");
+        fh2_Twim_Tof[i]->GetXaxis()->CenterTitle(true);
+        fh2_Twim_Tof[i]->GetYaxis()->CenterTitle(true);
+        fh2_Twim_Tof[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_Twim_Tof[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_Twim_Tof[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_Twim_Tof[i]->GetYaxis()->SetTitleSize(0.045);
+        cTwimvsTof[i]->cd();
+        fh2_Twim_Tof[i]->Draw("col");
+    }
+
     // --- --------------- --- //
     // --- MAIN FOLDER-ToFW --- //
     // --- --------------- --- //
@@ -189,6 +219,8 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     mainfolToFW->Add(cToFWRawPos);
     for (Int_t i = 0; i < NbDets; i++)
         mainfolToFW->Add(cToFWRawTof[i]);
+    for (Int_t i = 0; i < NbDets; i++)
+        mainfolToFW->Add(cTwimvsTof[i]);
     run->AddObject(mainfolToFW);
 
     // Register command to reset histograms
@@ -216,6 +248,8 @@ void R3BSofToFWOnlineSpectra::Reset_Histo()
         // === RAW POSITION === //
         fh1_RawPos_AtTcalMult1[i]->Reset();
     }
+    for (UShort_t i = 0; i < NbDets; i++)
+        fh2_Twim_Tof[i]->Reset();
 }
 
 void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
@@ -289,9 +323,24 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
             }
         } // end of if mult=1 in the Start
 
+        // Fill hit data Twim
+        Double_t twimZ = 0.;
+        if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
+        {
+            nHits = fHitItemsTwim->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+                if (!hit)
+                    continue;
+                twimZ = hit->GetZcharge();
+            }
+        }
+
         // --- ----------------------------------------- --- //
         // --- filling some histogramms outside the loop --- //
         // --- ----------------------------------------- --- //
+        Double_t tofw = 0.;
         for (UShort_t i = 0; i < NbDets; i++)
         {
             for (UShort_t j = 0; j < NbChs; j++)
@@ -303,12 +352,15 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
                 fh1_RawPos_AtTcalMult1[i]->Fill((Float_t)(iRawTimeNs[i * 2] - iRawTimeNs[i * 2 + 1]));
                 if (TrawStart != -1000000.)
                 {
-                    fh1_RawTof_AtTcalMult1[i]->Fill((Double_t)(0.5 * (iRawTimeNs[i * 2] + iRawTimeNs[i * 2 + 1])) -
-                                                    TrawStart);
+                    tofw = (0.5 * (iRawTimeNs[i * 2] + iRawTimeNs[i * 2 + 1])) - TrawStart;
+                    fh1_RawTof_AtTcalMult1[i]->Fill(tofw);
+                    if (twimZ > 0)
+                        fh2_Twim_Tof[i]->Fill(tofw, twimZ);
                 }
             } // end of if mult=1 in the plastic
         }
     }
+
     fNEvents += 1;
 }
 
@@ -325,6 +377,10 @@ void R3BSofToFWOnlineSpectra::FinishEvent()
     if (fSingleTcalItemsSci)
     {
         fSingleTcalItemsSci->Clear();
+    }
+    if (fHitItemsTwim)
+    {
+        fHitItemsTwim->Clear();
     }
 }
 
@@ -357,6 +413,12 @@ void R3BSofToFWOnlineSpectra::FinishTask()
                 fh1_RawTof_AtTcalMult1[i]->Write();
             }
         }
+    }
+
+    if (fHitItemsTwim && fTcalItemsToFW)
+    {
+        for (UShort_t i = 0; i < NbDets; i++)
+            cTwimvsTof[i]->Write();
     }
 }
 

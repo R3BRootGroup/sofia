@@ -87,6 +87,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TClonesArray* fMappedItemsToFW;    /**< Array with mapped items. */
     TClonesArray* fTcalItemsToFW;      /**< Array with tcal items. */
     TClonesArray* fSingleTcalItemsSci; /**< Array with single tcal items of Sci */
+    TClonesArray* fHitItemsTwim;       /**< Array with hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -97,6 +98,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TCanvas* cToFWMult;
     TCanvas* cToFWRawPos;
     TCanvas* cToFWRawTof[NbDets];
+    TCanvas* cTwimvsTof[NbDets];
 
     // Histograms for Mapped data : Fine Time and Mult
     TH1I* fh1_finetime[NbDets * NbChs];
@@ -107,6 +109,9 @@ class R3BSofToFWOnlineSpectra : public FairTask
 
     // Histograms for ToFraw
     TH1D* fh1_RawTof_AtTcalMult1[NbDets];
+
+    // Histograms for Twim vs ToFraw
+    TH2F* fh2_Twim_Tof[NbDets];
 
   public:
     ClassDef(R3BSofToFWOnlineSpectra, 1)

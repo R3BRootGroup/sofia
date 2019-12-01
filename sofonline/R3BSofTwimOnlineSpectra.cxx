@@ -324,6 +324,7 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     fh1_twim_ESum[1]->Reset();
     fh1_twim_ESum[2]->Reset();
     fh2_twim_ESum->Reset();
+    fh1_Twimhit_z->Reset();
 }
 
 void R3BSofTwimOnlineSpectra::Exec(Option_t* option)

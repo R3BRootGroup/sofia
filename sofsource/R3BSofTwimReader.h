@@ -5,7 +5,7 @@
 #include "TClonesArray.h"
 
 #define NUM_SOFTWIM_SECTIONS 4
-#define NUM_SOFTWIM_ANODES 17
+#define NUM_SOFTWIM_ANODES 18
 
 // section 1 : RIGHT DOWN
 // section 2 : RIGHT UP
