@@ -150,6 +150,8 @@ void eng_online()
   run->AddTask(twonline);
   R3BSofMwpcOnlineSpectra* mw0online= new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra",1,"Mwpc0");
   run->AddTask(mw0online);
+  R3BSofMwpcCorrelationOnlineSpectra* mw0mw2online= new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_2CorrelationOnlineSpectra",1,"Mwpc0","Mwpc2");
+  run->AddTask(mw0mw2online);
   R3BSofMwpcOnlineSpectra* mw2online= new R3BSofMwpcOnlineSpectra("SofMwpc2OnlineSpectra",1,"Mwpc2");
   run->AddTask(mw2online);
   R3BSofMwpcOnlineSpectra* mw3online= new R3BSofMwpcOnlineSpectra("SofMwpc3OnlineSpectra",1,"Mwpc3");

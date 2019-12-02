@@ -6,10 +6,9 @@
 
 #pragma link C++ class R3BSofOnlineSpectra + ;
 #pragma link C++ class R3BSofMwpcOnlineSpectra + ;
+#pragma link C++ class R3BSofMwpcCorrelationOnlineSpectra + ;
 #pragma link C++ class R3BSofAtOnlineSpectra + ;
-
 #pragma link C++ class R3BSofTwimOnlineSpectra + ;
-
 #pragma link C++ class R3BSofSciOnlineSpectra + ;
 #pragma link C++ class R3BSofToFWOnlineSpectra + ;
 
