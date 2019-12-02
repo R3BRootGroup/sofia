@@ -19,7 +19,7 @@ void eng_online()
   timer.Start();
   
   //const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
-  const Int_t nev = 5000000; // Only nev events to read  
+  const Int_t nev = -1; // Only nev events to read  
 
   // Create source using ucesb for input ------------------
   
@@ -100,9 +100,9 @@ void eng_online()
   //MusMap2Cal->SetOnline(true);
   run->AddTask(MusCal2Hit);
 
-  R3BSofMwpc0Mapped2Cal* aMap2Cal = new R3BSofMwpc0Mapped2Cal();
-  //Map2Cal->SetOnline(true);
-  run->AddTask(aMap2Cal);
+  R3BSofMwpc0Mapped2Cal* MW0Map2Cal = new R3BSofMwpc0Mapped2Cal();
+  //MW0Map2Cal->SetOnline(true);
+  run->AddTask(MW0Map2Cal);
 
   //R3BSofMwpc0Cal2Hit* Calh = new R3BSofMwpc0Cal2Hit();
   //Map2Cal->SetOnline(true);
@@ -115,17 +115,17 @@ void eng_online()
   R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
   run->AddTask(TwimCal2Hit);
 
-  R3BSofMwpc2Mapped2Cal* Map2Cal = new R3BSofMwpc2Mapped2Cal();
-  //Map2Cal->SetOnline(true);
-  run->AddTask(Map2Cal);
+  R3BSofMwpc2Mapped2Cal* MW2Map2Cal = new R3BSofMwpc2Mapped2Cal();
+  //MW2Map2Cal->SetOnline(true);
+  run->AddTask(MW2Map2Cal);
 
   //R3BSofMwpc2Cal2Hit* Calh2 = new R3BSofMwpc2Cal2Hit();
   //Map2Cal->SetOnline(true);
   //run->AddTask(Calh2);
 
-  //R3BSofMwpc3Mapped2Cal* cMap2Cal = new R3BSofMwpc3Mapped2Cal();
+  R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
   //Map2Cal->SetOnline(true);
-  //run->AddTask(cMap2Cal);
+  run->AddTask(MW3Map2Cal);
 
   // --- Mapped 2 Tcal for SofSci
   R3BSofSciMapped2Tcal* SofSciMap2Tcal = new R3BSofSciMapped2Tcal();
@@ -152,8 +152,8 @@ void eng_online()
   run->AddTask(mw0online);
   R3BSofMwpcOnlineSpectra* mw2online= new R3BSofMwpcOnlineSpectra("SofMwpc2OnlineSpectra",1,"Mwpc2");
   run->AddTask(mw2online);
-  //R3BSofMwpcOnlineSpectra* mw3online= new R3BSofMwpcOnlineSpectra("SofMwpc3OnlineSpectra",1,"Mwpc3");
-  //run->AddTask(mw3online);
+  R3BSofMwpcOnlineSpectra* mw3online= new R3BSofMwpcOnlineSpectra("SofMwpc3OnlineSpectra",1,"Mwpc3");
+  run->AddTask(mw3online);
   R3BSofSciOnlineSpectra* scionline= new R3BSofSciOnlineSpectra();
   run->AddTask(scionline);
   R3BSofToFWOnlineSpectra* tofwonline= new R3BSofToFWOnlineSpectra();

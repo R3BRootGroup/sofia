@@ -93,7 +93,8 @@ class R3BSofMwpcOnlineSpectra : public FairTask
     // Canvas
     TCanvas *cMWPCCal, *cMWPCCal2D;
 
-    TH2F* fh2_mwpc_q;
+    TH2F* fh2_mwpc_xq;
+    TH2F* fh2_mwpc_yq;
 
     // Histograms for Mapped data
     TH2F* fh2_mwpc_cal;

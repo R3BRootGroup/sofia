@@ -87,6 +87,7 @@ class R3BSofSciOnlineSpectra : public FairTask
     TClonesArray* fMappedItemsSci; /**< Array with mapped items. */
     TClonesArray* fTcalItemsSci;   /**< Array with tcal items. */
     // TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
+    TClonesArray* fMusHitItems; /**< Array with MUSIC Hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -103,6 +104,9 @@ class R3BSofSciOnlineSpectra : public FairTask
     // Histograms for PosRaw Data at Tcal and SingleTcal
     TH1F* fh1_RawPos_AtTcalMult1[NbDetectors];
     //    TH1F * fh1_RawPos_AtSingleTcal[NbDetectors];
+
+    // Histogram for correlation with R3B-Music
+    TH2F* fh2_MusZvsRawPos;
 
     // check how many raw pos found
 

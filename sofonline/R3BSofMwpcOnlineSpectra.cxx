@@ -153,26 +153,53 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh2_mwpc_cal->GetYaxis()->SetTitleSize(0.045);
     fh2_mwpc_cal->Draw("col");
 
-    TCanvas* c = new TCanvas(fNameDet + "_Q", "", 10, 10, 800, 700);
-    Name1 = "fh2_" + fNameDet + "_Q";
-    Name2 = fNameDet + ": Pad vs Q";
-    fh2_mwpc_q = new TH2F(Name1, Name2, 256, 0.5, 64.5, 2000, 0, 4000);
-    fh2_mwpc_q->GetXaxis()->SetTitle("Pad number");
-    fh2_mwpc_q->GetYaxis()->SetTitle("Charge [channels]");
-    fh2_mwpc_q->GetYaxis()->SetTitleOffset(1.1);
-    fh2_mwpc_q->GetXaxis()->CenterTitle(true);
-    fh2_mwpc_q->GetYaxis()->CenterTitle(true);
-    fh2_mwpc_q->GetXaxis()->SetLabelSize(0.045);
-    fh2_mwpc_q->GetXaxis()->SetTitleSize(0.045);
-    fh2_mwpc_q->GetYaxis()->SetLabelSize(0.045);
-    fh2_mwpc_q->GetYaxis()->SetTitleSize(0.045);
-    fh2_mwpc_q->Draw("col");
+    TCanvas* cx = new TCanvas(fNameDet + "_XQ", "", 10, 10, 800, 700);
+    Name1 = "fh2_" + fNameDet + "_XQ";
+    Name2 = fNameDet + ": Pad vs XQ";
+
+    if (fNameDet == "Mwpc0" || fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+        fh2_mwpc_xq = new TH2F(Name1, Name2, 256, 0.5, 64.5, 2000, 0, 4000);
+    else
+        fh2_mwpc_xq = new TH2F(Name1, Name2, 288 * 4, 0.5, 288.5, 2000, 0, 4000);
+
+    fh2_mwpc_xq->GetXaxis()->SetTitle("Pad number");
+    fh2_mwpc_xq->GetYaxis()->SetTitle("Charge [channels]");
+    fh2_mwpc_xq->GetYaxis()->SetTitleOffset(1.1);
+    fh2_mwpc_xq->GetXaxis()->CenterTitle(true);
+    fh2_mwpc_xq->GetYaxis()->CenterTitle(true);
+    fh2_mwpc_xq->GetXaxis()->SetLabelSize(0.045);
+    fh2_mwpc_xq->GetXaxis()->SetTitleSize(0.045);
+    fh2_mwpc_xq->GetYaxis()->SetLabelSize(0.045);
+    fh2_mwpc_xq->GetYaxis()->SetTitleSize(0.045);
+    fh2_mwpc_xq->Draw("col");
+
+    TCanvas* cy = new TCanvas(fNameDet + "_YQ", "", 10, 10, 800, 700);
+    Name1 = "fh2_" + fNameDet + "_YQ";
+    Name2 = fNameDet + ": Pad vs YQ";
+    if (fNameDet == "Mwpc0")
+        fh2_mwpc_yq = new TH2F(Name1, Name2, 256, 0.5, 64.5, 2000, 0, 4000);
+    else if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+        fh2_mwpc_yq = new TH2F(Name1, Name2, 40 * 4, 0.5, 40.5, 2000, 0, 4000);
+    else
+        fh2_mwpc_yq = new TH2F(Name1, Name2, 120 * 4, 0.5, 120.5, 2000, 0, 4000);
+
+    fh2_mwpc_yq->GetXaxis()->SetTitle("Pad number");
+    fh2_mwpc_yq->GetYaxis()->SetTitle("Charge [channels]");
+    fh2_mwpc_yq->GetYaxis()->SetTitleOffset(1.1);
+    fh2_mwpc_yq->GetXaxis()->CenterTitle(true);
+    fh2_mwpc_yq->GetYaxis()->CenterTitle(true);
+    fh2_mwpc_yq->GetXaxis()->SetLabelSize(0.045);
+    fh2_mwpc_yq->GetXaxis()->SetTitleSize(0.045);
+    fh2_mwpc_yq->GetYaxis()->SetLabelSize(0.045);
+    fh2_mwpc_yq->GetYaxis()->SetTitleSize(0.045);
+    fh2_mwpc_yq->Draw("col");
 
     // MAIN FOLDER-AT
     TFolder* mainfolMW0 = new TFolder(fNameDet, fNameDet + " info");
     mainfolMW0->Add(cMWPCCal);
     mainfolMW0->Add(cMWPCCal2D);
-    mainfolMW0->Add(c);
+    mainfolMW0->Add(cx);
+    mainfolMW0->Add(cy);
     run->AddObject(mainfolMW0);
 
     // Register command to reset histograms
@@ -190,7 +217,8 @@ void R3BSofMwpcOnlineSpectra::Reset_Histo()
         fh1_mwpc_cal[i]->Reset();
     fh2_mwpc_cal->Reset();
 
-    fh2_mwpc_q->Reset();
+    fh2_mwpc_xq->Reset();
+    fh2_mwpc_yq->Reset();
 }
 
 void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
@@ -212,7 +240,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             if (hit->GetPlane() == 1)
             {
                 fh1_mwpc_cal[0]->Fill(hit->GetPad());
-                fh2_mwpc_q->Fill(hit->GetPad() + gRandom->Uniform(-0.5, 0.5), hit->GetQ());
+                fh2_mwpc_xq->Fill(hit->GetPad() + gRandom->Uniform(-0.5, 0.5), hit->GetQ());
                 if (hit->GetQ() > maxqx)
                 {
                     maxpadx = hit->GetPad();
@@ -222,6 +250,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             if (hit->GetPlane() == 3)
             {
                 fh1_mwpc_cal[1]->Fill(hit->GetPad());
+                fh2_mwpc_yq->Fill(hit->GetPad() + gRandom->Uniform(-0.5, 0.5), hit->GetQ());
                 if (hit->GetQ() > maxqy)
                 {
                     maxpady = hit->GetPad();
@@ -252,7 +281,8 @@ void R3BSofMwpcOnlineSpectra::FinishTask()
     {
         cMWPCCal->Write();
         cMWPCCal2D->Write();
-        fh2_mwpc_q->Write();
+        fh2_mwpc_xq->Write();
+        fh2_mwpc_yq->Write();
     }
 }
 

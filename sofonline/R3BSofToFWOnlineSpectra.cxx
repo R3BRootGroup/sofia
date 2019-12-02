@@ -207,6 +207,20 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         fh2_Twim_Tof[i]->Draw("col");
     }
 
+    // --- --------------- ---
+    // --- FOLDER-ToFW raw data
+    // --- --------------- ---
+    TFolder* folToFWRawTof = new TFolder("RawTof_AtTcal_Mult1", "TOFW Raw info");
+    for (Int_t i = 0; i < NbDets; i++)
+        folToFWRawTof->Add(cToFWRawTof[i]);
+
+    // --- --------------- ---
+    // --- FOLDER-Twim vs ToFW
+    // --- --------------- ---
+    TFolder* folTwimvsToF = new TFolder("Twim_vs_ToFW", "Twim vs TOFW info");
+    for (Int_t i = 0; i < NbDets; i++)
+        folTwimvsToF->Add(cTwimvsTof[i]);
+
     // --- --------------- --- //
     // --- MAIN FOLDER-ToFW --- //
     // --- --------------- --- //
@@ -217,10 +231,9 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     }
     mainfolToFW->Add(cToFWMult);
     mainfolToFW->Add(cToFWRawPos);
-    for (Int_t i = 0; i < NbDets; i++)
-        mainfolToFW->Add(cToFWRawTof[i]);
-    for (Int_t i = 0; i < NbDets; i++)
-        mainfolToFW->Add(cTwimvsTof[i]);
+    mainfolToFW->Add(folToFWRawTof);
+    mainfolToFW->Add(folTwimvsToF);
+
     run->AddObject(mainfolToFW);
 
     // Register command to reset histograms
