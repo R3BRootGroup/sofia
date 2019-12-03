@@ -194,7 +194,7 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         cTwimvsTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
         sprintf(Name1, "fh2_Twim_vs_ToF_Plastic_%i", i + 1);
         sprintf(Name2, "Twim vs ToF for plastic %i", i + 1);
-        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 100000, -100, 100, 200, 0, 40);
+        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 3500, -77, -70, 200, 0, 40);
         fh2_Twim_Tof[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
         fh2_Twim_Tof[i]->GetYaxis()->SetTitle("Charge Z");
         fh2_Twim_Tof[i]->GetXaxis()->CenterTitle(true);
