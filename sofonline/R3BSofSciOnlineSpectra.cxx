@@ -10,6 +10,7 @@
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
+#include "R3BSofMwpcCalData.h"
 #include "R3BSofSciMappedData.h"
 #include "R3BSofSciTcalData.h"
 #include "THttpServer.h"
@@ -42,6 +43,7 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra()
     , fMappedItemsSci(NULL)
     , fTcalItemsSci(NULL)
     , fMusHitItems(NULL)
+    , fCalItemsMwpc0(NULL)
     , fNEvents(0)
 {
 }
@@ -51,6 +53,7 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
     , fMappedItemsSci(NULL)
     , fTcalItemsSci(NULL)
     , fMusHitItems(NULL)
+    , fCalItemsMwpc0(NULL)
     , fNEvents(0)
 {
 }
@@ -64,6 +67,8 @@ R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
         delete fTcalItemsSci;
     if (fMusHitItems)
         delete fMusHitItems;
+    if (fCalItemsMwpc0)
+        delete fCalItemsMwpc0;
 }
 
 InitStatus R3BSofSciOnlineSpectra::Init()
@@ -104,6 +109,11 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     fMusHitItems = (TClonesArray*)mgr->GetObject("MusicHitData");
     if (!fMusHitItems)
         LOG(WARNING) << "R3BSofSciOnlineSpectra: MusicHitData not found";
+
+    // get access to cal data of the MWPC0
+    fCalItemsMwpc0 = (TClonesArray*)mgr->GetObject("Mwpc0CalData");
+    if (!fCalItemsMwpc0)
+        LOG(WARNING) << "R3BSofSciOnlineSpectra: Mwpc0CalData not found";
 
     // --- ------------------------------- --- //
     // --- Create histograms for detectors --- //
@@ -153,9 +163,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     TCanvas* cMusicZvsRawPos =
         new TCanvas("Musicchargez_vs_RawPosAtTcal_Mult1", "Music charge Z vs RawPosAtTcal_Mult1", 10, 10, 800, 700);
     fh2_MusZvsRawPos =
-        new TH2F("fh1_Musicchargez_vs_RawPos", "Music charge Z vs RawPosAtTcal_Mult1", 10000, -5, 5, 240, 0, 40);
-    fh2_MusZvsRawPos->GetYaxis()->SetTitle("Charge (Z)");
+        new TH2F("fh2_Musicchargez_vs_RawPos", "Music charge Z vs RawPosAtTcal_Mult1", 10000, -7, 7, 240, 0, 40);
     fh2_MusZvsRawPos->GetXaxis()->SetTitle("Raw position [ns with one bin/ps]");
+    fh2_MusZvsRawPos->GetYaxis()->SetTitle("Charge (Z)");
     fh2_MusZvsRawPos->GetYaxis()->SetTitleOffset(1.1);
     fh2_MusZvsRawPos->GetXaxis()->CenterTitle(true);
     fh2_MusZvsRawPos->GetYaxis()->CenterTitle(true);
@@ -164,6 +174,21 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     fh2_MusZvsRawPos->GetYaxis()->SetLabelSize(0.045);
     fh2_MusZvsRawPos->GetYaxis()->SetTitleSize(0.045);
     fh2_MusZvsRawPos->Draw("col");
+
+    // Mwpc0 cal data vs SCI-RawPos
+    TCanvas* cMwpc0vsRawPos =
+        new TCanvas("Mwpc0_vs_RawPosAtTcal_Mult1", "Mwpc0-X vs RawPosAtTcal_Mult1", 10, 10, 800, 700);
+    fh2_Mwpc0vsRawPos = new TH2F("fh2_Mwpc_vs_RawPos", "Mwpc0-X vs RawPosAtTcal_Mult1", 10000, -7, 7, 258, 0.5, 64.5);
+    fh2_Mwpc0vsRawPos->GetXaxis()->SetTitle("Raw position [ns with one bin/ps]");
+    fh2_Mwpc0vsRawPos->GetYaxis()->SetTitle("Mwpc0-X [pads]");
+    fh2_Mwpc0vsRawPos->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Mwpc0vsRawPos->GetXaxis()->CenterTitle(true);
+    fh2_Mwpc0vsRawPos->GetYaxis()->CenterTitle(true);
+    fh2_Mwpc0vsRawPos->GetXaxis()->SetLabelSize(0.045);
+    fh2_Mwpc0vsRawPos->GetXaxis()->SetTitleSize(0.045);
+    fh2_Mwpc0vsRawPos->GetYaxis()->SetLabelSize(0.045);
+    fh2_Mwpc0vsRawPos->GetYaxis()->SetTitleSize(0.045);
+    fh2_Mwpc0vsRawPos->Draw("col");
 
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
@@ -175,6 +200,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         mainfolSci->Add(cSciRawPos[i]);
     }
     mainfolSci->Add(cMusicZvsRawPos);
+    mainfolSci->Add(cMwpc0vsRawPos);
     run->AddObject(mainfolSci);
 
     // Register command to reset histograms
@@ -198,6 +224,7 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh1_RawPos_AtTcalMult1[i]->Reset();
     }
     fh2_MusZvsRawPos->Reset();
+    fh2_Mwpc0vsRawPos->Reset();
 }
 
 void R3BSofSciOnlineSpectra::Exec(Option_t* option)
@@ -272,9 +299,28 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             ;
         }
 
+        // Get cal data MWPC0
+        Double_t mwpc0x = -1., qmax = -100.;
+        if (fCalItemsMwpc0 && fCalItemsMwpc0->GetEntriesFast() > 0)
+        {
+            nHits = fCalItemsMwpc0->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BSofMwpcCalData* hit = (R3BSofMwpcCalData*)fCalItemsMwpc0->At(ihit);
+                if (!hit)
+                    continue;
+                if (hit->GetQ() > qmax)
+                {
+                    mwpc0x = hit->GetPad();
+                    qmax = hit->GetQ();
+                }
+            }
+        }
+
         // --- ----------------------------------------- --- //
         // --- filling some histogramms outside the loop --- //
         // --- ----------------------------------------- --- //
+        Double_t possci = 0.;
         for (UShort_t i = 0; i < NbDetectors; i++)
         {
             for (UShort_t j = 0; j < NbChannels; j++)
@@ -283,9 +329,15 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             }
             if ((mult[iDet * NbChannels] == 1) && (mult[iDet * NbChannels + 1] == 1))
             {
-                fh1_RawPos_AtTcalMult1[i]->Fill(iRawTimeNs[i * 2 + 1] - iRawTimeNs[i * 2]);
+                possci = iRawTimeNs[i * 2 + 1] - iRawTimeNs[i * 2];
+                fh1_RawPos_AtTcalMult1[i]->Fill(possci);
                 if (MusicZ > 0.)
-                    fh2_MusZvsRawPos->Fill(iRawTimeNs[i * 2 + 1] - iRawTimeNs[i * 2], MusicZ);
+                    fh2_MusZvsRawPos->Fill(possci, MusicZ);
+
+                if (mwpc0x > 0 && possci > -10. && possci < 10.)
+                {
+                    fh2_Mwpc0vsRawPos->Fill(possci, mwpc0x + gRandom->Uniform(-0.5, 0.5));
+                }
             }
         }
     }
@@ -305,6 +357,10 @@ void R3BSofSciOnlineSpectra::FinishEvent()
     if (fMusHitItems)
     {
         fMusHitItems->Clear();
+    }
+    if (fCalItemsMwpc0)
+    {
+        fCalItemsMwpc0->Clear();
     }
 }
 
@@ -331,7 +387,10 @@ void R3BSofSciOnlineSpectra::FinishTask()
             fh1_RawPos_AtTcalMult1[i]->Write();
             cSciRawPos[i]->Write();
         }
-        fh2_MusZvsRawPos->Write();
+        if (fMusHitItems)
+            fh2_MusZvsRawPos->Write();
+        if (fCalItemsMwpc0)
+            fh2_Mwpc0vsRawPos->Write();
     }
 }
 

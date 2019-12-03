@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// -----                  R3BSofToFWOnlineSpectra           -----
+// -----              R3BSofToFWOnlineSpectra             -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
@@ -9,6 +9,7 @@
 
 #include "R3BSofToFWOnlineSpectra.h"
 #include "R3BEventHeader.h"
+#include "R3BSofMwpcCalData.h"
 #include "R3BSofSciSingleTcalData.h"
 #include "R3BSofToFWMappedData.h"
 #include "R3BSofToFWTcalData.h"
@@ -43,6 +44,7 @@ R3BSofToFWOnlineSpectra::R3BSofToFWOnlineSpectra()
     , fMappedItemsToFW(NULL)
     , fTcalItemsToFW(NULL)
     , fHitItemsTwim(NULL)
+    , fCalItemsMwpc(NULL)
     , fNEvents(0)
 {
 }
@@ -52,6 +54,7 @@ R3BSofToFWOnlineSpectra::R3BSofToFWOnlineSpectra(const char* name, Int_t iVerbos
     , fMappedItemsToFW(NULL)
     , fTcalItemsToFW(NULL)
     , fHitItemsTwim(NULL)
+    , fCalItemsMwpc(NULL)
     , fNEvents(0)
 {
 }
@@ -65,6 +68,8 @@ R3BSofToFWOnlineSpectra::~R3BSofToFWOnlineSpectra()
         delete fTcalItemsToFW;
     if (fHitItemsTwim)
         delete fHitItemsTwim;
+    if (fCalItemsMwpc)
+        delete fCalItemsMwpc;
 }
 
 InitStatus R3BSofToFWOnlineSpectra::Init()
@@ -114,6 +119,11 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
     if (!fHitItemsTwim)
         LOG(WARNING) << "R3BSofToFWOnlineSpectra: TwimHitData not found";
+
+    // get access to cal data of the MWPC3
+    fCalItemsMwpc = (TClonesArray*)mgr->GetObject("Mwpc3CalData");
+    if (!fCalItemsMwpc)
+        LOG(WARNING) << "R3BSofToFWOnlineSpectra: Mwpc3CalData not found";
 
     // --- ------------------------------- --- //
     // --- Create histograms for detectors --- //
@@ -207,6 +217,23 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         fh2_Twim_Tof[i]->Draw("col");
     }
 
+    sprintf(Name1, "Mwpc3_vs_ToF_Plastic");
+    sprintf(Name2, "Mwpc3 vs ToF-Plastic number");
+    cMwpc3vsTof = new TCanvas(Name1, Name2, 10, 10, 1000, 900);
+    sprintf(Name1, "fh2_Mwpc3_vs_ToF_Plastic");
+    sprintf(Name2, "Mwpc3 vs ToF for plastic number");
+    fh2_Mwpc3_Tof = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 288 * 8, 0.5, 288.5);
+    fh2_Mwpc3_Tof->GetXaxis()->SetTitle("ToFW-Plastic number");
+    fh2_Mwpc3_Tof->GetYaxis()->SetTitle("MWPC3-X [pads]");
+    fh2_Mwpc3_Tof->GetXaxis()->CenterTitle(true);
+    fh2_Mwpc3_Tof->GetYaxis()->CenterTitle(true);
+    fh2_Mwpc3_Tof->GetXaxis()->SetLabelSize(0.045);
+    fh2_Mwpc3_Tof->GetXaxis()->SetTitleSize(0.045);
+    fh2_Mwpc3_Tof->GetYaxis()->SetLabelSize(0.045);
+    fh2_Mwpc3_Tof->GetYaxis()->SetTitleSize(0.045);
+    cMwpc3vsTof->cd();
+    fh2_Mwpc3_Tof->Draw("col");
+
     // --- --------------- ---
     // --- FOLDER-ToFW raw data
     // --- --------------- ---
@@ -233,7 +260,7 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     mainfolToFW->Add(cToFWRawPos);
     mainfolToFW->Add(folToFWRawTof);
     mainfolToFW->Add(folTwimvsToF);
-
+    mainfolToFW->Add(cMwpc3vsTof);
     run->AddObject(mainfolToFW);
 
     // Register command to reset histograms
@@ -263,6 +290,8 @@ void R3BSofToFWOnlineSpectra::Reset_Histo()
     }
     for (UShort_t i = 0; i < NbDets; i++)
         fh2_Twim_Tof[i]->Reset();
+
+    fh2_Mwpc3_Tof->Reset();
 }
 
 void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
@@ -336,7 +365,7 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
             }
         } // end of if mult=1 in the Start
 
-        // Fill hit data Twim
+        // Get hit data Twim
         Double_t twimZ = 0.;
         if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
         {
@@ -347,6 +376,24 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
                 if (!hit)
                     continue;
                 twimZ = hit->GetZcharge();
+            }
+        }
+
+        // Get cal data MWPC3
+        Double_t mwpc3x = -1., qmax = -100.;
+        if (fCalItemsMwpc && fCalItemsMwpc->GetEntriesFast() > 0)
+        {
+            nHits = fCalItemsMwpc->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BSofMwpcCalData* hit = (R3BSofMwpcCalData*)fCalItemsMwpc->At(ihit);
+                if (!hit)
+                    continue;
+                if (hit->GetQ() > qmax)
+                {
+                    mwpc3x = hit->GetPad();
+                    qmax = hit->GetQ();
+                }
             }
         }
 
@@ -368,7 +415,13 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
                     tofw = (0.5 * (iRawTimeNs[i * 2] + iRawTimeNs[i * 2 + 1])) - TrawStart;
                     fh1_RawTof_AtTcalMult1[i]->Fill(tofw);
                     if (twimZ > 0)
+                    {
                         fh2_Twim_Tof[i]->Fill(tofw, twimZ);
+                    }
+                    if (mwpc3x > 0 && tofw < -72. && tofw > -77. && twimZ > 0)
+                    {
+                        fh2_Mwpc3_Tof->Fill(i + gRandom->Uniform(-0.5, 0.5), mwpc3x + gRandom->Uniform(-0.5, 0.5));
+                    }
                 }
             } // end of if mult=1 in the plastic
         }
@@ -394,6 +447,10 @@ void R3BSofToFWOnlineSpectra::FinishEvent()
     if (fHitItemsTwim)
     {
         fHitItemsTwim->Clear();
+    }
+    if (fCalItemsMwpc)
+    {
+        fCalItemsMwpc->Clear();
     }
 }
 
@@ -432,6 +489,11 @@ void R3BSofToFWOnlineSpectra::FinishTask()
     {
         for (UShort_t i = 0; i < NbDets; i++)
             cTwimvsTof[i]->Write();
+    }
+
+    if (fCalItemsMwpc && fTcalItemsToFW)
+    {
+        cMwpc3vsTof->Write();
     }
 }
 
