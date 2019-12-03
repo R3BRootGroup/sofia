@@ -84,6 +84,7 @@ class R3BSofMwpcOnlineSpectra : public FairTask
 
   private:
     TClonesArray* fCalItemsMwpc; /**< Array with cal items. */
+    TClonesArray* fHitItemsMwpc; /**< Array with hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -92,16 +93,16 @@ class R3BSofMwpcOnlineSpectra : public FairTask
 
     // Canvas
     TCanvas *cMWPCCal, *cMWPCCal2D;
-
-    TH2F* fh2_mwpc_xq;
-    TH2F* fh2_mwpc_yq;
+    TCanvas* chitxy;
 
     // Histograms for Mapped data
     TH2F* fh2_mwpc_cal;
     TH1F* fh1_mwpc_cal[2];
+    TH2F* fh2_mwpc_xq;
+    TH2F* fh2_mwpc_yq;
 
-    // Histograms for Mapped data
-    // TH2F* fh2_atcal[3];
+    // Histograms for Hit data
+    TH2F* fh2_XYpos;
 
   public:
     ClassDef(R3BSofMwpcOnlineSpectra, 1)

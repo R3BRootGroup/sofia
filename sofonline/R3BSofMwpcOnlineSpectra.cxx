@@ -11,6 +11,7 @@
 #include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "R3BSofMwpcCalData.h"
+#include "R3BSofMwpcHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -42,6 +43,7 @@ using namespace std;
 R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra()
     : FairTask("SofMwpcOnlineSpectra", 1)
     , fCalItemsMwpc(NULL)
+    , fHitItemsMwpc(NULL)
     , fNameDet("MWPC")
     , fNEvents(0)
 {
@@ -50,6 +52,7 @@ R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra()
 R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra(const TString& name, Int_t iVerbose, const TString& namedet)
     : FairTask(name, iVerbose)
     , fCalItemsMwpc(NULL)
+    , fHitItemsMwpc(NULL)
     , fNameDet(namedet)
     , fNEvents(0)
 {
@@ -60,6 +63,8 @@ R3BSofMwpcOnlineSpectra::~R3BSofMwpcOnlineSpectra()
     LOG(INFO) << "R3BSof" + fNameDet + "OnlineSpectra::Delete instance";
     if (fCalItemsMwpc)
         delete fCalItemsMwpc;
+    if (fHitItemsMwpc)
+        delete fHitItemsMwpc;
 }
 
 InitStatus R3BSofMwpcOnlineSpectra::Init()
@@ -78,12 +83,17 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
-    // get access to mapped data of the active target
+    // get access to mapped data of mwpcs
     fCalItemsMwpc = (TClonesArray*)mgr->GetObject(fNameDet + "CalData");
     if (!fCalItemsMwpc)
     {
         return kFATAL;
     }
+
+    // get access to hit data of mwpcs
+    fHitItemsMwpc = (TClonesArray*)mgr->GetObject(fNameDet + "HitData");
+    if (!fHitItemsMwpc)
+        LOG(WARNING) << "R3BSofMwpcOnlineSpectra: " + fNameDet + "HitData not found";
 
     // Create histograms for detectors
     TString Name1;
@@ -194,13 +204,34 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh2_mwpc_yq->GetYaxis()->SetTitleSize(0.045);
     fh2_mwpc_yq->Draw("col");
 
-    // MAIN FOLDER-AT
-    TFolder* mainfolMW0 = new TFolder(fNameDet, fNameDet + " info");
-    mainfolMW0->Add(cMWPCCal);
-    mainfolMW0->Add(cMWPCCal2D);
-    mainfolMW0->Add(cx);
-    mainfolMW0->Add(cy);
-    run->AddObject(mainfolMW0);
+    // Hit data
+    chitxy = new TCanvas(fNameDet + "_XYpos", "", 10, 10, 800, 700);
+    Name1 = "fh2_" + fNameDet + "_XYpos";
+    Name2 = fNameDet + ": Y vs X (mm)";
+    if (fNameDet == "Mwpc3")
+        fh2_XYpos = new TH2F(Name1, Name2, 1800, -450, 450, 1200, -300, 300);
+    else
+        fh2_XYpos = new TH2F(Name1, Name2, 400, -100, 100, 400, -100, 100);
+    fh2_XYpos->GetXaxis()->SetTitle("X (mm)");
+    fh2_XYpos->GetYaxis()->SetTitle("Y (mm)");
+    fh2_XYpos->GetYaxis()->SetTitleOffset(1.1);
+    fh2_XYpos->GetXaxis()->CenterTitle(true);
+    fh2_XYpos->GetYaxis()->CenterTitle(true);
+    fh2_XYpos->GetXaxis()->SetLabelSize(0.045);
+    fh2_XYpos->GetXaxis()->SetTitleSize(0.045);
+    fh2_XYpos->GetYaxis()->SetLabelSize(0.045);
+    fh2_XYpos->GetYaxis()->SetTitleSize(0.045);
+    fh2_XYpos->Draw("col");
+
+    // MAIN FOLDER-MWPC
+    TFolder* mainfolMW = new TFolder(fNameDet, fNameDet + " info");
+    mainfolMW->Add(cMWPCCal);
+    mainfolMW->Add(cMWPCCal2D);
+    mainfolMW->Add(cx);
+    mainfolMW->Add(cy);
+    if (fHitItemsMwpc)
+        mainfolMW->Add(chitxy);
+    run->AddObject(mainfolMW);
 
     // Register command to reset histograms
     run->GetHttpServer()->RegisterCommand("Reset_" + fNameDet + "_HIST",
@@ -213,12 +244,19 @@ void R3BSofMwpcOnlineSpectra::Reset_Histo()
 {
     LOG(INFO) << "R3BSof" + fNameDet + "OnlineSpectra::Reset_Histo";
     // Cal data
-    for (Int_t i = 0; i < 2; i++)
-        fh1_mwpc_cal[i]->Reset();
-    fh2_mwpc_cal->Reset();
-
-    fh2_mwpc_xq->Reset();
-    fh2_mwpc_yq->Reset();
+    if (fCalItemsMwpc)
+    {
+        for (Int_t i = 0; i < 2; i++)
+            fh1_mwpc_cal[i]->Reset();
+        fh2_mwpc_cal->Reset();
+        fh2_mwpc_xq->Reset();
+        fh2_mwpc_yq->Reset();
+    }
+    // Hit data
+    if (fHitItemsMwpc)
+    {
+        fh2_XYpos->Reset();
+    }
 }
 
 void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
@@ -228,7 +266,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BSof" + fNameDet + "OnlineSpectra::Exec FairRootManager not found";
 
     // Fill Cal data
-    if (fCalItemsMwpc && fCalItemsMwpc->GetEntriesFast())
+    if (fCalItemsMwpc && fCalItemsMwpc->GetEntriesFast() > 0)
     {
         Int_t nHits = fCalItemsMwpc->GetEntriesFast();
         Int_t maxpadx = -1, maxpady = -1, maxqx = 0, maxqy = 0;
@@ -262,6 +300,19 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             fh2_mwpc_cal->Fill(maxpadx, maxpady);
     }
 
+    // Fill Hit data
+    if (fHitItemsMwpc && fHitItemsMwpc->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fHitItemsMwpc->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fHitItemsMwpc->At(ihit);
+            if (!hit)
+                continue;
+            fh2_XYpos->Fill(hit->GetX(), hit->GetY());
+        }
+    }
+
     fNEvents += 1;
 }
 
@@ -271,6 +322,10 @@ void R3BSofMwpcOnlineSpectra::FinishEvent()
     if (fCalItemsMwpc)
     {
         fCalItemsMwpc->Clear();
+    }
+    if (fHitItemsMwpc)
+    {
+        fHitItemsMwpc->Clear();
     }
 }
 
@@ -283,6 +338,10 @@ void R3BSofMwpcOnlineSpectra::FinishTask()
         cMWPCCal2D->Write();
         fh2_mwpc_xq->Write();
         fh2_mwpc_yq->Write();
+    }
+    if (fHitItemsMwpc)
+    {
+        chitxy->Write();
     }
 }
 

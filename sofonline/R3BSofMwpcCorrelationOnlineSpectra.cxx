@@ -231,9 +231,9 @@ void R3BSofMwpcCorrelationOnlineSpectra::Exec(Option_t* option)
             }
         }
         if (maxpadx1 > -1 && maxpadx2 > -1)
-            fh2_mwpc_calx->Fill(maxpadx1, maxpadx2);
+            fh2_mwpc_calx->Fill(maxpadx1 + gRandom->Uniform(-0.5, 0.5), maxpadx2 + gRandom->Uniform(-0.5, 0.5));
         if (maxpady1 > -1 && maxpady2 > -1)
-            fh2_mwpc_caly->Fill(maxpady1, maxpady2);
+            fh2_mwpc_caly->Fill(maxpady1 + gRandom->Uniform(-0.5, 0.5), maxpady2 + gRandom->Uniform(-0.5, 0.5));
     }
 
     fNEvents += 1;

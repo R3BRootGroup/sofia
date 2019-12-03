@@ -14,7 +14,7 @@
 #include <TRandom.h>
 
 #define NbPadsX 64
-#define NbPadsY 40
+#define NbPadsY 64
 
 class TClonesArray;
 

@@ -138,7 +138,7 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
         }
     }
     // Add Hit data ----
-    if (padmx > -1 && padmy > -1)
+    if (padmx > 1 && padmy > 1 && padmx + 1 < NbPadsX && padmy + 1 < NbPadsY && qmx > 0 && qleft > 0 && qright > 0)
     {
         // Obtain position X ----
         qleft = fx[padmx - 1];
@@ -150,10 +150,9 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
         qdown = fy[padmy - 1];
         qup = fy[padmy + 1];
         y = GetPostionY(qmy, padmy, qdown, qup);
-
+        std::cout << x << " " << y << std::endl;
         AddHitData(x, y);
     }
-
     if (calData)
         delete calData;
     return;
