@@ -136,7 +136,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         sprintf(Name1, "SofSci%i_RawPos", i + 1);
         cSciRawPos[i] = new TCanvas(Name1, Name1, 10, 10, 500, 500);
         sprintf(Name1, "SofSci%i_RawPosAtTcal_Mult1", i + 1);
-        fh1_RawPos_AtTcalMult1[i] = new TH1F(Name1, Name1, 10000, -5, 5);
+        fh1_RawPos_AtTcalMult1[i] = new TH1F(Name1, Name1, 10000, -10, 10);
         fh1_RawPos_AtTcalMult1[i]->GetXaxis()->SetTitle("Raw position [ns with one bin/ps]");
         fh1_RawPos_AtTcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_RawPos_AtTcalMult1[i]->GetXaxis()->CenterTitle(true);
