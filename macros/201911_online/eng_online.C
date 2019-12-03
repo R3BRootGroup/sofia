@@ -24,7 +24,7 @@ void eng_online()
   // Create source using ucesb for input ------------------
   
   TString filename = "--stream=lxir123:7803";
-  //TString filename = "~/lmd/sofia2019/main0028_00*.lmd";
+  //TString filename = "~/lmd/sofia2019/main0042_0001.lmd";
   //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
   TString outputFileName = "data_online.root";
@@ -32,7 +32,8 @@ void eng_online()
   
   TString ntuple_options = "RAW";
   TString ucesb_dir = getenv("UCESB_DIR");
-  TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng2/201911_eng2 --allow-errors --input-buffer=100Mi";
+  TString ucesb_path = "/u/land/lynx.landexp/201911_eng/upexps/201911_eng2/201911_eng2 --allow-errors --input-buffer=100Mi";
+  //TString ucesb_path = "/u/land/sofia/unpacker/upexps/201911_eng2/201911_eng2 --allow-errors --input-buffer=100Mi";
   //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng2/201911_eng2 --allow-errors --input-buffer=100M";
   //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng/201911_eng --allow-errors --input-buffer=100M";
   ucesb_path.ReplaceAll("//","/");
@@ -75,7 +76,7 @@ void eng_online()
   // Create online run ------------------------------------ 
   FairRunOnline* run = new FairRunOnline(source);
   run->SetRunId(1);
-  run->SetSink(new FairRootFileSink(outputFileName));
+  //run->SetSink(new FairRootFileSink(outputFileName));
   Int_t refresh = 1;
   Int_t port=8888;
   run->ActivateHttpServer(refresh, port);

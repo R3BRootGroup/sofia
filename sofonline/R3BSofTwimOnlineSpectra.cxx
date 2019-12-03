@@ -106,7 +106,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     char Name1[255];
     char Name2[255];
 
-    // TWIM: Map data
+    // TWIM: Map data for E
     for (Int_t i = 0; i < NbSections; i++)
     {
         sprintf(Name1, "Twim_Emap_Sec_%d", i + 1);
@@ -136,7 +136,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         }
     }
 
-    // TWIM: Map data
+    // TWIM: Map data for E vs DT
     for (Int_t i = 0; i < NbSections; i++)
     {
         sprintf(Name1, "Twim_EvsDT_Sec_%d", i + 1);
@@ -145,13 +145,18 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         cTwimMap_EvsDT[i]->Divide(4, 4);
     }
 
+    char Name3[255];
+    char Name4[255];
+    cTwimMap_EsumvsDT = new TCanvas("Twim_EsumvsDT", "Twim_EsumvsDT", 10, 10, 800, 700);
+    // cTwimMap_EsumvsDT->Divide(2, 2);//FIXME
+
     for (Int_t i = 0; i < NbSections; i++)
     {
         for (Int_t j = 0; j < NbAnodes; j++)
         {
             sprintf(Name1, "fh1_twim_EvsDT_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh2_twim_EneRawVsDriftTime[i][j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, -20000, 20000);
+            fh2_twim_EneRawVsDriftTime[i][j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, 1, 40001);
             fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetTitle("Energy [channels]");
             fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitle("Drift time [channels]");
             fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitleOffset(1.1);
@@ -164,8 +169,23 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
             cTwimMap_EvsDT[i]->cd(j + 1);
             fh2_twim_EneRawVsDriftTime[i][j]->Draw("col");
         }
+        sprintf(Name3, "fh2_Twim_EsumvsDT_sec%d", i + 1);
+        sprintf(Name4, "Twim: Esum vs DT for sec%d", i + 1);
+        fh2_twim_EneRawSumVsDriftTime[i] = new TH2F(Name3, Name4, 500, 0, 8192, 600, 1, 25000);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetXaxis()->SetTitle("Energy Sum [channels]");
+        fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetTitle("Drift time [channels]");
+        fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetXaxis()->CenterTitle(true);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->CenterTitle(true);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetTitleSize(0.045);
+        cTwimMap_EsumvsDT->cd();
+        fh2_twim_EneRawSumVsDriftTime[i]->Draw("col");
     }
 
+    // TWIM: Map data for DT
     for (Int_t i = 0; i < NbSections; i++)
     {
         sprintf(Name1, "Twim_DTmap_Sec_%d", i + 1);
@@ -180,7 +200,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh1_twim_DTmap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh1_twimmap_DT[i][j] = new TH1F(Name1, Name2, 6000, -20000, 20000);
+            fh1_twimmap_DT[i][j] = new TH1F(Name1, Name2, 6000, 1, 40001);
             fh1_twimmap_DT[i][j]->GetXaxis()->SetTitle("Drift time [channels]");
             fh1_twimmap_DT[i][j]->GetYaxis()->SetTitle("Counts");
             fh1_twimmap_DT[i][j]->GetYaxis()->SetTitleOffset(1.1);
@@ -195,6 +215,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         }
     }
 
+    // TWIM: Map data for multiplicities
     TCanvas* cTwim_Mult[NbSections];
     for (Int_t i = 0; i < NbSections; i++)
     {
@@ -216,6 +237,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         fh1_Twimmap_mult[i]->Draw("");
     }
 
+    // TWIM: Map data for E in the first (anodes from 0 to 7) and final sections (anodes from 8 to 15)
     cTwimMap_ESum = new TCanvas("twim_ESum_1,2", "twim_ESum_1,2", 10, 10, 800, 700);
     cTwimMap_ESum->Divide(1, 2);
     cTwimMap_ESum->cd(1);
@@ -243,6 +265,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_twim_ESum[1]->GetYaxis()->SetTitleSize(0.045);
     fh1_twim_ESum[1]->Draw("");
 
+    // TWIM: Map data for Esum
     cTwimMap_ESum1 = new TCanvas("twim_ESum", "twim_ESum", 10, 10, 800, 700);
     fh1_twim_ESum[2] = new TH1F("fh1_twim_ESum", "twim:ESum", 8192, 0, 8192);
     fh1_twim_ESum[2]->GetXaxis()->SetTitle("Energy [channels]");
@@ -256,6 +279,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_twim_ESum[2]->GetYaxis()->SetTitleSize(0.045);
     fh1_twim_ESum[2]->Draw("");
 
+    // TWIM: Map data for Esum1 vs Esum2
     cTwimMap_ESum2 = new TCanvas("twim_E1vsE2", "twim_E1vsE2", 10, 10, 800, 700);
     fh2_twim_ESum = new TH2F("fh2_twim_ESum", "twim: ESum1 vs Esum2", 2192, 0, 8192, 2192, 0, 8192);
     fh2_twim_ESum->GetXaxis()->SetTitle("Energy1 [channels]");
@@ -297,6 +321,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     mainfolTwim->Add(cTwimMap_ESum2);
     for (Int_t i = 0; i < NbSections; i++)
         mainfolTwim->Add(cTwimMap_EvsDT[i]);
+    mainfolTwim->Add(cTwimMap_EsumvsDT);
     mainfolTwim->Add(cTwim_Z);
     run->AddObject(mainfolTwim);
 
@@ -313,6 +338,7 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     for (Int_t i = 0; i < NbSections; i++)
     {
         fh1_Twimmap_mult[i]->Reset();
+        fh2_twim_EneRawSumVsDriftTime[i]->Reset();
         for (Int_t j = 0; j < NbAnodes; j++)
         {
             fh1_twimmap_E[i][j]->Reset();
@@ -359,23 +385,26 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
                 DT[hit->GetSecID()][hit->GetAnodeID()] = hit->GetTime();  // mult=1 !!!
             }
 
-            if (hit->GetAnodeID() < NbAnodes / 2)
+            if (hit->GetAnodeID() < NbAnodes / 2 && hit->GetAnodeID() != 7)
             {
                 e1 = e1 + hit->GetEnergy();
                 n1++;
             }
-            else if (hit->GetAnodeID() < NbAnodes)
+            else if (hit->GetAnodeID() >= NbAnodes / 2 && hit->GetAnodeID() < NbAnodes && hit->GetAnodeID() != 15)
             {
                 e2 = e2 + hit->GetEnergy();
                 n2++;
             }
         }
         for (Int_t j = 0; j < NbSections; j++)
+        {
             for (Int_t i = 0; i < NbAnodes; i++)
             {
                 fh1_twimmap_DT[j][i]->Fill(DT[j][i] - DT[j][NbAnodes]);
                 fh2_twim_EneRawVsDriftTime[j][i]->Fill(E[j][i], DT[j][i] - DT[j][NbAnodes]);
             }
+            fh2_twim_EneRawSumVsDriftTime[j]->Fill((e1 + e2) / (n1 + n2), DT[j][5] - DT[j][NbAnodes]);
+        }
         fh1_twim_ESum[0]->Fill(e1 / n1);
         fh1_twim_ESum[1]->Fill(e2 / n2);
         fh1_twim_ESum[2]->Fill((e1 + e2) / (n1 + n2));
@@ -424,6 +453,7 @@ void R3BSofTwimOnlineSpectra::FinishTask()
             cTwimMap_E[i]->Write();
             cTwimMap_DT[i]->Write();
             cTwimMap_EvsDT[i]->Write();
+            cTwimMap_EsumvsDT->Write();
         }
         fh1_twim_ESum[0]->Write();
         fh1_twim_ESum[1]->Write();

@@ -96,6 +96,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     // Canvas
     TCanvas* cTwimMap_E[NbSections];
     TCanvas* cTwimMap_EvsDT[NbSections];
+    TCanvas* cTwimMap_EsumvsDT;
     TCanvas* cTwimMap_DT[NbSections];
     TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2;
 
@@ -106,6 +107,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TH1F* fh1_twim_ESum[3];
     TH2F* fh2_twim_ESum;
     TH2F* fh2_twim_EneRawVsDriftTime[NbSections][NbAnodes];
+    TH2F* fh2_twim_EneRawSumVsDriftTime[NbSections];
 
     // Histograms for Hit data
     TH1F* fh1_Twimhit_z;
