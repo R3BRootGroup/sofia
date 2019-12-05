@@ -275,7 +275,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             R3BSofMwpcCalData* hit = (R3BSofMwpcCalData*)fCalItemsMwpc->At(ihit);
             if (!hit)
                 continue;
-            if (hit->GetPlane() == 1)
+            if (hit->GetPlane() == 1 || hit->GetPlane() == 2)
             {
                 fh1_mwpc_cal[0]->Fill(hit->GetPad());
                 fh2_mwpc_xq->Fill(hit->GetPad() + gRandom->Uniform(-0.5, 0.5), hit->GetQ());

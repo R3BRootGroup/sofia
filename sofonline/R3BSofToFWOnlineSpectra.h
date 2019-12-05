@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// -----                R3BSofToFWOnlineSpectra            -----
+// -----              R3BSofToFWOnlineSpectra             -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
@@ -100,7 +100,8 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TCanvas* cToFWRawPos;
     TCanvas* cToFWRawTof[NbDets];
     TCanvas* cTwimvsTof[NbDets];
-    TCanvas* cMwpc3vsTof;
+    TCanvas* cMwpc3XvsTof;
+    TCanvas* cMwpc3YvsPosTof;
 
     // Histograms for Mapped data : Fine Time and Mult
     TH1I* fh1_finetime[NbDets * NbChs];
@@ -116,7 +117,8 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TH2F* fh2_Twim_Tof[NbDets];
 
     // Histograms for Mwpc3 vs ToF-plastic
-    TH2F* fh2_Mwpc3_Tof;
+    TH2F* fh2_Mwpc3X_Tof;
+    TH2F* fh2_Mwpc3Y_PosTof;
 
   public:
     ClassDef(R3BSofToFWOnlineSpectra, 1)

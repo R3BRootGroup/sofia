@@ -309,7 +309,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 R3BSofMwpcCalData* hit = (R3BSofMwpcCalData*)fCalItemsMwpc0->At(ihit);
                 if (!hit)
                     continue;
-                if (hit->GetQ() > qmax)
+                if (hit->GetQ() > qmax && hit->GetPlane() == 1)
                 {
                     mwpc0x = hit->GetPad();
                     qmax = hit->GetQ();

@@ -94,6 +94,12 @@ void R3BSofTwimCal2Hit::SetParameter()
     LOG(INFO) << "R3BSofTwimCal2Hit: Nb sections: " << fNumSec;
     LOG(INFO) << "R3BSofTwimCal2Hit: Nb parameters from pedestal fit: " << fNumParams;
 
+    for (Int_t i = 0; i < 4; i++)
+        for (Int_t j = 0; j < 16; j++)
+            StatusAnodes[i][j] = 1;
+    // Anodes that don't work
+    StatusAnodes[0][7] = 0;
+
     CalParams = new TArrayF();
     Int_t array_size = fNumSec * fNumParams;
     CalParams->Set(array_size);
@@ -188,19 +194,20 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
     {
         for (Int_t j = 0; j < fNumAnodes; j++)
         {
-            if (energyperanode[i][j] > 0.)
+            if (energyperanode[i][j] > 0. && StatusAnodes[i][j] == 1)
             {
-                charge = charge + energyperanode[i][j];
+                charge = charge + energyperanode[i][j]; // charge = <Esum>
                 nba++;
             }
         }
 
-        if (nba > 0 && charge / nba > 0.)
+        if (nba > 0 && (charge / nba) > 0.)
         {
             a0 = CalParams->GetAt(i * fNumParams);
             a1 = CalParams->GetAt(i * fNumParams + 1);
-            if ((a0 + a1 * charge / nba) > 0)
-                AddHitData(i, theta, a0 + a1 * charge / nba);
+            Double_t zhit = a0 + a1 * TMath::Sqrt(charge / nba);
+            if (zhit > 0)
+                AddHitData(i, theta, zhit);
         }
     }
 

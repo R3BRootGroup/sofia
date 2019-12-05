@@ -56,6 +56,7 @@ class R3BSofTwimCal2Hit : public FairTask
     Int_t fNumAnodes;
     Int_t fNumParams;
     Int_t MaxSigma;
+    Int_t StatusAnodes[4][16]; // Sections and anodes
     TArrayF* CalParams;
 
     Bool_t fOnline; // Don't store data for online
