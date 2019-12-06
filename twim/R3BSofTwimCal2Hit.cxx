@@ -187,7 +187,7 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
         energyperanode[secId][anodeId] = CalDat[i]->GetEnergy();
     }
 
-    Double_t nba = 0, a0 = 0., a1 = 0., theta = 0., charge = 0.;
+    Double_t nba = 0, a0 = 0., a1 = 0., theta = 0., Esum = 0.;
 
     // calculate truncated dE from 16 anodes, Twim-MUSIC
     for (Int_t i = 0; i < fNumSec; i++)
@@ -196,16 +196,16 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
         {
             if (energyperanode[i][j] > 0. && StatusAnodes[i][j] == 1)
             {
-                charge = charge + energyperanode[i][j]; // charge = <Esum>
+                Esum = Esum + energyperanode[i][j];
                 nba++;
             }
         }
 
-        if (nba > 0 && (charge / nba) > 0.)
+        if (nba > 0 && (Esum / nba) > 0.)
         {
             a0 = CalParams->GetAt(i * fNumParams);
             a1 = CalParams->GetAt(i * fNumParams + 1);
-            Double_t zhit = a0 + a1 * TMath::Sqrt(charge / nba);
+            Double_t zhit = a0 + a1 * TMath::Sqrt(Esum / nba);
             if (zhit > 0)
                 AddHitData(i, theta, zhit);
         }
