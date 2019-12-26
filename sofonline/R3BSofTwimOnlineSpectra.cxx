@@ -294,9 +294,8 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_twim_ESum->Draw("col");
 
     // Hit data
-
     TCanvas* cTwim_Z = new TCanvas("Twim_charge_z", "Twim: Charge Z", 10, 10, 800, 700);
-    fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 240, 0, 40);
+    fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 1200, 0, 40);
     fh1_Twimhit_z->GetXaxis()->SetTitle("Charge (Z)");
     fh1_Twimhit_z->GetYaxis()->SetTitle("Counts");
     fh1_Twimhit_z->GetYaxis()->SetTitleOffset(1.1);

@@ -3,10 +3,10 @@
 // Define the SOFIA simulation setup for p2p-fission experiments
 // Author: <joseluis.rodriguez.sanchez@usc.es>
 //
-// Last Update: 29/10/19 (Jose Luis)
+// Last Update: 26/12/19
 // Comments:
 //         - 29/10/19 : Initial setup
-//
+//         - 26/12/19 : Added new califa tasks
 //
 //--------------------------------------------------------------------
 
@@ -17,10 +17,11 @@ void runsim(Int_t nEvents = 0)
     TString OutFile = "sim.root"; // Output file for data
     TString ParFile = "par.root"; // Output file for params
 
-    Bool_t fVis = true;              // Store tracks for visualization
-    Bool_t fUserPList = false;       // Use of R3B special physics list
-    Bool_t fR3BMagnet = true;        // Magnetic field definition
-    Bool_t fCalifaHitFinder = false; // Apply hit finder task
+    Bool_t fVis = true;             // Store tracks for visualization
+    Bool_t fUserPList = false;      // Use of R3B special physics list
+    Bool_t fR3BMagnet = true;       // Magnetic field definition
+    Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
+    Bool_t fCalifaHitFinder = true; // Apply hit finder task
 
     TString fMC = "TGeant4"; // MonteCarlo engine: TGeant3, TGeant4, TFluka
 
@@ -38,18 +39,18 @@ void runsim(Int_t nEvents = 0)
     // ---------------  Detector selection: true - false ----------------------
     // ---- R3B and SOFIA detectors as well as passive elements
 
-    Bool_t fR3BMusic = true; // R3B Music Detector
+    Bool_t fR3BMusic = true;// R3B Music Detector
     TString fR3BMusicGeo = "music_s467.geo.root";
 
-    Bool_t fMwpc0 = false; // MWPC0 Detector
-    TString fMwpc0Geo = "";
+    Bool_t fMwpc0 = true;  // MWPC0 Detector
+    TString fMwpc0Geo = "mwpc_0.geo.root";
 
-    Bool_t fTracker = true; // AMS-Tracker + Vacuum chamber + LH2 target
+    Bool_t fTracker = true;// AMS-Tracker + Vacuum chamber + LH2 target
     TString fTrackerGeo = "targetvacuumchamber_ams_s455.geo.root";
 
     Bool_t fCalifa = true; // Califa Calorimeter
     TString fCalifaGeo = "califa_2020.geo.root";
-    Int_t fCalifaGeoVer = 10;
+    Int_t fCalifaGeoVer = 2020;
     Double_t fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
 
     Bool_t fMwpc1 = true; // MWPC1 Detector
@@ -134,7 +135,7 @@ void runsim(Int_t nEvents = 0)
     // MWPC0 definition
     if (fMwpc0)
     {
-        run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -110. }));
+        run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -190. }));
     }
 
     // Tracker, vacuum chamber and LH2 target definitions
@@ -150,7 +151,6 @@ void runsim(Int_t nEvents = 0)
     {
         R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -66.5 });
         califa->SelectGeometryVersion(fCalifaGeoVer);
-        califa->SetNonUniformity(fCalifaNonU);
         run->AddModule(califa);
     }
 
@@ -347,13 +347,23 @@ void runsim(Int_t nEvents = 0)
 
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
 
+    // ----- Initialize CalifaDigitizer task (from Point Level to Cal Level)
+    if (fCalifa && fCalifaDigitizer)
+    {
+        R3BCalifaDigitizer* califaDig = new R3BCalifaDigitizer();
+        califaDig->SetNonUniformity(fCalifaNonU);
+        califaDig->SetExpEnergyRes(6.); // 5. means 5% at 1 MeV
+        califaDig->SetComponentRes(6.);
+        califaDig->SetDetectionThreshold(0.0); // in GeV!! 0.000010 means 10 keV
+        run->AddTask(califaDig);
+    }
+
     // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
-    if (fCalifaHitFinder)
+    if (fCalifa && fCalifaHitFinder)
     {
         R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
-        // califaHF->SetDetectionThreshold(0.000050);//50 KeV
-        // califaHF->SetExperimentalResolution(5.);  //5% at 1 MeV
-        // califaHF->SetAngularWindow(3.2,3.2);      //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
+        califaHF->SetCrystalThreshold(0.000010);  // in GeV!! 0.000010 means 10 KeV
+        califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
         run->AddTask(califaHF);
     }
 
