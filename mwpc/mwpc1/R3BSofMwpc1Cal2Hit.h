@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------
-// -----                                                            -----
-// -----                     R3BSofMwpc0Cal2Hit                     -----
-// -----             Created 09/10/19  by J.L. Rodriguez-Sanchez    -----
+// -----		    R3BSofMwpc1Cal2Hit              	    -----
+// -----          Created 16/10/19  by G. García Jiménez            -----
+// -----  by modifying J.L. Rodriguez-Sanchez  classes for Mwpc2    -----
 // ----------------------------------------------------------------------
 
-#ifndef R3BSofMwpc0Cal2Hit_H
-#define R3BSofMwpc0Cal2Hit_H
+#ifndef R3BSofMwpc1Cal2Hit_H
+#define R3BSofMwpc1Cal2Hit_H
 
 #include "FairTask.h"
 #include "R3BSofMwpcCalData.h"
@@ -13,23 +13,23 @@
 #include "TH1F.h"
 #include <TRandom.h>
 
-#define NbPadsX 64
-#define NbPadsY 64
+#define Mw1PadsX 64
+#define Mw1PadsY 40
 
 class TClonesArray;
 
-class R3BSofMwpc0Cal2Hit : public FairTask
+class R3BSofMwpc1Cal2Hit : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofMwpc0Cal2Hit();
+    R3BSofMwpc1Cal2Hit();
 
     /** Standard constructor **/
-    R3BSofMwpc0Cal2Hit(const char* name, Int_t iVerbose = 1);
+    R3BSofMwpc1Cal2Hit(const char* name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofMwpc0Cal2Hit();
+    virtual ~R3BSofMwpc1Cal2Hit();
 
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
@@ -53,7 +53,7 @@ class R3BSofMwpc0Cal2Hit : public FairTask
     Double_t fSize; // Detector size in X and Y
     Double_t fwx;   // Pad width in X
     Double_t fwy;   // Pad width in Y
-    Int_t fx[NbPadsX], fy[NbPadsY];
+    Int_t fx[Mw1PadsX], fy[Mw1PadsY];
 
     Bool_t fOnline; // Don't store data for online
 
@@ -65,13 +65,13 @@ class R3BSofMwpc0Cal2Hit : public FairTask
     R3BSofMwpcHitData* AddHitData(Double_t x, Double_t y);
 
     /** Private method to obtain the position X **/
-    Double_t GetPostionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright);
+    Double_t GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright);
     /** Private method to obtain the position Y **/
-    Double_t GetPostionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup);
+    Double_t GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup);
 
   public:
     // Class definition
-    ClassDef(R3BSofMwpc0Cal2Hit, 1)
+    ClassDef(R3BSofMwpc1Cal2Hit, 1)
 };
 
 #endif

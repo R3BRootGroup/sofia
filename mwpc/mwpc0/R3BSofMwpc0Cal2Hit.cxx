@@ -1,9 +1,9 @@
-// ----------------------------------------------------------------------
-// -----                     R3BSofMwpc3Cal2Hit                     -----
-// -----             Created 14/10/19  by G. García Jiménez         -----
-// -----             by modifying J.L classes for MWPC0             -----
-// ----------------------------------------------------------------------
+// -------------------------------------------------------------------------
+// -----         R3BSofMwpc0Cal2Hit source file                        -----
+// -----             Created 09/10/19  by J.L. Rodriguez-Sanchez       -----
+// -------------------------------------------------------------------------
 
+// ROOT headers
 #include "TClonesArray.h"
 #include "TMath.h"
 
@@ -16,53 +16,48 @@
 #include <iomanip>
 
 // MWPC headers
-#include "R3BSofMwpc3Cal2Hit.h"
+#include "R3BSofMwpc0Cal2Hit.h"
 #include "R3BSofMwpcCalData.h"
 #include "R3BSofMwpcHitData.h"
 
-/* ---- R3BSofMwpc3Cal2Hit: Default Constructor ---- */
-
-R3BSofMwpc3Cal2Hit::R3BSofMwpc3Cal2Hit()
-    : FairTask("R3B Hit-MWPC3 Task", 1)
+// R3BSofMwpc0Cal2Hit: Default Constructor --------------------------
+R3BSofMwpc0Cal2Hit::R3BSofMwpc0Cal2Hit()
+    : FairTask("R3B Hit-MWPC0 Task", 1)
     , fMwpcCalDataCA(NULL)
     , fMwpcHitDataCA(NULL)
-    , fwy(5.000)
-    , fwx(3.125)
-    , fSizeX(900.0)
-    , fSizeY(600.0)
-    , // in mm
-    fOnline(kFALSE)
+    , fwx(3.125)   // in mm
+    , fwy(3.125)   // in mm
+    , fSize(200.0) // in mm
+    , fOnline(kFALSE)
 {
 }
 
-/* ---- R3BSofMwpc3Cal2Hit: Standard Constructor ---- */
-R3BSofMwpc3Cal2Hit::R3BSofMwpc3Cal2Hit(const char* name, Int_t iVerbose)
+// R3BSofMwpc0Cal2Hit: Standard Constructor --------------------------
+R3BSofMwpc0Cal2Hit::R3BSofMwpc0Cal2Hit(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMwpcCalDataCA(NULL)
     , fMwpcHitDataCA(NULL)
-    , fwy(5.000)
-    , fwx(3.125)
-    , fSizeX(900.0)
-    , fSizeY(600.0)
-    , // in mm
-    fOnline(kFALSE)
+    , fwx(3.125)   // in mm
+    , fwy(3.125)   // in mm
+    , fSize(200.0) // in mm
+    , fOnline(kFALSE)
 {
 }
 
-/* ---- Virtual R3BSofMwpc3Cal2Hit: Destructor ---- */
-R3BSofMwpc3Cal2Hit::~R3BSofMwpc3Cal2Hit()
+// Virtual R3BSofMwpc0Cal2Hit: Destructor
+R3BSofMwpc0Cal2Hit::~R3BSofMwpc0Cal2Hit()
 {
-    LOG(INFO) << "R3BSofMwpc3Cal2Hit: Delete instance";
+    LOG(INFO) << "R3BSofMwpc0Cal2Hit: Delete instance";
     if (fMwpcCalDataCA)
         delete fMwpcCalDataCA;
     if (fMwpcHitDataCA)
         delete fMwpcHitDataCA;
 }
 
-/* ---- Public method Init   ---- */
-InitStatus R3BSofMwpc3Cal2Hit::Init()
+// -----   Public method Init   --------------------------------------------
+InitStatus R3BSofMwpc0Cal2Hit::Init()
 {
-    LOG(INFO) << "R3BSofMwpc3Cal2Hit: Init";
+    LOG(INFO) << "R3BSofMwpc0Cal2Hit: Init";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -71,7 +66,7 @@ InitStatus R3BSofMwpc3Cal2Hit::Init()
         return kFATAL;
     }
 
-    fMwpcCalDataCA = (TClonesArray*)rootManager->GetObject("Mwpc3CalData");
+    fMwpcCalDataCA = (TClonesArray*)rootManager->GetObject("Mwpc0CalData");
     if (!fMwpcCalDataCA)
     {
         return kFATAL;
@@ -83,21 +78,21 @@ InitStatus R3BSofMwpc3Cal2Hit::Init()
 
     if (!fOnline)
     {
-        rootManager->Register("Mwpc3HitData", "MWPC3 Hit", fMwpcHitDataCA, kTRUE);
+        rootManager->Register("Mwpc0HitData", "MWPC0 Hit", fMwpcHitDataCA, kTRUE);
     }
     else
     {
-        rootManager->Register("Mwpc3HitData", "MWPC3 Hit", fMwpcHitDataCA, kFALSE);
+        rootManager->Register("Mwpc0HitData", "MWPC0 Hit", fMwpcHitDataCA, kFALSE);
     }
 
     return kSUCCESS;
 }
 
-/* ----   Public method ReInit   ---- */
-InitStatus R3BSofMwpc3Cal2Hit::ReInit() { return kSUCCESS; }
+// -----   Public method ReInit   ----------------------------------------------
+InitStatus R3BSofMwpc0Cal2Hit::ReInit() { return kSUCCESS; }
 
-/* ----   Public method Execution   ---- */
-void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
+// -----   Public method Execution   --------------------------------------------
+void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
 {
     // Reset entries in output arrays, local arrays
     Reset();
@@ -116,9 +111,9 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
     Int_t q = 0, qmx = 0, qmy = 0, qleft = 0, qright = 0, qdown = 0, qup = 0;
     Double_t x = 0., y = 0.;
 
-    for (Int_t i = 0; i < NbPadsX; i++)
+    for (Int_t i = 0; i < Mw0PadsX; i++)
         fx[i] = 0;
-    for (Int_t i = 0; i < NbPadsY; i++)
+    for (Int_t i = 0; i < Mw0PadsY; i++)
         fy[i] = 0;
 
     for (Int_t i = 0; i < nHits; i++)
@@ -143,60 +138,59 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
         }
     }
     // Add Hit data ----
-    if (padmx > -1 && padmy > -1)
+    if (padmx > 1 && padmy > 1 && padmx + 1 < Mw0PadsX && padmy + 1 < Mw0PadsY && qmx > 0 && qleft > 0 && qright > 0)
     {
         // Obtain position X ----
         qleft = fx[padmx - 1];
         qright = fx[padmx + 1];
         // std::cout<<qleft<<" "<<qright<<std::endl;
-        x = GetPositionX(qmx, padmx, qleft, qright);
+        x = GetPostionX(qmx, padmx, qleft, qright);
 
         // Obtain position Y ----
         qdown = fy[padmy - 1];
         qup = fy[padmy + 1];
-        y = GetPositionY(qmy, padmy, qdown, qup);
-
+        y = GetPostionY(qmy, padmy, qdown, qup);
+        //std::cout << x << " " << y << std::endl;
         AddHitData(x, y);
     }
-
     if (calData)
         delete calData;
     return;
 }
 
-/* ----   Protected method to obtain the position X ---- */
-Double_t R3BSofMwpc3Cal2Hit::GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright)
+// -----   Protected method to obtain the position X ----------------------------
+Double_t R3BSofMwpc0Cal2Hit::GetPostionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright)
 {
     Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
     Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
                                                     (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
 
-    return (-1. * padmax * fwx + (fSizeX / 2) - (fwx / 2) - a2); // Left is positive and right negative
+    return (-1. * padmax * fwx + (fSize / 2) - (fwx / 2) - a2); // Left is positive and right negative
 }
 
-/* ----   Protected method to obtain the position Y ---- */
-Double_t R3BSofMwpc3Cal2Hit::GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup)
+// -----   Protected method to obtain the position Y ----------------------------
+Double_t R3BSofMwpc0Cal2Hit::GetPostionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup)
 {
     Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
     Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
                                                     (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
 
-    return (padmax * fwy - (fSizeY / 2) + (fwy / 2) + a2);
+    return (padmax * fwy - (fSize / 2) + (fwy / 2) + a2);
 }
 
-/* ----   Public method Finish  ---- */
-void R3BSofMwpc3Cal2Hit::Finish() {}
+// -----   Public method Finish  ------------------------------------------------
+void R3BSofMwpc0Cal2Hit::Finish() {}
 
-/* ----   Public method Reset  ---- */
-void R3BSofMwpc3Cal2Hit::Reset()
+// -----   Public method Reset   ------------------------------------------------
+void R3BSofMwpc0Cal2Hit::Reset()
 {
-    LOG(DEBUG) << "Clearing Mwpc3HitData Structure";
+    LOG(DEBUG) << "Clearing Mwpc0HitData Structure";
     if (fMwpcHitDataCA)
         fMwpcHitDataCA->Clear();
 }
 
-/* ----   Private method AddHitData  ---- */
-R3BSofMwpcHitData* R3BSofMwpc3Cal2Hit::AddHitData(Double_t x, Double_t y)
+// -----   Private method AddHitData  --------------------------------------------
+R3BSofMwpcHitData* R3BSofMwpc0Cal2Hit::AddHitData(Double_t x, Double_t y)
 {
     // It fills the R3BSofMwpcHitData
     TClonesArray& clref = *fMwpcHitDataCA;
@@ -204,4 +198,4 @@ R3BSofMwpcHitData* R3BSofMwpc3Cal2Hit::AddHitData(Double_t x, Double_t y)
     return new (clref[size]) R3BSofMwpcHitData(x, y);
 }
 
-ClassImp(R3BSofMwpc3Cal2Hit)
+ClassImp(R3BSofMwpc0Cal2Hit)

@@ -6,7 +6,7 @@
 // Last Update: 26/12/19
 // Comments:
 //         - 29/10/19 : Initial setup
-//         - 26/12/19 : Added new califa tasks
+//         - 26/12/19 : Added new califa tasks and mwpc0 geometry
 //
 //--------------------------------------------------------------------
 
@@ -21,16 +21,19 @@ void runsim(Int_t nEvents = 0)
     Bool_t fUserPList = false;      // Use of R3B special physics list
     Bool_t fR3BMagnet = true;       // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
-    Bool_t fCalifaHitFinder = true; // Apply hit finder task
+    Bool_t fCalifaHitFinder = false; // Apply hit finder task
 
-    TString fMC = "TGeant4"; // MonteCarlo engine: TGeant3, TGeant4, TFluka
+    // MonteCarlo engine: TGeant3, TGeant4, TFluka
+    TString fMC = "TGeant4";
 
+    // Event generator type: box, gammas, r3b, ion, ascii
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString fGenerator = generator2; // Event generator type: box, gammas, r3b, ion, ascii
+    TString fGenerator = generator2;
 
-    TString fEventFile = "p2p_U238_500.txt"; // Input event file in the case of ascii generator
+    // Input event file in the case of ascii generator
+    TString fEventFile = "p2p_U238_500.txt";
 
     Int_t fFieldMap = -1;          // Magentic field map selector
     Double_t fMeasCurrent = 2000.; // Magnetic field current
@@ -66,7 +69,7 @@ void runsim(Int_t nEvents = 0)
     TString fAladinGeo = "aladin_v13a.geo.root";
 
     Bool_t fGlad = true; // Glad Magnet
-    TString fGladGeo = "glad_v17_flange.geo.root";
+    TString fGladGeo = "glad_s455.geo.root";
 
     Bool_t fMwpc3 = true; // MWPC3 Detector
     TString fMwpc3Geo = "mwpc_3.geo.root";
@@ -284,6 +287,7 @@ void runsim(Int_t nEvents = 0)
     if (fGenerator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + fEventFile).Data());
+        gen->SetXYZ(0.0, 0.0, -65.5);
         primGen->AddGenerator(gen);
     }
 

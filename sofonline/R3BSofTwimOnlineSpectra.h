@@ -98,14 +98,17 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TCanvas* cTwimMap_EvsDT[NbSections];
     TCanvas* cTwimMap_EsumvsDT;
     TCanvas* cTwimMap_DT[NbSections];
-    TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2;
+    TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2, *cTwim_DTvsDT[NbSections];
+    TCanvas* cTwimMap_ESum_vs_diffDT;
 
     // Histograms for Mapped data
     TH1F* fh1_twimmap_E[NbSections][NbAnodes];
     TH1F* fh1_twimmap_DT[NbSections][NbAnodes];
+    TH2F* fh2_twim_DTvsDT[NbSections][NbAnodes - 1];
     TH1F* fh1_Twimmap_mult[NbSections];
     TH1F* fh1_twim_ESum[3];
     TH2F* fh2_twim_ESum;
+    TH2F* fh2_twim_ESum_vs_diffDT[NbSections];
     TH2F* fh2_twim_EneRawVsDriftTime[NbSections][NbAnodes];
     TH2F* fh2_twim_EneRawSumVsDriftTime[NbSections];
 

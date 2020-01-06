@@ -13,8 +13,8 @@
 #include "TH1F.h"
 #include <TRandom.h>
 
-#define NbPadsX 288
-#define NbPadsY 120
+#define Mw3PadsX 288
+#define Mw3PadsY 120
 
 class TClonesArray;
 
@@ -49,15 +49,12 @@ class R3BSofMwpc3Cal2Hit : public FairTask
 
     void SetOnline(Bool_t option) { fOnline = option; }
 
-    ClassDef(R3BSofMwpc3Cal2Hit, 1)
-
-        private :
-
-        Double_t fSizeX; // Detector size in X and Y
-    Double_t fSizeY;     // Detector size in X and Y
-    Double_t fwx;        // Pad width in X
-    Double_t fwy;        // Pad width in Y
-    Int_t fx[NbPadsX], fy[NbPadsY];
+  private:
+    Double_t fSizeX; // Detector size in X and Y
+    Double_t fSizeY; // Detector size in X and Y
+    Double_t fwx;    // Pad width in X
+    Double_t fwy;    // Pad width in Y
+    Int_t fx[Mw3PadsX], fy[Mw3PadsY];
 
     Bool_t fOnline; // Don't store data for online
 
@@ -73,6 +70,10 @@ class R3BSofMwpc3Cal2Hit : public FairTask
     Double_t GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright);
     /** Private method to obtain the position Y **/
     Double_t GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup);
+
+  public:
+    // Class definition
+    ClassDef(R3BSofMwpc3Cal2Hit, 1)
 };
 
 #endif

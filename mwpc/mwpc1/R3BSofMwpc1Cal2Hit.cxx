@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// -----		                R3BSofMwpc1Cal2Hit 			                -----
+// -----		    R3BSofMwpc1Cal2Hit 	                    -----
 // -----          Created 16/10/19  by G. García Jiménez            -----
 // -----  by modifying J.L. Rodriguez-Sanchez  classes for Mwpc2    -----
 // ----------------------------------------------------------------------
@@ -26,13 +26,10 @@ R3BSofMwpc1Cal2Hit::R3BSofMwpc1Cal2Hit()
     : FairTask("R3B Hit-MWPC1 Task", 1)
     , fMwpcCalDataCA(NULL)
     , fMwpcHitDataCA(NULL)
-    , fwx(3.125)
-    , // in mm
-    fwy(5.000)
-    , // in mm
-    fSize(200.0)
-    , // in mm
-    fOnline(kFALSE)
+    , fwx(3.125)   // in mm
+    , fwy(5.000)   // in mm
+    , fSize(200.0) // in mm
+    , fOnline(kFALSE)
 {
 }
 
@@ -41,13 +38,10 @@ R3BSofMwpc1Cal2Hit::R3BSofMwpc1Cal2Hit(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMwpcCalDataCA(NULL)
     , fMwpcHitDataCA(NULL)
-    , fwx(3.125)
-    , // in mm
-    fwy(5.000)
-    , // in mm
-    fSize(200.0)
-    , // in mm
-    fOnline(kFALSE)
+    , fwx(3.125)   // in mm
+    , fwy(5.000)   // in mm
+    , fSize(200.0) // in mm
+    , fOnline(kFALSE)
 {
 }
 
@@ -119,9 +113,9 @@ void R3BSofMwpc1Cal2Hit::Exec(Option_t* option)
     Int_t qmx = 0, qmy = 0, qdown = 0, qup = 0;
     Double_t x = 0., y = 0.;
 
-    for (Int_t i = 0; i < NbPadsX; i++)
+    for (Int_t i = 0; i < Mw1PadsX; i++)
         fx[i] = 0;
-    for (Int_t i = 0; i < NbPadsY; i++)
+    for (Int_t i = 0; i < Mw1PadsY; i++)
         fy[i] = 0;
 
     for (Int_t i = 0; i < nHits; i++)
@@ -149,7 +143,7 @@ void R3BSofMwpc1Cal2Hit::Exec(Option_t* option)
         }
     }
     // Add Hit data ----
-    if (padmx > -1 && padmy > -1)
+    if (padmx > 1 && padmy > 1 && padmx + 1 < Mw1PadsX && padmy + 1 < Mw1PadsY && qmx > 0 && qmy > 0)
     {
         // FIXME: in November this should be OK!
         // Obtain position X ----
@@ -172,9 +166,11 @@ void R3BSofMwpc1Cal2Hit::Exec(Option_t* option)
 // -----   Protected method to obtain the position X ----------------------------
 Double_t R3BSofMwpc1Cal2Hit::GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright)
 {
-    Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
-    Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
-                                                    (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
+    // Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
+    Double_t a2 = gRandom->Uniform(
+        -fwx / 2,
+        fwx / 2); // (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
+                  //                                         (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
 
     return (-1. * padmax * fwx + (fSize / 2) - (fwx / 2) - a2); // Left is positive and right negative
 }
@@ -182,9 +178,10 @@ Double_t R3BSofMwpc1Cal2Hit::GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft,
 // -----   Protected method to obtain the position Y ----------------------------
 Double_t R3BSofMwpc1Cal2Hit::GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup)
 {
-    Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
-    Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
-                                                    (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
+    // Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
+    Double_t a2 = gRandom->Uniform(
+        -fwy / 2, fwy / 2); //(a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
+                            //                                           (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
 
     return (padmax * fwy - (fSize / 2) + (fwy / 2) + a2);
 }

@@ -9,7 +9,11 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/tracking
-${R3BSOF_SOURCE_DIR}/mwpc0
+${R3BSOF_SOURCE_DIR}/mwpc
+${R3BSOF_SOURCE_DIR}/mwpc/mwpc0
+${R3BSOF_SOURCE_DIR}/mwpc/mwpc1
+${R3BSOF_SOURCE_DIR}/mwpc/mwpc2
+${R3BSOF_SOURCE_DIR}/mwpc/mwpc3
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 )
@@ -23,19 +27,31 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-R3BSofMwpc0.cxx
-R3BSofMwpc0ContFact.cxx
-R3BSofMwpc0CalPar.cxx
-R3BSofMwpc0Mapped2Cal.cxx
-R3BSofMwpc0Mapped2CalPar.cxx
-R3BSofMwpc0Cal2Hit.cxx
 R3BSofMwpcDigitizer.cxx
-#R3BSofMWPCHitPar.cxx
-#R3BSofMWPCCalPar.cxx
-#R3BSofMWPCMappedPar.cxx
-#R3BSofMWPCCal2Hit.cxx
-#R3BSofMWPCCal2HitPar.cxx
-#R3BSofMWPCMapped2CalPar.cxx
+mwpc0/R3BSofMwpc0.cxx
+mwpc0/R3BSofMwpc0ContFact.cxx
+mwpc0/R3BSofMwpc0CalPar.cxx
+mwpc0/R3BSofMwpc0Mapped2Cal.cxx
+mwpc0/R3BSofMwpc0Mapped2CalPar.cxx
+mwpc0/R3BSofMwpc0Cal2Hit.cxx
+mwpc1/R3BSofMwpc1.cxx
+mwpc1/R3BSofMwpc1Cal2Hit.cxx
+mwpc1/R3BSofMwpc1Mapped2CalPar.cxx
+mwpc1/R3BSofMwpc1Mapped2Cal.cxx
+mwpc1/R3BSofMwpc1ContFact.cxx
+mwpc1/R3BSofMwpc1CalPar.cxx
+mwpc2/R3BSofMwpc2.cxx
+mwpc2/R3BSofMwpc2Cal2Hit.cxx
+mwpc2/R3BSofMwpc2Mapped2CalPar.cxx
+mwpc2/R3BSofMwpc2Mapped2Cal.cxx
+mwpc2/R3BSofMwpc2ContFact.cxx
+mwpc2/R3BSofMwpc2CalPar.cxx
+mwpc3/R3BSofMwpc3.cxx
+mwpc3/R3BSofMwpc3Cal2Hit.cxx
+mwpc3/R3BSofMwpc3Mapped2CalPar.cxx
+mwpc3/R3BSofMwpc3Mapped2Cal.cxx
+mwpc3/R3BSofMwpc3ContFact.cxx
+mwpc3/R3BSofMwpc3CalPar.cxx
 )
 
 # fill list of header files from list of source files
@@ -43,7 +59,7 @@ R3BSofMwpcDigitizer.cxx
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
 set(LINKDEF SofMWPCLinkDef.h)
-set(LIBRARY_NAME R3BSofMwpc0)
+set(LIBRARY_NAME R3BSofMwpc)
 set(DEPENDENCIES
     R3Bbase R3BData R3BSofData)
 

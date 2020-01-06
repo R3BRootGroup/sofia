@@ -178,6 +178,30 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         fh1_RawPos_AtTcalMult1[i]->Draw("");
     }
 
+    // === ENE RAW === //
+    for(Int_t i=0; i< NbChs; i++)
+    {
+	sprintf(Name1, "SofToFW_EneRaw_pmt%i", i+1);
+    	cToFWEneRaw[i] = new TCanvas(Name1,Name1, 10, 10, 1000, 900);
+	cToFWEneRaw[i]->Divide(7,4);
+	
+	for(Int_t j=0; j< NbDets; j++){
+	  sprintf(Name1, "SofTofW%i_EneRaw_pmt%i", j+1, i+1);
+          fh1_EneRaw[j*NbChs+i] = new TH1D(Name1, Name1, 5000, 0, 5000);
+          fh1_EneRaw[j*NbChs+i]->GetXaxis()->SetTitle("Raw Energy [channel]");
+          fh1_EneRaw[j*NbChs+i]->GetYaxis()->SetTitle("Counts per bin");
+          fh1_EneRaw[j*NbChs+i]->GetXaxis()->CenterTitle(true);
+          fh1_EneRaw[j*NbChs+i]->GetYaxis()->CenterTitle(true);
+          fh1_EneRaw[j*NbChs+i]->GetXaxis()->SetLabelSize(0.045);
+          fh1_EneRaw[j*NbChs+i]->GetXaxis()->SetTitleSize(0.045);
+          fh1_EneRaw[j*NbChs+i]->GetYaxis()->SetLabelSize(0.045);
+          fh1_EneRaw[j*NbChs+i]->GetYaxis()->SetTitleSize(0.045);
+          cToFWEneRaw[i]->cd(j + 1);
+          fh1_EneRaw[j*NbChs+i]->Draw("");
+	}
+
+    }
+
     // === RAW TIME-OF-Flight === //
     for (Int_t i = 0; i < NbDets; i++)
     {
@@ -251,6 +275,20 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     cMwpc3YvsPosTof->cd();
     fh2_Mwpc3Y_PosTof->Draw("col");
 
+    // --- --------------- --- //
+    // --- MAIN FOLDER-ToFW --- //
+    // --- --------------- --- //
+    TFolder* mainfolToFW = new TFolder("SOFTOFW", "SOFTOFW info");
+    for (Int_t j = 0; j < NbChs; j++)
+    {
+        mainfolToFW->Add(cToFWFineTime[j]);
+        mainfolToFW->Add(cToFWEneRaw[j]);
+    }
+    mainfolToFW->Add(cToFWMult);
+    mainfolToFW->Add(cToFWRawPos);
+    mainfolToFW->Add(cMwpc3XvsTof);
+    mainfolToFW->Add(cMwpc3YvsPosTof);
+
     // --- --------------- ---
     // --- FOLDER-ToFW raw data
     // --- --------------- ---
@@ -265,20 +303,8 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     for (Int_t i = 0; i < NbDets; i++)
         folTwimvsToF->Add(cTwimvsTof[i]);
 
-    // --- --------------- --- //
-    // --- MAIN FOLDER-ToFW --- //
-    // --- --------------- --- //
-    TFolder* mainfolToFW = new TFolder("SOFTOFW", "SOFTOFW info");
-    for (Int_t j = 0; j < NbChs; j++)
-    {
-        mainfolToFW->Add(cToFWFineTime[j]);
-    }
-    mainfolToFW->Add(cToFWMult);
-    mainfolToFW->Add(cToFWRawPos);
     mainfolToFW->Add(folToFWRawTof);
     mainfolToFW->Add(folTwimvsToF);
-    mainfolToFW->Add(cMwpc3XvsTof);
-    mainfolToFW->Add(cMwpc3YvsPosTof);
     run->AddObject(mainfolToFW);
 
     // Register command to reset histograms
@@ -298,6 +324,7 @@ void R3BSofToFWOnlineSpectra::Reset_Histo()
         {
             // === FINE TIME === //
             fh1_finetime[i * NbChs + j]->Reset();
+            fh1_EneRaw[i * NbChs + j]->Reset();
         }
     }
 
@@ -352,6 +379,7 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
             iCh = hitmapped->GetPmt() - 1;
             mult[iDet * NbChs + iCh]++;
             fh1_finetime[iDet * NbChs + iCh]->Fill(hitmapped->GetTimeFine());
+	    fh1_EneRaw[iDet * NbChs + iCh]->Fill(hitmapped->GetEnergy());
         }
 
         // --- ------------------- --- //
@@ -497,6 +525,7 @@ void R3BSofToFWOnlineSpectra::FinishTask()
             for (UShort_t i = 0; i < NbDets; i++)
             {
                 fh1_finetime[i * NbChs + j]->Write();
+                fh1_EneRaw[i * NbChs + j]->Write();
             }
         }
     }

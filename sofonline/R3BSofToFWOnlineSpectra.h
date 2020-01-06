@@ -98,6 +98,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TCanvas* cToFWFineTime[NbChs];
     TCanvas* cToFWMult;
     TCanvas* cToFWRawPos;
+    TCanvas* cToFWEneRaw[NbChs];
     TCanvas* cToFWRawTof[NbDets];
     TCanvas* cTwimvsTof[NbDets];
     TCanvas* cMwpc3XvsTof;
@@ -112,6 +113,9 @@ class R3BSofToFWOnlineSpectra : public FairTask
 
     // Histograms for ToFraw
     TH1D* fh1_RawTof_AtTcalMult1[NbDets];
+
+    // Histograms for EneRaw
+    TH1D* fh1_EneRaw[NbDets*NbChs];
 
     // Histograms for Twim vs ToFraw
     TH2F* fh2_Twim_Tof[NbDets];
