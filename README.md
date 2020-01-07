@@ -19,12 +19,21 @@ export SIMPATH=%PATH_TO_FAIRSOFT%
 export FAIRROOTPATH=%PATH_TO_FAIRROOT%
 git clone https://github.com/R3BRootGroup/R3BRoot.git
 cd R3BRoot
+git checkout dev
+git clone https://github.com/R3BRootGroup/macros.git
+cd macros
+git checkout dev
+cd ..
 git clone https://github.com/R3BRootGroup/sofia.git
+cd sofia
+git checkout dev
+cd ..
 cd ..
 mkdir build
 cd build
 cmake ../R3BRoot/
-make
+. config.sh
+make -j4
 ~~~
 
 # Simulations (ongoing work)
@@ -32,8 +41,8 @@ make
 ~~~bash
 cd %BUILD_DIRECTORY_FOR_SOFIA%
 . ./config.sh
-cd ../sofia/macros/sofia/
-root -l sofiasim.C
+cd ../sofia/macros/coulexsim/
+root -l run_sim.C
 ~~~
 
 This will create output file `sofiasim.root` with the simulation results and parameter file `sofiapar.root` with geometry and magnetic field parameters.
@@ -49,7 +58,7 @@ root -l eventDisplay.C
 2. To perform a quick analysis with GUI:
 
 ~~~bash
-root -l sofiasim.root
+root -l sim.root
 [] evt->StartViewer();
 ~~~
 

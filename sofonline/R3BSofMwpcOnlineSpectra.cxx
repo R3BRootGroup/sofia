@@ -204,6 +204,45 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh2_mwpc_yq->GetYaxis()->SetTitleSize(0.045);
     fh2_mwpc_yq->Draw("col");
 
+     // Hit data
+    chitx = new TCanvas(fNameDet + "_Xpos", "", 10, 10, 800, 700);
+    Name1 = "fh1_" + fNameDet + "_Xpos";
+    Name2 = fNameDet + ": X (mm)";
+    if (fNameDet == "Mwpc3")
+        fh1_Xpos = new TH1F(Name1, Name2, 1800, -450, 450);
+    else
+        fh1_Xpos = new TH1F(Name1, Name2, 400, -100, 100);
+    fh1_Xpos->GetXaxis()->SetTitle("X (mm)");
+    fh1_Xpos->GetYaxis()->SetTitle("counts per bin");
+    fh1_Xpos->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Xpos->GetXaxis()->CenterTitle(true);
+    fh1_Xpos->GetYaxis()->CenterTitle(true);
+    fh1_Xpos->GetXaxis()->SetLabelSize(0.045);
+    fh1_Xpos->GetXaxis()->SetTitleSize(0.045);
+    fh1_Xpos->GetYaxis()->SetLabelSize(0.045);
+    fh1_Xpos->GetYaxis()->SetTitleSize(0.045);
+    fh1_Xpos->Draw("col");
+
+      // Hit data
+    chity = new TCanvas(fNameDet + "_Ypos", "", 10, 10, 800, 700);
+    Name1 = "fh1_" + fNameDet + "_Ypos";
+    Name2 = fNameDet + ": Y (mm)";
+    if (fNameDet == "Mwpc3")
+        fh1_Ypos = new TH1F(Name1, Name2, 1200, -300, 300);
+    else
+        fh1_Ypos = new TH1F(Name1, Name2, 400, -100, 100);
+    fh1_Ypos->GetXaxis()->SetTitle("Y (mm)");
+    fh1_Ypos->GetYaxis()->SetTitle("counts per bin");
+    fh1_Ypos->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Ypos->GetXaxis()->CenterTitle(true);
+    fh1_Ypos->GetYaxis()->CenterTitle(true);
+    fh1_Ypos->GetXaxis()->SetLabelSize(0.045);
+    fh1_Ypos->GetXaxis()->SetTitleSize(0.045);
+    fh1_Ypos->GetYaxis()->SetLabelSize(0.045);
+    fh1_Ypos->GetYaxis()->SetTitleSize(0.045);
+    fh1_Ypos->Draw("col");
+
+
     // Hit data
     chitxy = new TCanvas(fNameDet + "_XYpos", "", 10, 10, 800, 700);
     Name1 = "fh2_" + fNameDet + "_XYpos";
@@ -229,8 +268,11 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     mainfolMW->Add(cMWPCCal2D);
     mainfolMW->Add(cx);
     mainfolMW->Add(cy);
-    if (fHitItemsMwpc)
+    if (fHitItemsMwpc){
+        mainfolMW->Add(chitx);
+        mainfolMW->Add(chity);
         mainfolMW->Add(chitxy);
+    }
     run->AddObject(mainfolMW);
 
     // Register command to reset histograms
@@ -255,6 +297,8 @@ void R3BSofMwpcOnlineSpectra::Reset_Histo()
     // Hit data
     if (fHitItemsMwpc)
     {
+        fh1_Xpos->Reset();
+        fh1_Ypos->Reset();
         fh2_XYpos->Reset();
     }
 }
@@ -309,6 +353,8 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fHitItemsMwpc->At(ihit);
             if (!hit)
                 continue;
+            fh1_Xpos->Fill(hit->GetX());
+            fh1_Ypos->Fill(hit->GetY());
             fh2_XYpos->Fill(hit->GetX(), hit->GetY());
         }
     }
@@ -341,6 +387,8 @@ void R3BSofMwpcOnlineSpectra::FinishTask()
     }
     if (fHitItemsMwpc)
     {
+        chitx->Write();
+        chity->Write();
         chitxy->Write();
     }
 }
