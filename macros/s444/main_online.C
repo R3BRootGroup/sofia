@@ -55,7 +55,7 @@ void main_online()
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fAms = false;     // AMS tracking detectors
-    Bool_t fCalifa = false;  // Califa calorimeter
+    Bool_t fCalifa = true;  // Califa calorimeter
     Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
@@ -69,10 +69,14 @@ void main_online()
 
     // Calibration files ------------------------------------
     TString caldir = gSystem->Getenv("VMCWORKDIR");
-    // SOFIA detectors
+    // Parameters for SOFIA detectors
     TString sofiacaldir = caldir + "/sofia/macros/s444/parameters/";
     TString sofiacalfilename = sofiacaldir + "CalibParam.par";
     sofiacalfilename.ReplaceAll("//", "/");
+    // Parameters for CALIFA
+    TString califamapdir = caldir + "/sofia/macros/s444/parameters/";
+    TString califamapfilename = califamapdir + "CALIFA_mapping.par";
+    califamapfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -173,9 +177,19 @@ void main_online()
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
     FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii
-    parIo1->open(sofiacalfilename, "in");
-    rtdb->setFirstInput(parIo1);
-    rtdb->print();
+    if(!fCalifa){
+     parIo1->open(sofiacalfilename, "in");
+     rtdb->setFirstInput(parIo1);
+     rtdb->print();
+    }
+    else{
+     TList* parList1 = new TList();
+     parList1->Add(new TObjString(sofiacalfilename));
+     parList1->Add(new TObjString(califamapfilename));
+     parIo1->open(parList1);
+     rtdb->setFirstInput(parIo1);
+     rtdb->print();
+    }
 
     // Add analysis task ------------------------------------
     // MWPC0
@@ -226,19 +240,16 @@ void main_online()
     }
 
     // CALIFA
-    if (fCalifa)
+    if (fCalifa)//FIXME
     {
         // R3BCalifaMapped2CrystalCal
         R3BCalifaMapped2CrystalCal* CalifaMap2Cal = new R3BCalifaMapped2CrystalCal();
         CalifaMap2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(CalifaMap2Cal);
-        // R3BCalifaCrystalCal2Hit FIXME
-        /*      R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
-                CalifaCal2Hit->SelectGeometryVersion(444);
-                CalifaCal2Hit->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter] 
-                CalifaCal2Hit->SetDetectionThreshold(200);     // 200 KeV CalifaCal2Hit->SetDRThreshold(15000);// 15 MeV 
-                run->AddTask(CalifaCal2Hit);
-        */
+        //run->AddTask(CalifaMap2Cal);
+        // R3BCalifaCrystalCal2Hit
+        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
+        CalifaCal2Hit->SetDRThreshold(200);     // 200 KeV CalifaCal2Hit->SetDRThreshold(15000);// 15 MeV 
+        //run->AddTask(CalifaCal2Hit);
     }
 
     // MWPC1
@@ -322,10 +333,8 @@ void main_online()
 
     if (fCalifa)
     {
-        Int_t petals = 8; // FIXME with the last version!!
         R3BCalifaOnlineSpectra* CalifaOnline = new R3BCalifaOnlineSpectra();
-        CalifaOnline->SetPetals(petals);
-        CalifaOnline->SetRange_max(10000); // 10MeV
+        //CalifaOnline->SetRange_max(10000); // 10MeV
         run->AddTask(CalifaOnline);
     }
 

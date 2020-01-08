@@ -11,7 +11,7 @@ ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/musicData
 ${R3BROOT_SOURCE_DIR}/music
 ${R3BROOT_SOURCE_DIR}/tracker/unpackams
-${R3BROOT_SOURCE_DIR}/califa/unpack
+${R3BROOT_SOURCE_DIR}/califa
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
