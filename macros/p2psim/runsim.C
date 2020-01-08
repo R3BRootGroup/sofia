@@ -21,7 +21,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fUserPList = false;      // Use of R3B special physics list
     Bool_t fR3BMagnet = true;       // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
-    Bool_t fCalifaHitFinder = false; // Apply hit finder task
+    Bool_t fCalifaHitFinder = true; // Apply hit finder task
 
     // MonteCarlo engine: TGeant3, TGeant4, TFluka
     TString fMC = "TGeant4";
@@ -42,13 +42,13 @@ void runsim(Int_t nEvents = 0)
     // ---------------  Detector selection: true - false ----------------------
     // ---- R3B and SOFIA detectors as well as passive elements
 
-    Bool_t fR3BMusic = true;// R3B Music Detector
+    Bool_t fR3BMusic = true; // R3B Music Detector
     TString fR3BMusicGeo = "music_s467.geo.root";
 
-    Bool_t fMwpc0 = true;  // MWPC0 Detector
+    Bool_t fMwpc0 = true; // MWPC0 Detector
     TString fMwpc0Geo = "mwpc_0.geo.root";
 
-    Bool_t fTracker = true;// AMS-Tracker + Vacuum chamber + LH2 target
+    Bool_t fTracker = true; // AMS-Tracker + Vacuum chamber + LH2 target
     TString fTrackerGeo = "targetvacuumchamber_ams_s455.geo.root";
 
     Bool_t fCalifa = true; // Califa Calorimeter

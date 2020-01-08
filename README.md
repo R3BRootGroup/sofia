@@ -42,10 +42,13 @@ make -j4
 cd %BUILD_DIRECTORY_FOR_SOFIA%
 . ./config.sh
 cd ../sofia/macros/coulexsim/
-root -l run_sim.C
+root -l 
+.L run_sim.C
+run_sim(100)
 ~~~
+where 100 is the number of events.
 
-This will create output file `sofiasim.root` with the simulation results and parameter file `sofiapar.root` with geometry and magnetic field parameters.
+This will create output file `sim.root` with the simulation results and parameter file `par.root` with geometry and magnetic field parameters.
 
 After the simulation run:
 
@@ -62,7 +65,7 @@ root -l sim.root
 [] evt->StartViewer();
 ~~~
 
-3. To convert the MC results into detector-like signals and open the output file:
+3. To convert the MC results into detector-like signals and open the output file: (not yet!)
 
 ~~~bash
 root -l run_digi.C
@@ -71,17 +74,32 @@ root -l sofiahits.root
 [] evt->StartViewer();
 ~~~
 
-# Data Analysis
+# Data Analysis (ongoing work)
 
 Data analysis is included inside the sofia directory. You can find the subdirectories :
 
 ### sofdata
 
-This directory contains all the data containers for the different levels of the detection system
+This directory contains all the data containers for the different levels of the detection system.
 
 ### sofsource
 
-This directory contains all the readers 
+This directory contains all the readers related to SOFIA detectors :
+
+- R3BSofMwpcReader for the MWPC tracking detectors
+- R3BSofTrimReader for the triple ionization chamber
+- R3BSofSciReader for the plastic scintillator located at the FRS and at the entrance of Cave-C (Start)
+- R3BSofTwimReader for the double ionization chamber located in front of target
+- R3BSofToFWReader for the large area ToF-Wall located behind GLAD
+
+and UCESB data structures :
+- ext_h101_sofmwpc.h
+- ext_h101_softrim.h
+- ext_h101_sofsci.h
+- ext_h101_softwim.h
+- ext_h101_softofw.h
+
+that allow to get data at mapped level (raw data of each detector).
 
 ### some details of the sofia set-up
 
