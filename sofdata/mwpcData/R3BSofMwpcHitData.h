@@ -29,6 +29,7 @@ class R3BSofMwpcHitData : public TObject
   protected:
     Double_t fX, fY;
 
+  public:
     ClassDef(R3BSofMwpcHitData, 1)
 };
 

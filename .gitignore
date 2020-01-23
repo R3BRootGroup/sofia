@@ -1,5 +1,7 @@
 *~
 *.d
-macros/SofMacrosOutput
+macros/
 core*
 *.root
+*.par
+*.txt

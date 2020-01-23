@@ -106,6 +106,17 @@ InitStatus R3BSofMwpcCorrelationOnlineSpectra::Init()
         return kFATAL;
     }
 
+    // get access to hit data of mwpcs
+    fHitItemsMwpc1 = (TClonesArray*)mgr->GetObject(fNameDet1 + "HitData");
+    if (!fHitItemsMwpc1)
+        LOG(WARNING) << "R3BSof" + fNameDet1 + "vs" + fNameDet2 + "CorrelationOnlineSpectra: " + fNameDet1 +
+                            "HitData not found";
+
+    fHitItemsMwpc2 = (TClonesArray*)mgr->GetObject(fNameDet2 + "HitData");
+    if (!fHitItemsMwpc2)
+        LOG(WARNING) << "R3BSof" + fNameDet1 + "vs" + fNameDet2 + "CorrelationOnlineSpectra: " + fNameDet1 +
+                            "HitData not found";
+
     // Create histograms for detectors
     TString Name1;
     TString Name2;
@@ -151,10 +162,52 @@ InitStatus R3BSofMwpcCorrelationOnlineSpectra::Init()
     cMWPCCal2D->cd(2);
     fh2_mwpc_caly->Draw("col");
 
+    cMWPCHit2D =
+        new TCanvas(fNameDet1 + "-" + fNameDet2 + "_hit", fNameDet1 + "-" + fNameDet2 + " hit info", 10, 10, 800, 700);
+    cMWPCHit2D->Divide(2, 1);
+
+    // MWPC: Hit data
+    Name1 = "fh2_" + fNameDet1 + "-" + fNameDet2 + "_hitx";
+    Name2 = "Position-X: " + fNameDet1 + " vs " + fNameDet2;
+    if (fNameDet2 != "Mwpc3")
+        fh2_mwpc_hitx = new TH2F(Name1, Name2, 400, -100., 100., 400, -100., 100.);
+    else
+        fh2_mwpc_hitx = new TH2F(Name1, Name2, 400, -100., 100., 900, -450, 450);
+    fh2_mwpc_hitx->GetXaxis()->SetTitle(fNameDet1 + "-X [mm]");
+    fh2_mwpc_hitx->GetYaxis()->SetTitle(fNameDet2 + "-X [mm]");
+    fh2_mwpc_hitx->GetYaxis()->SetTitleOffset(1.1);
+    fh2_mwpc_hitx->GetXaxis()->CenterTitle(true);
+    fh2_mwpc_hitx->GetYaxis()->CenterTitle(true);
+    fh2_mwpc_hitx->GetXaxis()->SetLabelSize(0.045);
+    fh2_mwpc_hitx->GetXaxis()->SetTitleSize(0.045);
+    fh2_mwpc_hitx->GetYaxis()->SetLabelSize(0.045);
+    fh2_mwpc_hitx->GetYaxis()->SetTitleSize(0.045);
+    cMWPCHit2D->cd(1);
+    fh2_mwpc_hitx->Draw("col");
+
+    Name1 = "fh2_" + fNameDet1 + "-" + fNameDet2 + "_hity";
+    Name2 = "Position-Y: " + fNameDet1 + " vs " + fNameDet2;
+    if (fNameDet2 != "Mwpc3")
+        fh2_mwpc_hity = new TH2F(Name1, Name2, 400, -100., 100., 400, -100., 100.);
+    else
+        fh2_mwpc_hity = new TH2F(Name1, Name2, 400, -100., 100., 600, -300., 300.);
+    fh2_mwpc_hity->GetXaxis()->SetTitle(fNameDet1 + "-Y [mm]");
+    fh2_mwpc_hity->GetYaxis()->SetTitle(fNameDet2 + "-Y [mm]");
+    fh2_mwpc_hity->GetYaxis()->SetTitleOffset(1.1);
+    fh2_mwpc_hity->GetXaxis()->CenterTitle(true);
+    fh2_mwpc_hity->GetYaxis()->CenterTitle(true);
+    fh2_mwpc_hity->GetXaxis()->SetLabelSize(0.045);
+    fh2_mwpc_hity->GetXaxis()->SetTitleSize(0.045);
+    fh2_mwpc_hity->GetYaxis()->SetLabelSize(0.045);
+    fh2_mwpc_hity->GetYaxis()->SetTitleSize(0.045);
+    cMWPCHit2D->cd(2);
+    fh2_mwpc_hity->Draw("col");
+
     // MAIN FOLDER
     TFolder* mainfolMW = new TFolder(fNameDet1 + "-" + fNameDet2, fNameDet1 + "-" + fNameDet2 + " info");
     mainfolMW->Add(cMWPCCal2D);
-    // mainfolMW->Add(cMWPCHit2D);
+    if (fHitItemsMwpc1 && fHitItemsMwpc2)
+        mainfolMW->Add(cMWPCHit2D);
     run->AddObject(mainfolMW);
 
     // Register command to reset histograms
@@ -170,9 +223,13 @@ void R3BSofMwpcCorrelationOnlineSpectra::Reset_Histo()
     // Cal data
     fh2_mwpc_calx->Reset();
     fh2_mwpc_caly->Reset();
+
     // Hit data
-    fh2_mwpc_hitx->Reset();
-    fh2_mwpc_hity->Reset();
+    if (fHitItemsMwpc1 && fHitItemsMwpc2)
+    {
+        fh2_mwpc_hitx->Reset();
+        fh2_mwpc_hity->Reset();
+    }
 }
 
 void R3BSofMwpcCorrelationOnlineSpectra::Exec(Option_t* option)
@@ -240,6 +297,37 @@ void R3BSofMwpcCorrelationOnlineSpectra::Exec(Option_t* option)
             fh2_mwpc_calx->Fill(maxpadx1 + gRandom->Uniform(-0.5, 0.5), maxpadx2 + gRandom->Uniform(-0.5, 0.5));
         if (maxpady1 > -1 && maxpady2 > -1)
             fh2_mwpc_caly->Fill(maxpady1 + gRandom->Uniform(-0.5, 0.5), maxpady2 + gRandom->Uniform(-0.5, 0.5));
+    }
+
+    // Fill Hit data
+    if (fHitItemsMwpc1 && fHitItemsMwpc1->GetEntriesFast() > 0 && fHitItemsMwpc2 &&
+        fHitItemsMwpc2->GetEntriesFast() > 0)
+    {
+        Double_t mw1x = -500., mw1y = -500., mw2x = -500., mw2y = -500.;
+        Int_t nHits1 = fHitItemsMwpc1->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits1; ihit++)
+        {
+            R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fHitItemsMwpc1->At(ihit);
+            if (!hit)
+                continue;
+            mw1x = hit->GetX();
+            mw1y = hit->GetY();
+        }
+
+        Int_t nHits2 = fHitItemsMwpc2->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits2; ihit++)
+        {
+            R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fHitItemsMwpc2->At(ihit);
+            if (!hit)
+                continue;
+            mw2x = hit->GetX();
+            mw2y = hit->GetY();
+        }
+        if (mw1x > -500. && mw1y > -500. && mw2x > -500. && mw2y > -500.)
+        {
+            fh2_mwpc_hitx->Fill(mw1x, mw2x);
+            fh2_mwpc_hity->Fill(mw1y, mw2y);
+        }
     }
 
     fNEvents += 1;

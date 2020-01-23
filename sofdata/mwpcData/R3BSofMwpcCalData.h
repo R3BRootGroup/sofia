@@ -36,6 +36,7 @@ class R3BSofMwpcCalData : public TObject
     UShort_t fPad;
     UShort_t fCharge;
 
+  public:
     ClassDef(R3BSofMwpcCalData, 1)
 };
 

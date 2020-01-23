@@ -115,7 +115,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TH1D* fh1_RawTof_AtTcalMult1[NbDets];
 
     // Histograms for EneRaw
-    TH1D* fh1_EneRaw[NbDets*NbChs];
+    TH1D* fh1_EneRaw[NbDets * NbChs];
 
     // Histograms for Twim vs ToFraw
     TH2F* fh2_Twim_Tof[NbDets];

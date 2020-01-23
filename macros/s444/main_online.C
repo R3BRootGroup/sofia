@@ -1,6 +1,11 @@
 /*
  *  Macro to run the online for all the detectors simultaneously
  *
+ *  One needs to set up the 2020 experiments: s444 or s467, the unpackers are:
+ *
+ *  at $UCESB_DIR/../upexps/202002_s444 and $UCESB_DIR/../upexps/202002_s467
+ *
+ *
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
  *  @since Jan 6th, 2020
  *
@@ -28,13 +33,17 @@ void main_online()
     const Int_t nev = -1; // Only nev events to read
     const Int_t fRunId = 1;
 
+    const Int_t expId = 444; // select experiment: 444 or 467
+
     // Create input -----------------------------------------
-     TString filename = "--stream=lxir123:7803";
+    TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    // TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
+    //TString filename = "~/lmd/califa2020/data_0041.lmd";
+    //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
+    Bool_t Cal_level_califa = false;   // set true if there exists a file with the calibration parameters
     Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
     Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = false;    // if true, don't store hit data in the root file
@@ -46,16 +55,32 @@ void main_online()
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
-    TString ucesb_path = "/u/land/lynx.landexp/201911_eng/upexps/201911_eng2/201911_eng2 --allow-errors --input-buffer=100Mi";
-    //TString ucesb_path = ucesb_dir + "/../upexps/201911_eng2/201911_eng2 --allow-errors --input-buffer=100Mi";
+    TString upexps_dir = ucesb_dir + "/../upexps/";
+    TString ucesb_path;
+    if (expId == 444)
+    {
+        ucesb_path = "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
+    }
+    else if (expId == 467)
+    {
+        ucesb_path = "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        //ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+    }
+    else
+    {
+        std::cout << "Experiment was not selected!" << std::endl;
+        gApplication->Terminate();
+    }
     ucesb_path.ReplaceAll("//", "/");
 
     // Setup: Selection of detectors ------------------------
+    Bool_t fFrs = false;     // FRS for production of exotic beams
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fAms = false;     // AMS tracking detectors
-    Bool_t fCalifa = true;  // Califa calorimeter
+    Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
@@ -68,15 +93,19 @@ void main_online()
     const Int_t NLnPlanes = 16;       // NeuLAND: number of planes (for TCAL calibration)
 
     // Calibration files ------------------------------------
-    TString caldir = gSystem->Getenv("VMCWORKDIR");
+    TString dir = gSystem->Getenv("VMCWORKDIR");
     // Parameters for SOFIA detectors
-    TString sofiacaldir = caldir + "/sofia/macros/s444/parameters/";
+    TString sofiacaldir = dir + "/sofia/macros/s444/parameters/";
     TString sofiacalfilename = sofiacaldir + "CalibParam.par";
     sofiacalfilename.ReplaceAll("//", "/");
-    // Parameters for CALIFA
-    TString califamapdir = caldir + "/sofia/macros/s444/parameters/";
+    // Parameters for CALIFA mapping
+    TString califamapdir = dir + "/macros/r3b/unpack/s467/califa/parameters/";
     TString califamapfilename = califamapdir + "CALIFA_mapping.par";
     califamapfilename.ReplaceAll("//", "/");
+    // Parameters for CALIFA calibration in keV
+    TString califadir = dir + "/macros/r3b/unpack/s467/califa/parameters/";
+    TString califacalfilename = califadir + "Califa_CalibParamFeb2020.root";
+    califacalfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -177,18 +206,35 @@ void main_online()
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
     FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii
-    if(!fCalifa){
-     parIo1->open(sofiacalfilename, "in");
-     rtdb->setFirstInput(parIo1);
-     rtdb->print();
+    if (!fCalifa)
+    {
+        parIo1->open(sofiacalfilename, "in");
+        rtdb->setFirstInput(parIo1);
+        rtdb->print();
     }
-    else{
-     TList* parList1 = new TList();
-     parList1->Add(new TObjString(sofiacalfilename));
-     parList1->Add(new TObjString(califamapfilename));
-     parIo1->open(parList1);
-     rtdb->setFirstInput(parIo1);
-     rtdb->print();
+    else
+    {
+        if (!Cal_level_califa)
+        {   // SOFIA and CALIFA mapping: Ascii files
+            TList* parList1 = new TList();
+            parList1->Add(new TObjString(sofiacalfilename));
+            parList1->Add(new TObjString(califamapfilename));
+            parIo1->open(parList1);
+            rtdb->setFirstInput(parIo1);
+            rtdb->print();
+        }
+        else
+        {   // SOFIA, CALIFA mapping and CALIFA calibration parameters
+            parIo1->open(sofiacalfilename, "in"); // Ascii file
+            rtdb->setFirstInput(parIo1);
+            rtdb->print();
+            Bool_t kParameterMerged = kFALSE;
+            FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged); // Root file
+            TList *parList2 = new TList();
+            parList2->Add(new TObjString(califacalfilename));
+            parIo2->open(parList2);
+            rtdb->setSecondInput(parIo2);
+        }
     }
 
     // Add analysis task ------------------------------------
@@ -228,6 +274,13 @@ void main_online()
         run->AddTask(SofSciTcal2STcal);
     }
 
+    // FRS
+    if (fMwpc0 && fSci && fMusic && fFrs)
+    {
+        R3BSofFrsAnalysis* FrsAna = new R3BSofFrsAnalysis();
+        run->AddTask(FrsAna);
+    }
+
     // AMS
     if (fAms)
     {
@@ -240,16 +293,17 @@ void main_online()
     }
 
     // CALIFA
-    if (fCalifa)//FIXME
+    if (fCalifa) // FIXME
     {
-        // R3BCalifaMapped2CrystalCal
+        // R3BCalifaMapped2CrystalCal ---
         R3BCalifaMapped2CrystalCal* CalifaMap2Cal = new R3BCalifaMapped2CrystalCal();
         CalifaMap2Cal->SetOnline(NOTstorecaldata);
-        //run->AddTask(CalifaMap2Cal);
-        // R3BCalifaCrystalCal2Hit
+        run->AddTask(CalifaMap2Cal);
+        // R3BCalifaCrystalCal2Hit ---
         R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
-        CalifaCal2Hit->SetDRThreshold(200);     // 200 KeV CalifaCal2Hit->SetDRThreshold(15000);// 15 MeV 
-        //run->AddTask(CalifaCal2Hit);
+        //CalifaCal2Hit->SetDRThreshold(200); // 200 KeV
+        CalifaCal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(CalifaCal2Hit);
     }
 
     // MWPC1
@@ -265,7 +319,7 @@ void main_online()
     }
 
     // TWIM
-    if (fSci)
+    if (fTwim)
     {
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
         run->AddTask(TwimMap2Cal);
@@ -307,6 +361,11 @@ void main_online()
     }
 
     // Add online task ------------------------------------
+    if (fFrs && fMusic && fSci)
+    {
+        R3BSofFrsOnlineSpectra* frsonline = new R3BSofFrsOnlineSpectra();
+        run->AddTask(frsonline);
+    }
     if (fMwpc0)
     {
         R3BSofMwpcOnlineSpectra* mw0online = new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra", 1, "Mwpc0");
@@ -334,7 +393,9 @@ void main_online()
     if (fCalifa)
     {
         R3BCalifaOnlineSpectra* CalifaOnline = new R3BCalifaOnlineSpectra();
-        //CalifaOnline->SetRange_max(10000); // 10MeV
+        // CalifaOnline->SetRange_max(10000); // 10MeV
+        CalifaOnline->SetBinChannelFebex(500);
+        CalifaOnline->SetMaxBinFebex(3000);
         run->AddTask(CalifaOnline);
     }
 

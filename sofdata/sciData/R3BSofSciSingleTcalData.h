@@ -21,9 +21,9 @@ class R3BSofSciSingleTcalData : public TObject
     // Getters
     inline const Double_t& GetRawTimeNs(UShort_t det)       const { return fRawTimeNs[det-1]; }
     inline const Double_t& GetRawPosNs(UShort_t det)        const { return fRawPosNs[det-1]; }
-#if NUMBER_OF_DETECTORS==2
+//#if NUMBER_OF_DETECTORS==2
     inline const Double_t& GetRawTofNs()                    const { return fRawTofNs;}
-#endif
+//#endif
     //#if NUMBER_OF_DETECTORS>1
     //inline const Double_t& GetRawTofNs(rank)        const { return fRawTofNs[rank];}
     //#endif
@@ -31,17 +31,17 @@ class R3BSofSciSingleTcalData : public TObject
     // Modifiers
     void SetRawTimeNs(UShort_t det, Double_t time)  {fRawTimeNs[det-1]=time;}
     void SetRawPosNs(UShort_t det, Double_t pos)    {fRawPosNs[det-1]=pos;}
-#if NUMBER_OF_DETECTORS==2
+//#if NUMBER_OF_DETECTORS==2
     void SetRawTofNs(Double_t tof)                  {fRawTofNs=tof;}
-#endif
+//#endif
     void SetMultPerDet(UShort_t det, UShort_t m)    {fMultPerDet[det-1]=m;}
 
   private:
     Double_t fRawTimeNs[NUMBER_OF_DETECTORS];           // 0.5*(Tleft + Tright)
     Double_t fRawPosNs[NUMBER_OF_DETECTORS];            // Tleft - Tright
-#if NUMBER_OF_DETECTORS==2
+//#if NUMBER_OF_DETECTORS==2
     Double_t fRawTofNs;
-#endif
+//#endif
     //#if NUMBER_OF_DETECTORS>1
     //Double_t fRawTofNs[Fact(n)/(Fact(2)*Fact(n-2))]
     //#endif
