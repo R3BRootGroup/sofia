@@ -204,7 +204,7 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh2_mwpc_yq->GetYaxis()->SetTitleSize(0.045);
     fh2_mwpc_yq->Draw("col");
 
-     // Hit data
+    // Hit data
     chitx = new TCanvas(fNameDet + "_Xpos", "", 10, 10, 800, 700);
     Name1 = "fh1_" + fNameDet + "_Xpos";
     Name2 = fNameDet + ": X (mm)";
@@ -223,7 +223,7 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh1_Xpos->GetYaxis()->SetTitleSize(0.045);
     fh1_Xpos->Draw("col");
 
-      // Hit data
+    // Hit data
     chity = new TCanvas(fNameDet + "_Ypos", "", 10, 10, 800, 700);
     Name1 = "fh1_" + fNameDet + "_Ypos";
     Name2 = fNameDet + ": Y (mm)";
@@ -241,7 +241,6 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh1_Ypos->GetYaxis()->SetLabelSize(0.045);
     fh1_Ypos->GetYaxis()->SetTitleSize(0.045);
     fh1_Ypos->Draw("col");
-
 
     // Hit data
     chitxy = new TCanvas(fNameDet + "_XYpos", "", 10, 10, 800, 700);
@@ -268,7 +267,8 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     mainfolMW->Add(cMWPCCal2D);
     mainfolMW->Add(cx);
     mainfolMW->Add(cy);
-    if (fHitItemsMwpc){
+    if (fHitItemsMwpc)
+    {
         mainfolMW->Add(chitx);
         mainfolMW->Add(chity);
         mainfolMW->Add(chitxy);

@@ -349,7 +349,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
 
     // Hit data
     TCanvas* cTwim_Z = new TCanvas("Twim_charge_z", "Twim: Charge Z", 10, 10, 800, 700);
-    fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 1200, 0, 40);
+    fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 1200, 2, 30);
     fh1_Twimhit_z->GetXaxis()->SetTitle("Charge (Z)");
     fh1_Twimhit_z->GetYaxis()->SetTitle("Counts");
     fh1_Twimhit_z->GetYaxis()->SetTitleOffset(1.1);
@@ -359,7 +359,24 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_Twimhit_z->GetXaxis()->SetTitleSize(0.045);
     fh1_Twimhit_z->GetYaxis()->SetLabelSize(0.045);
     fh1_Twimhit_z->GetYaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_z->SetFillColor(29);
+    fh1_Twimhit_z->SetLineColor(1);
     fh1_Twimhit_z->Draw("");
+
+    TCanvas* cTwim_theta = new TCanvas("Twim_theta", "Twim: #theta_{XZ}", 10, 10, 800, 700);
+    fh1_Twimhit_theta = new TH1F("fh1_Twim_theta", "Twim: #theta_{XZ}", 900, -60, 60);
+    fh1_Twimhit_theta->GetXaxis()->SetTitle("#theta_{XZ} [mrad]");
+    fh1_Twimhit_theta->GetYaxis()->SetTitle("Counts");
+    fh1_Twimhit_theta->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Twimhit_theta->GetXaxis()->CenterTitle(true);
+    fh1_Twimhit_theta->GetYaxis()->CenterTitle(true);
+    fh1_Twimhit_theta->GetXaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_theta->GetXaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_theta->GetYaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_theta->GetYaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_theta->SetFillColor(29);
+    fh1_Twimhit_theta->SetLineColor(1);
+    fh1_Twimhit_theta->Draw("");
 
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
@@ -379,7 +396,11 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         mainfolTwim->Add(cTwim_DTvsDT[i]);
     }
     mainfolTwim->Add(cTwimMap_EsumvsDT);
-    mainfolTwim->Add(cTwim_Z);
+    if (fHitItemsTwim)
+    {
+        mainfolTwim->Add(cTwim_Z);
+        mainfolTwim->Add(cTwim_theta);
+    }
     run->AddObject(mainfolTwim);
 
     // Register command to reset histograms
@@ -412,7 +433,11 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     fh1_twim_ESum[1]->Reset();
     fh1_twim_ESum[2]->Reset();
     fh2_twim_ESum->Reset();
-    fh1_Twimhit_z->Reset();
+    if (fHitItemsTwim)
+    {
+        fh1_Twimhit_z->Reset();
+        fh1_Twimhit_theta->Reset();
+    }
 }
 
 void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
@@ -489,6 +514,7 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             fh1_Twimhit_z->Fill(hit->GetZcharge());
+            fh1_Twimhit_theta->Fill(hit->GetTheta());
         }
     }
 
@@ -533,6 +559,7 @@ void R3BSofTwimOnlineSpectra::FinishTask()
     if (fHitItemsTwim)
     {
         fh1_Twimhit_z->Write();
+        fh1_Twimhit_theta->Write();
     }
 }
 

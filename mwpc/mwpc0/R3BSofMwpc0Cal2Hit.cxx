@@ -138,7 +138,7 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
         }
     }
     // Add Hit data ----
-    if (padmx > 1 && padmy > 1 && padmx + 1 < Mw0PadsX && padmy + 1 < Mw0PadsY && qmx > 0 && qleft > 0 && qright > 0)
+    if (padmx > 1 && padmy > 1 && padmx + 1 < Mw0PadsX && padmy + 1 < Mw0PadsY && qmx > 0 && qmy > 0)
     {
         // Obtain position X ----
         qleft = fx[padmx - 1];
@@ -161,9 +161,10 @@ void R3BSofMwpc0Cal2Hit::Exec(Option_t* option)
 // -----   Protected method to obtain the position X ----------------------------
 Double_t R3BSofMwpc0Cal2Hit::GetPostionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright)
 {
-    Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
-    Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
-                                                    (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
+    //Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
+    Double_t a2 =gRandom->Uniform(
+        -fwx / 2, fwx / 2); // (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
+                              //                      (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
 
     return (-1. * padmax * fwx + (fSize / 2) - (fwx / 2) - a2); // Left is positive and right negative
 }
@@ -171,9 +172,10 @@ Double_t R3BSofMwpc0Cal2Hit::GetPostionX(Int_t qmax, Int_t padmax, Int_t qleft, 
 // -----   Protected method to obtain the position Y ----------------------------
 Double_t R3BSofMwpc0Cal2Hit::GetPostionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup)
 {
-    Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
-    Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
-                                                    (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
+    //Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
+    Double_t a2 =gRandom->Uniform(
+        -fwy / 2, fwy / 2); // (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
+                              //                      (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
 
     return (padmax * fwy - (fSize / 2) + (fwy / 2) + a2);
 }

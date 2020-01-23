@@ -14,6 +14,7 @@
 #include "R3BEventHeader.h"
 #include "R3BMusicOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
+#include "R3BSofFrsOnlineSpectra.h"
 #include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofToFWOnlineSpectra.h"
@@ -59,6 +60,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
     , fCalifaOnline(NULL)
+    , fFrsOnline(NULL)
     , fNEvents(0)
 {
 }
@@ -77,6 +79,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
     , fCalifaOnline(NULL)
+    , fFrsOnline(NULL)
     , fNEvents(0)
 {
 }
@@ -110,6 +113,10 @@ InitStatus R3BSofOnlineSpectra::Init()
     fMwpc0Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0OnlineSpectra");
     if (!fMwpc0Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::Init SofMwpc0OnlineSpectra not found";
+
+    fFrsOnline = (R3BSofFrsOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofFrsOnlineSpectra");
+    if (!fFrsOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init SofFrsOnlineSpectra not found";
 
     // Looking for Mwpc1 online
     fMwpc1Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1OnlineSpectra");
@@ -220,6 +227,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Califa histograms if they exist somewhere
     if (fCalifaOnline)
         fCalifaOnline->Reset_CALIFA_Histo();
+    // Reset FRS histograms if they exist somewhere
+    if (fFrsOnline)
+        fFrsOnline->Reset_Histo();
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option)

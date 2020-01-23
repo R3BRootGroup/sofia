@@ -1,11 +1,11 @@
 // ------------------------------------------------------------
-// -----                  R3BSofOnlineSpectra             -----
-// -----    Created 29/09/19  by J.L. Rodriguez-Sanchez   -----
-// -----           Fill SOFIA online histograms           -----
+// -----                  R3BSofFrsOnlineSpectra          -----
+// -----    Created 28/01/20  by J.L. Rodriguez-Sanchez   -----
+// -----           Fill FRS online histograms             -----
 // ------------------------------------------------------------
 
-#ifndef R3BSofOnlineSpectra_H
-#define R3BSofOnlineSpectra_H
+#ifndef R3BSofFrsOnlineSpectra_H
+#define R3BSofFrsOnlineSpectra_H
 
 #include "FairTask.h"
 #include "TCanvas.h"
@@ -20,20 +20,11 @@
 
 class TClonesArray;
 class R3BEventHeader;
-class R3BSofAtOnlineSpectra;
-class R3BSofMwpcOnlineSpectra;
-class R3BSofTwimOnlineSpectra;
-class R3BSofSciOnlineSpectra;
-class R3BSofToFWOnlineSpectra;
-class R3BMusicOnlineSpectra;
-class R3BAmsOnlineSpectra;
-class R3BCalifaOnlineSpectra;
-class R3BSofFrsOnlineSpectra;
 
 /**
- * This taks reads General SOFIA data and plots online histograms
+ * This taks reads FRS data and plots online histograms
  */
-class R3BSofOnlineSpectra : public FairTask
+class R3BSofFrsOnlineSpectra : public FairTask
 {
 
   public:
@@ -41,7 +32,7 @@ class R3BSofOnlineSpectra : public FairTask
      * Default constructor.
      * Creates an instance of the task with default parameters.
      */
-    R3BSofOnlineSpectra();
+    R3BSofFrsOnlineSpectra();
 
     /**
      * Standard constructor.
@@ -49,13 +40,13 @@ class R3BSofOnlineSpectra : public FairTask
      * @param name a name of the task.
      * @param iVerbose a verbosity level.
      */
-    R3BSofOnlineSpectra(const TString& name, Int_t iVerbose = 1);
+    R3BSofFrsOnlineSpectra(const TString& name, Int_t iVerbose = 1);
 
     /**
      * Destructor.
      * Frees the memory used by the object.
      */
-    virtual ~R3BSofOnlineSpectra();
+    virtual ~R3BSofFrsOnlineSpectra();
 
     /**
      * Method for task initialization.
@@ -88,37 +79,27 @@ class R3BSofOnlineSpectra : public FairTask
     /**
      * Methods to clean histograms.
      */
-    virtual void Reset_GENERAL_Histo();
+    virtual void Reset_Histo();
 
   private:
-    //  TClonesArray* fMappedItemsWR;         /**< Array with mapped items.*/
+    TClonesArray* fHitItemsFrs; /**< Array with hit items. */
 
     // check for trigger should be done globablly (somewhere else)
-    R3BEventHeader* fEventHeader; /**< Event header.      */
-    Int_t fTrigger;               /**< Trigger value.     */
-    Int_t fNEvents;               /**< Event counter.     */
-
-    R3BSofAtOnlineSpectra* fAtOnline;
-    R3BSofMwpcOnlineSpectra* fMwpc0Online;
-    R3BSofMwpcOnlineSpectra* fMwpc1Online;
-    R3BSofMwpcOnlineSpectra* fMwpc2Online;
-    R3BSofMwpcOnlineSpectra* fMwpc3Online;
-    R3BSofTwimOnlineSpectra* fTwimOnline;
-    R3BSofSciOnlineSpectra* fSciOnline;
-    R3BSofToFWOnlineSpectra* fToFWOnline;
-    R3BMusicOnlineSpectra* fMusicOnline;
-    R3BAmsOnlineSpectra* fAmsOnline;
-    R3BCalifaOnlineSpectra* fCalifaOnline;
-    R3BSofFrsOnlineSpectra* fFrsOnline;
+    R3BEventHeader* header; /**< Event header.      */
+    Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
-    TCanvas *cTrigger, *cWr;
+    TCanvas* cBeta;
+    TCanvas* cBrho;
+    TCanvas* cAqvsq;
 
-    // Unpack
-    TH1F *fh1_trigger, *fh1_wr;
+    // Histograms for Hit data
+    TH1F* fh1_beta;
+    TH1F* fh1_brho;
+    TH2F* fh2_Aqvsq;
 
   public:
-    ClassDef(R3BSofOnlineSpectra, 0)
+    ClassDef(R3BSofFrsOnlineSpectra, 1)
 };
 
 #endif

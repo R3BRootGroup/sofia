@@ -34,6 +34,7 @@ class R3BSofMwpcMappedData : public TObject
     UShort_t fPad;
     UShort_t fCharge;
 
+  public:
     ClassDef(R3BSofMwpcMappedData, 1)
 };
 

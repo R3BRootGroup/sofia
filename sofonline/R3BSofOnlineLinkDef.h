@@ -1,3 +1,5 @@
+// clang-format off
+
 #ifdef __CINT__
 
 #pragma link off all globals;
@@ -11,5 +13,6 @@
 #pragma link C++ class R3BSofTwimOnlineSpectra + ;
 #pragma link C++ class R3BSofSciOnlineSpectra + ;
 #pragma link C++ class R3BSofToFWOnlineSpectra + ;
+#pragma link C++ class R3BSofFrsOnlineSpectra + ;
 
 #endif

@@ -23,5 +23,6 @@ add_subdirectory (twim)
 add_subdirectory (at)
 add_subdirectory (mwpc)
 add_subdirectory (sofonline)
+add_subdirectory (sofana)
 add_subdirectory (macros)
 

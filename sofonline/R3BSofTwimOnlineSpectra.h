@@ -114,6 +114,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
 
     // Histograms for Hit data
     TH1F* fh1_Twimhit_z;
+    TH1F* fh1_Twimhit_theta;
 
     // Histograms for Cal data
 
