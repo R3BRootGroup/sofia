@@ -38,4 +38,6 @@
 #pragma link C++ class R3BSofFrsData + ;
 #pragma link C++ class R3BSofTrackingData + ;
 
+#pragma link C++ class R3BSofScalersMappedData + ;
+
 #endif
