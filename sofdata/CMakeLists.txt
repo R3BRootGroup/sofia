@@ -16,6 +16,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/twimData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
+${R3BSOF_SOURCE_DIR}/sofdata/scalersData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -49,6 +50,7 @@ twimData/R3BSofTwimHitData.cxx
 trimData/R3BSofTrimMappedData.cxx
 frsData/R3BSofFrsData.cxx
 trackingData/R3BSofTrackingData.cxx
+scalersData/R3BSofScalersMappedData.cxx
 )
 
 
