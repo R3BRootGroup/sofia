@@ -21,6 +21,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_CALIFA_t califa;
     EXT_STR_h101_SOFTWIM_onion_t twim;
     EXT_STR_h101_SOFTOFW_onion_t tofw;
+    EXT_STR_h101_SOFSCALERS_onion_t scalers;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
 } EXT_STR_h101;
 
@@ -39,7 +40,6 @@ void main_online()
     TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
     //TString filename = "~/lmd/califa2020/data_0312.lmd";
-    //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
@@ -82,10 +82,11 @@ void main_online()
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
-    Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
-    Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
-    Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fMwpc2 = false;    // MWPC2 for tracking of fragments before GLAD
+    Bool_t fTwim = false;     // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc3 = false;    // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fTofW = false;     // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fScalers = true;  // SIS3820 scalers at Cave C
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
     Bool_t fTracking= false; // Tracking of fragments inside GLAD
 
@@ -126,6 +127,7 @@ void main_online()
     R3BSofMwpcReader* unpackmwpc;
     R3BSofTwimReader* unpacktwim;
     R3BSofToFWReader* unpacktofw;
+    R3BSofScalersReader* unpackscalers;
     R3BNeulandTamexReader* unpackneuland;
 
     if (fMusic)
@@ -149,6 +151,9 @@ void main_online()
 
     if (fTofW)
         unpacktofw = new R3BSofToFWReader((EXT_STR_h101_SOFTOFW_t*)&ucesb_struct.tofw, offsetof(EXT_STR_h101, tofw));
+
+    if (fScalers)
+	unpackscalers = new R3BSofScalersReader((EXT_STR_h101_SOFSCALERS_t*)&ucesb_struct.scalers,offsetof(EXT_STR_h101, scalers));
 
     if (fNeuland)
         unpackneuland = new R3BNeulandTamexReader((EXT_STR_h101_raw_nnp_tamex_t*)&ucesb_struct.raw_nnp,
@@ -190,6 +195,11 @@ void main_online()
     {
         unpacktofw->SetOnline(NOTstoremappeddata);
         source->AddReader(unpacktofw);
+    }
+    if (fScalers)
+    {
+	unpackscalers->SetOnline(NOTstoremappeddata);
+	source->AddReader(unpackscalers);
     }
     if (fNeuland)
     {
@@ -471,6 +481,11 @@ void main_online()
     {
         R3BSofToFWOnlineSpectra* tofwonline = new R3BSofToFWOnlineSpectra();
         run->AddTask(tofwonline);
+    }
+    if (fScalers)
+    {
+	R3BSofScalersOnlineSpectra* scalersonline = new R3BSofScalersOnlineSpectra();
+        run->AddTask(scalersonline);
     }
 
     if (fTofW && fMwpc3 && fMwpc2 && fTwim && fSci && fTracking)

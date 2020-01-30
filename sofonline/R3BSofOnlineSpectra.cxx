@@ -19,6 +19,7 @@
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofToFWOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
+#include "R3BSofScalersOnlineSpectra.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -57,6 +58,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
     , fToFWOnline(NULL)
+    , fScalersOnline(NULL)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
     , fCalifaOnline(NULL)
@@ -76,6 +78,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
     , fToFWOnline(NULL)
+    , fScalersOnline(NULL)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
     , fCalifaOnline(NULL)
@@ -147,6 +150,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     fToFWOnline = (R3BSofToFWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofToFWOnlineSpectra");
     if (!fToFWOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::Init SofToFWOnlineSpectra not found";
+    
+    // Looking for Scalers online
+    fScalersOnline = (R3BSofScalersOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofScalersOnlineSpectra");
+    if (!fScalersOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::Init SofScalersOnlineSpectra not found";
 
     // Looking for Music online
     fMusicOnline = (R3BMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("R3BMusicOnlineSpectra");
@@ -215,6 +223,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Sci histograms if they exist somewhere
     if (fSciOnline)
         fSciOnline->Reset_Histo();
+    // Reset Scalers histograms if they exist somewhere
+    if (fScalersOnline)
+        fScalersOnline->Reset_Histo();
     // Reset ToFW histograms if they exist somewhere
     if (fToFWOnline)
         fToFWOnline->Reset_Histo();

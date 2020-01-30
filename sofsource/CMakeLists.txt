@@ -15,6 +15,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/trimData
 ${R3BSOF_SOURCE_DIR}/sofdata/twimData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
+${R3BSOF_SOURCE_DIR}/sofdata/scalersData
 )
 
 set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} ${ucesb_LIBRARY_DIR} )
@@ -29,6 +30,7 @@ R3BSofToFWReader.cxx
 R3BSofTwimReader.cxx
 R3BSofTrimReader.cxx
 R3BSofMwpcReader.cxx
+R3BSofScalersReader.cxx
 )
 
 Set(STRUCT_HEADERS
@@ -37,6 +39,7 @@ ext_h101_softofw.h
 ext_h101_softwim.h
 ext_h101_softrim.h
 ext_h101_sofmwpc.h
+ext_h101_sofscalers.h
 )
 
 # fill list of header files from list of source files
