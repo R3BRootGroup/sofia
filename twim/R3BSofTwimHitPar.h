@@ -9,6 +9,7 @@
 #include "FairParGenericSet.h" // for FairParGenericSet
 
 #include "TArrayF.h"
+#include "TArrayI.h"
 #include "TObjArray.h"
 #include "TObject.h"
 #include <TObjString.h>
@@ -41,20 +42,28 @@ class R3BSofTwimHitPar : public FairParGenericSet
 
     /** Accessor functions **/
     const Int_t GetNumSec() { return fNumSec; }
-    const Double_t GetNumParametersFit() { return fNumParamsFit; }
-    TArrayF* GetDetectorHitParams() { return fDetHitParams; }
+    const Int_t GetNumParZFit() { return fNumParamsZFit; }
+    const Int_t GetNumAnodes() { return fNumAnodes; }
+    const Int_t GetInUse(Int_t sec, Int_t anode) { return fIn_use->GetAt((sec - 1) * 16 + anode - 1); }
+    const Float_t GetAnodePos(Int_t anode) { return fAnode_pos->GetAt(anode - 1); }
+    TArrayF* GetZHitPar() { return fDetZHitParams; }
 
     void SetNumSec(Int_t nbsec) { fNumSec = nbsec; }
-    void SetNumParametersFit(Int_t numberParams) { fNumParamsFit = numberParams; }
-    void SetDetectorHitParams(Double_t cc, Int_t ii) { fDetHitParams->AddAt(cc, ii); }
+    void SetNumAnodes(Int_t nbAnodes) { fNumAnodes = nbAnodes; }
+    void SetNumParZFit(Int_t nbParams) { fNumParamsZFit = nbParams; }
+    void SetInUse(Int_t value, Int_t anode) { fIn_use->AddAt(value, anode - 1); }
+    void SetZHitPar(Double_t cc, Int_t ii) { fDetZHitParams->AddAt(cc, ii); }
+    void SetAnodePos(Float_t value, Int_t anode) { fAnode_pos->AddAt(value, anode - 1); }
 
     // Create more Methods if you need them!
 
   private:
-    TArrayF* fDetHitParams; // Calibration Parameters for detector
+    TArrayF* fDetZHitParams; // Calibration Parameters for charge Z
+    TArrayI* fIn_use;        // 1: anode ready, 0:otherwise
+    TArrayF* fAnode_pos;     // Position of each anode along the beam direction
     Int_t fNumSec;
-    Int_t fNumParamsFit; /* number of cal parameters in the fit
-                            gaus: A_fit & B_fit & C_fit*/
+    Int_t fNumAnodes;     // Number of anodes
+    Int_t fNumParamsZFit; // number of hit parameters in the fit for charge Z
 
     const R3BSofTwimHitPar& operator=(const R3BSofTwimHitPar&); /*< an assignment operator>*/
 

@@ -142,10 +142,28 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
     fh2_Aqvsq->GetYaxis()->SetTitleSize(0.045);
     fh2_Aqvsq->Draw("col");
 
+    // Hit data, Xs2_vs_Tof
+    cXs2vsBeta = new TCanvas("Xs2_vs_beta", "Xs2_vs_Beta 2D info", 10, 10, 800, 700);
+
+    Name1 = "fh2_Xs2_vs_beta";
+    Name2 = "FRS: Xs2 vs #beta";
+    fh2_Xs2vsbeta = new TH2F(Name1, Name2, 800, -100., 100., 400, 0.1, 1.01);
+    fh2_Xs2vsbeta->GetXaxis()->SetTitle("X at S2 [mm]");
+    fh2_Xs2vsbeta->GetYaxis()->SetTitle("FRS-#beta");
+    fh2_Xs2vsbeta->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Xs2vsbeta->GetXaxis()->CenterTitle(true);
+    fh2_Xs2vsbeta->GetYaxis()->CenterTitle(true);
+    fh2_Xs2vsbeta->GetXaxis()->SetLabelSize(0.045);
+    fh2_Xs2vsbeta->GetXaxis()->SetTitleSize(0.045);
+    fh2_Xs2vsbeta->GetYaxis()->SetLabelSize(0.045);
+    fh2_Xs2vsbeta->GetYaxis()->SetTitleSize(0.045);
+    fh2_Xs2vsbeta->Draw("col");
+
     // MAIN FOLDER-FRS
     TFolder* mainfol = new TFolder("FRS", "FRS info");
     mainfol->Add(cBeta);
     mainfol->Add(cBrho);
+    mainfol->Add(cXs2vsBeta);
     mainfol->Add(cAqvsq);
     run->AddObject(mainfol);
 
@@ -162,6 +180,7 @@ void R3BSofFrsOnlineSpectra::Reset_Histo()
     fh1_beta->Reset();
     fh1_brho->Reset();
     fh2_Aqvsq->Reset();
+    fh2_Xs2vsbeta->Reset();
 }
 
 void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
@@ -182,6 +201,7 @@ void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
             fh1_beta->Fill(hit->GetBeta());
             fh1_brho->Fill(hit->GetBrho());
             fh2_Aqvsq->Fill(hit->GetAq(), hit->GetZ());
+            fh2_Xs2vsbeta->Fill(hit->GetXS2(), hit->GetBeta());
         }
     }
 
@@ -202,6 +222,7 @@ void R3BSofFrsOnlineSpectra::FinishTask()
     {
         cBeta->Write();
         cBrho->Write();
+        cXs2vsBeta->Write();
         cAqvsq->Write();
     }
 }

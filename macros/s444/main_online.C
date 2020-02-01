@@ -38,7 +38,7 @@ void main_online()
     // Create input -----------------------------------------
     TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/califa2020/data_0041.lmd";
+    //TString filename = "~/lmd/califa2020/data_0312.lmd";
     //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
     // Output file ------------------------------------------
@@ -60,7 +60,7 @@ void main_online()
     if (expId == 444)
     {
         ucesb_path = "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
+        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
     }
     else if (expId == 467)
     {
@@ -293,7 +293,7 @@ void main_online()
     }
 
     // CALIFA
-    if (fCalifa) // FIXME
+    if (fCalifa)
     {
         // R3BCalifaMapped2CrystalCal ---
         R3BCalifaMapped2CrystalCal* CalifaMap2Cal = new R3BCalifaMapped2CrystalCal();
@@ -403,6 +403,12 @@ void main_online()
     {
         R3BSofTwimOnlineSpectra* twonline = new R3BSofTwimOnlineSpectra();
         run->AddTask(twonline);
+      // Twim-Music correlations
+      if (fMusic)
+      {
+        R3BSofTwimvsMusicOnlineSpectra* twmusonline = new R3BSofTwimvsMusicOnlineSpectra();
+        run->AddTask(twmusonline);
+      }
     }
 
     if (fMwpc1)

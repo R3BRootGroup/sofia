@@ -25,10 +25,14 @@
 // R3BSofTwimMapped2Cal: Default Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
     : FairTask("R3BSof Twim Cal Calibrator", 1)
-    , NumSec(1)
-    , NumAnodes(16)
-    , NumParams(0)
+    , fNumSec(MAX_NB_TWIMSEC)
+    , fNumAnodes(MAX_NB_TWIMANODE)   // 16 anodes
+    , fNumAnodesRef(MAX_NB_TWIMTREF) // 1 anode for TREF
+    , fMaxMult(MAX_MULT_TWIM_CAL)
+    , fNumParams(3)
+    , fNumPosParams(2)
     , CalParams(NULL)
+    , PosParams(NULL)
     , fCal_Par(NULL)
     , fTwimMappedDataCA(NULL)
     , fTwimCalDataCA(NULL)
@@ -39,10 +43,14 @@ R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
 // R3BSofTwimMapped2CalPar: Standard Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , NumSec(1)
-    , NumAnodes(16)
-    , NumParams(0)
+    , fNumSec(MAX_NB_TWIMSEC)
+    , fNumAnodes(MAX_NB_TWIMANODE)   // 16 anodes
+    , fNumAnodesRef(MAX_NB_TWIMTREF) // 1 anode for TREF
+    , fMaxMult(MAX_MULT_TWIM_CAL)
+    , fNumParams(3)
+    , fNumPosParams(2)
     , CalParams(NULL)
+    , PosParams(NULL)
     , fCal_Par(NULL)
     , fTwimMappedDataCA(NULL)
     , fTwimCalDataCA(NULL)
@@ -85,18 +93,35 @@ void R3BSofTwimMapped2Cal::SetParameter()
 {
 
     //--- Parameter Container ---
-    NumSec = fCal_Par->GetNumSec();              // Number of sections
-    NumAnodes = fCal_Par->GetNumAnodes();        // Number of anodes per section
-    NumParams = fCal_Par->GetNumParametersFit(); // Number of Parameters
+    fNumSec = fCal_Par->GetNumSec();           // Number of sections
+    fNumAnodes = fCal_Par->GetNumAnodes();     // Number of anodes per section
+    fNumParams = fCal_Par->GetNumParamsEFit(); // Number of Parameters
 
-    LOG(INFO) << "R3BSofTwimMapped2Cal: NumSec: " << NumSec;
-    LOG(INFO) << "R3BSofTwimMapped2Cal: NumAnodes: " << NumAnodes;
-    LOG(INFO) << "R3BSofTwimMapped2Cal: NumParams: " << NumParams;
+    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb sections: " << fNumSec;
+    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb anodes: " << fNumAnodes;
+    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb parameters from pedestal fit: " << fNumParams;
 
     CalParams = new TArrayF();
-    Int_t array_size = (NumSec * NumAnodes) * NumParams;
+    Int_t array_size = (fNumSec * fNumAnodes) * fNumParams;
     CalParams->Set(array_size);
-    CalParams = fCal_Par->GetTwimCalParams(); // Array with the Cal parameters
+    CalParams = fCal_Par->GetAnodeCalParams(); // Array with the Cal parameters
+
+    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb parameters for position fit: " << fNumPosParams;
+    PosParams = new TArrayF();
+    Int_t array_pos = fNumSec * fNumAnodes * fNumPosParams;
+    PosParams->Set(array_pos);
+    PosParams = fCal_Par->GetPosParams(); // Array with the Cal parameters
+
+    // Count the number of dead anodes
+    for (Int_t s = 0; s < fNumSec; s++)
+    {
+        LOG(INFO) << "R3BSofTwimMapped2Cal::Dead anodes in section " << s;
+        Int_t numdeadanodes = 0;
+        for (Int_t i = 0; i < fNumAnodes; i++)
+            if (CalParams->GetAt(s * fNumAnodes * fNumParams + fNumParams * i + 1) == -1)
+                numdeadanodes++;
+        LOG(INFO) << "Nb of dead anodes : " << numdeadanodes;
+    }
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -119,7 +144,7 @@ InitStatus R3BSofTwimMapped2Cal::Init()
 
     // OUTPUT DATA
     // Calibrated data
-    fTwimCalDataCA = new TClonesArray("R3BSofTwimCalData", 10);
+    fTwimCalDataCA = new TClonesArray("R3BSofTwimCalData", MAX_MULT_TWIM_CAL * (fNumAnodes + fNumAnodesRef));
 
     if (!fOnline)
     {
@@ -149,52 +174,71 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
 
     if (!fCal_Par)
     {
-        LOG(ERROR) << "NO Container Parameter!!";
+        LOG(ERROR) << "R3BSofTwimMapped2Cal: NOT Container Parameter!!";
     }
 
     // Reading the Input -- Mapped Data --
     Int_t nHits = fTwimMappedDataCA->GetEntries();
     // if (nHits != (NumSec * NumAnodes) && nHits > 0)
-    //     LOG(WARNING) << "R3BSofTwimMapped2Cal: nHits!=NumSec*NumAnodes"; // FIXME: what happens with multihit ??
+    //     LOG(WARNING) << "R3BSofTwimMapped2Cal: nHits!=NumSec*NumAnodes";
     if (!nHits)
         return;
 
     R3BSofTwimMappedData** mappedData;
     mappedData = new R3BSofTwimMappedData*[nHits];
-    UShort_t secId;
-    UShort_t anodeId;
-    Double_t energy;
+    UShort_t secId = 0;
+    UShort_t anodeId = 0;
     Double_t pedestal = 0.;
-    Double_t dtime = 0.;
 
-    for (Int_t i = 0; i < NumAnodes + NumSec; i++)
-    {
-        fE[i] = 0.;
-        fDT[i] = 0.;
-    }
+    for (Int_t s = 0; s < fNumSec; s++)
+        for (Int_t i = 0; i < (fNumAnodes + fNumAnodesRef); i++)
+        {
+            mulanode[s][i] = 0;
+            for (Int_t j = 0; j < fMaxMult; j++)
+            {
+                fE[s][j][i] = 0.;
+                fDT[s][j][i] = 0.;
+            }
+        }
 
     for (Int_t i = 0; i < nHits; i++)
     {
         mappedData[i] = (R3BSofTwimMappedData*)(fTwimMappedDataCA->At(i));
         secId = mappedData[i]->GetSecID();
         anodeId = mappedData[i]->GetAnodeID();
-        energy = mappedData[i]->GetEnergy() - pedestal; // FIXME
-        dtime = mappedData[i]->GetTime();
 
-        if (fDT[anodeId] == 0)
-            fDT[anodeId] = dtime; // mult=1
-        if (fE[anodeId] == 0)
-            fE[anodeId] = energy; // mult=1
-    }
-
-    for (Int_t i = 0; i < NumAnodes; i++)
-    {
-        // We accept the hit if the energy is larger than zero
-        if (fE[i] > 0)
+        if (anodeId < fNumAnodes && fCal_Par->GetInUse(secId + 1, anodeId + 1) == 1)
         {
-            AddCalData(0, i, fDT[i] - fDT[NumAnodes], fE[i]); // Only one section
+            pedestal = CalParams->GetAt(secId * fNumAnodes * fNumParams + fNumParams * anodeId + 1);
+
+            fE[secId][mulanode[secId][anodeId]][anodeId] = mappedData[i]->GetEnergy() - pedestal;
+            fDT[secId][mulanode[secId][anodeId]][anodeId] = mappedData[i]->GetTime();
+            mulanode[secId][anodeId]++;
+        }
+        else if (anodeId >= fNumAnodes)
+        {
+            fDT[secId][mulanode[secId][anodeId]][anodeId] = mappedData[i]->GetTime(); // Ref. Time
+            mulanode[secId][anodeId]++;
         }
     }
+
+    // Fill data only if there is TREF signal
+    for (Int_t s = 0; s < fNumSec; s++)
+        if (mulanode[s][fNumAnodes] == 1)
+        {
+            for (Int_t i = 0; i < fNumAnodes; i++)
+            {
+                Int_t ii = s * fNumAnodes * fNumPosParams + fNumPosParams * i;
+                Float_t a0 = PosParams->GetAt(ii);
+                Float_t a1 = PosParams->GetAt(ii + 1);
+                for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
+                    for (Int_t k = 0; k < mulanode[s][i]; k++)
+                    {
+                        if (fE[s][k][i] > 0.)
+                            AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes]), fE[s][k][i]);
+                    }
+            }
+        }
 
     if (mappedData)
         delete mappedData;

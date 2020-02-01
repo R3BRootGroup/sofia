@@ -49,7 +49,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
 {
 }
 
-R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const char* name, Int_t iVerbose)
+R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMappedItemsTwim(NULL)
     , fCalItemsTwim(NULL)
@@ -131,6 +131,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
             fh1_twimmap_E[i][j]->GetXaxis()->SetTitleSize(0.045);
             fh1_twimmap_E[i][j]->GetYaxis()->SetLabelSize(0.045);
             fh1_twimmap_E[i][j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_twimmap_E[i][j]->SetFillColor(31);
             cTwimMap_E[i]->cd(j + 1);
             fh1_twimmap_E[i][j]->Draw("");
         }
@@ -239,6 +240,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
             fh1_twimmap_DT[i][j]->GetXaxis()->SetTitleSize(0.045);
             fh1_twimmap_DT[i][j]->GetYaxis()->SetLabelSize(0.045);
             fh1_twimmap_DT[i][j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_twimmap_DT[i][j]->SetFillColor(31);
             cTwimMap_DT[i]->cd(j + 1);
             fh1_twimmap_DT[i][j]->Draw("");
         }
@@ -263,6 +265,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         fh1_Twimmap_mult[i]->GetXaxis()->SetTitleSize(0.045);
         fh1_Twimmap_mult[i]->GetYaxis()->SetLabelSize(0.045);
         fh1_Twimmap_mult[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_Twimmap_mult[i]->SetFillColor(31);
         fh1_Twimmap_mult[i]->Draw("");
     }
 
@@ -280,6 +283,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_twim_ESum[0]->GetXaxis()->SetTitleSize(0.045);
     fh1_twim_ESum[0]->GetYaxis()->SetLabelSize(0.045);
     fh1_twim_ESum[0]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[0]->SetFillColor(31);
     fh1_twim_ESum[0]->Draw("");
     cTwimMap_ESum->cd(2);
     fh1_twim_ESum[1] = new TH1F("fh1_twim_ESum2", "twim:ESum:Second", 8192, 0, 8192);
@@ -292,6 +296,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_twim_ESum[1]->GetXaxis()->SetTitleSize(0.045);
     fh1_twim_ESum[1]->GetYaxis()->SetLabelSize(0.045);
     fh1_twim_ESum[1]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[1]->SetFillColor(31);
     fh1_twim_ESum[1]->Draw("");
 
     // TWIM: Map data for Esum
@@ -306,6 +311,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_twim_ESum[2]->GetXaxis()->SetTitleSize(0.045);
     fh1_twim_ESum[2]->GetYaxis()->SetLabelSize(0.045);
     fh1_twim_ESum[2]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ESum[2]->SetFillColor(31);
     fh1_twim_ESum[2]->Draw("");
 
     // TWIM: Map data for Esum1 vs Esum2
@@ -347,6 +353,37 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         fh2_twim_ESum_vs_diffDT[i]->Draw("col");
     }
 
+    // Cal data, position in mm for each anode
+    for (Int_t i = 0; i < NbSections; i++)
+    {
+        sprintf(Name1, "Twim_Pos-X_Sec_%d", i + 1);
+        sprintf(Name2, "Pos-X in mm section %d", i + 1);
+        cTwimCal_Pos[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimCal_Pos[i]->Divide(4, 4);
+        for (Int_t j = 0; j < NbAnodes; j++)
+        {
+            sprintf(Name1, "fh1_Twim_Sec%d_Pos_a%d", i + 1, j + 1);
+            sprintf(Name2, "Sec %d, Anode %d", i + 1, j + 1);
+            if (i == 0 || i == 3)
+                fh1_Twimcal_Pos[i][j] = new TH1F(Name1, Name2, 500, -50., 90.);
+            else
+                fh1_Twimcal_Pos[i][j] = new TH1F(Name1, Name2, 500, -100., 0.);
+            fh1_Twimcal_Pos[i][j]->GetXaxis()->SetTitle("Position-X [mm]");
+            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetTitle("Counts");
+            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_Twimcal_Pos[i][j]->GetXaxis()->CenterTitle(true);
+            fh1_Twimcal_Pos[i][j]->GetYaxis()->CenterTitle(true);
+            fh1_Twimcal_Pos[i][j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_Twimcal_Pos[i][j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_Twimcal_Pos[i][j]->SetFillColor(31);
+            fh1_Twimcal_Pos[i][j]->SetLineColor(1);
+            cTwimCal_Pos[i]->cd(j + 1);
+            fh1_Twimcal_Pos[i][j]->Draw("");
+        }
+    }
+
     // Hit data
     TCanvas* cTwim_Z = new TCanvas("Twim_charge_z", "Twim: Charge Z", 10, 10, 800, 700);
     fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 1200, 2, 30);
@@ -378,6 +415,20 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_Twimhit_theta->SetLineColor(1);
     fh1_Twimhit_theta->Draw("");
 
+    TCanvas* cTwim_zvstheta = new TCanvas("Twim_charge_vs_theta", "Twim: Charge Z vs #theta_{XZ}", 10, 10, 800, 700);
+    fh2_Twimhit_zvstheta =
+        new TH2F("fh2_Twim_Charge_Z_vs_theta", "Twim: Charge Z vs #theta_{XZ}", 900, -40, 40, 900, 2, 28);
+    fh2_Twimhit_zvstheta->GetXaxis()->SetTitle("#theta_{XZ} [mrad]");
+    fh2_Twimhit_zvstheta->GetYaxis()->SetTitle("Charge (Z)");
+    fh2_Twimhit_zvstheta->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_zvstheta->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_zvstheta->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_zvstheta->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_zvstheta->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_zvstheta->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_zvstheta->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_zvstheta->Draw("col");
+
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
     for (Int_t i = 0; i < NbSections; i++)
@@ -396,10 +447,16 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         mainfolTwim->Add(cTwim_DTvsDT[i]);
     }
     mainfolTwim->Add(cTwimMap_EsumvsDT);
+    if (fCalItemsTwim)
+    {
+        for (Int_t i = 0; i < NbSections; i++)
+            mainfolTwim->Add(cTwimCal_Pos[i]);
+    }
     if (fHitItemsTwim)
     {
         mainfolTwim->Add(cTwim_Z);
         mainfolTwim->Add(cTwim_theta);
+        mainfolTwim->Add(cTwim_zvstheta);
     }
     run->AddObject(mainfolTwim);
 
@@ -433,10 +490,21 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     fh1_twim_ESum[1]->Reset();
     fh1_twim_ESum[2]->Reset();
     fh2_twim_ESum->Reset();
+
+    // Cal data
+    if (fCalItemsTwim)
+    {
+        for (Int_t i = 0; i < NbSections; i++)
+            for (Int_t j = 0; j < NbAnodes; j++)
+                fh1_Twimcal_Pos[i][j]->Reset();
+    }
+
+    // Hit data
     if (fHitItemsTwim)
     {
         fh1_Twimhit_z->Reset();
         fh1_Twimhit_theta->Reset();
+        fh2_Twimhit_zvstheta->Reset();
     }
 }
 
@@ -504,6 +572,19 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
         fh2_twim_ESum->Fill(e1 / n1, e2 / n2);
     }
 
+    // Fill cal data
+    if (fCalItemsTwim && fCalItemsTwim->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fCalItemsTwim->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTwimCalData* hit = (R3BSofTwimCalData*)fCalItemsTwim->At(ihit);
+            if (!hit)
+                continue;
+            fh1_Twimcal_Pos[hit->GetSecID()][hit->GetAnodeID()]->Fill(hit->GetDTime());
+        }
+    }
+
     // Fill hit data
     if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
     {
@@ -514,7 +595,8 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             fh1_Twimhit_z->Fill(hit->GetZcharge());
-            fh1_Twimhit_theta->Fill(hit->GetTheta());
+            fh1_Twimhit_theta->Fill(hit->GetTheta() * 1000.);
+            fh2_Twimhit_zvstheta->Fill(hit->GetTheta() * 1000., hit->GetZcharge());
         }
     }
 
@@ -556,10 +638,16 @@ void R3BSofTwimOnlineSpectra::FinishTask()
         fh1_twim_ESum[2]->Write();
         fh2_twim_ESum->Write();
     }
+    if (fCalItemsTwim)
+    {
+        for (Int_t i = 0; i < NbSections; i++)
+            cTwimCal_Pos[i]->Write();
+    }
     if (fHitItemsTwim)
     {
         fh1_Twimhit_z->Write();
         fh1_Twimhit_theta->Write();
+        fh2_Twimhit_zvstheta->Write();
     }
 }
 

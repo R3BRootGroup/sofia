@@ -13,6 +13,11 @@
 #include "TH1F.h"
 #include <TRandom.h>
 
+#define MAX_MULT_TWIM_CAL 10
+#define MAX_NB_TWIMSEC 1
+#define MAX_NB_TWIMANODE 16
+#define MAX_NB_TWIMTREF 2
+
 class TClonesArray;
 class R3BSofTwimCalPar;
 
@@ -52,11 +57,18 @@ class R3BSofTwimMapped2Cal : public FairTask
   private:
     void SetParameter();
 
-    UShort_t NumSec;
-    UShort_t NumAnodes;
-    UShort_t NumParams;
+    Int_t fNumSec;
+    Int_t fNumAnodes;
+    Int_t fNumParams;
+    Int_t fNumPosParams;
+    Int_t fNumAnodesRef;
+    Int_t fMaxMult;
     TArrayF* CalParams;
-    Int_t fE[16 * 4], fDT[16 * 4];
+    TArrayF* PosParams;
+
+    Int_t mulanode[MAX_NB_TWIMSEC][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
+    Double_t fE[MAX_NB_TWIMSEC][MAX_MULT_TWIM_CAL][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
+    Double_t fDT[MAX_NB_TWIMSEC][MAX_MULT_TWIM_CAL][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
 
     Bool_t fOnline; // Don't store data for online
 
