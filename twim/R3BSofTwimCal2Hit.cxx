@@ -5,8 +5,11 @@
 
 // ROOT headers
 #include "TClonesArray.h"
+#include "TDecompSVD.h"
 #include "TMath.h"
+#include "TMatrixD.h"
 #include "TRandom.h"
+#include "TVectorD.h"
 
 // Fair headers
 #include "FairLogger.h"
@@ -16,7 +19,7 @@
 
 #include <iomanip>
 
-// Music headers
+// Twim headers
 #include "R3BSofTwimCal2Hit.h"
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimHitData.h"
@@ -27,12 +30,15 @@ R3BSofTwimCal2Hit::R3BSofTwimCal2Hit()
     : FairTask("R3BSof Twim Hit Calibrator", 1)
     , fNumSec(1)
     , fNumAnodes(16)
+    , fNumAnodesAngleFit(0)
     , fNumParams(2)
-    , MaxSigma(200)
-    , CalParams(NULL)
+    , CalZParams(NULL)
     , fCal_Par(NULL)
     , fTwimHitDataCA(NULL)
     , fTwimCalDataCA(NULL)
+    , fZ0(0)
+    , fZ1(0)
+    , fZ2(0)
     , fOnline(kFALSE)
 {
 }
@@ -42,12 +48,15 @@ R3BSofTwimCal2Hit::R3BSofTwimCal2Hit(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNumSec(1)
     , fNumAnodes(16)
+    , fNumAnodesAngleFit(0)
     , fNumParams(2)
-    , MaxSigma(200)
-    , CalParams(NULL)
+    , CalZParams(NULL)
     , fCal_Par(NULL)
     , fTwimHitDataCA(NULL)
     , fTwimCalDataCA(NULL)
+    , fZ0(0)
+    , fZ1(0)
+    , fZ2(0)
     , fOnline(kFALSE)
 {
 }
@@ -88,29 +97,47 @@ void R3BSofTwimCal2Hit::SetParameter()
 {
 
     //--- Parameter Container ---
-    fNumSec = fCal_Par->GetNumSec();              // Number of Sections
-    fNumParams = fCal_Par->GetNumParametersFit(); // Number of Parameters
+    fNumSec = fCal_Par->GetNumSec();        // Number of Sections
+    fNumAnodes = fCal_Par->GetNumAnodes();  // Number of anodes
+    fNumParams = fCal_Par->GetNumParZFit(); // Number of Parameters
 
     LOG(INFO) << "R3BSofTwimCal2Hit: Nb sections: " << fNumSec;
-    LOG(INFO) << "R3BSofTwimCal2Hit: Nb parameters from pedestal fit: " << fNumParams;
+    LOG(INFO) << "R3BSofTwimCal2Hit: Nb anodes: " << fNumAnodes;
 
-    for (Int_t i = 0; i < 4; i++)
-        for (Int_t j = 0; j < 16; j++)
-            StatusAnodes[i][j] = 1;
-    // Anodes that don't work
-    StatusAnodes[0][7] = 0;
+    // Anodes that don't work set to zero
+    for (Int_t s = 0; s < fNumSec; s++)
+        for (Int_t i = 0; i < fNumAnodes; i++)
+        {
+            StatusAnodes[s][i] = fCal_Par->GetInUse(s + 1, i + 1);
+        }
 
-    CalParams = new TArrayF();
+    LOG(INFO) << "R3BSofTwimCal2Hit: Nb parameters for charge-Z: " << fNumParams;
+    CalZParams = new TArrayF();
     Int_t array_size = fNumSec * fNumParams;
-    CalParams->Set(array_size);
-    CalParams = fCal_Par->GetDetectorHitParams(); // Array with the Cal parameters
+    CalZParams->Set(array_size);
+    CalZParams = fCal_Par->GetZHitPar(); // Array with the Cal parameters
 
     // Parameters detector
     for (Int_t s = 0; s < fNumSec; s++)
-    {
-        LOG(INFO) << "R3BSofTwimCal2Hit Nb section: " << s + 1 << " Par:" << CalParams->GetAt(s * fNumParams) << " : "
-                  << CalParams->GetAt(s * fNumParams + 1);
-    }
+        // Parameters detector
+        if (fNumParams == 2)
+        {
+            LOG(INFO) << "R3BSofTwimCal2Hit parameters for charge-Z:" << CalZParams->GetAt(0) << " : "
+                      << CalZParams->GetAt(1);
+            fZ0 = CalZParams->GetAt(0);
+            fZ1 = CalZParams->GetAt(1);
+        }
+        else if (fNumParams == 3)
+        {
+            LOG(INFO) << "R3BSofTwimCal2Hit parameters for charge-Z:" << CalZParams->GetAt(0) << " : "
+                      << CalZParams->GetAt(1) << " : " << CalZParams->GetAt(2);
+            fZ0 = CalZParams->GetAt(0);
+            fZ1 = CalZParams->GetAt(1);
+            fZ2 = CalZParams->GetAt(2);
+        }
+        else
+            LOG(INFO) << "R3BSofTwimCal2Hit parameters for charge-Z cannot be used here, number of parameters: "
+                      << fNumParams;
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -173,11 +200,19 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
 
     Int_t secId, anodeId;
     Double_t energyperanode[fNumSec][fNumAnodes];
+    Double_t dt[fNumSec][fNumAnodes];
+    Double_t good_dt[fNumAnodes];
     Int_t nbdet = 0;
 
-    for (Int_t i = 0; i < fNumSec; i++)
-        for (Int_t j = 0; j < fNumAnodes; j++)
+    for (Int_t j = 0; j < fNumAnodes; j++)
+    {
+        good_dt[j] = 0.;
+        for (Int_t i = 0; i < fNumSec; i++)
+        {
             energyperanode[i][j] = 0;
+            dt[i][j] = 0.;
+        }
+    }
 
     for (Int_t i = 0; i < nHits; i++)
     {
@@ -185,27 +220,43 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
         secId = CalDat[i]->GetSecID();
         anodeId = CalDat[i]->GetAnodeID();
         energyperanode[secId][anodeId] = CalDat[i]->GetEnergy();
+        dt[secId][anodeId] = CalDat[i]->GetDTime();
     }
 
-    Double_t nba = 0, a0 = 0., a1 = 0., theta = 0., Esum = 0.;
-
+    Double_t nba = 0, theta = 0., Esum = 0.;
     // calculate truncated dE from 16 anodes, Twim-MUSIC
     for (Int_t i = 0; i < fNumSec; i++)
     {
+        fNumAnodesAngleFit = 0;
         for (Int_t j = 0; j < fNumAnodes; j++)
         {
             if (energyperanode[i][j] > 0. && StatusAnodes[i][j] == 1)
             {
                 Esum = Esum + energyperanode[i][j];
+                good_dt[fNumAnodesAngleFit] = dt[i][j];
+                fPosAnodes[fNumAnodesAngleFit] = fCal_Par->GetAnodePos(j + 1);
+                fNumAnodesAngleFit++;
                 nba++;
             }
         }
 
         if (nba > 0 && (Esum / nba) > 0.)
         {
-            a0 = CalParams->GetAt(i * fNumParams);
-            a1 = CalParams->GetAt(i * fNumParams + 1);
-            Double_t zhit = a0 + a1 * TMath::Sqrt(Esum / nba);
+            if (fNumAnodesAngleFit > 4)
+            {
+                fPosZ.Use(fNumAnodesAngleFit, fPosAnodes);
+                TMatrixD A(fNumAnodesAngleFit, 2);
+                TMatrixDColumn(A, 0) = 1.0;
+                TMatrixDColumn(A, 1) = fPosZ;
+                TDecompSVD svd(A);
+                Bool_t ok;
+                TVectorD dt_r;
+                dt_r.Use(fNumAnodesAngleFit, good_dt);
+                TVectorD c_svd_r = svd.Solve(dt_r, ok);
+                theta = c_svd_r[1];
+            }
+            Double_t zhit =
+                fZ0 + fZ1 * TMath::Sqrt(Esum / nba) + fZ2 * TMath::Sqrt(Esum / nba) * TMath::Sqrt(Esum / nba);
             if (zhit > 0)
                 AddHitData(i, theta, zhit);
         }

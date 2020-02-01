@@ -10,6 +10,7 @@
 #include "FairTask.h"
 #include "R3BSofTwimHitData.h"
 #include "TH1F.h"
+#include "TVectorD.h"
 #include <TRandom.h>
 
 class TClonesArray;
@@ -54,10 +55,13 @@ class R3BSofTwimCal2Hit : public FairTask
 
     Int_t fNumSec; // Number of sections
     Int_t fNumAnodes;
+    Int_t fNumAnodesAngleFit;
     Int_t fNumParams;
-    Int_t MaxSigma;
+    Float_t fZ0, fZ1, fZ2;
     Int_t StatusAnodes[4][16]; // Sections and anodes
-    TArrayF* CalParams;
+    Double_t fPosAnodes[16];   // Position-Z of each anode
+    TArrayF* CalZParams;
+    TVectorD fPosZ;
 
     Bool_t fOnline; // Don't store data for online
 

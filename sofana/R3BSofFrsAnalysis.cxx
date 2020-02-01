@@ -245,7 +245,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
 
     // Fill the data
     if (fZ > 1 && fAq > 0. && Brho_Cave > 0.)
-        AddData(fZ + fOffsetZ, fAq + fOffsetAq, Beta_S2_Cave, Brho_Cave);
+        AddData(fZ + fOffsetZ, fAq + fOffsetAq, Beta_S2_Cave, Brho_Cave, x_pos_s2, x_pos_cave);
 
     if (HitSci)
         delete HitSci;
@@ -268,10 +268,15 @@ void R3BSofFrsAnalysis::Reset()
 }
 
 // -----   Private method AddData  --------------------------------------------
-R3BSofFrsData* R3BSofFrsAnalysis::AddData(Double_t z, Double_t aq, Double_t beta, Double_t brho)
+R3BSofFrsData* R3BSofFrsAnalysis::AddData(Double_t z,
+                                          Double_t aq,
+                                          Double_t beta,
+                                          Double_t brho,
+                                          Double_t xs2,
+                                          Double_t xc)
 {
     // It fills the R3BSofFrsData
     TClonesArray& clref = *fFrsDataCA;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofFrsData(z, aq, beta, brho);
+    return new (clref[size]) R3BSofFrsData(z, aq, beta, brho, xs2, xc);
 }

@@ -11,6 +11,7 @@ ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/tracking
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/twimData
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/twim
 )
@@ -30,6 +31,7 @@ R3BSofTwimCalPar.cxx
 R3BSofTwimHitPar.cxx
 R3BSofTwimMapped2Cal.cxx
 R3BSofTwimCal2Hit.cxx
+R3BSofTwimMapped2CalPar.cxx
 )
 
 # fill list of header files from list of source files

@@ -38,6 +38,7 @@ R3BSofTwimOnlineSpectra.cxx
 R3BSofSciOnlineSpectra.cxx
 R3BSofToFWOnlineSpectra.cxx
 R3BSofFrsOnlineSpectra.cxx
+R3BSofTwimvsMusicOnlineSpectra.cxx
 )
 
 # fill list of header files from list of source files
