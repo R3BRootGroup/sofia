@@ -18,7 +18,6 @@ class R3BSofTwimCalPar;
 
 class R3BSofTwimMapped2CalPar : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTwimMapped2CalPar();

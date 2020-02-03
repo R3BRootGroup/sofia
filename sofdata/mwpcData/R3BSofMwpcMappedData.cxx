@@ -14,7 +14,7 @@ R3BSofMwpcMappedData::R3BSofMwpcMappedData()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofMwpcMappedData::R3BSofMwpcMappedData(UShort_t plane, UShort_t pad, UShort_t charge)
+R3BSofMwpcMappedData::R3BSofMwpcMappedData(Int_t plane, Int_t pad, Int_t charge)
     : fPlane(plane)
     , fPad(pad)
     , fCharge(charge)

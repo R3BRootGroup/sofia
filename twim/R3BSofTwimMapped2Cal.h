@@ -78,7 +78,7 @@ class R3BSofTwimMapped2Cal : public FairTask
 
     /** Private method AddCalData **/
     // Adds a SofTwimCalData to the TwimCalCollection
-    R3BSofTwimCalData* AddCalData(UShort_t secID, UShort_t anodeID, Double_t dtime, Double_t energy);
+    R3BSofTwimCalData* AddCalData(Int_t secID, Int_t anodeID, Double_t dtime, Double_t energy);
 
   public:
     // Class definition

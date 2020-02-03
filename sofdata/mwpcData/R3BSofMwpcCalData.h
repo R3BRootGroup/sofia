@@ -16,25 +16,25 @@ class R3BSofMwpcCalData : public TObject
      *@param pad     Pad number
      *@param charge  Charge of each pad [channels]
      **/
-    R3BSofMwpcCalData(UShort_t plane, UShort_t pad, UShort_t charge);
+    R3BSofMwpcCalData(Int_t plane, Int_t pad, Int_t charge);
 
     /** Destructor **/
     virtual ~R3BSofMwpcCalData() {}
 
     /** Accessors **/
-    inline const UShort_t& GetPlane() const { return fPlane; }
-    inline const UShort_t& GetPad() const { return fPad; }
-    inline const UShort_t& GetQ() const { return fCharge; }
+    inline const Int_t& GetPlane() const { return fPlane; }
+    inline const Int_t& GetPad() const { return fPad; }
+    inline const Int_t& GetQ() const { return fCharge; }
 
     /** Modifiers **/
-    void SetPlane(UShort_t plane) { fPlane = plane; };
-    void SetPad(UShort_t pad) { fPad = pad; };
-    void SetQ(UShort_t charge) { fCharge = charge; };
+    void SetPlane(Int_t plane) { fPlane = plane; };
+    void SetPad(Int_t pad) { fPad = pad; };
+    void SetQ(Int_t charge) { fCharge = charge; };
 
   protected:
-    UShort_t fPlane;
-    UShort_t fPad;
-    UShort_t fCharge;
+    Int_t fPlane;
+    Int_t fPad;
+    Int_t fCharge;
 
   public:
     ClassDef(R3BSofMwpcCalData, 1)

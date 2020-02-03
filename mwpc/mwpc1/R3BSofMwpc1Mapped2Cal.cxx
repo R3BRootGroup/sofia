@@ -163,10 +163,10 @@ void R3BSofMwpc1Mapped2Cal::Exec(Option_t* option)
 
     R3BSofMwpcMappedData** mappedData;
     mappedData = new R3BSofMwpcMappedData*[nHits];
-    UShort_t planeId;
-    UShort_t padId;
-    UShort_t charge;
-    UShort_t pedestal = 0;
+    Int_t planeId;
+    Int_t padId;
+    Int_t charge;
+    Int_t pedestal = 0;
     Int_t nbpad = 0;
 
     for (Int_t i = 0; i < nHits; i++)
@@ -209,7 +209,7 @@ void R3BSofMwpc1Mapped2Cal::Reset()
 }
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BSofMwpcCalData* R3BSofMwpc1Mapped2Cal::AddCalData(UShort_t plane, UShort_t pad, UShort_t charge)
+R3BSofMwpcCalData* R3BSofMwpc1Mapped2Cal::AddCalData(Int_t plane, Int_t pad, Int_t charge)
 {
     // It fills the R3BSofMwpcCalData
     TClonesArray& clref = *fMwpcCalDataCA;

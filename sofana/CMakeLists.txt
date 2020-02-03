@@ -1,4 +1,4 @@
-# Create a library called "libR3BSofOnline" which includes the source files given in
+# Create a library called "libR3BSofAna" which includes the source files given in
 # the array .
 # The extension is already found.  Any number of sources could be listed here.
 
@@ -9,48 +9,37 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/musicData
-${R3BROOT_SOURCE_DIR}/r3bdata/amsData
-${R3BROOT_SOURCE_DIR}/r3bdata/califaData
-${R3BROOT_SOURCE_DIR}/music
-${R3BROOT_SOURCE_DIR}/tracker/unpackams
-${R3BROOT_SOURCE_DIR}/califa
+${R3BROOT_SOURCE_DIR}/tracking
 ${R3BSOF_SOURCE_DIR}/sofdata
-${R3BSOF_SOURCE_DIR}/sofdata/atData
-${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
+${R3BSOF_SOURCE_DIR}/sofana
 ${R3BSOF_SOURCE_DIR}/sofdata/twimData
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
-${R3BSOF_SOURCE_DIR}/sofonline
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
 include_directories(SYSTEM ${SYSTEM_INCLUDE_DIRECTORIES})
 
-set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} ) 
+set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} )
 
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
-R3BSofOnlineSpectra.cxx
-R3BSofMwpcOnlineSpectra.cxx
-R3BSofMwpcCorrelationOnlineSpectra.cxx
-R3BSofAtOnlineSpectra.cxx
-R3BSofTwimOnlineSpectra.cxx
-R3BSofSciOnlineSpectra.cxx
-R3BSofToFWOnlineSpectra.cxx
-R3BSofFrsOnlineSpectra.cxx
-R3BSofTwimvsMusicOnlineSpectra.cxx
-R3BAmsCorrelationOnlineSpectra.cxx
+#Put here your sourcefiles
+R3BSofFrsAnalysis.cxx
+R3BSofFrsAnaPar.cxx
+R3BSofAnaContFact.cxx
 )
 
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
-set(LINKDEF R3BSofOnlineLinkDef.h)
-set(LIBRARY_NAME R3BSofOnline)
+set(LINKDEF SofAnaLinkDef.h)
+set(LIBRARY_NAME R3BSofAna)
 set(DEPENDENCIES
-    Spectrum Base FairTools R3Bbase R3BData)
+    R3Bbase R3BData R3BSofData)
 
 GENERATE_LIBRARY()

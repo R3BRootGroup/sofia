@@ -192,8 +192,8 @@ void R3BSofTwimMapped2CalPar::Exec(Option_t* option)
     }
 
     R3BSofTwimMappedData** mappedData = new R3BSofTwimMappedData*[nHits];
-    UShort_t secId = 0;
-    UShort_t anodeId = 0;
+    Int_t secId = 0;
+    Int_t anodeId = 0;
 
     for (Int_t s = 0; s < fNumSec; s++)
         for (Int_t i = 0; i < (fNumAnodes + fNumAnodesRef); i++)
@@ -239,7 +239,7 @@ void R3BSofTwimMapped2CalPar::Exec(Option_t* option)
                     for (Int_t k = 0; k < mulanode[s][i]; k++)
                     {
                         if (fE[s][k][i] > 0.)
-                        { // Anode is 25mm, first anode is at -187.5mm with respect to the center of music detector
+                        { // Anode is 25mm, first anode is at -187.5mm with respect to the center of twim detector
                             fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
                                                                    fDT[s][k][i] - fDT[s][j][fNumAnodes],
                                                                    fa->Eval(fPosTwim - 187.5 + i * 25.0));

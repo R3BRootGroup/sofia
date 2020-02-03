@@ -19,25 +19,26 @@ class R3BSofTwimHitData : public TObject
      *@param theta    Angle theta in [mrad]
      *@param z        Atomic number Z in charge units
      **/
-    R3BSofTwimHitData(UShort_t secID, Double_t theta, Double_t z);
+    R3BSofTwimHitData(Int_t secID, Double_t theta, Double_t z);
 
     /** Destructor **/
     virtual ~R3BSofTwimHitData() {}
 
     /** Accessors **/
-    inline const UShort_t& GetSecID() const { return fSecID; }
+    inline const Int_t& GetSecID() const { return fSecID; }
     inline const Double_t& GetTheta() const { return fTheta; }
     inline const Double_t& GetZcharge() const { return fZ; }
 
     /** Modifiers **/
-    void SetSecID(UShort_t id) { fSecID = id; };
+    void SetSecID(Int_t id) { fSecID = id; };
     void SetTheta(Double_t theta) { fTheta = theta; };
     void SetZcharge(Double_t z) { fZ = z; };
 
   protected:
-    UShort_t fSecID;
+    Int_t fSecID;
     Double_t fTheta, fZ;
 
+  public:
     ClassDef(R3BSofTwimHitData, 1)
 };
 

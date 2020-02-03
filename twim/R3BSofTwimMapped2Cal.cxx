@@ -186,8 +186,8 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
 
     R3BSofTwimMappedData** mappedData;
     mappedData = new R3BSofTwimMappedData*[nHits];
-    UShort_t secId = 0;
-    UShort_t anodeId = 0;
+    Int_t secId = 0;
+    Int_t anodeId = 0;
     Double_t pedestal = 0.;
 
     for (Int_t s = 0; s < fNumSec; s++)
@@ -257,7 +257,7 @@ void R3BSofTwimMapped2Cal::Reset()
 }
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BSofTwimCalData* R3BSofTwimMapped2Cal::AddCalData(UShort_t secID, UShort_t anodeID, Double_t dtime, Double_t energy)
+R3BSofTwimCalData* R3BSofTwimMapped2Cal::AddCalData(Int_t secID, Int_t anodeID, Double_t dtime, Double_t energy)
 {
     // It fills the R3BSofTwimCalData
     TClonesArray& clref = *fTwimCalDataCA;

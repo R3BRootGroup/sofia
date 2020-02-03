@@ -20,27 +20,28 @@ class R3BSofTwimCalData : public TObject
      *@param dtime    Drift time calibrated in [mm] for the position
      *@param eLoss    Energy deposit [channels], for simulation in [MeV]
      **/
-    R3BSofTwimCalData(UShort_t secID, UShort_t anodeID, Double_t dtime, Double_t energy);
+    R3BSofTwimCalData(Int_t secID, Int_t anodeID, Double_t dtime, Double_t energy);
 
     /** Destructor **/
     virtual ~R3BSofTwimCalData() {}
 
     /** Accessors **/
-    inline const UShort_t& GetSecID() const { return fSecID; }
-    inline const UShort_t& GetAnodeID() const { return fAnodeID; }
+    inline const Int_t& GetSecID() const { return fSecID; }
+    inline const Int_t& GetAnodeID() const { return fAnodeID; }
     inline const Double_t& GetDTime() const { return fDT; }
     inline const Double_t& GetEnergy() const { return fEnergy; }
 
     /** Modifiers **/
-    void SetSecID(UShort_t id) { fSecID = id; };
-    void SetAnodeID(UShort_t id) { fAnodeID = id; };
+    void SetSecID(Int_t id) { fSecID = id; };
+    void SetAnodeID(Int_t id) { fAnodeID = id; };
     void SetDTime(Double_t dt) { fDT = dt; };
     void SetEnergy(Double_t energy) { fEnergy = energy; };
 
   protected:
-    UShort_t fSecID, fAnodeID;
+    Int_t fSecID, fAnodeID;
     Double_t fDT, fEnergy;
 
+  public:
     ClassDef(R3BSofTwimCalData, 1)
 };
 

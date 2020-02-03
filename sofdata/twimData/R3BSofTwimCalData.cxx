@@ -15,7 +15,7 @@ R3BSofTwimCalData::R3BSofTwimCalData()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTwimCalData::R3BSofTwimCalData(UShort_t secID, UShort_t anodeID, Double_t dt, Double_t energy)
+R3BSofTwimCalData::R3BSofTwimCalData(Int_t secID, Int_t anodeID, Double_t dt, Double_t energy)
     : fSecID(secID)
     , fAnodeID(anodeID)
     , fDT(dt)
