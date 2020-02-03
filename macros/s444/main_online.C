@@ -301,7 +301,8 @@ void main_online()
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
         R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
-        //CalifaCal2Hit->SetDRThreshold(200); // 200 KeV
+        Cal2Hit->SetCrystalThreshold(80.);//80keV
+        Cal2Hit->SetDRThreshold(10000.);//10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(CalifaCal2Hit);
     }
@@ -393,10 +394,20 @@ void main_online()
     if (fCalifa)
     {
         R3BCalifaOnlineSpectra* CalifaOnline = new R3BCalifaOnlineSpectra();
-        // CalifaOnline->SetRange_max(10000); // 10MeV
+        CalifaOnline->SetRange_max(3000);// 3000 -> 3MeV
         CalifaOnline->SetBinChannelFebex(500);
-        CalifaOnline->SetMaxBinFebex(3000);
+        CalifaOnline->SetMaxBinFebex(3000);// 3000 -> 3MeV
         run->AddTask(CalifaOnline);
+    }
+
+    if (fMusic && fAms && fCalifa && fTwim)
+    {
+        R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
+        CalifaAmsOnline->SetZproj(20.0);// Projectile atomic number
+        CalifaAmsOnline->SetRange_max(3000);// 3000 -> 3MeV
+        CalifaAmsOnline->SetBinChannelFebex(500);
+        CalifaAmsOnline->SetMaxBinFebex(3000);// 3000 -> 3MeV
+        run->AddTask(CalifaAmsOnline);
     }
 
     if (fTwim)

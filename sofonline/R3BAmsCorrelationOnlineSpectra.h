@@ -75,21 +75,48 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
      */
     virtual void FinishTask();
 
+    /** Accessor to set up the atomic number of projectile **/
+    void SetZproj(Float_t zproj) { fZproj = zproj; }
+
+    /**
+     * Method to select binning and max range for CALIFA histograms
+     */
+    inline void SetCalifa_bins_maxrange(Int_t Hist_bins, Int_t Hist_max)
+    {
+        fHitCalifaHist_bins = Hist_bins;
+        fHitCalifaHist_max = Hist_max;
+    }
+
     void Reset_Histo();
 
   private:
-    TClonesArray* fHitItemsAms;    /**< Array with hit items. */
+    TClonesArray* fHitItemsAms;    /**< Array with ams-hit items. */
+    TClonesArray* fHitItemsTwim;   /**< Array with twim-hit items. */
+    TClonesArray* fHitItemsMus;    /**< Array with music-hit items. */
+    TClonesArray* fHitItemsCalifa; /**< Array with califa-hit items. */
+
+    Int_t fHitCalifaHist_max;
+    Int_t fHitCalifaHist_bins;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header. */
     Int_t fTrigger;         /**< Trigger value. */
     Int_t fNEvents;         /**< Event counter. */
+    Float_t fZproj;         // Atomic number of projectile
 
     TCanvas* cHit[6];
     TCanvas* cHitAngles;
     TCanvas* cHitEnergyCor;
     TCanvas* cHitThetaCor;
     TCanvas* cHitPhiCor;
+
+    TCanvas* cCalifaMult;
+    TCanvas* cCalifaCoinE;
+    TCanvas* cCalifaCoinPhi;
+    TCanvas* cCalifaCoinTheta;
+    TCanvas* cCalifa_angles;
+    TCanvas* cCalifa_theta_energy;
+    TCanvas* cCalifa_hitenergy;
 
     TH2F* fh_Ams_hit_Pos[6];
     TH2F* fh_Ams_hit_E[6];
@@ -99,6 +126,14 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     TH2F* fh2_ams_e1_e2[2];
     TH2F* fh2_ams_theta1_theta2[2];
     TH2F* fh2_ams_phi1_phi2[2];
+
+    TH1F* fh1_Califa_MultHit;
+    TH2F* fh2_Califa_coinE;
+    TH2F* fh2_Califa_coinTheta;
+    TH2F* fh2_Califa_coinPhi;
+    TH2F* fh2_Califa_theta_phi;
+    TH2F* fh2_Califa_theta_energy;
+    TH1F* fh1_Califa_total_energy;
 
     // TString fAmsFile;        	      /**< Config file name. */
     Int_t fNbDet; /**< Number of AMS detectors. */
