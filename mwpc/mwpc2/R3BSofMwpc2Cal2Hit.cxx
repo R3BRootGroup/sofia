@@ -105,8 +105,8 @@ void R3BSofMwpc2Cal2Hit::Exec(Option_t* option)
     // Data from cal level
     R3BSofMwpcCalData** calData;
     calData = new R3BSofMwpcCalData*[nHits];
-    UShort_t planeId;
-    UShort_t padId;
+    Int_t planeId;
+    Int_t padId;
     Int_t padmx = -1, padmxu = -1, padmxd = -1, padmy = -1;
     Int_t q = 0, qmxu = 0, qmxd = 0, qleft = 0, qright = 0;
     Int_t qmx = 0, qmy = 0, qdown = 0, qup = 0;

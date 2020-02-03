@@ -14,7 +14,7 @@ R3BSofTwimHitData::R3BSofTwimHitData()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTwimHitData::R3BSofTwimHitData(UShort_t secID, Double_t theta, Double_t z)
+R3BSofTwimHitData::R3BSofTwimHitData(Int_t secID, Double_t theta, Double_t z)
     : fSecID(secID)
     , fTheta(theta)
     , fZ(z)

@@ -14,7 +14,7 @@ R3BSofMwpcCalData::R3BSofMwpcCalData()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofMwpcCalData::R3BSofMwpcCalData(UShort_t plane, UShort_t pad, UShort_t charge)
+R3BSofMwpcCalData::R3BSofMwpcCalData(Int_t plane, Int_t pad, Int_t charge)
     : fPlane(plane)
     , fPad(pad)
     , fCharge(charge)
