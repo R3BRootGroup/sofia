@@ -17,7 +17,7 @@
 R3BSofFrsAnaPar::R3BSofFrsAnaPar(const TString& name, const TString& title, const TString& context)
     : FairParGenericSet(name, title, context)
     , fMagS2Cave(0)
-    , fDispS2Cave(0)
+    , fDispS2(0)
     , fPathS2Cave(0)
     , fTOFS2Cave(0)
     , fPosFocalS2(0)
@@ -48,7 +48,7 @@ void R3BSofFrsAnaPar::putParams(FairParamList* list)
         return;
     }
     list->add("MagnificationS2Cave", fMagS2Cave);
-    list->add("DisperisionS2Cave", fDispS2Cave);
+    list->add("DisperisionS2", fDispS2);
     list->add("PathS2Cave", fPathS2Cave);
     list->add("ToFS2Cave", fTOFS2Cave);
     list->add("PosFocalS2", fPosFocalS2);
@@ -73,7 +73,7 @@ Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
         return kFALSE;
     }
 
-    if (!list->fill("DisperisionS2Cave", &fDispS2Cave))
+    if (!list->fill("DisperisionS2", &fDispS2))
     {
         return kFALSE;
     }
@@ -117,7 +117,7 @@ void R3BSofFrsAnaPar::printParams()
 {
     LOG(INFO) << "R3BSofFrsAnaPar: Frs Analysis Parameters: ";
     LOG(INFO) << "MagnificationS2Cave " << fMagS2Cave;
-    LOG(INFO) << "DisperisionS2Cave " << fDispS2Cave;
+    LOG(INFO) << "DisperisionS2 " << fDispS2;
     LOG(INFO) << "PathS2Cave " << fPathS2Cave;
     LOG(INFO) << "ToFS2Cave " << fTOFS2Cave;
     LOG(INFO) << "PosFocalS2 " << fPosFocalS2;

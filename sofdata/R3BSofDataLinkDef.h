@@ -19,6 +19,7 @@
 #pragma link C++ class R3BSofSciTcalData + ;
 #pragma link C++ class R3BSofSciSingleTcalData + ;
 #pragma link C++ class R3BSofSciCalData + ;
+#pragma link C++ class R3BSofSciHitData + ;
 
 #pragma link C++ class R3BSofMwpcMappedData + ;
 #pragma link C++ class R3BSofMwpcCalData + ;
@@ -35,5 +36,6 @@
 #pragma link C++ class R3BSofTwimCalData + ;
 #pragma link C++ class R3BSofTwimHitData + ;
 #pragma link C++ class R3BSofFrsData + ;
+#pragma link C++ class R3BSofTrackingData + ;
 
 #endif

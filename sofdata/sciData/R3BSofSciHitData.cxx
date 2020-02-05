@@ -1,26 +1,24 @@
 // -------------------------------------------------------------------------
-// -----                     R3BSofTofWHitData source file             -----
+// -----                     R3BSofSciHitData source file             -----
 // -------------------------------------------------------------------------
 
-#include "R3BSofTofWHitData.h"
+#include "R3BSofSciHitData.h"
 
 // -----   Default constructor   -------------------------------------------
-R3BSofTofWHitData::R3BSofTofWHitData()
+R3BSofSciHitData::R3BSofSciHitData()
     : fPaddleId(0)
     , fX(0.)
-    , fY(0.)
     , fTime(0.)
 {
 }
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTofWHitData::R3BSofTofWHitData(Int_t paddle, Double_t x, Double_t y, Double_t time)
+R3BSofSciHitData::R3BSofSciHitData(Int_t paddle, Double_t x, Double_t time)
     : fPaddleId(paddle)
     , fX(x)
-    , fY(y)
     , fTime(time)
 {
 }
 // -------------------------------------------------------------------------
 
-ClassImp(R3BSofTofWHitData)
+ClassImp(R3BSofSciHitData)

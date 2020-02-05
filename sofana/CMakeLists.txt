@@ -17,6 +17,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
+${R3BSOF_SOURCE_DIR}/sofdata/trackingData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -29,6 +30,7 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofFrsAnalysis.cxx
+R3BSofFragmentAnalysis.cxx
 R3BSofFrsAnaPar.cxx
 R3BSofAnaContFact.cxx
 )

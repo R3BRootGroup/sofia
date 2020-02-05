@@ -40,7 +40,7 @@ class R3BSofFrsAnaPar : public FairParGenericSet
 
     /** Accessor functions **/
     const Double_t GetMagnificationS2Cave() { return fMagS2Cave; }
-    const Double_t GetDispersionS2Cave() { return fDispS2Cave; }
+    const Double_t GetDispersionS2() { return fDispS2; }
     const Double_t GetPathS2Cave() { return fPathS2Cave; }
     const Double_t GetTOFS2Cave() { return fTOFS2Cave; }
     const Double_t GetRhoS0S2() { return frho_S0_S2; }
@@ -50,14 +50,14 @@ class R3BSofFrsAnaPar : public FairParGenericSet
     const Double_t GetPosFocalS2() { return fPosFocalS2; }
     const Double_t GetPosFocalCave() { return fPosFocalCave; }
 
-    void SetMagnificationS2S4(Double_t theMag) { fMagS2Cave = theMag; }
-    void SetDispersionS2S4(Double_t theDisp) { fDispS2Cave = theDisp; }
-    void SetPathS2S4(Double_t thePath) { fPathS2Cave = thePath; }
-    void SetTOFS2S4(Double_t theTOF) { fTOFS2Cave = theTOF; }
+    void SetMagnificationS2Cave(Double_t theMag) { fMagS2Cave = theMag; }
+    void SetDispersionS2(Double_t theDisp) { fDispS2 = theDisp; }
+    void SetPathS2Cave(Double_t thePath) { fPathS2Cave = thePath; }
+    void SetTOFS2Cave(Double_t theTOF) { fTOFS2Cave = theTOF; }
     void SetRhoS0S2(Double_t theRho) { frho_S0_S2 = theRho; }
-    void SetRhoS2S4(Double_t theRho) { frho_S2_Cave = theRho; }
+    void SetRhoS2Cave(Double_t theRho) { frho_S2_Cave = theRho; }
     void SetBfiedS0S2(Double_t theB) { fBfield_S0_S2 = theB; }
-    void SetBfiedS2S4(Double_t theB) { fBfield_S2_Cave = theB; }
+    void SetBfiedS2Cave(Double_t theB) { fBfield_S2_Cave = theB; }
     void SetPosFocalS2(Double_t thePos) { fPosFocalS2 = thePos; }
     void SetPosFocalCave(Double_t thePos) { fPosFocalCave = thePos; }
 
@@ -65,7 +65,7 @@ class R3BSofFrsAnaPar : public FairParGenericSet
 
   private:
     Double_t fMagS2Cave;
-    Double_t fDispS2Cave;
+    Double_t fDispS2;
     Double_t fPathS2Cave, fTOFS2Cave;
     Double_t fPosFocalS2, fPosFocalCave;
     Double_t frho_S0_S2, fBfield_S0_S2, frho_S2_Cave, fBfield_S2_Cave;

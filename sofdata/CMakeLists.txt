@@ -38,6 +38,7 @@ sciData/R3BSofSciMappedData.cxx
 sciData/R3BSofSciTcalData.cxx
 sciData/R3BSofSciSingleTcalData.cxx
 sciData/R3BSofSciCalData.cxx
+sciData/R3BSofSciHitData.cxx
 tofwData/R3BSofToFWMappedData.cxx
 tofwData/R3BSofToFWTcalData.cxx
 tofwData/R3BSofToFWCalData.cxx
@@ -47,6 +48,7 @@ twimData/R3BSofTwimCalData.cxx
 twimData/R3BSofTwimHitData.cxx
 trimData/R3BSofTrimMappedData.cxx
 frsData/R3BSofFrsData.cxx
+trackingData/R3BSofTrackingData.cxx
 )
 
 

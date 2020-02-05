@@ -1,5 +1,5 @@
 /*
- *  Macro to run the online for all the detectors simultaneously
+ *  Macro to run the online of SOFIA detectors simultaneously
  *
  *  One needs to set up the 2020 experiments: s444 or s467, the unpackers are:
  *
@@ -7,7 +7,7 @@
  *
  *
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
- *  @since Jan 6th, 2020
+ *  @since Feb 5th, 2020
  *
  */
 
@@ -24,7 +24,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
 } EXT_STR_h101;
 
-void main_online()
+void sofia_online()
 {
     TStopwatch timer;
     timer.Start();
@@ -50,7 +50,7 @@ void main_online()
 
     // Online server configuration --------------------------
     Int_t refresh = 1; // Refresh rate for online histograms
-    Int_t port = 8888; // Port number for the online visualization, example lxgXXXX:8888
+    Int_t port = 8885; // Port number for the online visualization, example lxgXXXX:8885
 
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
@@ -87,11 +87,10 @@ void main_online()
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
-    Bool_t fTracking= false; // Tracking of fragments inside GLAD
 
     // Configuration of each detector -----------------------
-    const Int_t NLnBarsPerPlane = 50; // NeuLAND: number of scintillator bars per plane
-    const Int_t NLnPlanes = 16;       // NeuLAND: number of planes (for TCAL calibration)
+    //const Int_t NLnBarsPerPlane = 50; // NeuLAND: number of scintillator bars per plane
+    //const Int_t NLnPlanes = 16;       // NeuLAND: number of planes (for TCAL calibration)
 
     // Calibration files ------------------------------------
     TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -471,12 +470,6 @@ void main_online()
     {
         R3BSofToFWOnlineSpectra* tofwonline = new R3BSofToFWOnlineSpectra();
         run->AddTask(tofwonline);
-    }
-
-    if (fTofW && fMwpc3 && fMwpc2 && fTwim && fSci && fTracking)
-    {
-        R3BSofTrackingOnlineSpectra* Trackingonline = new R3BSofTrackingOnlineSpectra();
-        run->AddTask(Trackingonline);
     }
 
     R3BSofOnlineSpectra* sofonline = new R3BSofOnlineSpectra();
