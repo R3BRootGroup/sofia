@@ -1,33 +1,32 @@
 // ----------------------------------------------------------------------
 // -----                                                            -----
-// -----                     R3BSofFrsAnalysis                      -----
-// -----             Created 23/01/20  by J.L. Rodriguez-Sanchez    -----
+// -----                     R3BSofFragmentAnalysis                 -----
+// -----             Created 09/02/20  by J.L. Rodriguez-Sanchez    -----
 // ----------------------------------------------------------------------
 
-#ifndef R3BSofFrsAnalysis_H
-#define R3BSofFrsAnalysis_H
+#ifndef R3BSofFragmentAnalysis_H
+#define R3BSofFragmentAnalysis_H
 
 #include "FairTask.h"
-#include "R3BSofFrsData.h"
+#include "R3BSofTrackingData.h"
 #include "TF1.h"
 #include "TH1F.h"
 #include <TRandom.h>
 
 class TClonesArray;
-class R3BSofFrsAnaPar;
 
-class R3BSofFrsAnalysis : public FairTask
+class R3BSofFragmentAnalysis : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofFrsAnalysis();
+    R3BSofFragmentAnalysis();
 
     /** Standard constructor **/
-    R3BSofFrsAnalysis(const TString& name, Int_t iVerbose = 1);
+    R3BSofFragmentAnalysis(const TString& name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofFrsAnalysis();
+    virtual ~R3BSofFragmentAnalysis();
 
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
@@ -57,29 +56,26 @@ class R3BSofFrsAnalysis : public FairTask
   private:
     void SetParameter();
 
-    R3BSofFrsAnaPar* fFrs_Par; // Parameter container
-
     Double_t fOffsetAq, fOffsetZ; // Offsets in A/q and Z
-    Double_t fMagS2Cave;
-    Double_t fDispS2;
-    Double_t fPathS2Cave, fTOFS2Cave;
-    Double_t fPosFocalS2, fPosFocalCave;
-    Double_t frho_S0_S2, fBfield_S0_S2, frho_S2_Cave, fBfield_S2_Cave;
+
+    Double_t frho_Cave, fBfield_Glad;
+    Double_t fDist_mw3_tof;
+    Double_t fDist_start_glad;
 
     Bool_t fOnline; // Don't store data for online
 
     TClonesArray* fMwpcHitDataCA;  /**< Array with Mwpc Hit-input data. >*/
-    TClonesArray* fMusicHitDataCA; /**< Array with Music Hit-input data. >*/
-    TClonesArray* fSciHitDataCA;   /**< Array with Sci Hit-input data. >*/
-    TClonesArray* fFrsDataCA;      /**< Array with FRS-output data. >*/
+    TClonesArray* fTwimHitDataCA;  /**< Array with Twim Hit-input data. >*/
+    TClonesArray* fTofWHitDataCA;  /**< Array with ToF Hit-input data. >*/
+    TClonesArray* fTrackingDataCA; /**< Array with Tracking-output data. >*/
 
-    /** Private method FrsData **/
-    //** Adds a FrsData to the analysis
-    R3BSofFrsData* AddData(Double_t z, Double_t aq, Double_t beta, Double_t brho, Double_t xs2, Double_t xc);
+    /** Private method TrackingData **/
+    //** Adds a TrackingData to the analysis
+    R3BSofTrackingData* AddData(Double_t z, Double_t aq, Double_t beta, Double_t length, Double_t brho);
 
   public:
     // Class definition
-    ClassDef(R3BSofFrsAnalysis, 1)
+    ClassDef(R3BSofFragmentAnalysis, 1)
 };
 
 #endif

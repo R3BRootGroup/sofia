@@ -5,7 +5,7 @@
 // ------------------------------------------------------------
 
 /*
- * This task should fill histograms with SOFIA online data
+ * This task should fill histograms for Music-Twim correlations
  */
 
 #include "R3BSofTwimvsMusicOnlineSpectra.h"

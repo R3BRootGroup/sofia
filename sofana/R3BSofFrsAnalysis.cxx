@@ -26,7 +26,7 @@
 #include "R3BSofFrsAnalysis.h"
 #include "R3BSofFrsData.h"
 #include "R3BSofMwpcHitData.h"
-#include "R3BSofSciSingleTcalData.h"
+#include "R3BSofSciHitData.h"
 
 Double_t const c = 299792458.0;     // Light velocity
 Double_t const e = 1.60217662e-19;  // Electron charge
@@ -107,7 +107,7 @@ void R3BSofFrsAnalysis::SetParameter()
 {
     //--- Parameter Container ---
     fMagS2Cave = fFrs_Par->GetMagnificationS2Cave();
-    fDispS2Cave = fFrs_Par->GetDispersionS2Cave();
+    fDispS2 = fFrs_Par->GetDispersionS2();
     fPathS2Cave = fFrs_Par->GetPathS2Cave();
     fTOFS2Cave = fFrs_Par->GetTOFS2Cave();
     frho_S0_S2 = fFrs_Par->GetRhoS0S2();
@@ -116,6 +116,11 @@ void R3BSofFrsAnalysis::SetParameter()
     fBfield_S2_Cave = fFrs_Par->GetBfiedS2Cave();
     fPosFocalS2 = fFrs_Par->GetPosFocalS2();
     fPosFocalCave = fFrs_Par->GetPosFocalCave();
+
+    LOG(INFO) << "R3BSofFrsAnalysis: Dispersion (S2): " << fDispS2 << " [m/per-cent]";
+    LOG(INFO) << "R3BSofFrsAnalysis: Magnification (S2-Cave): " << fMagS2Cave ;
+    LOG(INFO) << "R3BSofFrsAnalysis: Path length (S2-Cave): " << fPathS2Cave << " [cm]";
+    LOG(INFO) << "R3BSofFrsAnalysis: ToF correction (S2-Cave): " << fTOFS2Cave << " [ns]";
     LOG(INFO) << "R3BSofFrsAnalysis: Rho (S0-S2): " << frho_S0_S2;
     LOG(INFO) << "R3BSofFrsAnalysis: B (S0-S2): " << fBfield_S0_S2;
     LOG(INFO) << "R3BSofFrsAnalysis: Rho (S2-Cave-C): " << frho_S2_Cave;
@@ -148,7 +153,7 @@ InitStatus R3BSofFrsAnalysis::Init()
         return kFATAL;
     }
 
-    fSciHitDataCA = (TClonesArray*)rootManager->GetObject("SofSciSingleTcalData");
+    fSciHitDataCA = (TClonesArray*)rootManager->GetObject("SofSciHitData");
     if (!fSciHitDataCA)
     {
         return kFATAL;
@@ -190,7 +195,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     if (nHitMwpc < 1 || nHitSci < 1 || nHitMusic < 1)
         return; // FIXME:include here warning!
 
-    R3BSofSciSingleTcalData** HitSci = new R3BSofSciSingleTcalData*[nHitSci];
+    R3BSofSciHitData** HitSci = new R3BSofSciHitData*[nHitSci];
     R3BMusicHitData** HitMusic = new R3BMusicHitData*[nHitMusic];
     R3BSofMwpcHitData** HitMwpc = new R3BSofMwpcHitData*[nHitMwpc];
 
@@ -227,11 +232,11 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     // FIXME: This could need hit level from SCI
     for (Int_t i = 0; i < nHitSci; i++)
     {
-        HitSci[i] = (R3BSofSciSingleTcalData*)(fSciHitDataCA->At(i));
-        if (i == 0)
-            x_pos_s2 = HitSci[i]->GetRawPosNs(i + 1);
+        HitSci[i] = (R3BSofSciHitData*)(fSciHitDataCA->At(i));
+        if (HitSci[i]->GetPaddle() == 1)// Sci at S2
+            x_pos_s2 = HitSci[i]->GetX();
         else
-            ToF_S2_Cave = HitSci[i]->GetRawTofNs();
+            ToF_S2_Cave = HitSci[i]->GetTof();// Sci at Cave-C
     }
 
     // Velocity
@@ -240,7 +245,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
 
     // Brho and A/q
     double Brho_Cave = fBfield_S2_Cave * frho_S2_Cave *
-                       (1. - (((x_pos_cave / 1000.) - fMagS2Cave * (x_pos_s2 / 1000.)) / fDispS2Cave));
+                       (1. - (((x_pos_cave / 1000.) - fMagS2Cave * (x_pos_s2 / 1000.)) / fDispS2));
     fAq = (Brho_Cave * e) / (Gamma_S2_Cave * Beta_S2_Cave * c * u);
 
     // Fill the data
