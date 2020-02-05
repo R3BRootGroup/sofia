@@ -301,8 +301,8 @@ void main_online()
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
         R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
-        Cal2Hit->SetCrystalThreshold(80.);//80keV
-        Cal2Hit->SetDRThreshold(10000.);//10MeV
+        CalifaCal2Hit->SetCrystalThreshold(80.);//80keV
+        CalifaCal2Hit->SetDRThreshold(10000.);//10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(CalifaCal2Hit);
     }
@@ -404,9 +404,7 @@ void main_online()
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
         CalifaAmsOnline->SetZproj(20.0);// Projectile atomic number
-        CalifaAmsOnline->SetRange_max(3000);// 3000 -> 3MeV
-        CalifaAmsOnline->SetBinChannelFebex(500);
-        CalifaAmsOnline->SetMaxBinFebex(3000);// 3000 -> 3MeV
+        CalifaAmsOnline->SetCalifa_bins_maxrange(500, 3000);// 3000 -> 3MeV
         run->AddTask(CalifaAmsOnline);
     }
 
