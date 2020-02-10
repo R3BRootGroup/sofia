@@ -52,9 +52,9 @@
 //R3BSofSciTcal2RawPosPar: Default Constructor --------------------------
 R3BSofSciTcal2RawPosPar::R3BSofSciTcal2RawPosPar() 
   : FairTask("R3BSofSciTcal2RawPosPar",1)
-  , fNumDetectors(NUMBER_OF_DETECTORS)
-  , fNumChannels(NUMBER_OF_CHANNELS)
-  , fNumSignals(NUMBER_OF_SIGNALS)
+  , fNumDetectors(NUMBER_OF_SOFSCI_DETECTORS)
+  , fNumChannels(NUMBER_OF_SOFSCI_CHANNELS)
+  , fNumSignals(NUMBER_OF_SOFSCI_SIGNALS)
   , fNumParsPerSignal(2)
   , fMinStatistics(0)
   , fTcal(NULL)
@@ -66,9 +66,9 @@ R3BSofSciTcal2RawPosPar::R3BSofSciTcal2RawPosPar()
 //R3BSofSciTcal2RawPosPar: Standard Constructor --------------------------
 R3BSofSciTcal2RawPosPar::R3BSofSciTcal2RawPosPar(const char* name, Int_t iVerbose) 
   : FairTask(name, iVerbose)
-  , fNumDetectors(NUMBER_OF_DETECTORS)
-  , fNumChannels(NUMBER_OF_CHANNELS)
-  , fNumSignals(NUMBER_OF_SIGNALS)
+  , fNumDetectors(NUMBER_OF_SOFSCI_DETECTORS)
+  , fNumChannels(NUMBER_OF_SOFSCI_CHANNELS)
+  , fNumSignals(NUMBER_OF_SOFSCI_SIGNALS)
   , fNumParsPerSignal(2)
   , fMinStatistics(0)
   , fTcal(NULL)
@@ -151,15 +151,15 @@ void R3BSofSciTcal2RawPosPar::Exec(Option_t* opt) {
   
   // nHitsSci = number of hits per event
   UInt_t nHitsSci = fTcal->GetEntries();    // can be very high especially for S2 detector
-  UShort_t mult[NUMBER_OF_DETECTORS*NUMBER_OF_CHANNELS];
-  Double_t iRawTimeNs[NUMBER_OF_DETECTORS*NUMBER_OF_CHANNELS];
+  UShort_t mult[NUMBER_OF_SOFSCI_DETECTORS*NUMBER_OF_SOFSCI_CHANNELS];
+  Double_t iRawTimeNs[NUMBER_OF_SOFSCI_DETECTORS*NUMBER_OF_SOFSCI_CHANNELS];
   UShort_t iDet; // 0 based Det number
   UShort_t iPmt; // 0 based Pmt number
 
-  for(UShort_t d=0; d<NUMBER_OF_DETECTORS; d++){
-    for(UShort_t ch=0; ch<NUMBER_OF_CHANNELS; ch++){
-      mult[d*NUMBER_OF_CHANNELS+ch] = 0;
-      iRawTimeNs[d*NUMBER_OF_CHANNELS+ch] = 0;
+  for(UShort_t d=0; d<NUMBER_OF_SOFSCI_DETECTORS; d++){
+    for(UShort_t ch=0; ch<NUMBER_OF_SOFSCI_CHANNELS; ch++){
+      mult[d*NUMBER_OF_SOFSCI_CHANNELS+ch] = 0;
+      iRawTimeNs[d*NUMBER_OF_SOFSCI_CHANNELS+ch] = 0;
     }
   }
 
@@ -172,15 +172,16 @@ void R3BSofSciTcal2RawPosPar::Exec(Option_t* opt) {
     }           
     iDet = hitSci->GetDetector()-1; // get the 0 based Det number
     iPmt = hitSci->GetPmt()-1;      // get the 0 based Pmt number
-    iRawTimeNs[iDet*NUMBER_OF_CHANNELS+iPmt] = hitSci->GetRawTimeNs();
-    mult[iDet*NUMBER_OF_CHANNELS+iPmt]++;
+    iRawTimeNs[iDet*NUMBER_OF_SOFSCI_CHANNELS+iPmt] = hitSci->GetRawTimeNs();
+    mult[iDet*NUMBER_OF_SOFSCI_CHANNELS+iPmt]++;
   }// end of for(ihit) 
 
   // FILL THE HISTOGRAM ONLY FOR MULT=1 IN RIGHT AND MULT=1 IN LEFT
-  for(UShort_t d=0; d<NUMBER_OF_DETECTORS; d++){
-    // check if mult=1 at RIGHT PMT [0,3] and mult=1 at LEFT PMT [1,4]
-    if((mult[d*NUMBER_OF_CHANNELS]==1)&&(mult[d*NUMBER_OF_CHANNELS+1]==1)){
-       fh_RawPosMult1[d]->Fill(iRawTimeNs[d*NUMBER_OF_CHANNELS+1]-iRawTimeNs[d*NUMBER_OF_CHANNELS]);
+  for(UShort_t d=0; d<NUMBER_OF_SOFSCI_DETECTORS; d++){
+    // check if mult=1 at RIGHT PMT [0] and mult=1 at LEFT PMT [1]
+    // ATTENTION : x increasing from left to right : TrawRIGHT-TrawLEFT
+    if((mult[d*NUMBER_OF_SOFSCI_CHANNELS]==1)&&(mult[d*NUMBER_OF_SOFSCI_CHANNELS+1]==1)){
+       fh_RawPosMult1[d]->Fill(iRawTimeNs[d*NUMBER_OF_SOFSCI_CHANNELS]-iRawTimeNs[d*NUMBER_OF_SOFSCI_CHANNELS+1]);
     }
   }
 }
