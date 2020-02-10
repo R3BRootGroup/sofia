@@ -106,7 +106,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
   int nChs = int(fRawPosPar->GetNumChannels());
   UShort_t iDet; // 0-based
   UShort_t iCh;  // 0-based
-  Double_t iTraw[nDets][16];
+  Double_t iTraw[nDets*nChs][16];
   UShort_t mult[nDets*nChs];
   UShort_t mult_max=0;
   
@@ -141,7 +141,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
       mult_selectHits[d] = 0;
       for(UShort_t multR=0; multR<mult[d*nChs]; multR++){
 	for(UShort_t multL=0; multL<mult[d*nChs+1];multL++){
-	  iRawPos = iTraw[d*nChs+1][multL]-iTraw[d*nChs][multR]; // Raw position = Tleft - Tright
+	  iRawPos = iTraw[d*nChs][multR]-iTraw[d*nChs+1][multL]; // Raw position = Tright - Tleft for x increasing from RIGHT to LEFT
 	  if((fRawPosPar->GetSignalTcalParams(0)<=iRawPos)&&(iRawPos<=fRawPosPar->GetSignalTcalParams(1))){
 	    // if this hit has already been used, continue
 	    if((((maskR>>multR)&(0x1))==0) && (((maskL>multL)&(0x1))==0)){

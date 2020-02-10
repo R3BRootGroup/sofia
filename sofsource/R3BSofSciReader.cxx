@@ -10,7 +10,6 @@ extern "C"
 #include "ext_h101_sofsci.h"
 }
 
-//#define NUM_SOFSCI_DETECTORS 2
 #define NUM_SOFSCI_DETECTORS 1 // for the engineering run
 #define NUM_SOFSCI_CHANNELS 3
 #include <iostream>
