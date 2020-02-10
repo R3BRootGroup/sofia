@@ -32,7 +32,7 @@ void finder_twim_CalPar()
     const Int_t expId = 444; // select experiment: 444 or 467
 
     // Create input -----------------------------------------
-     //TString filename = "--stream=lxir123:7803";
+    // TString filename = "--stream=lxir123:7803";
     TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
 
     // Output file ------------------------------------------
@@ -48,13 +48,15 @@ void finder_twim_CalPar()
     TString ucesb_path;
     if (expId == 444)
     {
-        ucesb_path = "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
+        ucesb_path =
+            "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+         //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
     }
     else if (expId == 467)
     {
-        ucesb_path = "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        ucesb_path =
+            "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        // ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
     }
     else
     {
@@ -65,16 +67,16 @@ void finder_twim_CalPar()
 
     // Setup: Selection of detectors ------------------------
     // Distances with respect to MWPC0 in mm
-    Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Float_t PosZ_MWPC0=0.0;  // mm
-    Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
-    Bool_t fSci = false;      // Start: Plastic scintillator for ToF
-    Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
-    Float_t PosZ_MWPC1=1400.0;  // mm
-    Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
-    Float_t PosZ_MWPC2=2300.0;  // mm
-    Bool_t fTwim = true;    // Twim: Ionization chamber for charge-Z of fragments
-    Float_t PosZ_Twim=2000.0;  // mm
+    Bool_t fMwpc0 = true;        // MWPC0 for tracking at entrance of Cave-C
+    Float_t PosZ_MWPC0 = 0.0;    // mm
+    Bool_t fMusic = true;        // R3B-Music: Ionization chamber for charge-Z
+    Bool_t fSci = false;         // Start: Plastic scintillator for ToF
+    Bool_t fMwpc1 = false;       // MWPC1 for tracking of fragments in front of target
+    Float_t PosZ_MWPC1 = 2835.0; // mm
+    Bool_t fTwim = true;         // Twim: Ionization chamber for charge-Z of fragments
+    Float_t PosZ_Twim = 3168.0;  // mm
+    Bool_t fMwpc2 = true;        // MWPC2 for tracking of fragments before GLAD
+    Float_t PosZ_MWPC2 = 3493.0; // mm
 
     // Calibration files ------------------------------------
     TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -194,20 +196,34 @@ void finder_twim_CalPar()
     }
 
     // Add calibration task ------------------------------------
-    R3BSofTwimMapped2CalPar* TwimMap2CalPar = new R3BSofTwimMapped2CalPar("Angle-XZ Twim calibrator", 1, "Mwpc0", "Mwpc2");
-    TwimMap2CalPar->SetPosMwpcA(PosZ_MWPC0);
-    TwimMap2CalPar->SetPosMwpcB(PosZ_MWPC2);
-    TwimMap2CalPar->SetPosTwim(PosZ_Twim);
-    TwimMap2CalPar->SetFitLimits(2000.,22000.);
-    run->AddTask(TwimMap2CalPar);
+    if (fMwpc0 && fMwpc2)
+    {
+        R3BSofTwimMapped2CalPar* TwimMap2CalPar =
+            new R3BSofTwimMapped2CalPar("Angle-XZ Twim calibrator", 1, "Mwpc0", "Mwpc2");
+        TwimMap2CalPar->SetPosMwpcA(PosZ_MWPC0);
+        TwimMap2CalPar->SetPosMwpcB(PosZ_MWPC2);
+        TwimMap2CalPar->SetPosTwim(PosZ_Twim);
+        TwimMap2CalPar->SetFitLimits(2000., 22000.);
+        run->AddTask(TwimMap2CalPar);
+    }
+    else if (fMwpc1 && fMwpc2)
+    {
+        R3BSofTwimMapped2CalPar* TwimMap2CalPar =
+            new R3BSofTwimMapped2CalPar("Angle-XZ Twim calibrator", 1, "Mwpc1", "Mwpc2");
+        TwimMap2CalPar->SetPosMwpcA(PosZ_MWPC1);
+        TwimMap2CalPar->SetPosMwpcB(PosZ_MWPC2);
+        TwimMap2CalPar->SetPosTwim(PosZ_Twim);
+        TwimMap2CalPar->SetFitLimits(2000., 22000.);
+        run->AddTask(TwimMap2CalPar);
+    }
 
     // Initialize -------------------------------------------
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
 
-    //Ascii file with the Calibartion Parameters
+    // Ascii file with the Calibartion Parameters
     FairParAsciiFileIo* parIo = new FairParAsciiFileIo();
-    parIo->open("Twim_CalParam.par","out");
+    parIo->open("Twim_CalPar_Feb2020.par", "out");
     rtdb->setOutput(parIo);
 
     // Run --------------------------------------------------

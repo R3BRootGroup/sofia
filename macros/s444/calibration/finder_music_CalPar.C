@@ -32,7 +32,7 @@ void finder_music_CalPar()
     const Int_t expId = 444; // select experiment: 444 or 467
 
     // Create input -----------------------------------------
-     //TString filename = "--stream=lxir123:7803";
+    // TString filename = "--stream=lxir123:7803";
     TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
 
     // Output file ------------------------------------------
@@ -48,13 +48,15 @@ void finder_music_CalPar()
     TString ucesb_path;
     if (expId == 444)
     {
-        ucesb_path = "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
+        ucesb_path =
+            "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+        // ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
     }
     else if (expId == 467)
     {
-        ucesb_path = "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        ucesb_path =
+            "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        // ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
     }
     else
     {
@@ -65,16 +67,16 @@ void finder_music_CalPar()
 
     // Setup: Selection of detectors ------------------------
     // Distances with respect to MWPC0 in mm
-    Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Float_t PosZ_MWPC0=0.0;  // mm
-    Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
-    Float_t PosZ_Music=600.0;  // mm
-    Bool_t fSci = false;      // Start: Plastic scintillator for ToF
-    Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
-    Float_t PosZ_MWPC1=1400.0;  // mm
-    Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
-    Float_t PosZ_MWPC2=2300.0;  // mm
-    Bool_t fTwim = false;    // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc0 = true;        // MWPC0 for tracking at entrance of Cave-C
+    Float_t PosZ_MWPC0 = 0.0;    // mm
+    Bool_t fMusic = true;        // R3B-Music: Ionization chamber for charge-Z
+    Float_t PosZ_Music = 325.0;  // mm
+    Bool_t fSci = false;         // Start: Plastic scintillator for ToF
+    Bool_t fMwpc1 = false;       // MWPC1 for tracking of fragments in front of target
+    Float_t PosZ_MWPC1 = 2835.0; // mm
+    Bool_t fTwim = false;        // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc2 = true;        // MWPC2 for tracking of fragments before GLAD
+    Float_t PosZ_MWPC2 = 3493.0; // mm
 
     // Calibration files ------------------------------------
     TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -192,19 +194,32 @@ void finder_music_CalPar()
     }
 
     // Add calibration task ------------------------------------
-    R3BMusicMapped2CalPar* MusMap2CalPar = new R3BMusicMapped2CalPar("Angle-XZ calibrator",1,"Mwpc0","Mwpc2");
-    MusMap2CalPar->SetPosMwpcA(0.);
-    MusMap2CalPar->SetPosMwpcB(2300.);
-    MusMap2CalPar->SetPosMusic(600.);
-    run->AddTask(MusMap2CalPar);
+    if (fMwpc2 && fMwpc0)
+    {
+        R3BMusicMapped2CalPar* MusMap2CalPar = new R3BMusicMapped2CalPar("Angle-XZ calibrator", 1, "Mwpc0", "Mwpc2");
+        MusMap2CalPar->SetPosMwpcA(PosZ_MWPC0);
+        MusMap2CalPar->SetPosMwpcB(PosZ_MWPC2);
+        MusMap2CalPar->SetPosMusic(PosZ_Music);
+        run->AddTask(MusMap2CalPar);
+    }
+    else if (fMwpc1 && fMwpc0)
+    {
+        R3BMusicMapped2CalPar* MusMap2CalPar = new R3BMusicMapped2CalPar("Angle-XZ calibrator", 1, "Mwpc0", "Mwpc1");
+        MusMap2CalPar->SetPosMwpcA(PosZ_MWPC0);
+        MusMap2CalPar->SetPosMwpcB(PosZ_MWPC1);
+        MusMap2CalPar->SetPosMusic(PosZ_Music);
+        run->AddTask(MusMap2CalPar);
+    }
+    else
+        std::cout << "Calibration is not possible since second mwpc was not defined" << std::endl;
 
     // Initialize -------------------------------------------
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
 
-    //Ascii file with the Calibartion Parameters
+    // Ascii file with the Calibartion Parameters
     FairParAsciiFileIo* parIo = new FairParAsciiFileIo();
-    parIo->open("Music_CalParam.par","out");
+    parIo->open("Music_CalPar_Feb2020.par", "out");
     rtdb->setOutput(parIo);
 
     // Run --------------------------------------------------
