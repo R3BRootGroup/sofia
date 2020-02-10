@@ -87,7 +87,7 @@ void main_online()
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
-    Bool_t fTracking= false; // Tracking of fragments inside GLAD
+    Bool_t fTracking= true; // Tracking of fragments inside GLAD
 
     // Configuration of each detector -----------------------
     const Int_t NLnBarsPerPlane = 50; // NeuLAND: number of scintillator bars per plane
