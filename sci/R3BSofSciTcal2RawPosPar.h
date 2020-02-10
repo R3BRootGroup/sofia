@@ -11,9 +11,9 @@ class R3BEventHeader;
 
 
 // for the engineering run (fNumDetectors(1) instead of fNumDetectors(2)
-#define NUMBER_OF_DETECTORS 1 
-#define NUMBER_OF_CHANNELS 3 // 2PMT + Tref
-#define NUMBER_OF_SIGNALS NUMBER_OF_DETECTORS
+#define NUMBER_OF_SOFSCI_DETECTORS 1 
+#define NUMBER_OF_SOFSCI_CHANNELS 3 // 2PMT + Tref
+#define NUMBER_OF_SOFSCI_SIGNALS NUMBER_OF_SOFSCI_DETECTORS
 
 
 class R3BSofSciTcal2RawPosPar : public FairTask {
@@ -63,7 +63,6 @@ class R3BSofSciTcal2RawPosPar : public FairTask {
   void SetNumChannels(Int_t n)    {fNumChannels=n;}  
   void SetNumSignals(){
     if(fNumDetectors)    fNumSignals=fNumDetectors;
-    //else LOG(ERROR) << "R3BSofSciTcal2RawPosPar; cannot defined fNumSignals without fNumDetectors";
   }
   void SetNumParsPerSignal(Int_t n) {
     fNumParsPerSignal=n;
@@ -89,9 +88,6 @@ class R3BSofSciTcal2RawPosPar : public FairTask {
    
   // histograms
   TH1D** fh_RawPosMult1;
-#if NUMBER_OF_DETECTORS==2
-  TH1D* fh_RawTofMult1;
-#endif
   char* fOutputFile;
   
  public:

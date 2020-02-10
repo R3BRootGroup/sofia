@@ -102,7 +102,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TCanvas* cToFWRawTof[NbDets];
     TCanvas* cTwimvsTof[NbDets];
     TCanvas* cMwpc3XvsTof;
-    TCanvas* cMwpc3YvsPosTof;
+    TCanvas* cMwpc3YvsPosTof[NbDets];
 
     // Histograms for Mapped data : Fine Time and Mult
     TH1I* fh1_finetime[NbDets * NbChs];
@@ -122,7 +122,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
 
     // Histograms for Mwpc3 vs ToF-plastic
     TH2F* fh2_Mwpc3X_Tof;
-    TH2F* fh2_Mwpc3Y_PosTof;
+    TH2F* fh2_Mwpc3Y_PosTof[NbDets];
 
   public:
     ClassDef(R3BSofToFWOnlineSpectra, 1)
