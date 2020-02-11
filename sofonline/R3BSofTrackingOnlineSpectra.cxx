@@ -388,7 +388,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             mwpc0x = hit->GetX();
-            mwpc0y = hit->GetY();
+            mwpc0y = hit->GetY()+10.;// Offset in Y for alignment with the beam line
         }
 
         // Fill mwpc2 Hit data
