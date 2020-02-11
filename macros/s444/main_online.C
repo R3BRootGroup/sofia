@@ -18,7 +18,9 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_MUSIC_onion_t music;
     EXT_STR_h101_SOFSCI_onion_t sci;
     EXT_STR_h101_AMS_t ams;
+    EXT_STR_h101_WRMASTER_t wrmaster;
     EXT_STR_h101_CALIFA_t califa;
+    EXT_STR_h101_WRCALIFA_t wrcalifa;
     EXT_STR_h101_SOFTWIM_onion_t twim;
     EXT_STR_h101_SOFTOFW_onion_t tofw;
     EXT_STR_h101_SOFSCALERS_onion_t scalers;
@@ -38,12 +40,12 @@ void main_online()
 
     // Create input -----------------------------------------
     TString filename = "--stream=lxir123:7803";
-    //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/califa2020/data_0312.lmd";
+    // TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
+    // TString filename = "~/lmd/califa2020/data_0312.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
-    Bool_t Cal_level_califa = false;   // set true if there exists a file with the calibration parameters
+    Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
     Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
     Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = false;    // if true, don't store hit data in the root file
@@ -55,17 +57,16 @@ void main_online()
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
-    TString upexps_dir = ucesb_dir + "/../upexps/";
+    //TString upexps_dir = ucesb_dir + "/../upexps/";
+    TString upexps_dir = "/u/land/fake_cvmfs/upexps";
     TString ucesb_path;
     if (expId == 444)
     {
-        ucesb_path = "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+        ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
     }
     else if (expId == 467)
     {
-        ucesb_path = "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
-        //ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
     }
     else
     {
@@ -82,13 +83,13 @@ void main_online()
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
-    Bool_t fMwpc2 = false;    // MWPC2 for tracking of fragments before GLAD
-    Bool_t fTwim = false;     // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 = false;    // MWPC3 for tracking of fragments behind GLAD
-    Bool_t fTofW = false;     // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
+    Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = true;  // SIS3820 scalers at Cave C
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
-    Bool_t fTracking= true; // Tracking of fragments inside GLAD
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD
 
     // Configuration of each detector -----------------------
     const Int_t NLnBarsPerPlane = 50; // NeuLAND: number of scintillator bars per plane
@@ -106,7 +107,7 @@ void main_online()
     califamapfilename.ReplaceAll("//", "/");
     // Parameters for CALIFA calibration in keV
     TString califadir = dir + "/macros/r3b/unpack/s467/califa/parameters/";
-    TString califacalfilename = califadir + "Califa_CalibParamFeb2020.root";
+    TString califacalfilename = califadir + "Califa_Cal8Feb2020.root";
     califacalfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
@@ -122,8 +123,10 @@ void main_online()
 
     R3BMusicReader* unpackmusic;
     R3BSofSciReader* unpacksci;
+    R3BWhiterabbitMasterReader* unpackWRMaster;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
+    R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofMwpcReader* unpackmwpc;
     R3BSofTwimReader* unpacktwim;
     R3BSofToFWReader* unpacktofw;
@@ -134,15 +137,22 @@ void main_online()
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
 
     if (fSci)
+    {
         unpacksci = new R3BSofSciReader((EXT_STR_h101_SOFSCI_t*)&ucesb_struct.sci, offsetof(EXT_STR_h101, sci));
+        unpackWRMaster = new R3BWhiterabbitMasterReader(
+            (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x500);
+    }
 
     if (fAms)
         unpackams = new R3BAmsReader((EXT_STR_h101_AMS*)&ucesb_struct.ams, offsetof(EXT_STR_h101, ams));
 
     if (fCalifa)
+    {
         unpackcalifa =
             new R3BCalifaFebexReader((EXT_STR_h101_CALIFA*)&ucesb_struct.califa, offsetof(EXT_STR_h101, califa));
-
+        unpackWRCalifa = new R3BWhiterabbitCalifaReader(
+            (EXT_STR_h101_WRCALIFA*)&ucesb_struct.wrcalifa, offsetof(EXT_STR_h101, wrcalifa), 0xa00, 0xb00);
+    }
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
         unpackmwpc = new R3BSofMwpcReader((EXT_STR_h101_SOFMWPC_t*)&ucesb_struct.mwpc, offsetof(EXT_STR_h101, mwpc));
 
@@ -153,7 +163,8 @@ void main_online()
         unpacktofw = new R3BSofToFWReader((EXT_STR_h101_SOFTOFW_t*)&ucesb_struct.tofw, offsetof(EXT_STR_h101, tofw));
 
     if (fScalers)
-	unpackscalers = new R3BSofScalersReader((EXT_STR_h101_SOFSCALERS_t*)&ucesb_struct.scalers,offsetof(EXT_STR_h101, scalers));
+        unpackscalers =
+            new R3BSofScalersReader((EXT_STR_h101_SOFSCALERS_t*)&ucesb_struct.scalers, offsetof(EXT_STR_h101, scalers));
 
     if (fNeuland)
         unpackneuland = new R3BNeulandTamexReader((EXT_STR_h101_raw_nnp_tamex_t*)&ucesb_struct.raw_nnp,
@@ -170,6 +181,8 @@ void main_online()
     {
         unpacksci->SetOnline(NOTstoremappeddata);
         source->AddReader(unpacksci);
+        unpackWRMaster->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRMaster);
     }
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
     {
@@ -185,6 +198,8 @@ void main_online()
     {
         unpackcalifa->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackcalifa);
+        unpackWRCalifa->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRCalifa);
     }
     if (fTwim)
     {
@@ -198,8 +213,8 @@ void main_online()
     }
     if (fScalers)
     {
-	unpackscalers->SetOnline(NOTstoremappeddata);
-	source->AddReader(unpackscalers);
+        unpackscalers->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackscalers);
     }
     if (fNeuland)
     {
@@ -225,8 +240,8 @@ void main_online()
     }
     else
     {
-        if (!Cal_level_califa)
-        {   // SOFIA and CALIFA mapping: Ascii files
+        if (!fCal_level_califa)
+        { // SOFIA and CALIFA mapping: Ascii files
             TList* parList1 = new TList();
             parList1->Add(new TObjString(sofiacalfilename));
             parList1->Add(new TObjString(califamapfilename));
@@ -235,13 +250,13 @@ void main_online()
             rtdb->print();
         }
         else
-        {   // SOFIA, CALIFA mapping and CALIFA calibration parameters
+        {                                         // SOFIA, CALIFA mapping and CALIFA calibration parameters
             parIo1->open(sofiacalfilename, "in"); // Ascii file
             rtdb->setFirstInput(parIo1);
             rtdb->print();
             Bool_t kParameterMerged = kFALSE;
             FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged); // Root file
-            TList *parList2 = new TList();
+            TList* parList2 = new TList();
             parList2->Add(new TObjString(califacalfilename));
             parIo2->open(parList2);
             rtdb->setSecondInput(parIo2);
@@ -304,7 +319,7 @@ void main_online()
     }
 
     // CALIFA
-    if (fCalifa)
+    if (fCalifa && fCal_level_califa)
     {
         // R3BCalifaMapped2CrystalCal ---
         R3BCalifaMapped2CrystalCal* CalifaMap2Cal = new R3BCalifaMapped2CrystalCal();
@@ -312,8 +327,8 @@ void main_online()
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
         R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
-        CalifaCal2Hit->SetCrystalThreshold(80.);//80keV
-        CalifaCal2Hit->SetDRThreshold(10000.);//10MeV
+        CalifaCal2Hit->SetCrystalThreshold(100.); // 100keV
+        CalifaCal2Hit->SetDRThreshold(10000.);    // 10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(CalifaCal2Hit);
     }
@@ -373,6 +388,11 @@ void main_online()
     }
 
     // Add online task ------------------------------------
+    if (fScalers)
+    {
+        R3BSofScalersOnlineSpectra* scalersonline = new R3BSofScalersOnlineSpectra();
+        run->AddTask(scalersonline);
+    }
     if (fFrs && fMusic && fSci)
     {
         R3BSofFrsOnlineSpectra* frsonline = new R3BSofFrsOnlineSpectra();
@@ -405,17 +425,17 @@ void main_online()
     if (fCalifa)
     {
         R3BCalifaOnlineSpectra* CalifaOnline = new R3BCalifaOnlineSpectra();
-        CalifaOnline->SetRange_max(3000);// 3000 -> 3MeV
+        CalifaOnline->SetRange_max(3000); // 3000 -> 3MeV
         CalifaOnline->SetBinChannelFebex(500);
-        CalifaOnline->SetMaxBinFebex(3000);// 3000 -> 3MeV
+        CalifaOnline->SetMaxBinFebex(3000); // 3000 -> 3MeV
         run->AddTask(CalifaOnline);
     }
 
     if (fMusic && fAms && fCalifa && fTwim)
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
-        CalifaAmsOnline->SetZproj(20.0);// Projectile atomic number
-        CalifaAmsOnline->SetCalifa_bins_maxrange(500, 3000);// 3000 -> 3MeV
+        CalifaAmsOnline->SetZproj(20.0);                     // Projectile atomic number
+        CalifaAmsOnline->SetCalifa_bins_maxrange(500, 3000); // 3000 -> 3MeV
         run->AddTask(CalifaAmsOnline);
     }
 
@@ -423,12 +443,12 @@ void main_online()
     {
         R3BSofTwimOnlineSpectra* twonline = new R3BSofTwimOnlineSpectra();
         run->AddTask(twonline);
-      // Twim-Music correlations
-      if (fMusic)
-      {
-        R3BSofTwimvsMusicOnlineSpectra* twmusonline = new R3BSofTwimvsMusicOnlineSpectra();
-        run->AddTask(twmusonline);
-      }
+        // Twim-Music correlations
+        if (fMusic)
+        {
+            R3BSofTwimvsMusicOnlineSpectra* twmusonline = new R3BSofTwimvsMusicOnlineSpectra();
+            run->AddTask(twmusonline);
+        }
     }
 
     if (fMwpc1)
@@ -481,11 +501,6 @@ void main_online()
     {
         R3BSofToFWOnlineSpectra* tofwonline = new R3BSofToFWOnlineSpectra();
         run->AddTask(tofwonline);
-    }
-    if (fScalers)
-    {
-	R3BSofScalersOnlineSpectra* scalersonline = new R3BSofScalersOnlineSpectra();
-        run->AddTask(scalersonline);
     }
 
     if (fTofW && fMwpc3 && fMwpc2 && fTwim && fSci && fTracking)
