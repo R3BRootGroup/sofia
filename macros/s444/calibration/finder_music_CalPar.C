@@ -33,7 +33,8 @@ void finder_music_CalPar()
 
     // Create input -----------------------------------------
     // TString filename = "--stream=lxir123:7803";
-    TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
+    //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
+    TString filename = "~/lmd/sofia2020/main0014_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_musicCal.root";
@@ -45,18 +46,15 @@ void finder_music_CalPar()
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
     TString upexps_dir = ucesb_dir + "/../upexps/";
+    //TString upexps_dir = "/u/land/fake_cvmfs/upexps";
     TString ucesb_path;
     if (expId == 444)
     {
-        ucesb_path =
-            "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-        // ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi"; // FIXME
+         ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
     }
     else if (expId == 467)
     {
-        ucesb_path =
-            "/u/land/lynx.landexp/202002_s467/upexps/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
-        // ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+         ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
     }
     else
     {
@@ -72,10 +70,10 @@ void finder_music_CalPar()
     Bool_t fMusic = true;        // R3B-Music: Ionization chamber for charge-Z
     Float_t PosZ_Music = 325.0;  // mm
     Bool_t fSci = false;         // Start: Plastic scintillator for ToF
-    Bool_t fMwpc1 = false;       // MWPC1 for tracking of fragments in front of target
+    Bool_t fMwpc1 = true;        // MWPC1 for tracking of fragments in front of target
     Float_t PosZ_MWPC1 = 2835.0; // mm
     Bool_t fTwim = false;        // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc2 = true;        // MWPC2 for tracking of fragments before GLAD
+    Bool_t fMwpc2 = false;       // MWPC2 for tracking of fragments before GLAD
     Float_t PosZ_MWPC2 = 3493.0; // mm
 
     // Calibration files ------------------------------------

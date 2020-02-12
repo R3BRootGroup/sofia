@@ -150,10 +150,10 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
         LOG(WARNING) << "R3BSofTrackingOnlineSpectra: Mwpc1HitData not found";
     }
 
-    fMwpc2HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc2HitData");
+    fMwpc2HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc1HitData");
     if (!fMwpc2HitDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: Mwpc2HitData not found";
+        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: Mwpc1HitData not found";
         return kFATAL;
     }
 
@@ -401,13 +401,14 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
                 if (!hit)
                     continue;
                 zrand = gRandom->Uniform(0., fDist_acelerator_glad);
-                fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (hit->GetY() - mwpc0y) / 3493. * zrand);
-                ytarget = mwpc0y + (hit->GetY() - mwpc0y) / 3493. * fPosTarget;
+                fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (hit->GetY() - mwpc0y) / 2835. * zrand);
+                ytarget = mwpc0y + (hit->GetY() - mwpc0y) / 2835. * fPosTarget;
+                fh2_tracking_planeXZ->Fill(zrand, mwpc0x + (hit->GetX() - mwpc0x) / 2835. * zrand);
+                xtarget = mwpc0x + (hit->GetX() - mwpc0x) / 2835. * fPosTarget;
             }
-        }
 
         // Fill music hit data
-        if (fMusicHitDataCA && fMusicHitDataCA->GetEntriesFast() > 0 && mwpc0x > -300.)
+/*        if (fMusicHitDataCA && fMusicHitDataCA->GetEntriesFast() > 0 && mwpc0x > -300.)
         {
             nHits = fMusicHitDataCA->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
@@ -421,9 +422,10 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             fh2_tracking_planeXZ->Fill(zrand, mwpc0x + anglemus * zrand);
             xtarget = mwpc0x + anglemus * fPosTarget;
         }
-
+*/
         if (xtarget > -500. && ytarget > -500.)
             fh2_target_PosXY->Fill(xtarget, ytarget);
+    }
     }
 
     // Fill tracking data from GLAD
