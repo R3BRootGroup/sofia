@@ -519,12 +519,15 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
     {
         Double_t e1 = 0., e2 = 0., E[NbSections][NbAnodes], DT[NbSections][NbAnodes + NbSections];
         Double_t n1 = 0., n2 = 0.;
+	UInt_t mult[NbSections][NbAnodes+NbSections];
         for (Int_t j = 0; j < NbSections; j++)
             for (Int_t i = 0; i < NbAnodes; i++)
                 E[j][i] = 0.; // mult=1 !!!
         for (Int_t j = 0; j < NbSections; j++)
-            for (Int_t i = 0; i < NbAnodes + NbSections; i++)
+            for (Int_t i = 0; i < NbAnodes + NbSections; i++){
                 DT[j][i] = 0.; // mult=1 !!!
+		mult[j][i] = 0;
+	    }
         Int_t nHits = fMappedItemsTwim->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
@@ -533,7 +536,8 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
                 continue;
             fh1_Twimmap_mult[hit->GetSecID()]->Fill(hit->GetAnodeID());
             fh1_twimmap_E[hit->GetSecID()][hit->GetAnodeID()]->Fill(hit->GetEnergy());
-            if (DT[hit->GetSecID()][hit->GetAnodeID()] == 0 && E[hit->GetSecID()][hit->GetAnodeID()] == 0 &&
+            mult[hit->GetSecID()][hit->GetAnodeID()]++;
+	    if (DT[hit->GetSecID()][hit->GetAnodeID()] == 0 && E[hit->GetSecID()][hit->GetAnodeID()] == 0 &&
                 hit->GetEnergy() < 8192 && hit->GetEnergy() > 0)
             {
                 E[hit->GetSecID()][hit->GetAnodeID()] = hit->GetEnergy(); // mult=1 !!!
@@ -555,17 +559,29 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
         {
             for (Int_t i = 0; i < NbAnodes; i++)
             {
-                fh1_twimmap_DT[j][i]->Fill(DT[j][i] - DT[j][NbAnodes]);
-                fh2_twim_EneRawVsDriftTime[j][i]->Fill(E[j][i], DT[j][i] - DT[j][NbAnodes]);
-            }
-            for (Int_t i = 0; i < NbAnodes - 1; i++)
+		if( (mult[j][i]==1) && (mult[j][NbAnodes]==1))
+		{
+			fh1_twimmap_DT[j][i]->Fill(DT[j][i] - DT[j][NbAnodes]);
+			fh2_twim_EneRawVsDriftTime[j][i]->Fill(E[j][i], DT[j][i] - DT[j][NbAnodes]);
+		}
+	    }
+	    for (Int_t i = 0; i < NbAnodes - 1; i++)
             {
-                fh2_twim_DTvsDT[j][i]->Fill(DT[j][i] - DT[j][NbAnodes], DT[j][i + 1] - DT[j][NbAnodes]);
-            }
-            fh2_twim_ESum_vs_diffDT[j]->Fill((DT[j][15] - DT[j][NbAnodes]) - (DT[j][0] - DT[j][NbAnodes]),
-                                             (e1 + e2) / (n1 + n2));
-            fh2_twim_EneRawSumVsDriftTime[j]->Fill(DT[j][5] - DT[j][NbAnodes], (e1 + e2) / (n1 + n2));
-        }
+		if( (mult[j][i]==1) && (mult[j][i+1]==1) && (mult[j][NbAnodes]==1) )
+		{
+			fh2_twim_DTvsDT[j][i]->Fill(DT[j][i] - DT[j][NbAnodes], DT[j][i + 1] - DT[j][NbAnodes]);
+		}
+	    }	
+	    if( (mult[j][15]==1) && (mult[j][0]==1) && (mult[j][NbAnodes]==1) )
+	    {
+		fh2_twim_ESum_vs_diffDT[j]->Fill((DT[j][15] - DT[j][NbAnodes]) - (DT[j][0] - DT[j][NbAnodes]),
+			                          (e1 + e2) / (n1 + n2));
+	    }
+	    if( (mult[j][5]==1) && (mult[j][NbAnodes]==1) )
+	    {
+		fh2_twim_EneRawSumVsDriftTime[j]->Fill(DT[j][5] - DT[j][NbAnodes], (e1 + e2) / (n1 + n2));
+	    }
+	}
         fh1_twim_ESum[0]->Fill(e1 / n1);
         fh1_twim_ESum[1]->Fill(e2 / n2);
         fh1_twim_ESum[2]->Fill((e1 + e2) / (n1 + n2));
