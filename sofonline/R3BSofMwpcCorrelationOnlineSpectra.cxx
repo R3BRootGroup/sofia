@@ -170,9 +170,9 @@ InitStatus R3BSofMwpcCorrelationOnlineSpectra::Init()
     Name1 = "fh2_" + fNameDet1 + "-" + fNameDet2 + "_hitx";
     Name2 = "Position-X: " + fNameDet1 + " vs " + fNameDet2;
     if (fNameDet2 != "Mwpc3")
-        fh2_mwpc_hitx = new TH2F(Name1, Name2, 400, -100., 100., 400, -100., 100.);
+        fh2_mwpc_hitx = new TH2F(Name1, Name2, 500, -100., 100., 500, -100., 100.);
     else
-        fh2_mwpc_hitx = new TH2F(Name1, Name2, 400, -100., 100., 900, -450, 450);
+        fh2_mwpc_hitx = new TH2F(Name1, Name2, 600, -100., 100., 1200, -450, 450);
     fh2_mwpc_hitx->GetXaxis()->SetTitle(fNameDet1 + "-X [mm]");
     fh2_mwpc_hitx->GetYaxis()->SetTitle(fNameDet2 + "-X [mm]");
     fh2_mwpc_hitx->GetYaxis()->SetTitleOffset(1.1);
@@ -188,9 +188,9 @@ InitStatus R3BSofMwpcCorrelationOnlineSpectra::Init()
     Name1 = "fh2_" + fNameDet1 + "-" + fNameDet2 + "_hity";
     Name2 = "Position-Y: " + fNameDet1 + " vs " + fNameDet2;
     if (fNameDet2 != "Mwpc3")
-        fh2_mwpc_hity = new TH2F(Name1, Name2, 400, -100., 100., 400, -100., 100.);
+        fh2_mwpc_hity = new TH2F(Name1, Name2, 500, -100., 100., 500, -100., 100.);
     else
-        fh2_mwpc_hity = new TH2F(Name1, Name2, 400, -100., 100., 600, -300., 300.);
+        fh2_mwpc_hity = new TH2F(Name1, Name2, 600, -100., 100., 800, -300., 300.);
     fh2_mwpc_hity->GetXaxis()->SetTitle(fNameDet1 + "-Y [mm]");
     fh2_mwpc_hity->GetYaxis()->SetTitle(fNameDet2 + "-Y [mm]");
     fh2_mwpc_hity->GetYaxis()->SetTitleOffset(1.1);

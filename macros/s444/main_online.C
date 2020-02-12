@@ -82,7 +82,7 @@ void main_online()
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
-    Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
+    Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
