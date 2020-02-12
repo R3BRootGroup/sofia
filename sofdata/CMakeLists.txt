@@ -18,6 +18,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
+${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})

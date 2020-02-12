@@ -4,7 +4,7 @@
 #include "TObject.h"
 #include "FairLogger.h"
 
-#include "../../sci/R3BSofSciTcal2RawPosPar.h"
+#include "detectors_cfg.h"
 
 
 
@@ -17,9 +17,6 @@ class R3BSofSciSingleTcalData : public TObject
   public:
     // Default Constructor
     R3BSofSciSingleTcalData();
-
-    // Standard Constructor
-    R3BSofSciSingleTcalData(Double_t t, Double_t p, Double_t m);
 
     // Destructor
     virtual ~R3BSofSciSingleTcalData() {}
