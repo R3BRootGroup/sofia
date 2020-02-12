@@ -42,6 +42,7 @@ sciData/R3BSofSciCalData.cxx
 sciData/R3BSofSciHitData.cxx
 tofwData/R3BSofToFWMappedData.cxx
 tofwData/R3BSofToFWTcalData.cxx
+tofwData/R3BSofToFWSingleTcalData.cxx
 tofwData/R3BSofToFWCalData.cxx
 tofwData/R3BSofTofWHitData.cxx
 twimData/R3BSofTwimMappedData.cxx
