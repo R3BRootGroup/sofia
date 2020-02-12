@@ -36,10 +36,9 @@ void sofia_online()
     const Int_t expId = 444; // select experiment: 444 or 467
 
     // Create input -----------------------------------------
-    TString filename = "--stream=lxir123:7803";
+    //TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
     //TString filename = "~/lmd/califa2020/data_0312.lmd";
-    //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/main0028_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
@@ -60,7 +59,8 @@ void sofia_online()
     TString ucesb_path;
     if (expId == 444)
     {
-        ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+        ucesb_path = "/u/land/lynx.landexp/202002_s444/upexps/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+        //ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
     }
     else if (expId == 467)
     {
@@ -358,6 +358,9 @@ void sofia_online()
         // --- Mapped 2 Tcal for SofToFW
         R3BSofToFWMapped2Tcal* SofToFWMap2Tcal = new R3BSofToFWMapped2Tcal();
         run->AddTask(SofToFWMap2Tcal);
+        // --- Tcal 2 SingleTcal for SofToFW
+        R3BSofTofWTcal2SingleTcal* SofTofWTcal2STcal = new R3BSofTofWTcal2SingleTcal();
+        run->AddTask(SofTofWTcal2STcal);
     }
 
     // Add online task ------------------------------------

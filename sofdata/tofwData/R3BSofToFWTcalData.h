@@ -21,7 +21,7 @@ class R3BSofToFWTcalData : public TObject
     inline const Double_t& GetRawTimeNs() const { return fRawTimeNs; }
 
   private:
-    UShort_t fDetector; // 1..n (2014, n=2, 1=S2, 2=Cave C)
+    UShort_t fDetector; // 1..28
     UShort_t fPmt;      // 1..3
     Double_t fRawTimeNs;
 
