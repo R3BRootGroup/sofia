@@ -17,5 +17,4 @@
 #define NUMBER_OF_SOFTOFW_PLASTICS         28
 #define NUMBER_OF_SOFTOFW_PMTS_PER_PLASTIC 2
 
-
 #endif

@@ -4,6 +4,8 @@
 #include "FairTask.h"
 #include "TH1F.h"
 
+#include "detectors_cfg.h"
+
 class TClonesArray;
 class R3BSofTcalPar;
 class R3BEventHeader;
