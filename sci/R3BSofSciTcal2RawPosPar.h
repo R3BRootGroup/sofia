@@ -4,6 +4,7 @@
 #include "FairTask.h"
 #include "TH1F.h"
 #include "TH1D.h"
+#include "detectors_cfg.h"
 
 #include "detectors_cfg.h"
 
@@ -12,7 +13,6 @@ class R3BSofSciRawPosPar;
 class R3BEventHeader;
 
 
-// for the engineering run (fNumDetectors(1) instead of fNumDetectors(2)
 #define NUMBER_OF_SOFSCI_SIGNALS NUMBER_OF_SOFSCI_DETECTORS
 
 
