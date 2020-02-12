@@ -41,7 +41,7 @@ void main_online()
     // Create input -----------------------------------------
     TString filename = "--stream=lxir123:7803";
     // TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    // TString filename = "~/lmd/califa2020/data_0312.lmd";
+    //TString filename = "~/lmd/sofia2020/main0014_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
@@ -140,7 +140,7 @@ void main_online()
     {
         unpacksci = new R3BSofSciReader((EXT_STR_h101_SOFSCI_t*)&ucesb_struct.sci, offsetof(EXT_STR_h101, sci));
         unpackWRMaster = new R3BWhiterabbitMasterReader(
-            (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x500);
+            (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x300);
     }
 
     if (fAms)
