@@ -103,8 +103,8 @@ InitStatus R3BSofTofWTcal2SingleTcal::ReInit()
 void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
 {
 
-    // Reset entries in output arrays, local arrays
-    Reset();
+  // Reset entries in output arrays, local arrays
+  Reset();
 
   int nDets = int(NUMBER_OF_SOFTOFW_PLASTICS);
   int nChs = int(NUMBER_OF_SOFTOFW_PMTS_PER_PLASTIC);
