@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#define MAX_RAWPOSPAR 2
+#define MAX_RAWPOSPAR 2*NUMBER_OF_SOFSCI_DETECTORS
 
 using std::cout;
 using std::endl;
