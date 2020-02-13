@@ -2,14 +2,11 @@
 #define __R3BSOFSCIRAWTOFPAR_H__
 
 #include "FairParGenericSet.h" // for FairParGenericSet
-
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
 #include <TObjString.h>
-
 #include "detectors_cfg.h"
-
 class FairParamList;
 
 class R3BSofSciRawTofPar : public FairParGenericSet
@@ -61,8 +58,6 @@ class R3BSofSciRawTofPar : public FairParGenericSet
     { 
       return (Double_t)fAllSignalsRawTofParams->GetAt(rank); 
     }
-
-  
   void SetFirstStart(Int_t detFirstStart)
   {
     fFirstStaSci = detFirstStart;
