@@ -8,6 +8,8 @@
 #include "TObject.h"
 #include <TObjString.h>
 
+#include "detectors_cfg.h"
+
 class FairParamList;
 
 class R3BSofSciRawPosPar : public FairParGenericSet

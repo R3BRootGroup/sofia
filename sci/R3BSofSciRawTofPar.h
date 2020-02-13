@@ -8,6 +8,8 @@
 #include "TObject.h"
 #include <TObjString.h>
 
+#include "detectors_cfg.h"
+
 class FairParamList;
 
 class R3BSofSciRawTofPar : public FairParGenericSet
@@ -62,7 +64,7 @@ class R3BSofSciRawTofPar : public FairParGenericSet
     }
   void SetSignalParams(Double_t parval, UInt_t rank)     
     { 
-      fAllSignalsTofParams->AddAt(parval, rank); 
+      fAllSignalsRawTofParams->AddAt(parval, rank); 
     }
   
   
