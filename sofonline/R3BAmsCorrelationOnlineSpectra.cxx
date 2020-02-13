@@ -302,7 +302,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
     // CANVAS Multiplicity
     cCalifaMult = new TCanvas("Califa_correlated_multiplicity", "Califa_Multiplicity", 10, 10, 500, 500);
-    fh1_Califa_MultHit = new TH1F("fh1_Califa_MultHit", "Califa multiplicity", 21, -0.5, 20.5);
+    fh1_Califa_MultHit = new TH1F("fh1sof_Califa_MultHit", "Califa multiplicity", 21, -0.5, 20.5);
     fh1_Califa_MultHit->GetXaxis()->SetTitle("Multiplicity");
     fh1_Califa_MultHit->GetXaxis()->CenterTitle(true);
     fh1_Califa_MultHit->GetYaxis()->CenterTitle(true);
@@ -315,7 +315,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     cCalifaCoinE = new TCanvas("Califa_Energy_correlation_hits", "Energy correlations, hit level", 10, 10, 500, 500);
 
     fh2_Califa_coinE =
-        new TH2F("fh2_Califa_energy_correlations", "Califa energy correlations", bins, minE, maxE, bins, minE, maxE);
+        new TH2F("fh2sof_Califa_energy_correlations", "Califa energy correlations", bins, minE, maxE, bins, minE, maxE);
     fh2_Califa_coinE->GetXaxis()->SetTitle("Energy (keV)");
     fh2_Califa_coinE->GetYaxis()->SetTitle("Energy (keV)");
     fh2_Califa_coinE->GetYaxis()->SetTitleOffset(1.2);
@@ -327,7 +327,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     cCalifaCoinTheta = new TCanvas("Califa_Theta_correlation_hits", "Theta correlations, hit level", 10, 10, 500, 500);
 
     fh2_Califa_coinTheta =
-        new TH2F("fh2_Califa_theta_correlations", "Califa theta correlations", 50, 0, 100, 50, 0, 100);
+        new TH2F("fh2sof_Califa_theta_correlations", "Califa theta correlations", 50, 0, 100, 50, 0, 100);
     fh2_Califa_coinTheta->GetXaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_coinTheta->GetYaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_coinTheta->GetYaxis()->SetTitleOffset(1.2);
@@ -339,7 +339,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     cCalifaCoinPhi = new TCanvas("Califa_Phi_correlation_hits", "Phi correlations, hit level", 10, 10, 500, 500);
 
     fh2_Califa_coinPhi =
-        new TH2F("fh2_Califa_phi_correlations", "Califa phi correlations", 90, -180, 180, 90, -180, 180);
+        new TH2F("fh2sof_Califa_phi_correlations", "Califa phi correlations", 90, -180, 180, 90, -180, 180);
     fh2_Califa_coinPhi->GetXaxis()->SetTitle("Phi [degrees]");
     fh2_Califa_coinPhi->GetYaxis()->SetTitle("Phi [degrees]");
     fh2_Califa_coinPhi->GetYaxis()->SetTitleOffset(1.2);
@@ -349,7 +349,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
     // CANVAS Theta vs Phi
     cCalifa_angles = new TCanvas("Califa_theta_vs_phi", "Theta vs Phi", 10, 10, 500, 500);
-    fh2_Califa_theta_phi = new TH2F("fh2_Califa_theta_vs_phi", "Califa theta vs phi", 50, 0, 90, 180, -180, 180);
+    fh2_Califa_theta_phi = new TH2F("fh2sof_Califa_theta_vs_phi", "Califa theta vs phi", 50, 0, 90, 180, -180, 180);
     fh2_Califa_theta_phi->GetXaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_theta_phi->GetYaxis()->SetTitle("Phi [degrees]");
     fh2_Califa_theta_phi->GetYaxis()->SetTitleOffset(1.2);
@@ -359,7 +359,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
     // CANVAS Theta vs energy
     sprintf(Name1, "Califa_calorimeter_Theta_vs_Energy");
-    sprintf(Name2, "fh_Califa_theta_vs_total_energy");
+    sprintf(Name2, "fh2sof_Califa_theta_vs_total_energy");
     sprintf(Name3, "Califa theta vs energy for full calorimeter");
     cCalifa_theta_energy = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     fh2_Califa_theta_energy = new TH2F(Name2, Name3, 360, 0, 90, bins, minE, maxE);
@@ -372,7 +372,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
     // CANVAS Total energy
     sprintf(Name1, "Califa_calorimeter_total_Energy_per_hit");
-    sprintf(Name2, "fh_Califa_total_energy");
+    sprintf(Name2, "fh1sof_Califa_total_energy");
     sprintf(Name3, "Califa total energy per hit for the full calorimeter");
     cCalifa_hitenergy = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     fh1_Califa_total_energy = new TH1F(Name2, Name3, bins, minE, maxE);
@@ -396,15 +396,18 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
         TFolder* hitfol = new TFolder("Hit", "Hit AMS-CALIFA-MUSICs correlation info");
         for (Int_t i = 0; i < fNbDet; i++)
             hitfol->Add(cHit[i]);
-        mainfol->Add(hitfol);
+        if (fHitItemsAms)       
+          mainfol->Add(hitfol);
 
         TFolder* CorSidefol =
             new TFolder("Correlations_per_side", "Hit AMS-CALIFA-MUSICs info for correlations per side");
-        CorSidefol->Add(cHitAngles);
-        CorSidefol->Add(cHitThetaCor);
-        CorSidefol->Add(cHitPhiCor);
-        CorSidefol->Add(cHitEnergyCor);
 
+        if (fHitItemsAms){
+         CorSidefol->Add(cHitAngles);
+         CorSidefol->Add(cHitThetaCor);
+         CorSidefol->Add(cHitPhiCor);
+         CorSidefol->Add(cHitEnergyCor);
+        }
         if (fHitItemsCalifa)
         {
             CorSidefol->Add(cCalifaMult);
@@ -468,7 +471,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BAmsCorrelationOnlineSpectra::Exec FairRootManager not found";
 
     // Fill Califa-hit data
-    if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
+ /*   if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
     {
         Int_t nHits = fHitItemsCalifa->GetEntriesFast();
 
@@ -484,7 +487,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
             ene = hit->GetEnergy();
         }
     }
-
+*/
     Double_t z_music = 0., z_twim = 0.;
 
     // Fill music-hit data

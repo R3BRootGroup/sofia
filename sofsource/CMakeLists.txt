@@ -7,6 +7,8 @@ set(SYSTEM_INCLUDE_DIRECTORIES ${SYSTEM_INCLUDE_DIRECTORIES} ${BASE_INCLUDE_DIRE
 set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bsource
+${R3BROOT_SOURCE_DIR}/r3bbase
+${R3BROOT_SOURCE_DIR}/r3bdata/wrData
 ${R3BSOF_SOURCE_DIR}/sofsource
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
@@ -25,6 +27,7 @@ include_directories(SYSTEM ${SYSTEM_INCLUDE_DIRECTORIES})
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
+R3BSofWhiterabbitReader.cxx
 R3BSofSciReader.cxx
 R3BSofToFWReader.cxx
 R3BSofTwimReader.cxx
@@ -34,6 +37,7 @@ R3BSofScalersReader.cxx
 )
 
 Set(STRUCT_HEADERS
+ext_h101_wrsofia.h
 ext_h101_sofsci.h
 ext_h101_softofw.h
 ext_h101_softwim.h

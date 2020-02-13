@@ -30,6 +30,7 @@ class R3BMusicOnlineSpectra;
 class R3BAmsOnlineSpectra;
 class R3BCalifaOnlineSpectra;
 class R3BSofFrsOnlineSpectra;
+class R3BSofTrackingOnlineSpectra;
 
 /**
  * This taks reads General SOFIA data and plots online histograms
@@ -92,7 +93,9 @@ class R3BSofOnlineSpectra : public FairTask
     virtual void Reset_GENERAL_Histo();
 
   private:
-    //  TClonesArray* fMappedItemsWR;         /**< Array with mapped items.*/
+    TClonesArray* fWRItemsMaster;     /**< Array with WR-Master items. */
+    TClonesArray* fWRItemsSofia;      /**< Array with WR-Sofia items. */
+    TClonesArray* fWRItemsCalifa;     /**< Array with WR-Califa items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */
@@ -112,12 +115,14 @@ class R3BSofOnlineSpectra : public FairTask
     R3BAmsOnlineSpectra* fAmsOnline;
     R3BCalifaOnlineSpectra* fCalifaOnline;
     R3BSofFrsOnlineSpectra* fFrsOnline;
+    R3BSofTrackingOnlineSpectra* fTrackOnline;
 
     // Canvas
-    TCanvas *cTrigger, *cWr;
+    TCanvas *cTrigger, *cWr, *cWrs;
 
     // Unpack
     TH1F *fh1_trigger, *fh1_wr;
+    TH1F* fh1_wrs[2];
 
   public:
     ClassDef(R3BSofOnlineSpectra, 0)
