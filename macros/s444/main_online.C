@@ -19,6 +19,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_SOFSCI_onion_t sci;
     EXT_STR_h101_AMS_t ams;
     EXT_STR_h101_WRMASTER_t wrmaster;
+    EXT_STR_h101_WRSOFIA_t wrsofia;
     EXT_STR_h101_CALIFA_t califa;
     EXT_STR_h101_WRCALIFA_t wrcalifa;
     EXT_STR_h101_SOFTWIM_onion_t twim;
@@ -41,11 +42,12 @@ void main_online()
     // Create input -----------------------------------------
     TString filename = "--stream=lxir123:7803";
     // TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/main0014_0001.lmd";
+    //TString filename = "~/lmd/sofia2020/main0014_1_stitch.lmd";
+    //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
-    Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
+    Bool_t fCal_level_califa = true;  // set true if there exists a file with the calibration parameters
     Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
     Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = false;    // if true, don't store hit data in the root file
@@ -124,6 +126,7 @@ void main_online()
     R3BMusicReader* unpackmusic;
     R3BSofSciReader* unpacksci;
     R3BWhiterabbitMasterReader* unpackWRMaster;
+    R3BSofWhiterabbitReader* unpackWRSofia;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
@@ -141,6 +144,8 @@ void main_online()
         unpacksci = new R3BSofSciReader((EXT_STR_h101_SOFSCI_t*)&ucesb_struct.sci, offsetof(EXT_STR_h101, sci));
         unpackWRMaster = new R3BWhiterabbitMasterReader(
             (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x300);
+        unpackWRSofia = new R3BSofWhiterabbitReader(
+            (EXT_STR_h101_WRSOFIA*)&ucesb_struct.wrsofia, offsetof(EXT_STR_h101, wrsofia), 0x500);
     }
 
     if (fAms)
@@ -183,6 +188,8 @@ void main_online()
         source->AddReader(unpacksci);
         unpackWRMaster->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRMaster);
+        unpackWRSofia->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRSofia);
     }
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
     {
@@ -431,10 +438,10 @@ void main_online()
         run->AddTask(CalifaOnline);
     }
 
-    if (fMusic && fAms && fCalifa && fTwim)
+    if (fMusic && fCalifa && fTwim)
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
-        CalifaAmsOnline->SetZproj(20.0);                     // Projectile atomic number
+        CalifaAmsOnline->SetZproj(6.0);                     // Projectile atomic number
         CalifaAmsOnline->SetCalifa_bins_maxrange(500, 3000); // 3000 -> 3MeV
         run->AddTask(CalifaAmsOnline);
     }

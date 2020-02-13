@@ -111,8 +111,8 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
     Int_t planeId;
     Int_t padId;
     Int_t padmx = -1, padmy = -1;
-    Int_t q = 0, qmx = 0, qmy = 0, qleft = 0, qright = 0, qdown = 0, qup = 0;
-    Double_t x = 0., y = 0.;
+    Double_t q = 0, qmx = 0, qmy = 0, qleft = 0, qright = 0, qdown = 0, qup = 0;
+    Double_t x = -1000., y = -1000.;
 
     for (Int_t i = 0; i < Mw3PadsX; i++)
         fx[i] = 0;
@@ -144,15 +144,17 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
     if (padmx > 0 && padmy > 0 && padmx + 1 < Mw3PadsX && padmy + 1 < Mw3PadsY && qmx > 0 && qmy > 0)
     {
         // Obtain position X ----
-        qleft = fx[padmx - 1];
-        qright = fx[padmx + 1];
+        qleft = (Double_t)fx[padmx - 1];
+        qright = (Double_t)fx[padmx + 1];
         // std::cout<<qleft<<" "<<qright<<std::endl;
-        x = GetPositionX(qmx, padmx, qleft, qright);
+        if(qleft>0 && qright>0)x = GetPositionX(qmx, padmx, qleft, qright);
 
         // Obtain position Y ----
         qdown = fy[padmy - 1];
         qup = fy[padmy + 1];
-        y = GetPositionY(qmy, padmy, qdown, qup);
+	//if(padmy==64) std::cout << padmy << " " << qmy << " " << qdown << " " << qup << std::endl;
+	//if(padmy==63) std::cout << padmy << " " << qmy << " " << qdown << " " << qup << std::endl;
+	if(qdown>0 && qup>0)y = GetPositionY(qmy, padmy, qdown, qup);
 
         AddHitData(x, y);
     }
@@ -163,25 +165,24 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
 }
 
 /* ----   Protected method to obtain the position X ---- */
-Double_t R3BSofMwpc3Cal2Hit::GetPositionX(Int_t qmax, Int_t padmax, Int_t qleft, Int_t qright)
+Double_t R3BSofMwpc3Cal2Hit::GetPositionX(Double_t qmax, Int_t padmax, Double_t qleft, Double_t qright)
 {
-    // Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
-    Double_t a2 = gRandom->Uniform(
-        -fwx / 2,
-        fwx / 2); // (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
-                  //                                         (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
+    Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
+    //Double_t a2 = gRandom->Uniform(-fwx / 2,fwx / 2); 
+    Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
+                                                           (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
 
 
     return (-1. * padmax * fwx + (fSizeX / 2) - (fwx / 2) - a2); // Left is positive and right negative
 }
 
 /* ----   Protected method to obtain the position Y ---- */
-Double_t R3BSofMwpc3Cal2Hit::GetPositionY(Int_t qmax, Int_t padmax, Int_t qdown, Int_t qup)
+Double_t R3BSofMwpc3Cal2Hit::GetPositionY(Double_t qmax, Int_t padmax, Double_t qdown, Double_t qup)
 {
-    // Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
-    Double_t a2 = gRandom->Uniform(
-        -fwy / 2, fwy / 2); //(a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
-                            //                                           (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
+    Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
+    //Double_t a2 = gRandom->Uniform(-fwy / 2, fwy / 2); 
+    Double_t a2 =(a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
+                                                                       (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
 
 
     return (padmax * fwy - (fSizeY / 2) + (fwy / 2) + a2);
