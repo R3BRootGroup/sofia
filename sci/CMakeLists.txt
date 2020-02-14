@@ -32,7 +32,9 @@ set(SRCS
 #Put here your sourcefiles
 R3BSofSciContFact.cxx
 R3BSofSciRawPosPar.cxx
+R3BSofSciRawTofPar.cxx
 R3BSofSciTcal2RawPosPar.cxx
+R3BSofSciTcal2RawTofPar.cxx
 R3BSofSciTcal2SingleTcal.cxx
 )
 
