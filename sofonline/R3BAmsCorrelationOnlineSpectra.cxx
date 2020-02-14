@@ -519,7 +519,6 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
     // Conditions to fill AMS histograms
     if ((fZproj + 0.5) > z_music && (fZproj - 0.5) < z_music && z_twim > (fZproj - 1.5) && z_twim < (fZproj - 0.5))
     {
-
         // Fill Califa-hit data
         if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
         {

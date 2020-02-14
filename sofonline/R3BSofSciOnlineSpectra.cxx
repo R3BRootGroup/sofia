@@ -329,7 +329,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             }
             if ((mult[iDet * NbChannels] == 1) && (mult[iDet * NbChannels + 1] == 1))
             {
-		// x position increases from left to right : TrawRIGHT - TrawLEFT
+                // x position increases from left to right : TrawRIGHT - TrawLEFT
                 possci = iRawTimeNs[i * 2] - iRawTimeNs[i * 2 + 1];
                 fh1_RawPos_AtTcalMult1[i]->Fill(possci);
                 if (MusicZ > 0.)

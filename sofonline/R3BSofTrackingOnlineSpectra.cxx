@@ -168,7 +168,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     if (!fTrackingDataCA)
     {
         LOG(ERROR) << "R3BSofTrackingOnlineSpectra: SofTrackingData not found";
-        //return kFATAL;
+        // return kFATAL;
     }
 
     // Create histograms for detectors
@@ -388,7 +388,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             mwpc0x = hit->GetX();
-            mwpc0y = hit->GetY()+10.;// Offset in Y for alignment with the beam line
+            mwpc0y = hit->GetY() + 10.; // Offset in Y for alignment with the beam line
         }
 
         // Fill mwpc2 Hit data
@@ -407,25 +407,25 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
                 xtarget = mwpc0x + (hit->GetX() - mwpc0x) / 2835. * fPosTarget;
             }
 
-        // Fill music hit data
-/*        if (fMusicHitDataCA && fMusicHitDataCA->GetEntriesFast() > 0 && mwpc0x > -300.)
-        {
-            nHits = fMusicHitDataCA->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
-                R3BMusicHitData* hit = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
-                if (!hit)
-                    continue;
-                anglemus = hit->GetTheta();
-            }
-            zrand = gRandom->Uniform(0., fDist_acelerator_glad);
-            fh2_tracking_planeXZ->Fill(zrand, mwpc0x + anglemus * zrand);
-            xtarget = mwpc0x + anglemus * fPosTarget;
+            // Fill music hit data
+            /*        if (fMusicHitDataCA && fMusicHitDataCA->GetEntriesFast() > 0 && mwpc0x > -300.)
+                    {
+                        nHits = fMusicHitDataCA->GetEntriesFast();
+                        for (Int_t ihit = 0; ihit < nHits; ihit++)
+                        {
+                            R3BMusicHitData* hit = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
+                            if (!hit)
+                                continue;
+                            anglemus = hit->GetTheta();
+                        }
+                        zrand = gRandom->Uniform(0., fDist_acelerator_glad);
+                        fh2_tracking_planeXZ->Fill(zrand, mwpc0x + anglemus * zrand);
+                        xtarget = mwpc0x + anglemus * fPosTarget;
+                    }
+            */
+            if (xtarget > -500. && ytarget > -500.)
+                fh2_target_PosXY->Fill(xtarget, ytarget);
         }
-*/
-        if (xtarget > -500. && ytarget > -500.)
-            fh2_target_PosXY->Fill(xtarget, ytarget);
-    }
     }
 
     // Fill tracking data from GLAD

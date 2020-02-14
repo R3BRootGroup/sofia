@@ -9,6 +9,7 @@
 #include "FairTask.h"
 #include "TCanvas.h"
 #include "TH1.h"
+#include "TH1I.h"
 #include "TH2F.h"
 #include "TMath.h"
 #include <array>
@@ -17,8 +18,11 @@
 #include <iostream>
 #include <sstream>
 
-#define NbScalers               2
-#define NbChannelsPerScaler {7,56}
+#define NbScalers 2
+#define NbChannelsPerScaler \
+    {                       \
+        7, 56               \
+    }
 
 class TClonesArray;
 class R3BEventHeader;
@@ -95,7 +99,7 @@ class R3BSofScalersOnlineSpectra : public FairTask
 
     // Histograms for Mapped data : accumulate statistics per channel
     TH1I* fh1_GeneralView[NbScalers];
- 
+
   public:
     ClassDef(R3BSofScalersOnlineSpectra, 1)
 };
