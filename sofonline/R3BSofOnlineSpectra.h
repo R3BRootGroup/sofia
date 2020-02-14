@@ -93,9 +93,9 @@ class R3BSofOnlineSpectra : public FairTask
     virtual void Reset_GENERAL_Histo();
 
   private:
-    TClonesArray* fWRItemsMaster;     /**< Array with WR-Master items. */
-    TClonesArray* fWRItemsSofia;      /**< Array with WR-Sofia items. */
-    TClonesArray* fWRItemsCalifa;     /**< Array with WR-Califa items. */
+    TClonesArray* fWRItemsMaster; /**< Array with WR-Master items. */
+    TClonesArray* fWRItemsSofia;  /**< Array with WR-Sofia items. */
+    TClonesArray* fWRItemsCalifa; /**< Array with WR-Califa items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */

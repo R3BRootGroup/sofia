@@ -258,22 +258,22 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     cMwpc3XvsTof->cd();
     fh2_Mwpc3X_Tof->Draw("col");
 
-
-    for(Int_t i=0; i< NbDets; i++){
-	sprintf(Name1, "Mwpc3Y_vs_PosToF_Plastic%i",i+1);
-	cMwpc3YvsPosTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
-	sprintf(Name1, "fh2_Mwpc3Y_vs_PosToF_Plastic%i",i+1);
-	fh2_Mwpc3Y_PosTof[i] = new TH2F(Name1, Name1, 1000, -20, 20, 240, 0, 120);
-	fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetTitle("Pos ToFW-Plastic [ps]");
-	fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetTitle("MWPC3-Y [pads]");
-	fh2_Mwpc3Y_PosTof[i]->GetXaxis()->CenterTitle(true);
-	fh2_Mwpc3Y_PosTof[i]->GetYaxis()->CenterTitle(true);
-	fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetLabelSize(0.045);
-	fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetTitleSize(0.045);
-	fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetLabelSize(0.045);
-	fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetTitleSize(0.045);
-	cMwpc3YvsPosTof[i]->cd();
-	fh2_Mwpc3Y_PosTof[i]->Draw("col");
+    for (Int_t i = 0; i < NbDets; i++)
+    {
+        sprintf(Name1, "Mwpc3Y_vs_PosToF_Plastic%i", i + 1);
+        cMwpc3YvsPosTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
+        sprintf(Name1, "fh2_Mwpc3Y_vs_PosToF_Plastic%i", i + 1);
+        fh2_Mwpc3Y_PosTof[i] = new TH2F(Name1, Name1, 1000, -20, 20, 240, 0, 120);
+        fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetTitle("Pos ToFW-Plastic [ps]");
+        fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetTitle("MWPC3-Y [pads]");
+        fh2_Mwpc3Y_PosTof[i]->GetXaxis()->CenterTitle(true);
+        fh2_Mwpc3Y_PosTof[i]->GetYaxis()->CenterTitle(true);
+        fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetTitleSize(0.045);
+        cMwpc3YvsPosTof[i]->cd();
+        fh2_Mwpc3Y_PosTof[i]->Draw("col");
     }
 
     // --- --------------- --- //
@@ -303,15 +303,13 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     for (Int_t i = 0; i < NbDets; i++)
         folTwimvsToF->Add(cTwimvsTof[i]);
 
-     // --- --------------- ---
+    // --- --------------- ---
     // --- FOLDER-MWPC3Y  vs ÃPosition ToFW
     // --- --------------- ---
     TFolder* folMWPC3YvsToFPos = new TFolder("MWPC3Y_vs_ToFPos", "MWPC3Y vs TOFW position");
     for (Int_t i = 0; i < NbDets; i++)
         folMWPC3YvsToFPos->Add(cMwpc3YvsPosTof[i]);
 
-
-    
     mainfolToFW->Add(folToFWRawTof);
     mainfolToFW->Add(folTwimvsToF);
     mainfolToFW->Add(folMWPC3YvsToFPos);
@@ -344,9 +342,10 @@ void R3BSofToFWOnlineSpectra::Reset_Histo()
         // === RAW POSITION === //
         fh1_RawPos_AtTcalMult1[i]->Reset();
     }
-    for (UShort_t i = 0; i < NbDets; i++){
+    for (UShort_t i = 0; i < NbDets; i++)
+    {
         fh2_Twim_Tof[i]->Reset();
-	fh2_Mwpc3Y_PosTof[i]->Reset();
+        fh2_Mwpc3Y_PosTof[i]->Reset();
     }
 
     fh2_Mwpc3X_Tof->Reset();
@@ -466,7 +465,7 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
         // --- filling some histogramms outside the loop --- //
         // --- ----------------------------------------- --- //
         Double_t tofw = 0.;
-	Double_t tofpos = -1000;
+        Double_t tofpos = -1000;
         for (UShort_t i = 0; i < NbDets; i++)
         {
             for (UShort_t j = 0; j < NbChs; j++)
@@ -475,12 +474,12 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
             }
             if ((mult[i * NbChs] == 1) && (mult[i * NbChs + 1] == 1))
             {
-		// Y position is increasing from down to up: PosRaw = TrawDown - TrawUp
-		tofpos = (Double_t)(iRawTimeNs[i*NbChs+1] - iRawTimeNs[i*NbChs]);
+                // Y position is increasing from down to up: PosRaw = TrawDown - TrawUp
+                tofpos = (Double_t)(iRawTimeNs[i * NbChs + 1] - iRawTimeNs[i * NbChs]);
                 fh1_RawPos_AtTcalMult1[i]->Fill(tofpos);
-		if (TrawStart != -1000000.)
+                if (TrawStart != -1000000.)
                 {
-                    tofw = (0.5 * (iRawTimeNs[i * 2 +1] + iRawTimeNs[i * 2])) - TrawStart;
+                    tofw = (0.5 * (iRawTimeNs[i * 2 + 1] + iRawTimeNs[i * 2])) - TrawStart;
                     fh1_RawTof_AtTcalMult1[i]->Fill(tofw);
                     if (twimZ > 0)
                     {
@@ -567,8 +566,8 @@ void R3BSofToFWOnlineSpectra::FinishTask()
     if (fCalItemsMwpc && fTcalItemsToFW)
     {
         cMwpc3XvsTof->Write();
-        for(Int_t i=0; i< NbDets; i++)
-		cMwpc3YvsPosTof[i]->Write();
+        for (Int_t i = 0; i < NbDets; i++)
+            cMwpc3YvsPosTof[i]->Write();
     }
 }
 

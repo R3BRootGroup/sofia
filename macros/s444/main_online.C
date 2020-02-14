@@ -42,7 +42,7 @@ void main_online()
     // Create input -----------------------------------------
     TString filename = "--stream=lxir123:7803";
     // TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/main0014_1_stitch.lmd";
+    //TString filename = "~/lmd/sofia2020/main0019_01_stitch.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
 
     // Output file ------------------------------------------
@@ -83,7 +83,7 @@ void main_online()
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fAms = false;     // AMS tracking detectors
-    Bool_t fCalifa = false;  // Califa calorimeter
+    Bool_t fCalifa = false;   // Califa calorimeter
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
