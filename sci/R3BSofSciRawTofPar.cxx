@@ -29,7 +29,7 @@ R3BSofSciRawTofPar::~R3BSofSciRawTofPar()
     clear();
     if (fAllSignalsRawTofParams)
     {
-        delete fAllSignalsRawTofParams;C_
+        delete fAllSignalsRawTofParams;
         fAllSignalsRawTofParams == NULL;
     }
 }

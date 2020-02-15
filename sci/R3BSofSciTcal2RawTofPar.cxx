@@ -106,7 +106,8 @@ InitStatus R3BSofSciTcal2RawTofPar::Init() {
 
   char name[100];  
   fh_RawTofMult1 = new TH1D*[fNumSignals];
-  for(Int_t det=0; det<fNumDetectors; det++){
+  for(Int_t detstart=0; detstart<NUMBER_OF_SOFSCI_DETECTORS-1; detstart++){
+    for(Int_t detstop=detstart+1; detstop<NUMBER_OF_SOFSCI_DETECTORS;detstop++){
     sprintf(name,"TofRaw_Sci%i",det+1);
     fh_RawTofMult1[det] = new TH1D(name,name,400000,-2000,2000);
   }
