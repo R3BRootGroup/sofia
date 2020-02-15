@@ -30,6 +30,7 @@ R3BSofTofWall.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofTofWContFact.cxx
 R3BSofTofWTcal2SingleTcal.cxx
+R3BSofTofWTCal2Hit.cxx
 )
 
 # fill list of header files from list of source files

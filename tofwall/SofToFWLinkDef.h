@@ -8,6 +8,7 @@
 #pragma link C++ class R3BSofTofWDigitizer + ;
 
 #pragma link C++ class R3BSofTofWContFact + ;
+#pragma link C++ class R3BSofTofWTCal2Hit + ;
 
 //#pragma link C++ class R3BSofTofWallHitPar+;
 //#pragma link C++ class R3BSofTofWallCalPar+;

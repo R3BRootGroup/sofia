@@ -89,12 +89,11 @@ InitStatus R3BSofMwpcCorrelationOnlineSpectra::Init()
     if (NULL == mgr)
         LOG(FATAL) << "R3BSof" + fNameDet1 + "vs" + fNameDet2 +
                           "CorrelationOnlineSpectra::Init FairRootManager not found";
-    // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
-    // get access to mapped data of the active target
+    // get access to mapped data of the mwpc detectors
     fCalItemsMwpc1 = (TClonesArray*)mgr->GetObject(fNameDet1 + "CalData");
     if (!fCalItemsMwpc1)
     {

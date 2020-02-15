@@ -88,6 +88,7 @@ class R3BSofSciOnlineSpectra : public FairTask
     TClonesArray* fTcalItemsSci;   /**< Array with tcal items. */
     // TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
     TClonesArray* fMusHitItems;   /**< Array with MUSIC Hit items. */
+    TClonesArray* fMusCalItems;   /**< Array with MUSIC Cal items. */
     TClonesArray* fCalItemsMwpc0; /**< Array with cal items of mwpc0. */
 
     // check for trigger should be done globablly (somewhere else)
@@ -108,6 +109,7 @@ class R3BSofSciOnlineSpectra : public FairTask
 
     // Histogram for correlation with R3B-Music
     TH2F* fh2_MusZvsRawPos;
+    TH2F* fh2_MusDTvsRawPos;
 
     // Histogram for correlation with Mwpc0
     TH2F* fh2_Mwpc0vsRawPos;

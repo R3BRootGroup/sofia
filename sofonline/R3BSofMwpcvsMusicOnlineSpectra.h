@@ -1,11 +1,11 @@
 // ------------------------------------------------------------
-// -----             R3BSofTrackingOnlineSpectra          -----
-// -----    Created 28/01/20  by J.L. Rodriguez-Sanchez   -----
-// -----         Fill tracking online histograms          -----
+// -----        R3BSofMwpcvsMusicOnlineSpectra            -----
+// -----    Created 16/02/20  by J.L. Rodriguez-Sanchez   -----
+// -----       Fill mwpc vs music online histograms       -----
 // ------------------------------------------------------------
 
-#ifndef R3BSofTrackingOnlineSpectra_H
-#define R3BSofTrackingOnlineSpectra_H
+#ifndef R3BSofMwpcvsMusicOnlineSpectra_H
+#define R3BSofMwpcvsMusicOnlineSpectra_H
 
 #include "FairTask.h"
 #include "TCanvas.h"
@@ -18,13 +18,15 @@
 #include <iostream>
 #include <sstream>
 
+#define NbAnodesMus 8
+
 class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads FRS data and plots online histograms
+ * This taks reads MWPC data and plots online histograms
  */
-class R3BSofTrackingOnlineSpectra : public FairTask
+class R3BSofMwpcvsMusicOnlineSpectra : public FairTask
 {
 
   public:
@@ -32,21 +34,22 @@ class R3BSofTrackingOnlineSpectra : public FairTask
      * Default constructor.
      * Creates an instance of the task with default parameters.
      */
-    R3BSofTrackingOnlineSpectra();
+    R3BSofMwpcvsMusicOnlineSpectra();
 
     /**
      * Standard constructor.
      * Creates an instance of the task.
      * @param name a name of the task.
      * @param iVerbose a verbosity level.
+     * @param namedet1 a name of the detector 1.
      */
-    R3BSofTrackingOnlineSpectra(const TString& name, Int_t iVerbose = 1);
+    R3BSofMwpcvsMusicOnlineSpectra(const TString& name, Int_t iVerbose = 1, const TString& namedet1 = "Mwpc0");
 
     /**
      * Destructor.
      * Frees the memory used by the object.
      */
-    virtual ~R3BSofTrackingOnlineSpectra();
+    virtual ~R3BSofMwpcvsMusicOnlineSpectra();
 
     /**
      * Method for task initialization.
@@ -81,53 +84,30 @@ class R3BSofTrackingOnlineSpectra : public FairTask
      */
     virtual void Reset_Histo();
 
-    /**
-     * Method to set up charge range in the histograms.
-     */
-    inline void Set_Charge_range(Float_t minz, Float_t maxz)
-    {
-        fZ_min = minz;
-        fZ_max = maxz;
-    }
-
   private:
-    TClonesArray* fMwpc0HitDataCA; /**< Array with Mwpc0 Hit-input data. >*/
-    TClonesArray* fMwpc1HitDataCA; /**< Array with Mwpc1 Hit-input data. >*/
-    TClonesArray* fMwpc2HitDataCA; /**< Array with Mwpc2 Hit-input data. >*/
-    TClonesArray* fMwpc3HitDataCA; /**< Array with Mwpc3 Hit-input data. >*/
-    TClonesArray* fMusicHitDataCA; /**< Array with Music Hit-input data. >*/
-    TClonesArray* fTwimHitDataCA;  /**< Array with Twim Hit-input data. >*/
-    TClonesArray* fTofWHitDataCA;  /**< Array with TofW Hit-input data. >*/
-    TClonesArray* fTrackingDataCA; /**< Array with tracking data at Cave-C. >*/
+    TClonesArray* fCalItemsMwpc;   /**< Array with cal items. */
+    TClonesArray* fHitItemsMwpc;   /**< Array with hit items. */
+    TClonesArray* fMappedItemsMus; /**< Array with map items. */
+    TClonesArray* fHitItemsMus;    /**< Array with hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
-    Float_t fPosTarget;
-    Float_t fWidthTarget;
-    Float_t fDist_acelerator_glad;
-    Float_t fZ_max, fZ_min;
+    TString fNameDet1;
+    Double_t fE[NbAnodesMus], fT[NbAnodesMus + 2];
+    Int_t multhit[NbAnodesMus + 2];
 
     // Canvas
-    TCanvas* cBeta;
-    TCanvas* cBrho;
-    TCanvas* cAqvsq;
-    TCanvas* cMwpc3vsBeta;
-    TCanvas* cTrackingXZ;
-    TCanvas* cTrackingYZ;
-    TCanvas* cBeamProfileTarget;
+    TCanvas* cMusECorMwpc0;
+    TCanvas* cMusDTCorMwpc0;
 
-    // Histograms for Hit data
-    TH1F* fh1_beta;
-    TH1F* fh1_brho;
-    TH2F* fh2_Aqvsq;
-    TH2F* fh2_Mwpc3vsbeta;
-    TH2F* fh2_tracking_planeXZ;
-    TH2F* fh2_tracking_planeYZ;
-    TH2F* fh2_target_PosXY;
+    // Histograms for cal and hit data
+    TH2F* fh2_MusCorMwpc0_EsumVsX0mm;
+    TH2F* fh2_MusCorMwpc0_EsumVsY0mm;
+    TH2F* fh2_MusCorMwpc0_DTvsX0[NbAnodesMus];
 
   public:
-    ClassDef(R3BSofTrackingOnlineSpectra, 1)
+    ClassDef(R3BSofMwpcvsMusicOnlineSpectra, 1)
 };
 
 #endif

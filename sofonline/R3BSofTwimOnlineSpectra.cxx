@@ -10,6 +10,7 @@
 
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BEventHeader.h"
+#include "R3BSofMwpcHitData.h"
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimHitData.h"
 #include "R3BSofTwimMappedData.h"
@@ -45,6 +46,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
     , fMappedItemsTwim(NULL)
     , fCalItemsTwim(NULL)
     , fHitItemsTwim(NULL)
+    , fHitItemsMwpc3(NULL)
     , fNEvents(0)
 {
 }
@@ -54,6 +56,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const TString& name, Int_t iVer
     , fMappedItemsTwim(NULL)
     , fCalItemsTwim(NULL)
     , fHitItemsTwim(NULL)
+    , fHitItemsMwpc3(NULL)
     , fNEvents(0)
 {
 }
@@ -67,6 +70,8 @@ R3BSofTwimOnlineSpectra::~R3BSofTwimOnlineSpectra()
         delete fCalItemsTwim;
     if (fHitItemsTwim)
         delete fHitItemsTwim;
+    if (fHitItemsMwpc3)
+        delete fHitItemsMwpc3;
 }
 
 InitStatus R3BSofTwimOnlineSpectra::Init()
@@ -101,6 +106,11 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
     if (!fHitItemsTwim)
         LOG(WARNING) << "R3BSofTwimOnlineSpectra: TwimHitData not found";
+
+    // get access to hit data of the MWPC3
+    fHitItemsMwpc3 = (TClonesArray*)mgr->GetObject("Mwpc3HitData");
+    if (!fHitItemsMwpc3)
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra: Mwpc3HitData not found";
 
     // Create histograms for detectors
     char Name1[255];
@@ -451,6 +461,20 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_Twimhit_zvstheta->GetYaxis()->SetTitleSize(0.045);
     fh2_Twimhit_zvstheta->Draw("col");
 
+    cTwimTheta_vs_mwpc3x = new TCanvas("Twim_theta_vs_mwpc3x", "Twim: Theta vs MWPC3X", 10, 10, 800, 700);
+    fh2_TwimTheta_vs_mwpc3x =
+        new TH2F("fh2_TwiwTheta_vs_mwpc3x", "Twim: #theta_{xz} vs MWPC3X", 900, -40, 40, 800, -400, 400);
+    fh2_TwimTheta_vs_mwpc3x->GetXaxis()->SetTitle("#theta_{XZ} [mrad]");
+    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitle("MWPC3 X (mm)");
+    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitleOffset(1.1);
+    fh2_TwimTheta_vs_mwpc3x->GetXaxis()->CenterTitle(true);
+    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->CenterTitle(true);
+    fh2_TwimTheta_vs_mwpc3x->GetXaxis()->SetLabelSize(0.045);
+    fh2_TwimTheta_vs_mwpc3x->GetXaxis()->SetTitleSize(0.045);
+    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetLabelSize(0.045);
+    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitleSize(0.045);
+    fh2_TwimTheta_vs_mwpc3x->Draw("col");
+
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
     for (Int_t i = 0; i < NbSections; i++)
@@ -481,6 +505,8 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         mainfolTwim->Add(cTwim_Z);
         mainfolTwim->Add(cTwim_theta);
         mainfolTwim->Add(cTwim_zvstheta);
+        if (fHitItemsMwpc3)
+            mainfolTwim->Add(cTwimTheta_vs_mwpc3x);
     }
     run->AddObject(mainfolTwim);
 
@@ -533,6 +559,8 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
         fh1_Twimhit_z->Reset();
         fh1_Twimhit_theta->Reset();
         fh2_Twimhit_zvstheta->Reset();
+        if (fHitItemsMwpc3)
+            fh2_TwimTheta_vs_mwpc3x->Reset();
     }
 }
 
@@ -572,19 +600,16 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             {
                 if (hit->GetEnergy() < 8192 && hit->GetEnergy() > 0 && Eraw[hit->GetSecID()][hit->GetAnodeID()] == 0)
                     Eraw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetEnergy(); // mult=1 !!!
-                // std::cout << " " << hit->GetAnodeID() << ": " << hit->GetTime() << std::endl;
-                Traw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetTime(); // mult=1 !!!
+                Traw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetTime();       // mult=1 !!!
             }
         }
         Int_t idTref;
-        // std::cout << "Fill:\n";
         for (Int_t j = 0; j < NbSections; j++)
         {
             for (Int_t i = 0; i < NbTref; i++)
             {
                 if (mult[j][16 + i] == 1 && mult[j][18 + i] == 1)
                 {
-                    // std::cout << " TREF 16: " << Traw[j][16+i] << "  TRIG 18:" << Traw[j][18+i] << std::endl;
                     fh1_twimmap_DeltaTrefTrig[j][i]->Fill(Traw[j][16 + i] - Traw[j][18 + i]);
                 }
             }
@@ -647,6 +672,20 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
         }
     }
 
+    Double_t mwpc3x = -500;
+    // Fill MWPC3 Hit data
+    if (fHitItemsMwpc3 && fHitItemsMwpc3->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fHitItemsMwpc3->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fHitItemsMwpc3->At(ihit);
+            if (!hit)
+                continue;
+            mwpc3x = hit->GetX();
+        }
+    }
+
     // Fill hit data
     if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
     {
@@ -659,6 +698,8 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             fh1_Twimhit_z->Fill(hit->GetZcharge());
             fh1_Twimhit_theta->Fill(hit->GetTheta() * 1000.);
             fh2_Twimhit_zvstheta->Fill(hit->GetTheta() * 1000., hit->GetZcharge());
+            if (mwpc3x > -500)
+                fh2_TwimTheta_vs_mwpc3x->Fill(hit->GetTheta() * 1000., mwpc3x);
         }
     }
 
@@ -678,6 +719,10 @@ void R3BSofTwimOnlineSpectra::FinishEvent()
     if (fHitItemsTwim)
     {
         fHitItemsTwim->Clear();
+    }
+    if (fHitItemsMwpc3)
+    {
+        fHitItemsMwpc3->Clear();
     }
 }
 
@@ -711,6 +756,8 @@ void R3BSofTwimOnlineSpectra::FinishTask()
         fh1_Twimhit_z->Write();
         fh1_Twimhit_theta->Write();
         fh2_Twimhit_zvstheta->Write();
+        if (fHitItemsMwpc3)
+            cTwimTheta_vs_mwpc3x->Write();
     }
 }
 

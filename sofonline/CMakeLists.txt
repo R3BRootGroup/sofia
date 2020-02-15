@@ -38,6 +38,7 @@ set(SRCS
 R3BSofOnlineSpectra.cxx
 R3BSofMwpcOnlineSpectra.cxx
 R3BSofMwpcCorrelationOnlineSpectra.cxx
+R3BSofMwpcvsMusicOnlineSpectra.cxx
 R3BSofAtOnlineSpectra.cxx
 R3BSofTwimOnlineSpectra.cxx
 R3BSofSciOnlineSpectra.cxx

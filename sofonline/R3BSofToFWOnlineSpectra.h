@@ -83,12 +83,20 @@ class R3BSofToFWOnlineSpectra : public FairTask
      */
     virtual void Reset_Histo();
 
+    inline void Set_TwimvsTof_range(Float_t min, Float_t max)
+    {
+        fTwimTofRangeMin = min;
+        fTwimTofRangeMax = max;
+    }
+
   private:
     TClonesArray* fMappedItemsToFW;    /**< Array with mapped items. */
     TClonesArray* fTcalItemsToFW;      /**< Array with tcal items. */
     TClonesArray* fSingleTcalItemsSci; /**< Array with single tcal items of Sci */
     TClonesArray* fHitItemsTwim;       /**< Array with hit items of twim. */
     TClonesArray* fCalItemsMwpc;       /**< Array with cal items of mwpc3. */
+    Float_t fTwimTofRangeMax;          // Range for Twim vs ToF histograms
+    Float_t fTwimTofRangeMin;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */

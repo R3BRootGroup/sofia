@@ -1,6 +1,7 @@
 #include "R3BSofTofWTcal2SingleTcal.h"
 
 #include "R3BSofSciSingleTcalData.h"
+#include "R3BSofToFWSingleTcalData.h"
 #include "R3BSofToFWTcalData.h"
 
 #include "FairRunAna.h"
@@ -98,6 +99,9 @@ InitStatus R3BSofTofWTcal2SingleTcal::ReInit()
 void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
 {
 
+    // Reset entries in output arrays, local arrays
+    Reset();
+
   int nDets = int(NUMBER_OF_SOFTOFW_PLASTICS);
   int nChs = int(NUMBER_OF_SOFTOFW_PMTS_PER_PLASTIC);
   UShort_t iDet; // 0-based
@@ -114,8 +118,11 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
   Int_t nHitsPerEvent_SofSci  = fSciSingleTcal->GetEntries();
   if(nHitsPerEvent_SofSci!=1)
   {
-    LOG(ERROR) << "dimension of SingleTcal TClonesArray for SofSci should be 1 but is" << nHitsPerEvent_SofSci;
+  //  LOG(ERROR) << "dimension of SingleTcal TClonesArray for SofSci should be 1 but is" << nHitsPerEvent_SofSci;
   }
+
+  if(nHitsPerEvent_SofSci==1){
+
   R3BSofSciSingleTcalData* hitSci = (R3BSofSciSingleTcalData*)fSciSingleTcal->At(0);
   Double_t iRawTime_SofSci = hitSci->GetRawTimeNs(ID_SOFSCI_CAVEC);
 
@@ -150,34 +157,35 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
       {
 	  iRawPos  = iTraw[d*nChs+1][0]-iTraw[d*nChs][0]; // Raw position = Tdown - Tup
 	  iRawTime = 0.5*(iTraw[d*nChs][0]+iTraw[d*nChs+1][0]);
-	  iRawTof  = 0.5*(iRawTime - iRawTime_SofSci);     
-	  new((*fToFWSingleTcal)[fNumSingleTcal++]) R3BSofToFWSingleTcalData;  
-          R3BSofToFWSingleTcalData * fItem = (R3BSofToFWSingleTcalData*)fToFWSingleTcal->At(fNumSingleTcal-1);
-	  fItem->SetDetector(d+1);
-	  fItem->SetRawTimeNs(iRawTime);
-	  fItem->SetRawPosNs(iRawPos);
-	  fItem->SetRawTofNs(iRawTof);
+	  iRawTof  = 0.5*(iRawTime - iRawTime_SofSci);
+          AddHitData(d+1, iRawTime, iRawPos, iRawTof);
       }
     }    
     ++fNevent;
   }
+  }
 }  
 
-
-
-
-void R3BSofTofWTcal2SingleTcal::FinishEvent()
+// -----   Public method Reset   ------------------------------------------------
+void R3BSofTofWTcal2SingleTcal::Reset()
 {
-  fToFWSingleTcal->Clear();
-  fNumSingleTcal = 0;
-  
+    LOG(DEBUG) << "Clearing SofToFWSingleTcalData structure";
+    if (fToFWSingleTcal)
+        fToFWSingleTcal->Clear();
 }
 
-
-void R3BSofTofWTcal2SingleTcal::FinishTask()
+void R3BSofTofWTcal2SingleTcal::Finish()
 {
 
 }
 
+// -----   Private method AddData  --------------------------------------------
+R3BSofToFWSingleTcalData* R3BSofTofWTcal2SingleTcal::AddHitData(Int_t plastic, Double_t time, Double_t tof, Double_t pos)
+{
+    // It fills the R3BSofToFWSingleTcalData
+    TClonesArray& clref = *fToFWSingleTcal;
+    Int_t size = clref.GetEntriesFast();
+    return new (clref[size]) R3BSofToFWSingleTcalData(plastic, time, tof, pos);
+}
 
 ClassImp(R3BSofTofWTcal2SingleTcal)
