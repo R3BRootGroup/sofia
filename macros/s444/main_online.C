@@ -40,8 +40,9 @@ void main_online()
     const Int_t expId = 444; // select experiment: 444 or 467
 
     // Create input -----------------------------------------
-    TString filename = "--stream=lxir123:7803";
-    // TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
+    TString filename = "--stream=lxlanddaq01:9000";
+    //TString filename = "--stream=lxir123:7803";
+    //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
     //TString filename = "~/lmd/sofia2020/main0019_01_stitch.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
 
@@ -59,8 +60,8 @@ void main_online()
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
-    //TString upexps_dir = ucesb_dir + "/../upexps/";
-    TString upexps_dir = "/u/land/fake_cvmfs/upexps";
+    TString upexps_dir = ucesb_dir + "/../upexps/";
+    //TString upexps_dir = "/u/land/fake_cvmfs/upexps";
     TString ucesb_path;
     if (expId == 444)
     {
