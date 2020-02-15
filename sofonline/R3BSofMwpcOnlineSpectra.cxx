@@ -168,9 +168,9 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     Name2 = fNameDet + ": Pad vs XQ";
 
     if (fNameDet == "Mwpc0" || fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
-        fh2_mwpc_xq = new TH2F(Name1, Name2, 256, 0.5, 64.5, 2000, 0, 4000);
+        fh2_mwpc_xq = new TH2F(Name1, Name2, 64, 0.5, 64.5, 2000, 0, 4000);
     else
-        fh2_mwpc_xq = new TH2F(Name1, Name2, 288 * 4, 0.5, 288.5, 2000, 0, 4000);
+        fh2_mwpc_xq = new TH2F(Name1, Name2, 288, 0.5, 288.5, 2000, 0, 4000);
 
     fh2_mwpc_xq->GetXaxis()->SetTitle("Pad number");
     fh2_mwpc_xq->GetYaxis()->SetTitle("Charge [channels]");
@@ -187,11 +187,11 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     Name1 = "fh2_" + fNameDet + "_YQ";
     Name2 = fNameDet + ": Pad vs YQ";
     if (fNameDet == "Mwpc0")
-        fh2_mwpc_yq = new TH2F(Name1, Name2, 256, 0.5, 64.5, 2000, 0, 4000);
+        fh2_mwpc_yq = new TH2F(Name1, Name2, 64, 0.5, 64.5, 2000, 0, 4000);
     else if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
-        fh2_mwpc_yq = new TH2F(Name1, Name2, 40 * 4, 0.5, 40.5, 2000, 0, 4000);
+        fh2_mwpc_yq = new TH2F(Name1, Name2, 40, 0.5, 40.5, 2000, 0, 4000);
     else
-        fh2_mwpc_yq = new TH2F(Name1, Name2, 120 * 4, 0.5, 120.5, 2000, 0, 4000);
+        fh2_mwpc_yq = new TH2F(Name1, Name2, 120, 0.5, 120.5, 2000, 0, 4000);
 
     fh2_mwpc_yq->GetXaxis()->SetTitle("Pad number");
     fh2_mwpc_yq->GetYaxis()->SetTitle("Charge [channels]");

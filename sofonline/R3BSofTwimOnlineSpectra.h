@@ -20,6 +20,8 @@
 
 #define NbSections 1
 #define NbAnodes 16
+#define NbTref 2
+#define NbTrig 2
 
 class TClonesArray;
 class R3BEventHeader;
@@ -101,6 +103,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TCanvas* cTwimCal_Pos[NbSections];
     TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2, *cTwim_DTvsDT[NbSections];
     TCanvas* cTwimMap_ESum_vs_diffDT;
+    TCanvas* cTwimMap_DeltaTrefTrig[NbSections];
 
     // Histograms for Mapped data
     TH1F* fh1_twimmap_E[NbSections][NbAnodes];
@@ -112,6 +115,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TH2F* fh2_twim_ESum_vs_diffDT[NbSections];
     TH2F* fh2_twim_EneRawVsDriftTime[NbSections][NbAnodes];
     TH2F* fh2_twim_EneRawSumVsDriftTime[NbSections];
+    TH1F* fh1_twimmap_DeltaTrefTrig[NbSections][NbTref];
 
     // Histograms for Cal data
     TH1F* fh1_Twimcal_Pos[NbSections][NbAnodes];

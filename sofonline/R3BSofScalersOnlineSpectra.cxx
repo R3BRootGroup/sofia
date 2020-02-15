@@ -20,7 +20,8 @@
 #include "TCanvas.h"
 #include "TFolder.h"
 #include "TH1.h"
-#include "TH2.h"
+#include "TH1I.h"
+#include "TH2F.h"
 #include "TVector3.h"
 
 #include "TClonesArray.h"
@@ -34,7 +35,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
 
 R3BSofScalersOnlineSpectra::R3BSofScalersOnlineSpectra()
     : FairTask("SofScalersOnlineSpectra", 1)
@@ -93,7 +93,7 @@ InitStatus R3BSofScalersOnlineSpectra::Init()
         cScalersGeneralView[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
 
         sprintf(Name1, "SofScalers%i_GeneralView", i + 1);
-        fh1_GeneralView[i] = new TH1I(Name1, Name1, l_NbChannelsPerScaler[i]+2, 0.5, l_NbChannelsPerScaler[i]+2.5);
+        fh1_GeneralView[i] = new TH1I(Name1, Name1, l_NbChannelsPerScaler[i] + 2, 0.5, l_NbChannelsPerScaler[i] + 2.5);
         fh1_GeneralView[i]->GetXaxis()->SetTitle("Channel number (starting from 1)");
         fh1_GeneralView[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_GeneralView[i]->GetXaxis()->CenterTitle(true);
@@ -104,31 +104,32 @@ InitStatus R3BSofScalersOnlineSpectra::Init()
         fh1_GeneralView[i]->GetYaxis()->SetTitleSize(0.045);
 
         cScalersGeneralView[i]->cd();
-	gPad->SetGridx(1);
-	gPad->SetLogy(1);
-	gPad->SetBottomMargin(10);
-    	fh1_GeneralView[i]->Draw("");
-    	fh1_GeneralView[i]->ls();
+        gPad->SetGridx(1);
+        // gPad->SetLogy(1);
+        gPad->SetBottomMargin(10);
+        fh1_GeneralView[i]->Draw("");
+        fh1_GeneralView[i]->ls();
     }
 
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(1,"SciL");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(2,"SciR");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(3,"MS_r4l71");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(4,"OR_MWup");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(5,"OR_R3Bmus");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(6,"OR_Twim1");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(7,"OR_Twim2");
-    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(8,"unused");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(1, "SciL");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(2, "SciR");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(3, "MS_r4l71");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(4, "OR_MWup");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(5, "OR_R3Bmus");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(6, "OR_Twim1");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(7, "OR_Twim2");
+    fh1_GeneralView[0]->GetXaxis()->SetBinLabel(8, "unused");
     fh1_GeneralView[0]->GetXaxis()->SetLabelOffset(0);
     fh1_GeneralView[0]->GetXaxis()->SetTitleOffset(2.2);
 
-    for (Int_t plastic=0; plastic<28; plastic++){
-	sprintf(Name1,"P%02dU",plastic+1);
-	sprintf(Name2,"P%02dD",plastic+1);
-	fh1_GeneralView[1]->GetXaxis()->SetBinLabel(plastic*2+1,Name1);
-	fh1_GeneralView[1]->GetXaxis()->SetBinLabel(plastic*2+2,Name2);
+    for (Int_t plastic = 0; plastic < 28; plastic++)
+    {
+        sprintf(Name1, "P%02dU", plastic + 1);
+        sprintf(Name2, "P%02dD", plastic + 1);
+        fh1_GeneralView[1]->GetXaxis()->SetBinLabel(plastic * 2 + 1, Name1);
+        fh1_GeneralView[1]->GetXaxis()->SetBinLabel(plastic * 2 + 2, Name2);
     }
-    fh1_GeneralView[1]->GetXaxis()->SetBinLabel(57,"unused");
+    fh1_GeneralView[1]->GetXaxis()->SetBinLabel(57, "unused");
     fh1_GeneralView[1]->GetXaxis()->SetTitleOffset(1.4);
     fh1_GeneralView[1]->SetCanExtend(TH1::kAllAxes);
     fh1_GeneralView[1]->LabelsDeflate("X");
@@ -166,7 +167,7 @@ void R3BSofScalersOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofScalersOnlineSpectra::Exec FairRootManager not found";
 
-    if (fMappedItemsScalers && fMappedItemsScalers->GetEntriesFast() )
+    if (fMappedItemsScalers && fMappedItemsScalers->GetEntriesFast())
     {
         // --- --------------------- --- //
         // --- loop over mapped data --- //
@@ -174,8 +175,9 @@ void R3BSofScalersOnlineSpectra::Exec(Option_t* option)
         for (Int_t ihit = 0; ihit < fMappedItemsScalers->GetEntriesFast(); ihit++)
         {
             R3BSofScalersMappedData* hitmapped = (R3BSofScalersMappedData*)fMappedItemsScalers->At(ihit);
-            if (!hitmapped) continue;
-            fh1_GeneralView[hitmapped->GetScaler()-1]->Fill(hitmapped->GetChannel(),hitmapped->GetValue());
+            if (!hitmapped)
+                continue;
+            fh1_GeneralView[hitmapped->GetScaler() - 1]->Fill(hitmapped->GetChannel(), hitmapped->GetValue());
         }
     }
     fNEvents += 1;
@@ -199,7 +201,6 @@ void R3BSofScalersOnlineSpectra::FinishTask()
             cScalersGeneralView[i]->Write();
         }
     }
-
 }
 
 ClassImp(R3BSofScalersOnlineSpectra)

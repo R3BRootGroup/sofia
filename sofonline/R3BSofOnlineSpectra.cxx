@@ -8,21 +8,21 @@
  * This task should fill histograms with SOFIA online data
  */
 
-#include "R3BEventHeader.h"
-#include "R3BWRMasterData.h"
-#include "R3BWRCalifaData.h"
 #include "R3BSofOnlineSpectra.h"
 #include "R3BAmsOnlineSpectra.h"
 #include "R3BCalifaOnlineSpectra.h"
+#include "R3BEventHeader.h"
 #include "R3BMusicOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofFrsOnlineSpectra.h"
 #include "R3BSofMwpcOnlineSpectra.h"
+#include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofToFWOnlineSpectra.h"
-#include "R3BSofTwimOnlineSpectra.h"
-#include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
+#include "R3BSofTwimOnlineSpectra.h"
+#include "R3BWRCalifaData.h"
+#include "R3BWRMasterData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -98,9 +98,10 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
 {
 }
 
-R3BSofOnlineSpectra::~R3BSofOnlineSpectra() { 
+R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
+{
 
-    LOG(INFO) << "R3BSofOnlineSpectra::Delete instance"; 
+    LOG(INFO) << "R3BSofOnlineSpectra::Delete instance";
     if (fWRItemsMaster)
         delete fWRItemsMaster;
     if (fWRItemsSofia)
@@ -191,7 +192,7 @@ InitStatus R3BSofOnlineSpectra::Init()
     fToFWOnline = (R3BSofToFWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofToFWOnlineSpectra");
     if (!fToFWOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofToFWOnlineSpectra not found";
-    
+
     // Looking for Scalers online
     fScalersOnline = (R3BSofScalersOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofScalersOnlineSpectra");
     if (!fScalersOnline)
@@ -273,10 +274,10 @@ InitStatus R3BSofOnlineSpectra::Init()
     // MAIN FOLDER-SOFIA
     TFolder* mainfolsof = new TFolder("SOFIA", "SOFIA WhiteRabbit and trigger info");
     mainfolsof->Add(cTrigger);
-    if (fWRItemsMaster&&fWRItemsSofia)
-         mainfolsof->Add(cWr);
-    if (fWRItemsSofia&&fWRItemsCalifa)
-         mainfolsof->Add(cWrs);
+    if (fWRItemsMaster && fWRItemsSofia)
+        mainfolsof->Add(cWr);
+    if (fWRItemsSofia && fWRItemsCalifa)
+        mainfolsof->Add(cWrs);
     run->AddObject(mainfolsof);
 
     // Register command to reset histograms
@@ -289,7 +290,7 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
 {
     LOG(INFO) << "R3BSofOnlineSpectra::Reset_General_Histo";
     fh1_trigger->Reset();
-    if (fWRItemsMaster&&fWRItemsSofia)
+    if (fWRItemsMaster && fWRItemsSofia)
         fh1_wr->Reset();
     if (fWRItemsCalifa && fWRItemsSofia)
     {
@@ -349,7 +350,6 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
     // Fill histogram with trigger information
     fh1_trigger->Fill(fEventHeader->GetTrigger());
 
-
     // WR data
     if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0)
     {
@@ -365,16 +365,17 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         }
 
         // Califa
-        if (fWRItemsCalifa && fWRItemsCalifa->GetEntriesFast() > 0){
-        nHits = fWRItemsCalifa->GetEntriesFast();
-        int64_t wr[nHits];
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        if (fWRItemsCalifa && fWRItemsCalifa->GetEntriesFast() > 0)
         {
-            R3BWRCalifaData* hit = (R3BWRCalifaData*)fWRItemsCalifa->At(ihit);
-            if (!hit)
-                continue;
-            wr[ihit] = hit->GetTimeStamp();
-        }
+            nHits = fWRItemsCalifa->GetEntriesFast();
+            int64_t wr[nHits];
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BWRCalifaData* hit = (R3BWRCalifaData*)fWRItemsCalifa->At(ihit);
+                if (!hit)
+                    continue;
+                wr[ihit] = hit->GetTimeStamp();
+            }
             fh1_wrs[0]->Fill(wrs - wr[0]); // messel
             fh1_wrs[1]->Fill(wrs - wr[1]); // wixhausen
         }
@@ -397,7 +398,8 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
     fNEvents += 1;
 }
 
-void R3BSofOnlineSpectra::FinishEvent() {
+void R3BSofOnlineSpectra::FinishEvent()
+{
 
     if (fWRItemsMaster)
     {
@@ -417,9 +419,9 @@ void R3BSofOnlineSpectra::FinishTask()
 {
     // Write trigger canvas in the root file
     cTrigger->Write();
-    if (fWRItemsMaster&&fWRItemsSofia)
+    if (fWRItemsMaster && fWRItemsSofia)
         cWr->Write();
-    if (fWRItemsCalifa&&fWRItemsSofia)
+    if (fWRItemsCalifa && fWRItemsSofia)
         cWrs->Write();
 }
 
