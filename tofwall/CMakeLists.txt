@@ -13,6 +13,8 @@ ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/tofwall
+${R3BSOF_SOURCE_DIR}/sofdata/sciData
+${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -27,6 +29,7 @@ set(SRCS
 R3BSofTofWall.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofTofWContFact.cxx
+R3BSofTofWTcal2SingleTcal.cxx
 )
 
 # fill list of header files from list of source files

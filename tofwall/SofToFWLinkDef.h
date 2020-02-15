@@ -11,11 +11,9 @@
 
 //#pragma link C++ class R3BSofTofWallHitPar+;
 //#pragma link C++ class R3BSofTofWallCalPar+;
-//#pragma link C++ class R3BSofTofWallMappedPar+;
 
+#pragma link C++ class R3BSofTofWTcal2SingleTcal +;
 //#pragma link C++ class R3BSofTofWallCal2Hit+;
-//#pragma link C++ class R3BSofTofWallMapped2Cal+;
-
 //#pragma link C++ class R3BSofTofWallCal2HitPar+;
 
 #endif

@@ -27,6 +27,7 @@
 
 #pragma link C++ class R3BSofToFWMappedData + ;
 #pragma link C++ class R3BSofToFWTcalData + ;
+#pragma link C++ class R3BSofToFWSingleTcalData + ;
 #pragma link C++ class R3BSofToFWCalData + ;
 #pragma link C++ class R3BSofTofWHitData + ;
 
