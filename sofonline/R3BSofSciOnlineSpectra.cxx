@@ -9,6 +9,7 @@
 
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BEventHeader.h"
+#include "R3BMusicCalData.h"
 #include "R3BMusicHitData.h"
 #include "R3BSofMwpcCalData.h"
 #include "R3BSofSciMappedData.h"
@@ -43,6 +44,7 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra()
     , fMappedItemsSci(NULL)
     , fTcalItemsSci(NULL)
     , fMusHitItems(NULL)
+    , fMusCalItems(NULL)
     , fCalItemsMwpc0(NULL)
     , fNEvents(0)
 {
@@ -53,6 +55,7 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
     , fMappedItemsSci(NULL)
     , fTcalItemsSci(NULL)
     , fMusHitItems(NULL)
+    , fMusCalItems(NULL)
     , fCalItemsMwpc0(NULL)
     , fNEvents(0)
 {
@@ -67,6 +70,8 @@ R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
         delete fTcalItemsSci;
     if (fMusHitItems)
         delete fMusHitItems;
+    if (fMusCalItems)
+        delete fMusCalItems;
     if (fCalItemsMwpc0)
         delete fCalItemsMwpc0;
 }
@@ -109,6 +114,11 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     fMusHitItems = (TClonesArray*)mgr->GetObject("MusicHitData");
     if (!fMusHitItems)
         LOG(WARNING) << "R3BSofSciOnlineSpectra: MusicHitData not found";
+
+    // get access to cal data of the MUSIC
+    fMusCalItems = (TClonesArray*)mgr->GetObject("MusicCalData");
+    if (!fMusCalItems)
+        LOG(WARNING) << "R3BSofSciOnlineSpectra: MusicCalData not found";
 
     // get access to cal data of the MWPC0
     fCalItemsMwpc0 = (TClonesArray*)mgr->GetObject("Mwpc0CalData");
@@ -163,7 +173,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     TCanvas* cMusicZvsRawPos =
         new TCanvas("Musicchargez_vs_RawPosAtTcal_Mult1", "Music charge Z vs RawPosAtTcal_Mult1", 10, 10, 800, 700);
     fh2_MusZvsRawPos =
-        new TH2F("fh2_Musicchargez_vs_RawPos", "Music charge Z vs RawPosAtTcal_Mult1", 10000, -7, 7, 240, 0, 40);
+        new TH2F("fh2_Musicchargez_vs_RawPos", "Music charge Z vs RawPosAtTcal_Mult1", 10000, -7, 7, 400, 0, 40);
     fh2_MusZvsRawPos->GetXaxis()->SetTitle("Raw position [ns with one bin/ps]");
     fh2_MusZvsRawPos->GetYaxis()->SetTitle("Charge (Z)");
     fh2_MusZvsRawPos->GetYaxis()->SetTitleOffset(1.1);
@@ -174,6 +184,20 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     fh2_MusZvsRawPos->GetYaxis()->SetLabelSize(0.045);
     fh2_MusZvsRawPos->GetYaxis()->SetTitleSize(0.045);
     fh2_MusZvsRawPos->Draw("col");
+
+    TCanvas* cMusicDTvsRawPos =
+        new TCanvas("MusicDT_vs_RawPosAtTcal_Mult1", "Music FT vs RawPosAtTcal_Mult1", 10, 10, 800, 700);
+    fh2_MusDTvsRawPos = new TH2F("fh2_MusicDT_vs_RawPos", "Music DT vs RawPosAtTcal_Mult1", 10000, -7, 7, 800, -20, 20);
+    fh2_MusDTvsRawPos->GetXaxis()->SetTitle("Sci Raw position [ns with one bin/ps]");
+    fh2_MusDTvsRawPos->GetYaxis()->SetTitle("Drift Time (mm)");
+    fh2_MusDTvsRawPos->GetYaxis()->SetTitleOffset(1.1);
+    fh2_MusDTvsRawPos->GetXaxis()->CenterTitle(true);
+    fh2_MusDTvsRawPos->GetYaxis()->CenterTitle(true);
+    fh2_MusDTvsRawPos->GetXaxis()->SetLabelSize(0.045);
+    fh2_MusDTvsRawPos->GetXaxis()->SetTitleSize(0.045);
+    fh2_MusDTvsRawPos->GetYaxis()->SetLabelSize(0.045);
+    fh2_MusDTvsRawPos->GetYaxis()->SetTitleSize(0.045);
+    fh2_MusDTvsRawPos->Draw("col");
 
     // Mwpc0 cal data vs SCI-RawPos
     TCanvas* cMwpc0vsRawPos =
@@ -200,6 +224,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         mainfolSci->Add(cSciRawPos[i]);
     }
     mainfolSci->Add(cMusicZvsRawPos);
+    mainfolSci->Add(cMusicDTvsRawPos);
     mainfolSci->Add(cMwpc0vsRawPos);
     run->AddObject(mainfolSci);
 
@@ -224,6 +249,7 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh1_RawPos_AtTcalMult1[i]->Reset();
     }
     fh2_MusZvsRawPos->Reset();
+    fh2_MusDTvsRawPos->Reset();
     fh2_Mwpc0vsRawPos->Reset();
 }
 
@@ -250,8 +276,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
         }
     }
 
-    // MUSIC hit data
+    // MUSIC Hit data
     Double_t MusicZ = 0.;
+    Double_t MusicDT = -1000000.;
     if (fMusHitItems && fMusHitItems->GetEntriesFast() > 0)
     {
         nHits = fMusHitItems->GetEntriesFast();
@@ -261,6 +288,19 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             MusicZ = hit->GetZcharge();
+        }
+    }
+    // MUSIC Cal data
+    if (fMusCalItems && fMusCalItems->GetEntriesFast() > 0)
+    {
+        nHits = fMusCalItems->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BMusicCalData* hit = (R3BMusicCalData*)fMusCalItems->At(ihit);
+            if (!hit)
+                continue;
+            if (hit->GetAnodeID() == 5)
+                MusicDT = hit->GetDTime();
         }
     }
 
@@ -335,6 +375,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 if (MusicZ > 0.)
                     fh2_MusZvsRawPos->Fill(possci, MusicZ);
 
+                if (MusicDT != -1000000.)
+                    fh2_MusDTvsRawPos->Fill(possci, MusicZ);
+
                 if (mwpc0x > 0 && possci > -10. && possci < 10.)
                 {
                     fh2_Mwpc0vsRawPos->Fill(possci, mwpc0x + gRandom->Uniform(-0.5, 0.5));
@@ -358,6 +401,10 @@ void R3BSofSciOnlineSpectra::FinishEvent()
     if (fMusHitItems)
     {
         fMusHitItems->Clear();
+    }
+    if (fMusCalItems)
+    {
+        fMusCalItems->Clear();
     }
     if (fCalItemsMwpc0)
     {
@@ -389,7 +436,11 @@ void R3BSofSciOnlineSpectra::FinishTask()
             cSciRawPos[i]->Write();
         }
         if (fMusHitItems)
+        {
             fh2_MusZvsRawPos->Write();
+        }
+        if (fMusCalItems)
+            fh2_MusDTvsRawPos->Write();
         if (fCalItemsMwpc0)
             fh2_Mwpc0vsRawPos->Write();
     }

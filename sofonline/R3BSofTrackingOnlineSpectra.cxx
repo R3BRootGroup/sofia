@@ -57,6 +57,8 @@ R3BSofTrackingOnlineSpectra::R3BSofTrackingOnlineSpectra()
     , fDist_acelerator_glad(3718.0)
     , fPosTarget(1970.)
     , fWidthTarget(30.)
+    , fZ_max(40.)
+    , fZ_min(0.)
 {
 }
 
@@ -74,6 +76,8 @@ R3BSofTrackingOnlineSpectra::R3BSofTrackingOnlineSpectra(const TString& name, In
     , fDist_acelerator_glad(3718.0)
     , fPosTarget(1970.)
     , fWidthTarget(30.)
+    , fZ_max(40.)
+    , fZ_min(0.)
 {
 }
 
@@ -191,7 +195,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     fh2_tracking_planeXZ->GetXaxis()->SetTitleSize(0.045);
     fh2_tracking_planeXZ->GetYaxis()->SetLabelSize(0.045);
     fh2_tracking_planeXZ->GetYaxis()->SetTitleSize(0.045);
-    fh2_tracking_planeXZ->Draw("col");
+    fh2_tracking_planeXZ->Draw("colz");
 
     // Target indicated as a hole
     TLine* l1 = new TLine(fPosTarget, fWidthTarget / 2., fPosTarget, histoYlim);
@@ -219,7 +223,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     latex.SetTextColor(2);
     latex.DrawLatex(fPosTarget + 28., 1. * histoYlim - 20., "Target pos.");
     latex.SetTextColor(1);
-    latex.DrawLatex(fDist_acelerator_glad - 500., -1. * histoYlim + 20., "GLAD wind.");
+    latex.DrawLatex(fDist_acelerator_glad - 600., -1. * histoYlim + 20., "GLAD wind.");
 
     // Hit data, tracking plane Y-Z
     cTrackingYZ = new TCanvas("Tracking_before_GLAD_YZ", "Tracking plane YZ info", 10, 10, 800, 700);
@@ -235,7 +239,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     fh2_tracking_planeYZ->GetXaxis()->SetTitleSize(0.045);
     fh2_tracking_planeYZ->GetYaxis()->SetLabelSize(0.045);
     fh2_tracking_planeYZ->GetYaxis()->SetTitleSize(0.045);
-    fh2_tracking_planeYZ->Draw("col");
+    fh2_tracking_planeYZ->Draw("colz");
 
     latex.SetTextSize(0.045);
     latex.SetTextAlign(13);
@@ -246,7 +250,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     latex.SetTextColor(2);
     latex.DrawLatex(fPosTarget + 28., 1. * histoYlim - 20., "Target pos.");
     latex.SetTextColor(1);
-    latex.DrawLatex(fDist_acelerator_glad - 500., -1. * histoYlim + 20., "GLAD wind.");
+    latex.DrawLatex(fDist_acelerator_glad - 600., -1. * histoYlim + 20., "GLAD wind.");
     l1->Draw();
     l2->Draw();
     arrow->Draw();
@@ -265,14 +269,14 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     fh2_target_PosXY->GetXaxis()->SetTitleSize(0.045);
     fh2_target_PosXY->GetYaxis()->SetLabelSize(0.045);
     fh2_target_PosXY->GetYaxis()->SetTitleSize(0.045);
-    fh2_target_PosXY->Draw("col");
+    fh2_target_PosXY->Draw("colz");
 
     cBeta = new TCanvas("Beta", "Beta info", 10, 10, 800, 700);
 
     // Hit data, beta
     Name1 = "fh1_beta_tofw";
     Name2 = "#beta, velocity in units of c";
-    fh1_beta = new TH1F(Name1, Name2, 400, 0., 1.01);
+    fh1_beta = new TH1F(Name1, Name2, 800, 0.2, 1.0);
     fh1_beta->GetXaxis()->SetTitle("#beta");
     fh1_beta->GetYaxis()->SetTitle("Counts");
     fh1_beta->GetYaxis()->SetTitleOffset(1.15);
@@ -310,7 +314,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
 
     Name1 = "fh2_Aq_vs_q";
     Name2 = "Tracking GLAD: A/q vs q";
-    fh2_Aqvsq = new TH2F(Name1, Name2, 300, 0.5, 3.5, 300, 5, 23.5);
+    fh2_Aqvsq = new TH2F(Name1, Name2, 500, 0.5, 3.5, (fZ_max - fZ_min) * 6., fZ_min, fZ_max);
     fh2_Aqvsq->GetXaxis()->SetTitle("A/q");
     fh2_Aqvsq->GetYaxis()->SetTitle("Charge (Z)");
     fh2_Aqvsq->GetYaxis()->SetTitleOffset(1.1);
@@ -327,7 +331,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
 
     Name1 = "fh2_Mwpc3X_vs_beta";
     Name2 = "GLAD: Mwpc3-X vs #beta";
-    fh2_Mwpc3vsbeta = new TH2F(Name1, Name2, 800, -100., 100., 400, 0.1, 1.01);
+    fh2_Mwpc3vsbeta = new TH2F(Name1, Name2, 1800, -450., 450., 500, 0.2, 1.0);
     fh2_Mwpc3vsbeta->GetXaxis()->SetTitle("Mwpc3-X [mm]");
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitle("#beta");
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitleOffset(1.1);
@@ -375,7 +379,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofTrackingOnlineSpectra::Exec FairRootManager not found";
 
-    Double_t mwpc0x = -300., mwpc0y = -300., mwpc1y = 0., mwpc2y = 0., anglemus = 0., zrand = 0., mwpc3x = -1000.;
+    Double_t mwpc0x = -300., mwpc0y = -300., mwpc1y = 0., mwpc2y = 0., anglemus = 0., zrand = 0., mwpc3x = -10000.;
     Double_t xtarget = -500., ytarget = -500.;
 
     // Fill mwpc0 Hit data
@@ -400,11 +404,16 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
                 R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit);
                 if (!hit)
                     continue;
-                zrand = gRandom->Uniform(0., fDist_acelerator_glad);
-                fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (hit->GetY() - mwpc0y) / 2835. * zrand);
-                ytarget = mwpc0y + (hit->GetY() - mwpc0y) / 2835. * fPosTarget;
-                fh2_tracking_planeXZ->Fill(zrand, mwpc0x + (hit->GetX() - mwpc0x) / 2835. * zrand);
-                xtarget = mwpc0x + (hit->GetX() - mwpc0x) / 2835. * fPosTarget;
+                Double_t angX = (hit->GetX() - mwpc0x) / 2835.;
+                Double_t angY = (hit->GetY() - mwpc0y) / 2835.;
+                if (TMath::Abs(angX) < 0.075 && TMath::Abs(angY) < 0.075)
+                {
+                    zrand = gRandom->Uniform(0., fDist_acelerator_glad);
+                    fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (hit->GetY() - mwpc0y) / 2835. * zrand);
+                    ytarget = mwpc0y + (hit->GetY() - mwpc0y) / 2835. * fPosTarget;
+                    fh2_tracking_planeXZ->Fill(zrand, mwpc0x + (hit->GetX() - mwpc0x) / 2835. * zrand);
+                    xtarget = mwpc0x + (hit->GetX() - mwpc0x) / 2835. * fPosTarget;
+                }
             }
 
             // Fill music hit data
@@ -453,7 +462,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             fh1_beta->Fill(hit->GetBeta());
             fh1_brho->Fill(hit->GetBrho());
             fh2_Aqvsq->Fill(hit->GetAq(), hit->GetZ());
-            if (mwpc3x > -1000.)
+            if (mwpc3x > -10000.)
                 fh2_Mwpc3vsbeta->Fill(mwpc3x, hit->GetBeta());
         }
     }

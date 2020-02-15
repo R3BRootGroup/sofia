@@ -43,7 +43,7 @@ void main_online()
     TString filename = "--stream=lxlanddaq01:9000";
     //TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/main0019_01_stitch.lmd";
+    //TString filename = "~/lmd/sofia2020/main0074_0001.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
 
     // Output file ------------------------------------------
@@ -60,8 +60,8 @@ void main_online()
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
-    TString upexps_dir = ucesb_dir + "/../upexps/";
-    //TString upexps_dir = "/u/land/fake_cvmfs/upexps";
+    //TString upexps_dir = ucesb_dir + "/../upexps/";
+    TString upexps_dir = "/u/land/fake_cvmfs/upexps";
     TString ucesb_path;
     if (expId == 444)
     {
@@ -393,6 +393,13 @@ void main_online()
         // --- Mapped 2 Tcal for SofToFW
         R3BSofToFWMapped2Tcal* SofToFWMap2Tcal = new R3BSofToFWMapped2Tcal();
         run->AddTask(SofToFWMap2Tcal);
+
+        // --- Tcal 2 SingleTcal for SofTofW
+        R3BSofTofWTcal2SingleTcal* SofTofWTcal2STcal = new R3BSofTofWTcal2SingleTcal();
+        run->AddTask(SofTofWTcal2STcal);
+
+        R3BSofTofWTCal2Hit* SofToFWTcal2Hit = new R3BSofTofWTCal2Hit();
+        run->AddTask(SofToFWTcal2Hit);
     }
 
     // Add online task ------------------------------------
@@ -416,6 +423,11 @@ void main_online()
     {
         R3BMusicOnlineSpectra* musonline = new R3BMusicOnlineSpectra();
         run->AddTask(musonline);
+        if (fMwpc0)
+        {
+          R3BSofMwpcvsMusicOnlineSpectra* mw0vsmusiconline= new R3BSofMwpcvsMusicOnlineSpectra("SofMwpc0vsMusicOnlineSpectra", 1, "Mwpc0");
+          run->AddTask(mw0vsmusiconline);
+        }
     }
 
     if (fSci)
@@ -508,13 +520,20 @@ void main_online()
     if (fTofW)
     {
         R3BSofToFWOnlineSpectra* tofwonline = new R3BSofToFWOnlineSpectra();
+        tofwonline->Set_TwimvsTof_range(-87.,-65.);
         run->AddTask(tofwonline);
     }
 
-    if (fTofW && fMwpc3 && fMwpc2 && fTwim && fSci && fTracking)
+    if (fMwpc2 && fTwim && fSci && fTracking)
     {
+        if(fTofW && fMwpc3){
+         R3BSofFragmentAnalysis* TrackingAna = new R3BSofFragmentAnalysis();
+         run->AddTask(TrackingAna); 
+        }
+
         R3BSofTrackingOnlineSpectra* Trackingonline = new R3BSofTrackingOnlineSpectra();
-        run->AddTask(Trackingonline);
+        Trackingonline->Set_Charge_range(0.,8.);
+        run->AddTask(Trackingonline); 
     }
 
     R3BSofOnlineSpectra* sofonline = new R3BSofOnlineSpectra();

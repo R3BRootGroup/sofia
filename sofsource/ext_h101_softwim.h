@@ -1065,7 +1065,6 @@ typedef struct EXT_STR_h101_SOFTWIM_layout_t
   } \
 };
 
->>>>>>> New parameters and setup for online macros
 #endif/*__GUARD_H101_SOFTWIM_EXT_H101_SOFTWIM_H__*/
 
 /*******************************************************/

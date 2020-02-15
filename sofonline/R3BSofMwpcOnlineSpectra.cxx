@@ -118,6 +118,8 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh1_mwpc_cal[0]->GetXaxis()->SetTitleSize(0.045);
     fh1_mwpc_cal[0]->GetYaxis()->SetLabelSize(0.045);
     fh1_mwpc_cal[0]->GetYaxis()->SetTitleSize(0.045);
+    fh1_mwpc_cal[0]->SetFillColor(8);
+    fh1_mwpc_cal[0]->SetLineColor(1);
     cMWPCCal->cd(1);
     fh1_mwpc_cal[0]->Draw("");
 
@@ -139,6 +141,8 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh1_mwpc_cal[1]->GetXaxis()->SetTitleSize(0.045);
     fh1_mwpc_cal[1]->GetYaxis()->SetLabelSize(0.045);
     fh1_mwpc_cal[1]->GetYaxis()->SetTitleSize(0.045);
+    fh1_mwpc_cal[1]->SetFillColor(8);
+    fh1_mwpc_cal[1]->SetLineColor(1);
     cMWPCCal->cd(2);
     fh1_mwpc_cal[1]->Draw("");
 
@@ -221,6 +225,8 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh1_Xpos->GetXaxis()->SetTitleSize(0.045);
     fh1_Xpos->GetYaxis()->SetLabelSize(0.045);
     fh1_Xpos->GetYaxis()->SetTitleSize(0.045);
+    fh1_Xpos->SetFillColor(8);
+    fh1_Xpos->SetLineColor(1);
     fh1_Xpos->Draw("col");
 
     // Hit data
@@ -240,6 +246,8 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     fh1_Ypos->GetXaxis()->SetTitleSize(0.045);
     fh1_Ypos->GetYaxis()->SetLabelSize(0.045);
     fh1_Ypos->GetYaxis()->SetTitleSize(0.045);
+    fh1_Ypos->SetFillColor(8);
+    fh1_Ypos->SetLineColor(1);
     fh1_Ypos->Draw("col");
 
     // Hit data

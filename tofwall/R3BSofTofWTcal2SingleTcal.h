@@ -28,11 +28,18 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
   virtual ~R3BSofTofWTcal2SingleTcal();
 
   virtual InitStatus Init();         
+
   virtual void SetParContainers();
+
   virtual InitStatus ReInit();
+
   virtual void Exec(Option_t* option);
-  virtual void FinishEvent();
-  virtual void FinishTask();
+
+    /** Virtual method Reset **/
+    virtual void Reset();
+
+    /** Virtual method Finish **/
+    virtual void Finish();
 
  private:
   TClonesArray*  fSciSingleTcal;  // input data            
@@ -42,6 +49,9 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
   UInt_t fNevent;
 
   TRandom rand;
+
+   // Adds a SofTofWHitData to the HitCollection
+   R3BSofToFWSingleTcalData* AddHitData(Int_t plastic, Double_t time, Double_t tof, Double_t pos);
 
  public:
   ClassDef(R3BSofTofWTcal2SingleTcal, 1)

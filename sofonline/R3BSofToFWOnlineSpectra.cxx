@@ -45,6 +45,8 @@ R3BSofToFWOnlineSpectra::R3BSofToFWOnlineSpectra()
     , fTcalItemsToFW(NULL)
     , fHitItemsTwim(NULL)
     , fCalItemsMwpc(NULL)
+    , fTwimTofRangeMax(-65.)
+    , fTwimTofRangeMin(-87.)
     , fNEvents(0)
 {
 }
@@ -55,6 +57,8 @@ R3BSofToFWOnlineSpectra::R3BSofToFWOnlineSpectra(const char* name, Int_t iVerbos
     , fTcalItemsToFW(NULL)
     , fHitItemsTwim(NULL)
     , fCalItemsMwpc(NULL)
+    , fTwimTofRangeMax(-65.)
+    , fTwimTofRangeMin(-87.)
     , fNEvents(0)
 {
 }
@@ -140,8 +144,11 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         // === MULT AT MAPPED LEVEL === //
         sprintf(Name1, "SofToFW_Pmt%i_MultPerPlastic", j + 1);
         fh2_mult[j] = new TH2I(Name1, Name1, NbDets + 2, -0.5, NbDets + 1.5, 5, -0.5, 4.5);
-        fh2_mult[j]->GetXaxis()->SetTitle("plastic number");
-        fh2_mult[j]->GetYaxis()->SetTitle("multiplicity per plastic");
+        fh2_mult[j]->GetXaxis()->SetTitle("Plastic number [1-28]");
+        fh2_mult[j]->GetYaxis()->SetTitle("Multiplicity per plastic");
+        fh2_mult[j]->GetYaxis()->SetTitleOffset(0.9);
+        fh2_mult[j]->GetXaxis()->CenterTitle(true);
+        fh2_mult[j]->GetYaxis()->CenterTitle(true);
         cToFWMult->cd(j + 1);
         fh2_mult[j]->Draw("COL");
 
@@ -221,14 +228,14 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
         fh1_RawTof_AtTcalMult1[i]->Draw("");
     }
 
-    // === Twim vs TIME-OF-Flight === //
+    // === Twim vs TIME-OF-Flight raw === //
     for (Int_t i = 0; i < NbDets; i++)
     {
         sprintf(Name1, "Twim_vs_ToF_Plastic_%i", i + 1);
         cTwimvsTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
         sprintf(Name1, "fh2_Twim_vs_ToF_Plastic_%i", i + 1);
         sprintf(Name2, "Twim vs ToF for plastic %i", i + 1);
-        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 7000, -87, -65, 1000, 0, 40);
+        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 7000, fTwimTofRangeMin, fTwimTofRangeMax, 1000, 0, 40);
         fh2_Twim_Tof[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
         fh2_Twim_Tof[i]->GetYaxis()->SetTitle("Charge Z");
         fh2_Twim_Tof[i]->GetXaxis()->CenterTitle(true);
@@ -247,7 +254,7 @@ InitStatus R3BSofToFWOnlineSpectra::Init()
     sprintf(Name1, "fh2_Mwpc3X_vs_ToF_Plastic");
     sprintf(Name2, "Mwpc3X vs ToF for plastic number");
     fh2_Mwpc3X_Tof = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 288 * 8, 0.5, 288.5);
-    fh2_Mwpc3X_Tof->GetXaxis()->SetTitle("ToFW-Plastic number");
+    fh2_Mwpc3X_Tof->GetXaxis()->SetTitle("ToFW-Plastic number [1-28]");
     fh2_Mwpc3X_Tof->GetYaxis()->SetTitle("MWPC3-X [pads]");
     fh2_Mwpc3X_Tof->GetXaxis()->CenterTitle(true);
     fh2_Mwpc3X_Tof->GetYaxis()->CenterTitle(true);
