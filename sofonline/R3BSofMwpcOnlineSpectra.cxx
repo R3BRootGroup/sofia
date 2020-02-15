@@ -212,7 +212,7 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         fh1_Xpos = new TH1F(Name1, Name2, 1800, -450, 450);
     else
         fh1_Xpos = new TH1F(Name1, Name2, 400, -100, 100);
-    fh1_Xpos->GetXaxis()->SetTitle("X (mm)");
+    fh1_Xpos->GetXaxis()->SetTitle("(Wixhausen)<---  X (mm)  ---> (Messel)");
     fh1_Xpos->GetYaxis()->SetTitle("counts per bin");
     fh1_Xpos->GetYaxis()->SetTitleOffset(1.1);
     fh1_Xpos->GetXaxis()->CenterTitle(true);
@@ -250,7 +250,7 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         fh2_XYpos = new TH2F(Name1, Name2, 1800, -450, 450, 1200, -300, 300);
     else
         fh2_XYpos = new TH2F(Name1, Name2, 400, -100, 100, 400, -100, 100);
-    fh2_XYpos->GetXaxis()->SetTitle("X (mm)");
+    fh2_XYpos->GetXaxis()->SetTitle("(Wixhausen)<---  X (mm)  ---> (Messel)");
     fh2_XYpos->GetYaxis()->SetTitle("Y (mm)");
     fh2_XYpos->GetYaxis()->SetTitleOffset(1.1);
     fh2_XYpos->GetXaxis()->CenterTitle(true);
