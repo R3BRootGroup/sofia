@@ -43,8 +43,10 @@ void main_online()
     TString filename = "--stream=lxlanddaq01:9000";
     //TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/main0074_0001.lmd";
+    //TString filename = "~/lmd/sofia2020/main0075_0001.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
+    //TString filename = "/lustre/land/202002_s444/stitched/main0076_0001.lmd";
+
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";

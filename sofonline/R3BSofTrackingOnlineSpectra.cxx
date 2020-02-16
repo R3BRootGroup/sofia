@@ -314,7 +314,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
 
     Name1 = "fh2_Aq_vs_q";
     Name2 = "Tracking GLAD: A/q vs q";
-    fh2_Aqvsq = new TH2F(Name1, Name2, 500, 0.5, 3.5, (fZ_max - fZ_min) * 6., fZ_min, fZ_max);
+    fh2_Aqvsq = new TH2F(Name1, Name2, 900, 0.8, 3., (fZ_max - fZ_min) * 10., fZ_min, fZ_max);
     fh2_Aqvsq->GetXaxis()->SetTitle("A/q");
     fh2_Aqvsq->GetYaxis()->SetTitle("Charge (Z)");
     fh2_Aqvsq->GetYaxis()->SetTitleOffset(1.1);
@@ -332,7 +332,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     Name1 = "fh2_Mwpc3X_vs_beta";
     Name2 = "GLAD: Mwpc3-X vs #beta";
     fh2_Mwpc3vsbeta = new TH2F(Name1, Name2, 1800, -450., 450., 500, 0.2, 1.0);
-    fh2_Mwpc3vsbeta->GetXaxis()->SetTitle("Mwpc3-X [mm]");
+    fh2_Mwpc3vsbeta->GetXaxis()->SetTitle("(Wixhausen)<---    Mwpc3-X [mm]    ---> (Messel)");
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitle("#beta");
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitleOffset(1.1);
     fh2_Mwpc3vsbeta->GetXaxis()->CenterTitle(true);
