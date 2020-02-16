@@ -17,6 +17,9 @@ R3BSofSciTcal2SingleTcal::R3BSofSciTcal2SingleTcal()
   , fOnline(kFALSE)
   , fNevent(0)
 {
+#ifdef NUMBER_OF_SOFSCI_TOF
+  fRawTofPar = NULL;
+#endif
 }
 
 R3BSofSciTcal2SingleTcal::~R3BSofSciTcal2SingleTcal()
@@ -87,13 +90,20 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
   // --- CHECK THE TCALPAR VALIDITY --- //
   // --- -------------------------- --- //
   if(fRawPosPar->GetNumSignals()==0){
-    LOG(ERROR) << " There are no Tcal parameters for SofSci";
+    LOG(ERROR) << " There are no RawPosPar Tcal parameters for SofSci";
     return kFATAL;
   }
   else{
-    LOG(INFO) << " R3BSofSciTcal2SingleTcal::Init() : fNumDetectors=" << fRawPosPar->GetNumDetectors();
-    LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fNumSignals" << fRawPosPar->GetNumSignals();
+    LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fRawPosPar: fNumSignals=" << fRawPosPar->GetNumSignals();
   }
+#ifdef NUMBER_OF_SOFSCI_TOF
+  if(fRawPosPar->GetNumSignals()==0){
+    LOG(ERROR) << " There are not RawTofPar Tcal parameters for SofSci";
+  }
+  else{
+    LOG(INFO) << "  R3BSofSciTcal2SingleTcak::Init() : fRawPosPar: fNumSignals=" << fRawTofPar->GetNumSignals();
+  }
+#endif
 
   LOG(INFO) << "R3BSofSciTcal2SingleTcal: Init DONE !";
 
@@ -112,8 +122,8 @@ InitStatus R3BSofSciTcal2SingleTcal::ReInit()
 void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 {
 
-  int nDets = int(fRawPosPar->GetNumDetectors());
-  int nChs = int(fRawPosPar->GetNumChannels());
+  int nDets = NUMBER_OF_SOFSCI_DETECTORS;
+  int nChs = NUMBER_OF_SOFSCI_CHANNELS;
   UShort_t iDet; // 0-based
   UShort_t iCh;  // 0-based
   Double_t iTraw[nDets*nChs][16];
@@ -137,54 +147,104 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
   
   // LOOP OVER THE ENTRIES TO GET ALL THE POSSIBLE COMBINATION AND TO FIND THE GOOD ONE WITHOUT DOUBLE COUNTS
   if (nHitsPerEvent_SofSci>0){
-    UShort_t maskR; // if mult_max>=16, change into UInt_t
-    UShort_t maskL; // if mult_max>=16, change into UInt_t
+    UInt_t maskR[nDets]; // if mult_max>=32, doesn't work
+    UInt_t maskL[nDets]; // if mult_max>=32, doesn't work
     Double_t iRawPos;
     Double_t RawPos[nDets];
     Double_t RawTime[nDets];
     UShort_t mult_selectHits[nDets];
+#ifdef NUMBER_OF_SOFSCI_TOF
+    int nTof = NUMBER_OF_SOFSCI_TOF;
+    int dSta = fRawTofPar->GetFirstStart()-1;
+    int dSto = fRawTofPar->GetFirstStop()-1;
+    int rank = fRawTofPar->GetFirstRank()-1;
+    Bool_t select[nDets];
+    Double_t RawTof[nTof];
+    for(UShort_t d=0; d<nDets; d++){
+      select[d] = kFALSE;
+      maskR[d] = 0x0;
+      maskR[d] = 0x0;
+      iRawTime[d]= -1000000.;
+    }
+
+    // SELECTION OF THE MULTIPLICITY LOOKING AT THE ToFraw 
+    // * first, start with two selected Sci by the user
+    for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
+      for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsto++){
+	if((((maskR[dSta]>>multR)&(0x1))==1) || (((maskL[dSta]>multL)&(0x1))==1)) continue;
+	iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
+	if ((fRawPosPar->GetSignalTcalParams(2*dSta)>iRawPos)||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;	
+	for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
+	  for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
+	    if((((maskR[dSto]>>multR)&(0x1))==1) || (((maskL[dSto]>multL)&(0x1))==1)) continue;
+	    iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
+	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
+	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
+	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
+	    if( (fRawTofPar->GetSignalTcalParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
+		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalTcalParams(2*rank))) {
+	      RawTof[rank] = (RawTime[dSto]-RawTime[dSta];
+	      RawPos[dSta] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	  
+	      RawPos[dSta] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
+	      RawTime[dSta] = iRawTime_dSta;
+	      RawTime[dSto] = iRawTime_dSto;
+	      select[dSta] = kTRUE;
+	      select[dSto] = kTRUE;
+	      maskR[dSta] |= (0x1)<<multRsta;
+	      maskL[dSta] |= (0x1)<<multLsta;
+	      maskR[dSto] |= (0x1)<<multRsto;
+	      maskL[dSto] |= (0x1)<<multLsto;
+	    }
+	  }
+	}
+      }
+    }
+    // * second selection of the beam for the rest of the scintillators
+
+
+#else
     for(UShort_t d=0; d<nDets;d++) {
-      maskR= 0x0;
-      maskL= 0x0;
+      maskR[d]= 0x0;
+      maskL[d]= 0x0;
       RawPos[d] = -1000000.;
       RawTime[d] = -1000000.;
       mult_selectHits[d] = 0;
       for(UShort_t multR=0; multR<mult[d*nChs]; multR++){
 	for(UShort_t multL=0; multL<mult[d*nChs+1];multL++){
 	  iRawPos = iTraw[d*nChs][multR]-iTraw[d*nChs+1][multL]; // Raw position = Tright - Tleft for x increasing from RIGHT to LEFT
-	  if((fRawPosPar->GetSignalTcalParams(0)<=iRawPos)&&(iRawPos<=fRawPosPar->GetSignalTcalParams(1))){
-	    // if this hit has already been used, continue
-	    if((((maskR>>multR)&(0x1))==0) && (((maskL>multL)&(0x1))==0)){
-	      // get the RawPos of the detector
-	      RawPos[d] = iRawPos;
-	      // calculate the iRawTime
-	      RawTime[d] = 0.5*(iTraw[d*nChs][multL]+iTraw[d*nChs+1][multR]);
-	      //tag which hit is used
-	      maskR |= (0x1)<<multR;
-	      maskL |= (0x1)<<multL;
-	      //implement how many "good event" is found
-	      // attention for a single detector at S2, this might not be sufficient if the searching window of the VFTX is too large
-	      mult_selectHits[d]++;
-	    }// end of check if this hit hasn't been already used
-	  }// end of if(good raw position)
+	  // if the raw position is outside the range: continue
+	  if(iRawPos<fRawPosPar->GetSignalTcalParams(2*d))   continue;
+	  if(iRawPos>fRawPosPar->GetSignalTcalParams(2*d+1)) continue;
+	  // if this hit has already been used, continue
+	  if((((maskR[d]>>multR)&(0x1))==1) || (((maskL[d]>multL)&(0x1))==1)) continue;
+	  // get the RawPos of the detector
+	  RawPos[d] = iRawPos;
+	  // calculate the iRawTime
+	  RawTime[d] = 0.5*(iTraw[d*nChs][multL]+iTraw[d*nChs+1][multR]);
+	  //tag which hit is used
+	  maskR[d] |= (0x1)<<multR;
+	  maskL[d] |= (0x1)<<multL;
+	  //implement how many "good event" is found
+	  // attention for a single detector at S2, this might not be sufficient if the searching window of the VFTX is too large
+	   mult_selectHits[d]++;
 	}// end of loop over the hits of the left PMTs
       }// end of loop over the hits of the right PMTs
     }
-    
-    // ATTENTION : WE ONLY TAKE THE LAST VALUE OF THE RawPos WHEN SEVERAL OPTIONS ARE POSSIBLES
-    // WITHOUT OTHER DETECTORS AT S2, THIS CAN HAPPENS THAT FOR HIGH RATE OR TOO LARGE SEARCHING WINDOW, WE CANNOT DISCRIMINATE LIKE THIS AND EVENT HAS TO BE DISCARDED
+#endif // NUMBER_OF_SOFSCI_DETECTORS==1
 
     new((*fSingleTcal)[fNumSingleTcal++]) R3BSofSciSingleTcalData;  
     R3BSofSciSingleTcalData * fItem = (R3BSofSciSingleTcalData*)fSingleTcal->At(fNumSingleTcal-1);
     for(UShort_t d=0; d<nDets; d++){
       fItem->SetRawTimeNs(d+1,RawTime[d]);
       fItem->SetRawPosNs(d+1,RawPos[d]);
-      //#if NUMBER_OF_DETECTORS==2
-      //fItem->SetRawTof(RawTof);
-      //#endif
       fItem->SetMultPerDet(d+1,mult_selectHits[d]);
     }
-  }
+#ifdef NUMBER_OF_SOFSCI_TOF
+    for(UShort_t r=0; r<NUMBER_OF_SOFSCI_TOF;r++){
+      fItem->SetRawTofNs(r,RawTof[r]); // check if Set(r or Set(r+1
+    }
+#endif
+  }//end of if nHitsPerEvent_SofSci>0
   
   ++fNevent;
 }  
