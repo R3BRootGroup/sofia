@@ -37,7 +37,15 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   void printParams();
   
   /** Accessor functions **/
-  const Double_t GetNumSignals() 
+  const Int_t GetFirstStart()
+  {
+    return fFirstStaSci;
+  }
+  const Int_t GetFirstStop()
+  {
+    return fFirstStoSci;
+  }
+  const Int_t GetNumSignals() 
     { 
 	return fNumSignals; 
     }
@@ -53,10 +61,19 @@ class R3BSofSciRawTofPar : public FairParGenericSet
     { 
       return (Double_t)fAllSignalsRawTofParams->GetAt(rank); 
     }
+
   
-  void SetNumSignals(Int_t ndets)
+  void SetFirstStart(Int_t detFirstStart)
+  {
+    fFirstStaSci = detFirstStart;
+  }
+  void SetFirstStop(Int_t detFirstStop)
+  {
+    fFirstStoSci = detFirstStop;
+  }
+  void SetNumSignals(Int_t nsig)
     { 
-      fNumSignals = ndets;   
+      fNumSignals = nsig;   
     }
   void SetNumParsPerSignal(Int_t npars)
     { 
@@ -70,8 +87,10 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   
  private:
   TArrayF* fAllSignalsRawTofParams; // Calibration Parameters for all signals of one detector
-  Int_t fNumSignals;                // = number of Tof
-  Int_t fNumParsPerSignal;
+  Int_t fFirstStaSci;  // if nDets>2, start the mult selection with detectors number fFirstStaSci (1-based)
+  Int_t fFirstStoSci;  //                                                        and fFirstStoSci (1-based)
+  Int_t fNumSignals;   // = number of Tof
+  Int_t fNumParsPerSignal; // = 2
   const R3BSofSciRawTofPar& operator=(const R3BSofSciRawTofPar&); 
   R3BSofSciRawTofPar(const R3BSofSciRawTofPar&); // a copy constructor
   
