@@ -22,6 +22,7 @@
 
 // FIXME after beam 15 Feb 2020
 Double_t offset_tof[28];
+Double_t offset_pos[28];
 
 // R3BSofTofWTCal2Hit: Default Constructor --------------------------
 R3BSofTofWTCal2Hit::R3BSofTofWTCal2Hit()
@@ -30,34 +31,66 @@ R3BSofTofWTCal2Hit::R3BSofTofWTCal2Hit()
     , fHitDataCA(NULL)
     , fOnline(kFALSE)
 {
-    offset_tof[0] = 46.3+2.28-4.567;
-    offset_tof[1] = 46.3+1.03-4.567;
-    offset_tof[2] = 46.3+1.287-4.567;
-    offset_tof[3] = 46.3-2.03-4.567;
-    offset_tof[4] = 46.3-0.62-4.567;
-    offset_tof[5] = 46.3-0.50-4.567;
-    offset_tof[6] = 46.3+0.81-4.567;
-    offset_tof[7] = 46.3-0.16-4.567;
-    offset_tof[8] = 46.3+3.531-4.567;
-    offset_tof[9] = 46.3+2.17-4.567;
-    offset_tof[10] = 46.3-1.67-4.567;
-    offset_tof[11] = 46.3-1.26-4.567;
-    offset_tof[12] = 46.3+2.265-4.567;
-    offset_tof[13] = 46.3+4.42-4.567;
-    offset_tof[14] = 46.3+6.51-4.567;
-    offset_tof[15] = 46.3+0.14-4.567;
-    offset_tof[16] = 46.3-2.21-4.567;
-    offset_tof[17] = 46.3-6.15-4.567;
-    offset_tof[18] = 46.3-0.45-4.567;
-    offset_tof[19] = 46.3+0.47-4.567;
-    offset_tof[20] = 46.3+1.25-4.567;
-    offset_tof[21] = 46.3+3.09-4.567;
-    offset_tof[22] = 46.3-1.07-4.567;
-    offset_tof[23] = 46.3+2.44-4.567;
-    offset_tof[24] = 46.3+0.495-4.567;
-    offset_tof[25] = 46.3-0.22-4.567;
-    offset_tof[26] = 46.3+0.93-4.567;
-    offset_tof[27] = 46.3-4.567;
+    offset_pos[0] = +2.28;
+    offset_pos[1] = +1.03;
+    offset_pos[2] = +1.287;
+    offset_pos[3] = -2.03;
+    offset_pos[4] = -0.62;
+    offset_pos[5] = -0.50;
+    offset_pos[6] = +0.81;
+    offset_pos[7] = -0.16;
+    offset_pos[8] = +3.531;
+    offset_pos[9] = +2.17;
+    offset_pos[10] = -1.67;
+    offset_pos[11] = -1.26;
+    offset_pos[12] = +2.265;
+    offset_pos[13] = +4.42;
+    offset_pos[14] = +6.51;
+    offset_pos[15] = +0.14;
+    offset_pos[16] = -2.21;
+    offset_pos[17] = -6.15;
+    offset_pos[18] = -0.45;
+    offset_pos[19] = +0.47;
+    offset_pos[20] = +1.25;
+    offset_pos[21] = +3.09;
+    offset_pos[22] = -1.07;
+    offset_pos[23] = +2.44;
+    offset_pos[24] = +0.495;
+    offset_pos[25] = -0.22;
+    offset_pos[26] = +0.93;
+    offset_pos[27] = 0.0;
+
+    Double_t Tof_lise=41.6; //ns
+
+    offset_tof[0] = Tof_lise+37.08;
+    offset_tof[1] = Tof_lise+36.43;
+    offset_tof[2] = Tof_lise+37.74;
+    offset_tof[3] = Tof_lise+36.86;
+    offset_tof[4] = Tof_lise+37.32;
+    offset_tof[5] = Tof_lise+37.63;
+    offset_tof[6] = Tof_lise+38.05;
+    offset_tof[7] = Tof_lise+37.68;
+    offset_tof[8] = Tof_lise+36.8;
+    offset_tof[9] = Tof_lise+37.59;
+    offset_tof[10] = Tof_lise+35.88;
+    offset_tof[11] = Tof_lise+37.58;
+    offset_tof[12] = Tof_lise+36.36;
+    offset_tof[13] = Tof_lise+37.14;
+    offset_tof[14] = Tof_lise+38.94;
+    offset_tof[15] = Tof_lise+38.6;
+    offset_tof[16] = Tof_lise+39.29;
+    offset_tof[17] = Tof_lise+38.14;
+    offset_tof[18] = Tof_lise+38.72;
+    offset_tof[19] = Tof_lise+38.48;
+    offset_tof[20] = Tof_lise+40.33;
+    offset_tof[21] = Tof_lise+40.53;
+    offset_tof[22] = Tof_lise+40.13;
+    offset_tof[23] = Tof_lise+40.15;
+    offset_tof[24] = Tof_lise+39.51;
+    offset_tof[25] = Tof_lise+39.3;
+    offset_tof[26] = Tof_lise+39.33;
+    offset_tof[27] = Tof_lise;
+
 }
 
 // R3BSofTofWTCal2Hit: Standard Constructor --------------------------
@@ -67,34 +100,66 @@ R3BSofTofWTCal2Hit::R3BSofTofWTCal2Hit(const char* name, Int_t iVerbose)
     , fHitDataCA(NULL)
     , fOnline(kFALSE)
 {
-    offset_tof[0] = 46.3+2.28-4.567;
-    offset_tof[1] = 46.3+1.03-4.567;
-    offset_tof[2] = 46.3+1.287-4.567;
-    offset_tof[3] = 46.3-2.03-4.567;
-    offset_tof[4] = 46.3-0.62-4.567;
-    offset_tof[5] = 46.3-0.50-4.567;
-    offset_tof[6] = 46.3+0.81-4.567;
-    offset_tof[7] = 46.3-0.16-4.567;
-    offset_tof[8] = 46.3+3.531-4.567;
-    offset_tof[9] = 46.3+2.17-4.567;
-    offset_tof[10] = 46.3-1.67-4.567;
-    offset_tof[11] = 46.3-1.26-4.567;
-    offset_tof[12] = 46.3+2.265-4.567;
-    offset_tof[13] = 46.3+4.42-4.567;
-    offset_tof[14] = 46.3+6.51-4.567;
-    offset_tof[15] = 46.3+0.14-4.567;
-    offset_tof[16] = 46.3-2.21-4.567;
-    offset_tof[17] = 46.3-6.15-4.567;
-    offset_tof[18] = 46.3-0.45-4.567;
-    offset_tof[19] = 46.3+0.47-4.567;
-    offset_tof[20] = 46.3+1.25-4.567;
-    offset_tof[21] = 46.3+3.09-4.567;
-    offset_tof[22] = 46.3-1.07-4.567;
-    offset_tof[23] = 46.3+2.44-4.567;
-    offset_tof[24] = 46.3+0.495-4.567;
-    offset_tof[25] = 46.3-0.22-4.567;
-    offset_tof[26] = 46.3+0.93-4.567;
-    offset_tof[27] = 46.3-4.567;
+    offset_pos[0] = +2.28;
+    offset_pos[1] = +1.03;
+    offset_pos[2] = +1.287;
+    offset_pos[3] = -2.03;
+    offset_pos[4] = -0.62;
+    offset_pos[5] = -0.50;
+    offset_pos[6] = +0.81;
+    offset_pos[7] = -0.16;
+    offset_pos[8] = +3.531;
+    offset_pos[9] = +2.17;
+    offset_pos[10] = -1.67;
+    offset_pos[11] = -1.26;
+    offset_pos[12] = +2.265;
+    offset_pos[13] = +4.42;
+    offset_pos[14] = +6.51;
+    offset_pos[15] = +0.14;
+    offset_pos[16] = -2.21;
+    offset_pos[17] = -6.15;
+    offset_pos[18] = -0.45;
+    offset_pos[19] = +0.47;
+    offset_pos[20] = +1.25;
+    offset_pos[21] = +3.09;
+    offset_pos[22] = -1.07;
+    offset_pos[23] = +2.44;
+    offset_pos[24] = +0.495;
+    offset_pos[25] = -0.22;
+    offset_pos[26] = +0.93;
+    offset_pos[27] = 0.0;
+
+
+    Double_t Tof_lise=43.0; //ns
+
+    offset_tof[0] = Tof_lise+37.08;
+    offset_tof[1] = Tof_lise+36.43;
+    offset_tof[2] = Tof_lise+37.74;
+    offset_tof[3] = Tof_lise+36.86;
+    offset_tof[4] = Tof_lise+37.32;
+    offset_tof[5] = Tof_lise+37.63;
+    offset_tof[6] = Tof_lise+38.05;
+    offset_tof[7] = Tof_lise+37.68;
+    offset_tof[8] = Tof_lise+36.8;
+    offset_tof[9] = Tof_lise+37.59;
+    offset_tof[10] = Tof_lise+35.88;
+    offset_tof[11] = Tof_lise+37.58;
+    offset_tof[12] = Tof_lise+36.36;
+    offset_tof[13] = Tof_lise+37.14;
+    offset_tof[14] = Tof_lise+38.94;
+    offset_tof[15] = Tof_lise+38.6;
+    offset_tof[16] = Tof_lise+39.29;
+    offset_tof[17] = Tof_lise+38.14;
+    offset_tof[18] = Tof_lise+38.72;
+    offset_tof[19] = Tof_lise+38.48;
+    offset_tof[20] = Tof_lise+40.33;
+    offset_tof[21] = Tof_lise+40.53;
+    offset_tof[22] = Tof_lise+40.13;
+    offset_tof[23] = Tof_lise+40.15;
+    offset_tof[24] = Tof_lise+39.51;
+    offset_tof[25] = Tof_lise+39.3;
+    offset_tof[26] = Tof_lise+39.33;
+    offset_tof[27] = Tof_lise;
 }
 
 // Virtual R3BSofTofWTCal2Hit: Destructor
@@ -167,7 +232,7 @@ void R3BSofTofWTCal2Hit::Exec(Option_t* option)
         calDat[i] = (R3BSofToFWSingleTcalData*)(fTCalDataCA->At(i));
         fPaddleId= calDat[i]->GetDetector();
         tofw=calDat[i]->GetRawTofNs();
-        AddHitData(fPaddleId, -450.+15.+(fPaddleId-1)*30., calDat[i]->GetRawPosNs(), tofw+offset_tof[fPaddleId-1]);
+        AddHitData(fPaddleId, -450.+15.+(fPaddleId-1)*30., calDat[i]->GetRawPosNs()+offset_pos[fPaddleId-1], tofw+offset_tof[fPaddleId-1]);
     }
     
     if (calDat)

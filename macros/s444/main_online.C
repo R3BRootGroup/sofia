@@ -43,7 +43,7 @@ void main_online()
     TString filename = "--stream=lxlanddaq01:9000";
     //TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/main0075_0001.lmd";
+    //TString filename = "~/lmd/sofia2020/main0036_0001.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
     //TString filename = "/lustre/land/202002_s444/stitched/main0076_0001.lmd";
 
@@ -51,9 +51,9 @@ void main_online()
     // Output file ------------------------------------------
     TString outputFileName = "data_s444_online.root";
     Bool_t fCal_level_califa = true;  // set true if there exists a file with the calibration parameters
-    Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
-    Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
-    Bool_t NOTstorehitdata = false;    // if true, don't store hit data in the root file
+    Bool_t NOTstoremappeddata = true; // if true, don't store mapped data in the root file
+    Bool_t NOTstorecaldata = true;    // if true, don't store cal data in the root file
+    Bool_t NOTstorehitdata = true;    // if true, don't store hit data in the root file
 
     // Online server configuration --------------------------
     Int_t refresh = 1; // Refresh rate for online histograms
@@ -399,6 +399,7 @@ void main_online()
 
         // --- Tcal 2 SingleTcal for SofTofW
         R3BSofTofWTcal2SingleTcal* SofTofWTcal2STcal = new R3BSofTofWTcal2SingleTcal();
+        SofTofWTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofTofWTcal2STcal);
 
         R3BSofTofWTCal2Hit* SofToFWTcal2Hit = new R3BSofTofWTCal2Hit();

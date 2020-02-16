@@ -116,6 +116,7 @@ class R3BSofTrackingOnlineSpectra : public FairTask
     TCanvas* cTrackingXZ;
     TCanvas* cTrackingYZ;
     TCanvas* cBeamProfileTarget;
+    TCanvas* cZvsBeta;
 
     // Histograms for Hit data
     TH1F* fh1_beta;
@@ -125,6 +126,7 @@ class R3BSofTrackingOnlineSpectra : public FairTask
     TH2F* fh2_tracking_planeXZ;
     TH2F* fh2_tracking_planeYZ;
     TH2F* fh2_target_PosXY;
+    TH2F* fh2_ZvsBeta;
 
   public:
     ClassDef(R3BSofTrackingOnlineSpectra, 1)

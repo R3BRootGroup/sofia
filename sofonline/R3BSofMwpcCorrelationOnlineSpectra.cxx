@@ -210,7 +210,7 @@ InitStatus R3BSofMwpcCorrelationOnlineSpectra::Init()
     run->AddObject(mainfolMW);
 
     // Register command to reset histograms
-    run->GetHttpServer()->RegisterCommand("Reset_" + fNameDet1 + "-" + fNameDet2 + "_HIST",
+    run->GetHttpServer()->RegisterCommand("Reset_" + fNameDet1 + "_" + fNameDet2 + "_HIST",
                                           Form("/Objects/%s/->Reset_Histo()", GetName()));
 
     return kSUCCESS;

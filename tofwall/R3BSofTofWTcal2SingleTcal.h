@@ -41,10 +41,15 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
     /** Virtual method Finish **/
     virtual void Finish();
 
+    void SetOnline(Bool_t option) { fOnline = option; }
+
  private:
   TClonesArray*  fSciSingleTcal;  // input data            
   TClonesArray*  fToFWTcal;       // input data
-  TClonesArray*  fToFWSingleTcal; // output data        
+  TClonesArray*  fToFWSingleTcal; // output data 
+
+  Bool_t fOnline; // Don't store data for online
+       
   UInt_t fNumSingleTcal;
   UInt_t fNevent;
 
