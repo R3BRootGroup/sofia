@@ -11,6 +11,10 @@
 #include "R3BSofSciRawPosPar.h"
 #include "R3BSofSciSingleTcalData.h"
 
+#ifdef NUMBER_OF_SOFSCI_TOF
+#include "R3BSofSciRawTofPar.h"
+#endif
+
 #include "TClonesArray.h"
 #include "TMath.h"
 #include "TRandom.h"
@@ -40,8 +44,11 @@ class R3BSofSciTcal2SingleTcal : public FairTask
 
  private:
   TClonesArray*  fTcal;            
-  R3BSofSciRawPosPar* fRawPosPar;          
   TClonesArray*  fSingleTcal;         
+  R3BSofSciRawPosPar* fRawPosPar;
+#ifdef NUMBER_OF_SOFSCI_TOF
+  R3BSofScoRawTofPar* fRawTofPar;
+#endif
   
   Bool_t fOnline; // Don't store data for online
 
