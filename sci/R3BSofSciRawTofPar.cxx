@@ -17,6 +17,8 @@ using std::endl;
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, const char* context)
   : FairParGenericSet(name, title, context)
+  , fFirstStaSci(1)
+  , fFirstStoSci(NUMBER_OF_SOFSCI_DETECTORS) //last SofSci at cave C
   , fNumSignals(0)
   , fNumParsPerSignal(0)
 {
@@ -56,6 +58,8 @@ void R3BSofSciRawTofPar::putParams(FairParamList* list)
     fAllSignalsRawTofParams->Set(array_size);
 
     list->add("RawTofPar", *fAllSignalsRawTofParams);
+    list->add("selectionFirstStart",fFirstStaSci);
+    list->add("selectionFirstStop",fFirstStoSci);
     list->add("nSignalsRawTofPar", fNumSignals);
     list->add("nRawTofParsPerSignal", fNumParsPerSignal);
 }
@@ -67,6 +71,14 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
     if (!list)
     {
         return kFALSE;
+    }
+    if (!list->fill("selectionFirstStart"),&fFirstStaSci)
+    {
+      return kFALSE;
+    }
+    if (!list->fill("selectionFirstStop"),&fFirstStoSci)
+    {
+      return kFALSE;
     }
     if (!list->fill("nSignalsRawTofPar", &fNumSignals))
     {
