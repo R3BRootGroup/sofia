@@ -43,7 +43,7 @@ class R3BSofSciTcal2RawTofPar : public FairTask {
   virtual InitStatus ReInit();
   
   /** Virtual method calculate the TofRaw Single Tcal Parameters **/
-  virtual void CalculateRawTofRawTofParams();
+  virtual void CalculateRawTofParams();
   
  
   void SetOutputFile(const char *outFile);
