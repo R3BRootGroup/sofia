@@ -106,19 +106,22 @@ InitStatus R3BSofSciTcal2RawTofPar::Init() {
 
   char name[100];  
   fh_RawTofMult1 = new TH1D*[fNumSignals];
+  UShort_t rank = 0;
   for(Int_t detstart=0; detstart<NUMBER_OF_SOFSCI_DETECTORS-1; detstart++){
     for(Int_t detstop=detstart+1; detstop<NUMBER_OF_SOFSCI_DETECTORS;detstop++){
-    sprintf(name,"TofRaw_Sci%i",det+1);
-    fh_RawTofMult1[det] = new TH1D(name,name,400000,-2000,2000);
+      sprintf(name,"TofRaw_Sci%i_to_Sci%i",detstart+1,detstop+1);
+      fh_RawTofMult1[rank] = new TH1D(name,name,400000,-2000,2000);
+      rank++;
+    }
   }
+  if(rank!=NUMBER_OF_SOFSCI_TOF)
+    LOG(ERROR) << "R3BSofSciTcal2RawTofPar::Init() error in the number of RawTof declaration";
   
   return kSUCCESS;
 }
 
 // -----   Public method ReInit   --------------------------------------------
 InitStatus R3BSofSciTcal2RawTofPar::ReInit() {
-  
-  
   return kSUCCESS;
 }
 
@@ -160,7 +163,7 @@ void R3BSofSciTcal2RawTofPar::Exec(Option_t* opt) {
 
   // FILL THE HISTOGRAM ONLY FOR MULT=1 IN RIGHT AND MULT=1 IN LEFT
   rank=0;
-  for(UShort_t dstart=0; dstart<NUMBER_OF_SOFSCI_DETECTORS-i; dstart++){
+  for(UShort_t dstart=0; dstart<NUMBER_OF_SOFSCI_DETECTORS-1; dstart++){
     iTrawStart = 0.5*(iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS]+iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS+1]);
     for(UShort_t dstop=dstart+1; dstop<NUMBER_OF_SOFSCI_DETECTORS; dstop++){
       iTrawStop = 0.5*(iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS]+iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS+1]);
