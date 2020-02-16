@@ -61,7 +61,8 @@ void main_online()
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
     //TString upexps_dir = ucesb_dir + "/../upexps/";
-    TString upexps_dir = "/u/land/fake_cvmfs/upexps";
+    //TString upexps_dir = "/u/land/lynx.landexp/202002_s444/upexps/"; //for lxg computers
+    TString upexps_dir = "/u/land/fake_cvmfs/upexps"; //for lxlandana computers
     TString ucesb_path;
     if (expId == 444)
     {
