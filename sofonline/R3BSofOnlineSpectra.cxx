@@ -16,6 +16,7 @@
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofFrsOnlineSpectra.h"
 #include "R3BSofMwpcOnlineSpectra.h"
+#include "R3BSofMwpcCorrelationOnlineSpectra.h"
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofToFWOnlineSpectra.h"
@@ -55,6 +56,10 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fEventHeader(nullptr)
     , fAtOnline(NULL)
     , fMwpc0Online(NULL)
+    , fMwpc01Online(NULL)
+    , fMwpc02Online(NULL)
+    , fMwpc12Online(NULL)
+    , fMwpc23Online(NULL)
     , fMwpc1Online(NULL)
     , fMwpc2Online(NULL)
     , fMwpc3Online(NULL)
@@ -79,6 +84,10 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fEventHeader(nullptr)
     , fAtOnline(NULL)
     , fMwpc0Online(NULL)
+    , fMwpc01Online(NULL)
+    , fMwpc02Online(NULL)
+    , fMwpc12Online(NULL)
+    , fMwpc23Online(NULL)
     , fMwpc1Online(NULL)
     , fMwpc2Online(NULL)
     , fMwpc3Online(NULL)
@@ -158,6 +167,26 @@ InitStatus R3BSofOnlineSpectra::Init()
     fMwpc0Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0OnlineSpectra");
     if (!fMwpc0Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0OnlineSpectra not found";
+
+    // Looking for Mwpc0_1 online
+    fMwpc01Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_1CorrelationOnlineSpectra");
+    if (!fMwpc01Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_1CorrelationOnlineSpectra not found";
+
+    // Looking for Mwpc0_2 online
+    fMwpc02Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_2CorrelationOnlineSpectra");
+    if (!fMwpc02Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_2CorrelationOnlineSpectra not found";
+
+    // Looking for Mwpc1_2 online
+    fMwpc12Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1_2CorrelationOnlineSpectra");
+    if (!fMwpc12Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc1_2CorrelationOnlineSpectra not found";
+
+    // Looking for Mwpc2_3 online
+    fMwpc23Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc2_3CorrelationOnlineSpectra");
+    if (!fMwpc23Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_1CorrelationOnlineSpectra not found";
 
     fFrsOnline = (R3BSofFrsOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofFrsOnlineSpectra");
     if (!fFrsOnline)
@@ -303,6 +332,18 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Mwpc0 histograms if they exist somewhere
     if (fMwpc0Online)
         fMwpc0Online->Reset_Histo();
+    // Reset Mwpc0_1 histograms if they exist somewhere
+    if (fMwpc01Online)
+        fMwpc01Online->Reset_Histo();
+    // Reset Mwpc0_2 histograms if they exist somewhere
+    if (fMwpc02Online)
+        fMwpc02Online->Reset_Histo();
+    // Reset Mwpc1_2 histograms if they exist somewhere
+    if (fMwpc12Online)
+        fMwpc12Online->Reset_Histo();
+    // Reset Mwpc2_3 histograms if they exist somewhere
+    if (fMwpc23Online)
+        fMwpc23Online->Reset_Histo();
     // Reset Mwpc1 histograms if they exist somewhere
     if (fMwpc1Online)
         fMwpc1Online->Reset_Histo();

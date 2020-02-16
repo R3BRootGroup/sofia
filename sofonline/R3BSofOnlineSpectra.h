@@ -22,6 +22,7 @@ class TClonesArray;
 class R3BEventHeader;
 class R3BSofAtOnlineSpectra;
 class R3BSofMwpcOnlineSpectra;
+class R3BSofMwpcCorrelationOnlineSpectra;
 class R3BSofTwimOnlineSpectra;
 class R3BSofSciOnlineSpectra;
 class R3BSofToFWOnlineSpectra;
@@ -104,6 +105,10 @@ class R3BSofOnlineSpectra : public FairTask
 
     R3BSofAtOnlineSpectra* fAtOnline;
     R3BSofMwpcOnlineSpectra* fMwpc0Online;
+    R3BSofMwpcCorrelationOnlineSpectra* fMwpc01Online;
+    R3BSofMwpcCorrelationOnlineSpectra* fMwpc02Online;
+    R3BSofMwpcCorrelationOnlineSpectra* fMwpc12Online;
+    R3BSofMwpcCorrelationOnlineSpectra* fMwpc23Online;
     R3BSofMwpcOnlineSpectra* fMwpc1Online;
     R3BSofMwpcOnlineSpectra* fMwpc2Online;
     R3BSofMwpcOnlineSpectra* fMwpc3Online;

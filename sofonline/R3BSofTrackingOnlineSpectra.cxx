@@ -175,6 +175,13 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
         // return kFATAL;
     }
 
+    fTwimHitDataCA = (TClonesArray*)mgr->GetObject("TwimHitData");
+    if (!fTwimHitDataCA)
+    {
+        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: TwimHitData not found";
+        // return kFATAL;
+    }
+
     // Create histograms for detectors
     TString Name1;
     TString Name2;
@@ -276,7 +283,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     // Hit data, beta
     Name1 = "fh1_beta_tofw";
     Name2 = "#beta, velocity in units of c";
-    fh1_beta = new TH1F(Name1, Name2, 800, 0.2, 1.0);
+    fh1_beta = new TH1F(Name1, Name2, 1200, 0.2, 1.0);
     fh1_beta->GetXaxis()->SetTitle("#beta");
     fh1_beta->GetYaxis()->SetTitle("Counts");
     fh1_beta->GetYaxis()->SetTitleOffset(1.15);
@@ -343,6 +350,21 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitleSize(0.045);
     fh2_Mwpc3vsbeta->Draw("col");
 
+    // Hit data, Z versus beta
+    cZvsBeta = new TCanvas("TwimZvsBeta", "Z versus Beta", 10, 10, 800, 700);
+    fh2_ZvsBeta = new TH2F("VvsBeta", "Z from Twim versus Beta from ToFW", 1200, 0.6, 0.9, 1000, 1, 11);
+    fh2_ZvsBeta->GetXaxis()->SetTitle("#beta");
+    fh2_ZvsBeta->GetYaxis()->SetTitle("Charge-Z");
+    fh2_ZvsBeta->GetYaxis()->SetTitleOffset(1.1);
+    fh2_ZvsBeta->GetXaxis()->CenterTitle(true);
+    fh2_ZvsBeta->GetYaxis()->CenterTitle(true);
+    fh2_ZvsBeta->GetXaxis()->SetLabelSize(0.045);
+    fh2_ZvsBeta->GetXaxis()->SetTitleSize(0.045);
+    fh2_ZvsBeta->GetYaxis()->SetLabelSize(0.045);
+    fh2_ZvsBeta->GetYaxis()->SetTitleSize(0.045);
+    cZvsBeta->cd();
+    fh2_ZvsBeta->Draw("colz");
+
     // MAIN FOLDER
     TFolder* mainfol = new TFolder("Tracking_Cave", "Tracking info");
     mainfol->Add(cTrackingXZ);
@@ -352,6 +374,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     mainfol->Add(cBrho);
     mainfol->Add(cMwpc3vsBeta);
     mainfol->Add(cAqvsq);
+    mainfol->Add(cZvsBeta);
     run->AddObject(mainfol);
 
     // Register command to reset histograms
@@ -371,6 +394,7 @@ void R3BSofTrackingOnlineSpectra::Reset_Histo()
     fh2_tracking_planeXZ->Reset();
     fh2_tracking_planeYZ->Reset();
     fh2_target_PosXY->Reset();
+    fh2_ZvsBeta->Reset();
 }
 
 void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
@@ -454,6 +478,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
         }
 
         Int_t nHits = fTrackingDataCA->GetEntriesFast();
+        Int_t nHitsTwim = fTwimHitDataCA->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BSofTrackingData* hit = (R3BSofTrackingData*)fTrackingDataCA->At(ihit);
@@ -463,7 +488,14 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             fh1_brho->Fill(hit->GetBrho());
             fh2_Aqvsq->Fill(hit->GetAq(), hit->GetZ());
             if (mwpc3x > -10000.)
+            {
                 fh2_Mwpc3vsbeta->Fill(mwpc3x, hit->GetBeta());
+                if (nHitsTwim == 1)
+                {
+                    R3BSofTwimHitData* hitTwim = (R3BSofTwimHitData*)fTwimHitDataCA->At(0);
+                    fh2_ZvsBeta->Fill(hit->GetBeta(), hitTwim->GetZcharge());
+                }
+            }
         }
     }
 
@@ -521,6 +553,8 @@ void R3BSofTrackingOnlineSpectra::FinishTask()
         cBrho->Write();
         cMwpc3vsBeta->Write();
         cAqvsq->Write();
+        if (fTwimHitDataCA)
+            fh2_ZvsBeta->Write();
     }
     if (fMwpc0HitDataCA)
     {

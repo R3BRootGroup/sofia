@@ -228,25 +228,31 @@ void R3BSofTwimMapped2CalPar::Exec(Option_t* option)
 
     // Fill data only if there is TREF signal
     for (Int_t s = 0; s < fNumSec; s++)
-        if (mulanode[s][fNumAnodes] == 1)
-        {
-            TF1* fa = new TF1("fa", "pol1", fPosMwpcA, fPosMwpcB);
-            fa->SetParameter(0, PosMwpcA.X());
-            fa->SetParameter(1, (PosMwpcB - PosMwpcA).X() / (fPosMwpcB - fPosMwpcA));
-            for (Int_t i = 0; i < fNumAnodes; i++)
+        if (TMath::Abs(PosMwpcA.X() + (PosMwpcB - PosMwpcA).X() / (fPosMwpcB - fPosMwpcA) * fPosMwpcA) < 100.)
+            if (mulanode[s][fNumAnodes] == 1 && mulanode[s][fNumAnodes + 1] == 1)
             {
-                for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
-                    for (Int_t k = 0; k < mulanode[s][i]; k++)
-                    {
-                        if (fE[s][k][i] > 0.)
-                        { // Anode is 25mm, first anode is at -187.5mm with respect to the center of twim detector
-                            fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
-                                                                   fDT[s][k][i] - fDT[s][j][fNumAnodes],
-                                                                   fa->Eval(fPosTwim - 187.5 + i * 25.0));
+                TF1* fa = new TF1("fa", "pol1", fPosMwpcA, fPosMwpcB);
+                fa->SetParameter(0, PosMwpcA.X() - (PosMwpcB - PosMwpcA).X() / (fPosMwpcB - fPosMwpcA) * fPosMwpcA);
+                fa->SetParameter(1, (PosMwpcB - PosMwpcA).X() / (fPosMwpcB - fPosMwpcA));
+                for (Int_t i = 0; i < fNumAnodes; i++)
+                {
+                    for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
+                        for (Int_t k = 0; k < mulanode[s][i]; k++)
+                        {
+                            if (fE[s][k][i] > 0.)
+                            { // Anode is 25mm, first anode is at -187.5mm with respect to the center of twim detector
+                                if (i < fNumAnodes / 2)
+                                    fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
+                                                                           fDT[s][k][i] - fDT[s][j][fNumAnodes],
+                                                                           fa->Eval(fPosTwim - 187.5 + i * 25.0));
+                                else
+                                    fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
+                                                                           fDT[s][k][i] - fDT[s][j][fNumAnodes + 1],
+                                                                           fa->Eval(fPosTwim - 187.5 + i * 25.0));
+                            }
                         }
-                    }
+                }
             }
-        }
     if (mappedData)
         delete mappedData;
     if (hitMwAData)

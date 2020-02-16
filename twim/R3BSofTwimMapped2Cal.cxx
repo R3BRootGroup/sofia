@@ -224,7 +224,7 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
 
     // Fill data only if there is TREF signal
     // anodes 1 to 16 : energy and time
-    // anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled 
+    // anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled
     // anode 19 and 20 : trigger time   --> will be changed to 18 only when the full Twin-MUSIC will be cabled
     for (Int_t s = 0; s < fNumSec; s++)
         if (mulanode[s][fNumAnodes] == 1)
@@ -237,14 +237,16 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
                 for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
                     for (Int_t k = 0; k < mulanode[s][i]; k++)
                     {
-                        if(i<8){
-                        if (fE[s][k][i] > 0.)
-                            AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes]), fE[s][k][i]);
-                        }else{
-                        if (fE[s][k][i] > 0.)
-                            AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes+1]), fE[s][k][i]);
+                        if (i < 8)
+                        {
+                            if (fE[s][k][i] > 0.)
+                                AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes]), fE[s][k][i]);
                         }
-                       
+                        else
+                        {
+                            if (fE[s][k][i] > 0.)
+                                AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes + 1]), fE[s][k][i]);
+                        }
                     }
             }
         }

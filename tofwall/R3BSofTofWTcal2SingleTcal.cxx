@@ -16,6 +16,7 @@ R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal()
   , fSciSingleTcal(NULL)
   , fToFWTcal(NULL)
   , fToFWSingleTcal(NULL)
+  , fOnline(kFALSE)
   , fNevent(0)
 {
 }
@@ -58,8 +59,6 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     LOG(ERROR)<<"R3BSofTofWTcal2SingleTcal::Init() Couldn't get handle on SofToFWTcalData container";
     return kFATAL;
   }
-  else
-    LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init() SofToFWTcalData items found";
   
   // --- --------------------------------- --- //
   // --- INPUT SINGLETCAL DATA FROM SofSci --- //
@@ -70,17 +69,22 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     LOG(ERROR)<<"R3BSofTofWTcal2SingleTcal::Init() Couldn't get handle on SofSciSingleTcalData container";
     return kFATAL;
   }
-  else
-    LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init() SofSciSingleTcalData items found";
 
   // --- ----------------------- --- //
   // --- OUTPUT SINGLE TCAL DATA --- //
   // --- ----------------------- --- //
   
   // Register output array in tree
-  fToFWSingleTcal = new TClonesArray("R3BSofToFWSingleTcalData");
-  rm->Register("SofToFWSingleTcalData","SofToFW", fToFWSingleTcal, kTRUE);
-  LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init() R3BSofToFWSingleTcalData items created";
+  fToFWSingleTcal = new TClonesArray("R3BSofToFWSingleTcalData", 10);
+
+    if (!fOnline)
+    {
+        rm->Register("SofToFWSingleTcalData","SofToFW", fToFWSingleTcal, kTRUE);
+    }
+    else
+    {
+        rm->Register("SofToFWSingleTcalData","SofToFW", fToFWSingleTcal, kFALSE);
+    }
 
   LOG(INFO) << "R3BSofTofWTcal2SingleTcal: Init DONE !";
 
@@ -158,7 +162,7 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
 	  iRawPos  = iTraw[d*nChs+1][0]-iTraw[d*nChs][0]; // Raw position = Tdown - Tup
 	  iRawTime = 0.5*(iTraw[d*nChs][0]+iTraw[d*nChs+1][0]);
 	  iRawTof  = 0.5*(iRawTime - iRawTime_SofSci);
-          AddHitData(d+1, iRawTime, iRawPos, iRawTof);
+          AddHitData(d+1, iRawTime, iRawTof, iRawPos);
       }
     }    
     ++fNevent;

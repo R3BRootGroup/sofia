@@ -257,7 +257,7 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
             }
             Double_t zhit =
                 fZ0 + fZ1 * TMath::Sqrt(Esum / nba) + fZ2 * TMath::Sqrt(Esum / nba) * TMath::Sqrt(Esum / nba);
-            if (zhit > 0 && theta>-5000.)
+            if (zhit > 0 && theta > -5000.)
                 AddHitData(i, theta, zhit);
         }
     }
