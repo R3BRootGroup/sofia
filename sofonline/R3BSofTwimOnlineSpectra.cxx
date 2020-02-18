@@ -459,13 +459,13 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_Twimhit_zvstheta->GetXaxis()->SetTitleSize(0.045);
     fh2_Twimhit_zvstheta->GetYaxis()->SetLabelSize(0.045);
     fh2_Twimhit_zvstheta->GetYaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_zvstheta->Draw("col");
+    fh2_Twimhit_zvstheta->Draw("colz");
 
-    cTwimTheta_vs_mwpc3x = new TCanvas("Twim_theta_vs_mwpc3x", "Twim: Theta vs MWPC3X", 10, 10, 800, 700);
+    cTwimTheta_vs_mwpc3x = new TCanvas("Twim_theta_vs_mwpc3x", "Twim: Theta vs Mwpc3-X", 10, 10, 800, 700);
     fh2_TwimTheta_vs_mwpc3x =
-        new TH2F("fh2_TwiwTheta_vs_mwpc3x", "Twim: #theta_{xz} vs MWPC3X", 900, -40, 40, 800, -400, 400);
+        new TH2F("fh2_TwiwTheta_vs_mwpc3", "Twim: #theta_{xz} vs MWPC3X", 900, -40, 40, 800, -400, 400);
     fh2_TwimTheta_vs_mwpc3x->GetXaxis()->SetTitle("#theta_{XZ} [mrad]");
-    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitle("MWPC3 X (mm)");
+    fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitle("(Wixhausen)<---  Mwpc3-X [mm]  ---> (Messel)");
     fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitleOffset(1.1);
     fh2_TwimTheta_vs_mwpc3x->GetXaxis()->CenterTitle(true);
     fh2_TwimTheta_vs_mwpc3x->GetYaxis()->CenterTitle(true);
@@ -473,7 +473,20 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_TwimTheta_vs_mwpc3x->GetXaxis()->SetTitleSize(0.045);
     fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetLabelSize(0.045);
     fh2_TwimTheta_vs_mwpc3x->GetYaxis()->SetTitleSize(0.045);
-    fh2_TwimTheta_vs_mwpc3x->Draw("col");
+    fh2_TwimTheta_vs_mwpc3x->Draw("colz");
+
+    cTwimZ_vs_mwpc3x = new TCanvas("Twim_Z_vs_mwpc3x", "Twim: Z vs Mwpc3-X", 10, 10, 800, 700);
+    fh2_TwimZ_vs_mwpc3x = new TH2F("fh2_TwiwZ_vs_mwpc3", "Twim: Z vs Mwpc3-X", 800, -400, 400, 400, 1, 22);
+    fh2_TwimZ_vs_mwpc3x->GetXaxis()->SetTitle("(Wixhausen)<---  Mwpc3-X [mm]  ---> (Messel)");
+    fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetTitle("Charge Z");
+    fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetTitleOffset(1.1);
+    fh2_TwimZ_vs_mwpc3x->GetXaxis()->CenterTitle(true);
+    fh2_TwimZ_vs_mwpc3x->GetYaxis()->CenterTitle(true);
+    fh2_TwimZ_vs_mwpc3x->GetXaxis()->SetLabelSize(0.045);
+    fh2_TwimZ_vs_mwpc3x->GetXaxis()->SetTitleSize(0.045);
+    fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetLabelSize(0.045);
+    fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetTitleSize(0.045);
+    fh2_TwimZ_vs_mwpc3x->Draw("colz");
 
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
@@ -506,7 +519,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         mainfolTwim->Add(cTwim_theta);
         mainfolTwim->Add(cTwim_zvstheta);
         if (fHitItemsMwpc3)
+        {
             mainfolTwim->Add(cTwimTheta_vs_mwpc3x);
+            mainfolTwim->Add(cTwimZ_vs_mwpc3x);
+        }
     }
     run->AddObject(mainfolTwim);
 
@@ -560,7 +576,10 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
         fh1_Twimhit_theta->Reset();
         fh2_Twimhit_zvstheta->Reset();
         if (fHitItemsMwpc3)
+        {
             fh2_TwimTheta_vs_mwpc3x->Reset();
+            fh2_TwimZ_vs_mwpc3x->Reset();
+        }
     }
 }
 
@@ -699,7 +718,10 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             fh1_Twimhit_theta->Fill(hit->GetTheta() * 1000.);
             fh2_Twimhit_zvstheta->Fill(hit->GetTheta() * 1000., hit->GetZcharge());
             if (mwpc3x > -500)
+            {
                 fh2_TwimTheta_vs_mwpc3x->Fill(hit->GetTheta() * 1000., mwpc3x);
+                fh2_TwimZ_vs_mwpc3x->Fill(mwpc3x, hit->GetZcharge());
+            }
         }
     }
 
@@ -757,7 +779,10 @@ void R3BSofTwimOnlineSpectra::FinishTask()
         fh1_Twimhit_theta->Write();
         fh2_Twimhit_zvstheta->Write();
         if (fHitItemsMwpc3)
+        {
             cTwimTheta_vs_mwpc3x->Write();
+            cTwimZ_vs_mwpc3x->Write();
+        }
     }
 }
 

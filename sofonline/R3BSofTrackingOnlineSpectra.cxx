@@ -352,7 +352,8 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
 
     // Hit data, Z versus beta
     cZvsBeta = new TCanvas("TwimZvsBeta", "Z versus Beta", 10, 10, 800, 700);
-    fh2_ZvsBeta = new TH2F("VvsBeta", "Z from Twim vs Beta from ToFW", 1200, 0.5, 0.9, (fZ_max - fZ_min) * 10., fZ_min, fZ_max);
+    fh2_ZvsBeta =
+        new TH2F("VvsBeta", "Z from Twim vs Beta from ToFW", 1200, 0.5, 0.9, (fZ_max - fZ_min) * 10., fZ_min, fZ_max);
     fh2_ZvsBeta->GetXaxis()->SetTitle("#beta");
     fh2_ZvsBeta->GetYaxis()->SetTitle("Charge-Z");
     fh2_ZvsBeta->GetYaxis()->SetTitleOffset(1.1);
