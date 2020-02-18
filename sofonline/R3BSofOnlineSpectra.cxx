@@ -15,8 +15,8 @@
 #include "R3BMusicOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofFrsOnlineSpectra.h"
-#include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofMwpcCorrelationOnlineSpectra.h"
+#include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofToFWOnlineSpectra.h"
@@ -204,22 +204,26 @@ InitStatus R3BSofOnlineSpectra::Init()
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0OnlineSpectra not found";
 
     // Looking for Mwpc0_1 online
-    fMwpc01Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_1CorrelationOnlineSpectra");
+    fMwpc01Online =
+        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_1CorrelationOnlineSpectra");
     if (!fMwpc01Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_1CorrelationOnlineSpectra not found";
 
     // Looking for Mwpc0_2 online
-    fMwpc02Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_2CorrelationOnlineSpectra");
+    fMwpc02Online =
+        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_2CorrelationOnlineSpectra");
     if (!fMwpc02Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_2CorrelationOnlineSpectra not found";
 
     // Looking for Mwpc1_2 online
-    fMwpc12Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1_2CorrelationOnlineSpectra");
+    fMwpc12Online =
+        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1_2CorrelationOnlineSpectra");
     if (!fMwpc12Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc1_2CorrelationOnlineSpectra not found";
 
     // Looking for Mwpc2_3 online
-    fMwpc23Online = (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc2_3CorrelationOnlineSpectra");
+    fMwpc23Online =
+        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc2_3CorrelationOnlineSpectra");
     if (!fMwpc23Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_1CorrelationOnlineSpectra not found";
 
@@ -320,7 +324,7 @@ InitStatus R3BSofOnlineSpectra::Init()
     sprintf(Name1, "WRs_Sofia_vs_others");
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     sprintf(Name2, "fh1_WR_Sofia_others");
-    sprintf(Name3, "WR-Sofia - WR-Other");//Messel (blue), Wixhausen (red)
+    sprintf(Name3, "WR-Sofia - WR-Other"); // Messel (blue), Wixhausen (red)
     fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wrs[0]->GetYaxis()->SetTitle("Counts");
@@ -338,15 +342,18 @@ InitStatus R3BSofOnlineSpectra::Init()
     fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
     fh1_wrs[2]->SetLineColor(3);
     fh1_wrs[2]->SetLineWidth(3);
-    if(fWRItemsNeuland)fh1_wrs[2]->Draw("same");
+    if (fWRItemsNeuland)
+        fh1_wrs[2]->Draw("same");
     fh1_wrs[3] = new TH1F("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
     fh1_wrs[3]->SetLineColor(1);
     fh1_wrs[3]->SetLineWidth(3);
-    if(fWRItemsS2)fh1_wrs[3]->Draw("same");
+    if (fWRItemsS2)
+        fh1_wrs[3]->Draw("same");
     fh1_wrs[4] = new TH1F("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
     fh1_wrs[4]->SetLineColor(5);
     fh1_wrs[4]->SetLineWidth(3);
-    if(fWRItemsS8)fh1_wrs[4]->Draw("same");
+    if (fWRItemsS8)
+        fh1_wrs[4]->Draw("same");
 
     TLegend* leg = new TLegend(0.05, 0.9, 0.39, 0.9999, NULL, "brNDC");
     leg->SetBorderSize(0);
@@ -367,29 +374,31 @@ InitStatus R3BSofOnlineSpectra::Init()
     entry->SetLineStyle(1);
     entry->SetLineWidth(3);
     entry->SetTextFont(62);
-    if(fWRItemsNeuland){
-    entry = leg->AddEntry("null", "Neuland", "l");
-    entry->SetLineColor(3);
-    entry->SetLineStyle(1);
-    entry->SetLineWidth(3);
-    entry->SetTextFont(62);
+    if (fWRItemsNeuland)
+    {
+        entry = leg->AddEntry("null", "Neuland", "l");
+        entry->SetLineColor(3);
+        entry->SetLineStyle(1);
+        entry->SetLineWidth(3);
+        entry->SetTextFont(62);
     }
-    if(fWRItemsS2){
-    entry = leg->AddEntry("null", "S2", "l");
-    entry->SetLineColor(1);
-    entry->SetLineStyle(1);
-    entry->SetLineWidth(3);
-    entry->SetTextFont(62);
+    if (fWRItemsS2)
+    {
+        entry = leg->AddEntry("null", "S2", "l");
+        entry->SetLineColor(1);
+        entry->SetLineStyle(1);
+        entry->SetLineWidth(3);
+        entry->SetTextFont(62);
     }
-    if(fWRItemsS8){
-    entry = leg->AddEntry("null", "S8", "l");
-    entry->SetLineColor(5);
-    entry->SetLineStyle(1);
-    entry->SetLineWidth(3);
-    entry->SetTextFont(62);
+    if (fWRItemsS8)
+    {
+        entry = leg->AddEntry("null", "S8", "l");
+        entry->SetLineColor(5);
+        entry->SetLineStyle(1);
+        entry->SetLineWidth(3);
+        entry->SetTextFont(62);
     }
     leg->Draw();
-
 
     // MAIN FOLDER-SOFIA
     TFolder* mainfolsof = new TFolder("SOFIA", "SOFIA WhiteRabbit and trigger info");
@@ -416,9 +425,12 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     {
         fh1_wrs[0]->Reset();
         fh1_wrs[1]->Reset();
-        if(fWRItemsNeuland)fh1_wrs[2]->Reset();
-        if(fWRItemsS2)fh1_wrs[3]->Reset();
-        if(fWRItemsS8)fh1_wrs[4]->Reset();
+        if (fWRItemsNeuland)
+            fh1_wrs[2]->Reset();
+        if (fWRItemsS2)
+            fh1_wrs[3]->Reset();
+        if (fWRItemsS8)
+            fh1_wrs[4]->Reset();
     }
     // Reset AT histograms if they exist somewhere
     if (fAtOnline)
@@ -525,8 +537,8 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
                     continue;
                 fh1_wrs[2]->Fill(int64_t(wrs - hit->GetTimeStamp()));
             }
-            //fh1_wrs[4]->GetMaximum();
-            fh1_wrs[0]->SetMaximum(5.*fh1_wrs[2]->GetBinContent(fh1_wrs[2]->GetMaximumBin()));
+            // fh1_wrs[4]->GetMaximum();
+            fh1_wrs[0]->SetMaximum(5. * fh1_wrs[2]->GetBinContent(fh1_wrs[2]->GetMaximumBin()));
         }
         // S2
         if (fWRItemsS2 && fWRItemsS2->GetEntriesFast() > 0)

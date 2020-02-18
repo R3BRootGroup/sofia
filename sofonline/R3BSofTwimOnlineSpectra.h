@@ -106,6 +106,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TCanvas* cTwimMap_ESum_vs_diffDT;
     TCanvas* cTwimMap_DeltaTrefTrig[NbSections];
     TCanvas* cTwimTheta_vs_mwpc3x;
+    TCanvas* cTwimZ_vs_mwpc3x;
 
     // Histograms for Mapped data
     TH1F* fh1_twimmap_E[NbSections][NbAnodes];
@@ -127,6 +128,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TH1F* fh1_Twimhit_theta;
     TH2F* fh2_Twimhit_zvstheta;
     TH2F* fh2_TwimTheta_vs_mwpc3x;
+    TH2F* fh2_TwimZ_vs_mwpc3x;
 
   public:
     ClassDef(R3BSofTwimOnlineSpectra, 1)
