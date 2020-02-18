@@ -97,6 +97,9 @@ class R3BSofOnlineSpectra : public FairTask
     TClonesArray* fWRItemsMaster; /**< Array with WR-Master items. */
     TClonesArray* fWRItemsSofia;  /**< Array with WR-Sofia items. */
     TClonesArray* fWRItemsCalifa; /**< Array with WR-Califa items. */
+    TClonesArray* fWRItemsNeuland; /**< Array with WR-Neuland items. */
+    TClonesArray* fWRItemsS2; /**< Array with WR-S2 items. */
+    TClonesArray* fWRItemsS8; /**< Array with WR-S8 items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */
@@ -127,7 +130,7 @@ class R3BSofOnlineSpectra : public FairTask
 
     // Unpack
     TH1F *fh1_trigger, *fh1_wr;
-    TH1F* fh1_wrs[2];
+    TH1F* fh1_wrs[5];
 
   public:
     ClassDef(R3BSofOnlineSpectra, 0)

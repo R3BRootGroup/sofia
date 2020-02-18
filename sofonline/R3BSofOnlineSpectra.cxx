@@ -35,6 +35,8 @@
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TLegend.h"
+#include "TLegendEntry.h"
 #include "TVector3.h"
 
 #include "TClonesArray.h"
@@ -75,6 +77,9 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
+    , fWRItemsNeuland(NULL)
+    , fWRItemsS2(NULL)
+    , fWRItemsS8(NULL)
     , fNEvents(0)
 {
 }
@@ -103,6 +108,9 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
+    , fWRItemsNeuland(NULL)
+    , fWRItemsS2(NULL)
+    , fWRItemsS8(NULL)
     , fNEvents(0)
 {
 }
@@ -117,6 +125,12 @@ R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
         delete fWRItemsSofia;
     if (fWRItemsCalifa)
         delete fWRItemsCalifa;
+    if (fWRItemsNeuland)
+        delete fWRItemsNeuland;
+    if (fWRItemsS2)
+        delete fWRItemsS2;
+    if (fWRItemsS8)
+        delete fWRItemsS8;
 }
 
 InitStatus R3BSofOnlineSpectra::Init()
@@ -156,6 +170,27 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fWRItemsCalifa)
     {
         LOG(WARNING) << "R3BSofOnlineSpectra::WRCalifaData not found";
+    }
+
+    // get access to WR-Neuland data
+    fWRItemsNeuland = (TClonesArray*)mgr->GetObject("WRNeulandData");
+    if (!fWRItemsNeuland)
+    {
+        LOG(WARNING) << "R3BSofOnlineSpectra::WRNeulandData not found";
+    }
+
+    // get access to WR-S2 data
+    fWRItemsS2 = (TClonesArray*)mgr->GetObject("WRS2Data");
+    if (!fWRItemsS2)
+    {
+        LOG(WARNING) << "R3BSofOnlineSpectra::WRS2Data not found";
+    }
+
+    // get access to WR-S8 data
+    fWRItemsS8 = (TClonesArray*)mgr->GetObject("WRS8Data");
+    if (!fWRItemsS8)
+    {
+        LOG(WARNING) << "R3BSofOnlineSpectra::WRS8Data not found";
     }
 
     // Looking for AT online
@@ -282,23 +317,79 @@ InitStatus R3BSofOnlineSpectra::Init()
     fh1_wr->Draw("");
 
     // Difference between Califa-Sofia WRs
-    sprintf(Name1, "WR_Sofia_Califa");
+    sprintf(Name1, "WRs_Sofia_vs_others");
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
-    sprintf(Name2, "fh1_WR_Sofia_Califa");
-    sprintf(Name3, "WR-Sofia - WR-Califa: Messel (blue), Wixhausen (red)");
+    sprintf(Name2, "fh1_WR_Sofia_others");
+    sprintf(Name3, "WR-Sofia - WR-Other");//Messel (blue), Wixhausen (red)
     fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wrs[0]->GetYaxis()->SetTitle("Counts");
     fh1_wrs[0]->GetYaxis()->SetTitleOffset(1.3);
     fh1_wrs[0]->GetXaxis()->CenterTitle(true);
     fh1_wrs[0]->GetYaxis()->CenterTitle(true);
-    fh1_wrs[0]->SetLineColor(4);
+    fh1_wrs[0]->SetLineColor(2);
     fh1_wrs[0]->SetLineWidth(3);
+    gPad->SetLogy(1);
     fh1_wrs[0]->Draw("");
     fh1_wrs[1] = new TH1F("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
-    fh1_wrs[1]->SetLineColor(2);
+    fh1_wrs[1]->SetLineColor(4);
     fh1_wrs[1]->SetLineWidth(3);
     fh1_wrs[1]->Draw("same");
+    fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
+    fh1_wrs[2]->SetLineColor(3);
+    fh1_wrs[2]->SetLineWidth(3);
+    if(fWRItemsNeuland)fh1_wrs[2]->Draw("same");
+    fh1_wrs[3] = new TH1F("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
+    fh1_wrs[3]->SetLineColor(1);
+    fh1_wrs[3]->SetLineWidth(3);
+    if(fWRItemsS2)fh1_wrs[3]->Draw("same");
+    fh1_wrs[4] = new TH1F("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
+    fh1_wrs[4]->SetLineColor(5);
+    fh1_wrs[4]->SetLineWidth(3);
+    if(fWRItemsS8)fh1_wrs[4]->Draw("same");
+
+    TLegend* leg = new TLegend(0.05, 0.9, 0.39, 0.9999, NULL, "brNDC");
+    leg->SetBorderSize(0);
+    leg->SetTextFont(62);
+    leg->SetTextSize(0.03);
+    leg->SetLineColor(1);
+    leg->SetLineStyle(1);
+    leg->SetLineWidth(1);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    TLegendEntry* entry = leg->AddEntry("null", "Califa_Wixhausen", "l");
+    entry->SetLineColor(4);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    entry = leg->AddEntry("null", "Califa_Messel", "l");
+    entry->SetLineColor(2);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    if(fWRItemsNeuland){
+    entry = leg->AddEntry("null", "Neuland", "l");
+    entry->SetLineColor(3);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    }
+    if(fWRItemsS2){
+    entry = leg->AddEntry("null", "S2", "l");
+    entry->SetLineColor(1);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    }
+    if(fWRItemsS8){
+    entry = leg->AddEntry("null", "S8", "l");
+    entry->SetLineColor(5);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    }
+    leg->Draw();
+
 
     // MAIN FOLDER-SOFIA
     TFolder* mainfolsof = new TFolder("SOFIA", "SOFIA WhiteRabbit and trigger info");
@@ -325,6 +416,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     {
         fh1_wrs[0]->Reset();
         fh1_wrs[1]->Reset();
+        if(fWRItemsNeuland)fh1_wrs[2]->Reset();
+        if(fWRItemsS2)fh1_wrs[3]->Reset();
+        if(fWRItemsS8)fh1_wrs[4]->Reset();
     }
     // Reset AT histograms if they exist somewhere
     if (fAtOnline)
@@ -420,6 +514,44 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             fh1_wrs[0]->Fill(wrs - wr[0]); // messel
             fh1_wrs[1]->Fill(wrs - wr[1]); // wixhausen
         }
+        // Neuland
+        if (fWRItemsNeuland && fWRItemsNeuland->GetEntriesFast() > 0)
+        {
+            nHits = fWRItemsNeuland->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsNeuland->At(ihit);
+                if (!hit)
+                    continue;
+                fh1_wrs[2]->Fill(int64_t(wrs - hit->GetTimeStamp()));
+            }
+            //fh1_wrs[4]->GetMaximum();
+            fh1_wrs[0]->SetMaximum(5.*fh1_wrs[2]->GetBinContent(fh1_wrs[2]->GetMaximumBin()));
+        }
+        // S2
+        if (fWRItemsS2 && fWRItemsS2->GetEntriesFast() > 0)
+        {
+            nHits = fWRItemsS2->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsS2->At(ihit);
+                if (!hit)
+                    continue;
+                fh1_wrs[3]->Fill(int64_t(wrs - hit->GetTimeStamp()));
+            }
+        }
+        // S8
+        if (fWRItemsS8 && fWRItemsS8->GetEntriesFast() > 0)
+        {
+            nHits = fWRItemsS8->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsS8->At(ihit);
+                if (!hit)
+                    continue;
+                fh1_wrs[4]->Fill(int64_t(wrs - hit->GetTimeStamp()));
+            }
+        }
         // Master
         if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0)
         {
@@ -435,7 +567,6 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             fh1_wr->Fill(wrm - wrs);
         }
     }
-
     fNEvents += 1;
 }
 
@@ -453,6 +584,18 @@ void R3BSofOnlineSpectra::FinishEvent()
     if (fWRItemsCalifa)
     {
         fWRItemsCalifa->Clear();
+    }
+    if (fWRItemsNeuland)
+    {
+        fWRItemsNeuland->Clear();
+    }
+    if (fWRItemsS2)
+    {
+        fWRItemsS2->Clear();
+    }
+    if (fWRItemsS8)
+    {
+        fWRItemsS8->Clear();
     }
 }
 

@@ -302,7 +302,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
 
     Name1 = "fh1_brho_glad";
     Name2 = "GLAD: Brho";
-    fh1_brho = new TH1F(Name1, Name2, 400, 4., 15.);
+    fh1_brho = new TH1F(Name1, Name2, 600, 4., 15.);
     fh1_brho->GetXaxis()->SetTitle("Brho [Tm]");
     fh1_brho->GetYaxis()->SetTitle("Counts");
     fh1_brho->GetYaxis()->SetTitleOffset(1.15);
@@ -352,7 +352,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
 
     // Hit data, Z versus beta
     cZvsBeta = new TCanvas("TwimZvsBeta", "Z versus Beta", 10, 10, 800, 700);
-    fh2_ZvsBeta = new TH2F("VvsBeta", "Z from Twim versus Beta from ToFW", 1200, 0.6, 0.9, 1000, 1, 11);
+    fh2_ZvsBeta = new TH2F("VvsBeta", "Z from Twim vs Beta from ToFW", 1200, 0.5, 0.9, (fZ_max - fZ_min) * 10., fZ_min, fZ_max);
     fh2_ZvsBeta->GetXaxis()->SetTitle("#beta");
     fh2_ZvsBeta->GetYaxis()->SetTitle("Charge-Z");
     fh2_ZvsBeta->GetYaxis()->SetTitleOffset(1.1);
