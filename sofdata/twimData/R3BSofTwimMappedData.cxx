@@ -10,16 +10,20 @@ R3BSofTwimMappedData::R3BSofTwimMappedData()
     , fAnodeID(0)
     , fTime(0)
     , fEnergy(0)
+    , fPileup(kFALSE)
+    , fOverflow(kFALSE)
 {
 }
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTwimMappedData::R3BSofTwimMappedData(Int_t secID, Int_t anodeID, Int_t time, Int_t energy)
+R3BSofTwimMappedData::R3BSofTwimMappedData(Int_t secID, Int_t anodeID, Int_t time, Int_t energy, Bool_t pu, Bool_t ov)
     : fSecID(secID)
     , fAnodeID(anodeID)
     , fTime(time)
     , fEnergy(energy)
+    , fPileup(pu)
+    , fOverflow(ov)
 {
 }
 // -------------------------------------------------------------------------
