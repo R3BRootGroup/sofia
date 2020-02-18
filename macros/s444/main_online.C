@@ -26,6 +26,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_SOFTOFW_onion_t tofw;
     EXT_STR_h101_SOFSCALERS_onion_t scalers;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
+    EXT_STR_h101_WRNEULAND_t wrneuland;
 } EXT_STR_h101;
 
 void main_online()
@@ -43,7 +44,7 @@ void main_online()
     TString filename = "--stream=lxlanddaq01:9000";
     //TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/main0036_0001.lmd";
+    //TString filename = "~/lmd/sofia2020/neu.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
     //TString filename = "/lustre/land/202002_s444/stitched/main0076_0001.lmd";
 
@@ -87,19 +88,15 @@ void main_online()
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fAms = false;     // AMS tracking detectors
-    Bool_t fCalifa = false;  // Califa calorimeter
+    Bool_t fCalifa = true;   // Califa calorimeter
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = true;  // SIS3820 scalers at Cave C
-    Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
+    Bool_t fNeuland = true;  // NeuLAND for neutrons behind GLAD
     Bool_t fTracking = true; // Tracking of fragments inside GLAD
-
-    // Configuration of each detector -----------------------
-    const Int_t NLnBarsPerPlane = 50; // NeuLAND: number of scintillator bars per plane
-    const Int_t NLnPlanes = 16;       // NeuLAND: number of planes (for TCAL calibration)
 
     // Calibration files ------------------------------------
     TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -139,6 +136,7 @@ void main_online()
     R3BSofToFWReader* unpacktofw;
     R3BSofScalersReader* unpackscalers;
     R3BNeulandTamexReader* unpackneuland;
+    R3BWhiterabbitNeulandReader* unpackWRNeuland;
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
@@ -175,9 +173,13 @@ void main_online()
         unpackscalers =
             new R3BSofScalersReader((EXT_STR_h101_SOFSCALERS_t*)&ucesb_struct.scalers, offsetof(EXT_STR_h101, scalers));
 
-    if (fNeuland)
-        unpackneuland = new R3BNeulandTamexReader((EXT_STR_h101_raw_nnp_tamex_t*)&ucesb_struct.raw_nnp,
-                                                  offsetof(EXT_STR_h101, raw_nnp));
+    if (fNeuland){
+        //unpackneuland = new R3BNeulandTamexReader((EXT_STR_h101_raw_nnp_tamex_t*)&ucesb_struct.raw_nnp,
+          //                                        offsetof(EXT_STR_h101, raw_nnp));
+
+        unpackWRNeuland = new R3BWhiterabbitNeulandReader(
+            (EXT_STR_h101_WRNEULAND*)&ucesb_struct.wrneuland, offsetof(EXT_STR_h101, wrneuland), 0x900);
+    }
 
     // Add readers ------------------------------------------
     source->AddReader(unpackreader);
@@ -229,8 +231,8 @@ void main_online()
     }
     if (fNeuland)
     {
-        // unpackneuland->SetNofPlanes(NLnPlanes);
-        source->AddReader(unpackneuland);
+        unpackWRNeuland->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRNeuland);
     }
 
     // Create online run ------------------------------------
@@ -459,7 +461,7 @@ void main_online()
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
         CalifaAmsOnline->SetZproj(6.0);                     // Projectile atomic number
-        CalifaAmsOnline->SetCalifa_bins_maxrange(500, 3000); // 3000 -> 3MeV
+        CalifaAmsOnline->SetCalifa_bins_maxrange(500, 300000); // 300000 -> 300MeV
         run->AddTask(CalifaAmsOnline);
     }
 
