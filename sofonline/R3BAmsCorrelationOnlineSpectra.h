@@ -87,6 +87,11 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
         fHitCalifaHist_max = Hist_max;
     }
 
+    /**
+     * Method for setting min proton energy (in keV) for opening angle histogram
+     */
+    inline void SetMinProtonEnergyForOpening(Float_t min) { fMinProtonE = min; }
+
     void Reset_Histo();
 
   private:
@@ -103,6 +108,7 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     Int_t fTrigger;         /**< Trigger value. */
     Int_t fNEvents;         /**< Event counter. */
     Float_t fZproj;         // Atomic number of projectile
+    Float_t fMinProtonE;    /**< Min proton energy (in keV) to calculate the opening angle */
 
     TCanvas* cHit[6];
     TCanvas* cHitAngles;
@@ -117,6 +123,7 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     TCanvas* cCalifa_angles;
     TCanvas* cCalifa_theta_energy;
     TCanvas* cCalifa_hitenergy;
+    TCanvas* cCalifa_opening;
 
     TH2F* fh_Ams_hit_Pos[6];
     TH2F* fh_Ams_hit_E[6];
@@ -134,6 +141,7 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     TH2F* fh2_Califa_theta_phi;
     TH2F* fh2_Califa_theta_energy;
     TH1F* fh1_Califa_total_energy;
+    TH1F* fh1_openangle;
 
     // TString fAmsFile;        	      /**< Config file name. */
     Int_t fNbDet; /**< Number of AMS detectors. */

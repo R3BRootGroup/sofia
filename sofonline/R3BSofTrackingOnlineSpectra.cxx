@@ -194,7 +194,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     Int_t histoYlim = 150;
     fh2_tracking_planeXZ = new TH2F(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
     fh2_tracking_planeXZ->GetXaxis()->SetTitle("Beam direction-Z [mm]");
-    fh2_tracking_planeXZ->GetYaxis()->SetTitle("X [mm]");
+    fh2_tracking_planeXZ->GetYaxis()->SetTitle("(Wixhausen)<---  X [mm]  ---> (Messel)");
     fh2_tracking_planeXZ->GetYaxis()->SetTitleOffset(1.1);
     fh2_tracking_planeXZ->GetXaxis()->CenterTitle(true);
     fh2_tracking_planeXZ->GetYaxis()->CenterTitle(true);
@@ -267,7 +267,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     Name1 = "fh2_beam_profile_XY";
     Name2 = "Beam profile-XY at target position";
     fh2_target_PosXY = new TH2F(Name1, Name2, 200, -100., 100., 200, -100., 100.);
-    fh2_target_PosXY->GetXaxis()->SetTitle("X [mm]");
+    fh2_target_PosXY->GetXaxis()->SetTitle("(Wixhausen)<---  X [mm]  ---> (Messel)");
     fh2_target_PosXY->GetYaxis()->SetTitle("Y [mm]");
     fh2_target_PosXY->GetYaxis()->SetTitleOffset(1.1);
     fh2_target_PosXY->GetXaxis()->CenterTitle(true);

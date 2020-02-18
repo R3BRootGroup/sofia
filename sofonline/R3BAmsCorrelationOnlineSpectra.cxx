@@ -26,6 +26,7 @@
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TRandom.h"
+#include "TVector3.h"
 
 #include "TClonesArray.h"
 #include "TMath.h"
@@ -49,6 +50,7 @@ R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra()
     , fTrigger(-1)
     , fNEvents(0)
     , fNbDet(6)
+    , fMinProtonE(50000.)
     , fHitCalifaHist_bins(500)
     , fHitCalifaHist_max(4000)
 {
@@ -64,6 +66,7 @@ R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra(const TString& na
     , fTrigger(-1)
     , fNEvents(0)
     , fNbDet(6)
+    , fMinProtonE(50000.)
     , fHitCalifaHist_bins(500)
     , fHitCalifaHist_max(4000)
 {
@@ -387,6 +390,23 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     fh1_Califa_total_energy->Draw("");
     gPad->SetLogy();
 
+    // CANVAS opening angle
+    sprintf(Name1, "Califa_Opening_angle_hit");
+    sprintf(Name2, "fh1_Califa_Opening");
+    sprintf(Name3, "Califa Opening angle (cond. Z-1)");
+    cCalifa_opening = new TCanvas(Name1, Name1, 10, 10, 500, 500);
+    fh1_openangle = new TH1F(Name2, Name3, 160, 10, 170);
+    fh1_openangle->GetXaxis()->SetTitle("Opening angle [degrees]");
+    fh1_openangle->GetYaxis()->SetTitle("Counts");
+    fh1_openangle->GetXaxis()->CenterTitle(true);
+    fh1_openangle->GetYaxis()->CenterTitle(true);
+    fh1_openangle->GetYaxis()->SetTitleOffset(1.2);
+    fh1_openangle->GetXaxis()->SetTitleOffset(1.2);
+    fh1_openangle->SetFillColor(8);
+    fh1_openangle->SetLineColor(1);
+    fh1_openangle->SetLineWidth(2);
+    fh1_openangle->Draw("");
+
     // MAIN FOLDER-AMS-CALIFA-MUSICs
     TFolder* mainfol = new TFolder("AMS-CALIFA-MUSICs", "AMS-CALIFA-MUSICs correlation info");
 
@@ -396,17 +416,18 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
         TFolder* hitfol = new TFolder("Hit", "Hit AMS-CALIFA-MUSICs correlation info");
         for (Int_t i = 0; i < fNbDet; i++)
             hitfol->Add(cHit[i]);
-        if (fHitItemsAms)       
-          mainfol->Add(hitfol);
+        if (fHitItemsAms)
+            mainfol->Add(hitfol);
 
         TFolder* CorSidefol =
             new TFolder("Correlations_per_side", "Hit AMS-CALIFA-MUSICs info for correlations per side");
 
-        if (fHitItemsAms){
-         CorSidefol->Add(cHitAngles);
-         CorSidefol->Add(cHitThetaCor);
-         CorSidefol->Add(cHitPhiCor);
-         CorSidefol->Add(cHitEnergyCor);
+        if (fHitItemsAms)
+        {
+            CorSidefol->Add(cHitAngles);
+            CorSidefol->Add(cHitThetaCor);
+            CorSidefol->Add(cHitPhiCor);
+            CorSidefol->Add(cHitEnergyCor);
         }
         if (fHitItemsCalifa)
         {
@@ -415,6 +436,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
             CorSidefol->Add(cCalifaCoinTheta);
             CorSidefol->Add(cCalifaCoinPhi);
             CorSidefol->Add(cCalifa_angles);
+            CorSidefol->Add(cCalifa_opening);
             CorSidefol->Add(cCalifa_theta_energy);
             CorSidefol->Add(cCalifa_hitenergy);
         }
@@ -461,6 +483,7 @@ void R3BAmsCorrelationOnlineSpectra::Reset_Histo()
         fh2_Califa_theta_phi->Reset();
         fh2_Califa_theta_energy->Reset();
         fh1_Califa_total_energy->Reset();
+        fh1_openangle->Reset();
     }
 }
 
@@ -471,23 +494,23 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BAmsCorrelationOnlineSpectra::Exec FairRootManager not found";
 
     // Fill Califa-hit data
- /*   if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
-    {
-        Int_t nHits = fHitItemsCalifa->GetEntriesFast();
+    /*   if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
+       {
+           Int_t nHits = fHitItemsCalifa->GetEntriesFast();
 
-        Double_t theta = 0., phi = 0., ene = 0.;
+           Double_t theta = 0., phi = 0., ene = 0.;
 
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
-            R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
-            if (!hit)
-                continue;
-            theta = hit->GetTheta() / TMath::Pi() * 180.;
-            phi = hit->GetPhi() / TMath::Pi() * 180.;
-            ene = hit->GetEnergy();
-        }
-    }
-*/
+           for (Int_t ihit = 0; ihit < nHits; ihit++)
+           {
+               R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
+               if (!hit)
+                   continue;
+               theta = hit->GetTheta() / TMath::Pi() * 180.;
+               phi = hit->GetPhi() / TMath::Pi() * 180.;
+               ene = hit->GetEnergy();
+           }
+       }
+   */
     Double_t z_music = 0., z_twim = 0.;
 
     // Fill music-hit data
@@ -543,6 +566,30 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
                 fh2_Califa_theta_energy->Fill(theta + gRandom->Uniform(-1.5, 1.5), hit->GetEnergy());
                 fh1_Califa_total_energy->Fill(hit->GetEnergy());
             }
+
+            TVector3 master[2];
+            Double_t maxEL = 0., maxER = 0.;
+            for (Int_t i1 = 0; i1 < nHits; i1++)
+            {
+
+                if (califa_e[i1] > maxER && TMath::Abs(califa_phi[i1]) > 150.) // wixhausen
+                {
+                    master[0].SetMagThetaPhi(
+                        1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
+                    maxER = califa_e[i1];
+                }
+                if (califa_e[i1] > maxEL && TMath::Abs(califa_phi[i1]) < 60.)
+                { // messel
+                    master[1].SetMagThetaPhi(
+                        1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
+                    maxEL = califa_e[i1];
+                }
+            }
+            if (maxEL > fMinProtonE && maxER > fMinProtonE)
+            {
+                fh1_openangle->Fill(master[0].Angle(master[1]) * TMath::RadToDeg());
+            }
+
             // Comparison of hits to get energy, theta and phi correlations between them
             for (Int_t i1 = 0; i1 < nHits; i1++)
                 for (Int_t i2 = i1 + 1; i2 < nHits; i2++)
@@ -687,6 +734,7 @@ void R3BAmsCorrelationOnlineSpectra::FinishTask()
         cCalifa_angles->Write();
         cCalifa_theta_energy->Write();
         cCalifa_hitenergy->Write();
+        cCalifa_opening->Write();
     }
 }
 
