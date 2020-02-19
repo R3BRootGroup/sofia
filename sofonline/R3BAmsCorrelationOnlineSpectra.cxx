@@ -408,7 +408,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     fh1_openangle->Draw("");
 
     // MAIN FOLDER-AMS-CALIFA-MUSICs
-    TFolder* mainfol = new TFolder("AMS-CALIFA-MUSICs", "AMS-CALIFA-MUSICs correlation info");
+    TFolder* mainfol = new TFolder("CALIFA-MUSICs", "AMS-CALIFA-MUSICs correlation info");
 
     // Folder for hit data
     if (fHitItemsMus && fHitItemsTwim)

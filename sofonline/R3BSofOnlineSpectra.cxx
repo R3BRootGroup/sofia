@@ -293,8 +293,8 @@ InitStatus R3BSofOnlineSpectra::Init()
 
     // Triggers
     cTrigger = new TCanvas("Triggers", "Trigger information", 10, 10, 800, 700);
-    fh1_trigger = new TH1F("fh1_trigger", "Trigger information", 16, -0.5, 15.5);
-    fh1_trigger->GetXaxis()->SetTitle("Trigger number");
+    fh1_trigger = new TH1F("fh1_trigger", "Trigger information: Tpat", 17, -0.5, 16.5);
+    fh1_trigger->GetXaxis()->SetTitle("Trigger number (tpat)");
     fh1_trigger->GetYaxis()->SetTitle("Counts");
     fh1_trigger->GetXaxis()->CenterTitle(true);
     fh1_trigger->GetYaxis()->CenterTitle(true);
@@ -495,7 +495,18 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BSofOnlineSpectra::Exec FairRootManager not found";
 
     // Fill histogram with trigger information
-    fh1_trigger->Fill(fEventHeader->GetTrigger());
+
+    Int_t tpatbin;
+    for (Int_t i = 0; i < 16; i++)
+    {
+        tpatbin = (fEventHeader->GetTpat() & (1 << i));
+        if (tpatbin != 0)
+            fh1_trigger->Fill(i + 1);
+    }
+
+    // fh1_trigger->Fill(fEventHeader->GetTpat());
+
+    // LOG(INFO) <<  fEventHeader->GetTpat();
 
     // WR data
     if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0)

@@ -36,12 +36,17 @@ class R3BSofToFWMapped2Tcal : public FairTask
   virtual void Exec(Option_t* option);
   virtual void FinishEvent();
   virtual void FinishTask();
+
   Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
+
+  void SetOnline(Bool_t option) { fOnline = option; }
 
  private:
   TClonesArray*  fMapped;             // input data - SofToFWMappedData
   R3BSofTcalPar* fTcalPar;            // tcal parameters container
   TClonesArray*  fTcal;               // output data
+
+  Bool_t fOnline; // Don't store data for online
   
   UInt_t fNumTcal;               // number of Tcal items per event
 

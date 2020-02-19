@@ -14,6 +14,7 @@ R3BSofToFWMapped2Tcal::R3BSofToFWMapped2Tcal()
   , fTcalPar(NULL)
   , fTcal(new TClonesArray("R3BSofToFWTcalData"))
   , fNumTcal(0)
+  , fOnline(kFALSE)
   , fNevent(0)
 {
 }
@@ -23,7 +24,6 @@ R3BSofToFWMapped2Tcal::~R3BSofToFWMapped2Tcal()
 {
   if(fTcal){
     delete fTcal;
-    fTcal=NULL;
   }
 }
 
@@ -71,7 +71,14 @@ InitStatus R3BSofToFWMapped2Tcal::Init()
   // --- ---------------- --- //
   
   // Register output array in tree
-  rm->Register("SofToFWTcalData","SofToFW", fTcal, kTRUE);
+    if (!fOnline)
+    {
+        rm->Register("SofToFWTcalData","SofToFW", fTcal, kTRUE);
+    }
+    else
+    {
+        rm->Register("SofToFWTcalData","SofToFW", fTcal, kFALSE);
+    }
 
   LOG(INFO) << "R3BSofToFWMapped2Tcal: Init DONE !";
 

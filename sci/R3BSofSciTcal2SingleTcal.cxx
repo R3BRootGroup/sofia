@@ -14,6 +14,7 @@ R3BSofSciTcal2SingleTcal::R3BSofSciTcal2SingleTcal()
   , fRawPosPar(NULL)
   , fSingleTcal(NULL)
   , fNumSingleTcal(0)
+  , fOnline(kFALSE)
   , fNevent(0)
 {
 }
@@ -69,8 +70,17 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
   // --- ----------------------- --- //
   
   // Register output array in tree
-  fSingleTcal = new TClonesArray("R3BSofSciSingleTcalData");
-  rm->Register("SofSciSingleTcalData","SofSci", fSingleTcal, kTRUE);
+  fSingleTcal = new TClonesArray("R3BSofSciSingleTcalData",5);
+    if (!fOnline)
+    {
+     rm->Register("SofSciSingleTcalData","SofSci", fSingleTcal, kTRUE);
+    }
+    else
+    {
+     rm->Register("SofSciSingleTcalData","SofSci", fSingleTcal, kFALSE);
+    }
+
+
   LOG(INFO) << "R3BSofSciTcal2SingleTcal::Init() R3BSofSciSingleTcalData items created";
 
   // --- -------------------------- --- //
