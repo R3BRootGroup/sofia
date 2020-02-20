@@ -23,7 +23,6 @@ R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, cons
   , fNumParsPerSignal(0)
 {
   fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
-  SetFirstTof(fFirstStaSci,fFirstStoSci);
 }
 
 // ----  Destructor ------------------------------------------------------------
