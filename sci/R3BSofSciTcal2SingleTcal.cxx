@@ -12,14 +12,14 @@ R3BSofSciTcal2SingleTcal::R3BSofSciTcal2SingleTcal()
   : FairTask("R3BSofSciTcal2SingleTcal",1)
   , fTcal(NULL)
   , fRawPosPar(NULL)
+#ifdef NUMBER_OF_SOFSCI_TOF
+  , fRawTofPar(NULL)
+#endif
   , fSingleTcal(NULL)
   , fNumSingleTcal(0)
   , fOnline(kFALSE)
   , fNevent(0)
 {
-#ifdef NUMBER_OF_SOFSCI_TOF
-  fRawTofPar = NULL;
-#endif
 }
 
 R3BSofSciTcal2SingleTcal::~R3BSofSciTcal2SingleTcal()
@@ -42,6 +42,17 @@ void R3BSofSciTcal2SingleTcal::SetParContainers()
   }
   else
     LOG(INFO) << "R3BSofSciTcal2SingleTcal::SetParContainers() : SofSciRawPosPar-Container found with " << fRawPosPar->GetNumSignals() << " signals";
+
+#ifdef NUMBER_OF_SOFSCI_TOF
+  fRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
+  if (!fRawPosPar){
+    LOG(ERROR) << "R3BSofSciTcal2SingleTcal::SetParContainers() : Could not get access to SofSciRawTofPar-Container.";
+    return;
+  }
+  else
+    LOG(INFO) << "R3BSofSciTcal2SingleTcal::SetParContainers() : SofSciRawTofPar-Container found with " << fRawTofPar->GetNumSignals() << " signals";
+
+#endif
 }
 
 InitStatus R3BSofSciTcal2SingleTcal::Init()
@@ -97,7 +108,7 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
     LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fRawPosPar: fNumSignals=" << fRawPosPar->GetNumSignals();
   }
 #ifdef NUMBER_OF_SOFSCI_TOF
-  if(fRawPosPar->GetNumSignals()==0){
+  if(fRawTofPar->GetNumSignals()==0){
     LOG(ERROR) << " There are not RawTofPar Tcal parameters for SofSci";
   }
   else{

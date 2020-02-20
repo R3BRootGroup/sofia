@@ -15,8 +15,8 @@ class R3BSofSciRawTofPar : public FairParGenericSet
  public:
   /** Standard constructor **/
   R3BSofSciRawTofPar(const char* name = "SofSciRawTofPar",
-		     const char* title = "Sof Sci Parameters",
-		     const char* context = "SofSciParContext");
+		     const char* title = "Sof Sci RawTof Parameters",
+		     const char* context = "SofSciTofParContext");
   
   /** Destructor **/
   virtual ~R3BSofSciRawTofPar();
