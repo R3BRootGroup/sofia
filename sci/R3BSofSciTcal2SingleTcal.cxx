@@ -159,7 +159,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     int nTof = NUMBER_OF_SOFSCI_TOF;
     int dSta = fRawTofPar->GetFirstStart()-1;
     int dSto = fRawTofPar->GetFirstStop()-1;
-    int rank = fRawTofPar->GetFirstTof()-1;
+    int rank = GetTofRank(dSta,dSto);
     Bool_t select[nDets];
     Double_t RawTof[nTof];
     for(UShort_t d=0; d<nDets; d++){
@@ -183,7 +183,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
 	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
 	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
-		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalRawTofParams(2*rank))) {
+		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
 	      RawTof[rank] = RawTime[dSto]-RawTime[dSta];
 	      RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	  
 	      RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
@@ -201,9 +201,93 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
       }
     }
 
-    // * second selection of the beam multiplicity for the rest of the scintillators
-
-
+  // * second selection of the beam multiplicity for the rest of the scintillators
+  for(UShort_t istart=0; istart<NUMBER_OF_SOFSCI_DETECTORS-1; istart++)
+  {
+    for(UShort_t istop=istart+1; istop<NUMBER_OF_SOFSCI_DETECTORS; istop++)
+    {
+      dSta = istart;
+      dSto = istop;
+      rank = GetTofRank(istart,istop);
+      if ((select[dSta]=kTRUE)&&(select[dSto]==kTRUE))
+      {
+	continue;
+      }
+      else if( (select[dSta]==kTRUE) && (select[dSto]==kFALSE) )
+      {
+	for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
+	  for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
+	    if((((maskR[dSto]>>multRsto)&(0x1))==1) || (((maskL[dSto]>multLsto)&(0x1))==1)) continue;
+	    iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
+	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
+	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
+	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
+		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
+	      RawTof[rank] = RawTime[dSto]-RawTime[dSta];
+	      RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
+	      RawTime[dSto] = iRawTime_dSto;
+	      select[dSto] = kTRUE;
+	      maskR[dSto] |= (0x1)<<multRsto;
+	      maskL[dSto] |= (0x1)<<multLsto;
+	    }
+	  }
+	}
+      }
+      else  if( (select[dSta]==kFALSE) && (select[dSto]==kTRUE) )
+      {
+	for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
+	  for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1]; multLsta++){
+	    if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
+	    iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
+	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSta))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;
+	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);
+	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
+		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
+	      RawTof[rank] = RawTime[dSto]-RawTime[dSta];
+	      RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	      
+	      RawTime[dSta] = iRawTime_dSta;
+	      select[dSta] = kTRUE;
+	      maskR[dSta] |= (0x1)<<multRsta;
+	      maskL[dSta] |= (0x1)<<multLsta;
+	    }
+	  }
+	}
+      }
+      else 
+      {
+	for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
+	  for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsta++){
+	    if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
+	    iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
+	    if ((fRawPosPar->GetSignalTcalParams(2*dSta)>iRawPos)||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;	
+	    for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
+	      for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
+		if((((maskR[dSto]>>multRsto)&(0x1))==1) || (((maskL[dSto]>multLsto)&(0x1))==1)) continue;
+		iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
+		if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
+		iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
+		iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
+		if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
+		    ((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
+		  RawTof[rank] = RawTime[dSto]-RawTime[dSta];
+		  RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	  
+		  RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
+		  RawTime[dSta] = iRawTime_dSta;
+		  RawTime[dSto] = iRawTime_dSto;
+		  select[dSta] = kTRUE;
+		  select[dSto] = kTRUE;
+		  maskR[dSta] |= (0x1)<<multRsta;
+		  maskL[dSta] |= (0x1)<<multLsta;
+		  maskR[dSto] |= (0x1)<<multRsto;
+		  maskL[dSto] |= (0x1)<<multLsto;
+		}
+	      }
+	    }
+	  }
+	}
+      }// end of else (dSta=kFALSE && dSto=kFALSE)
+    }//enf of of (istop) second selection
+  }//end of if (istart) second selection
 #else
     for(UShort_t d=0; d<nDets;d++) {
       maskR[d]= 0x0;
