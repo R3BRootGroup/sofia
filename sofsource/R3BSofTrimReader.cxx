@@ -4,7 +4,8 @@
 #include "R3BSofTrimMappedData.h"
 #include "R3BSofTrimReader.h"
 
-extern "C" {
+extern "C"
+{
 #include "ext_data_client.h"
 #include "ext_h101_softrim.h"
 }

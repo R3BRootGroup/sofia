@@ -4,6 +4,8 @@
 #include "R3BReader.h"
 #include "TClonesArray.h"
 
+#include "detectors_cfg.h"
+
 struct EXT_STR_h101_SOFSCI_t;
 typedef struct EXT_STR_h101_SOFSCI_t EXT_STR_h101_SOFSCI;
 class FairLogger;

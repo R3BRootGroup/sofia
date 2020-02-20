@@ -417,7 +417,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             mwpc0x = hit->GetX();
-            mwpc0y = hit->GetY() + 10.; // Offset in Y for alignment with the beam line
+            mwpc0y = hit->GetY() + 11.; // Offset in Y for alignment with the beam line
         }
 
         // Fill mwpc2 Hit data
@@ -433,8 +433,9 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
                 Double_t angY = (hit->GetY() - mwpc0y) / 2835.;
                 if (TMath::Abs(angX) < 0.075 && TMath::Abs(angY) < 0.075)
                 {
+                    mwpc1y = hit->GetY() - 6.0;
                     zrand = gRandom->Uniform(0., fDist_acelerator_glad);
-                    fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (hit->GetY() - mwpc0y) / 2835. * zrand);
+                    fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (mwpc1y - mwpc0y) / 2835. * zrand);
                     ytarget = mwpc0y + (hit->GetY() - mwpc0y) / 2835. * fPosTarget;
                     fh2_tracking_planeXZ->Fill(zrand, mwpc0x + (hit->GetX() - mwpc0x) / 2835. * zrand);
                     xtarget = mwpc0x + (hit->GetX() - mwpc0x) / 2835. * fPosTarget;

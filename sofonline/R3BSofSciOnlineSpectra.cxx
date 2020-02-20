@@ -447,7 +447,8 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
 		(mult[dstop*NbChannels] == 1) && (mult[dstop*NbChannels+1] == 1) )
 	    {
 	      iRawTof = 0.5*(iRawTimeNs[dstop+NbChannels]+iRawTimeNs[dstop*NbChannels+1]) -
-			0.5*(iRawTimeNs[dstart*NbChannels]+iRawTimeNs[dstart*NbChannels+1]);
+			0.5*(iRawTimeNs[dstart*NbChannels]+iRawTimeNs[dstart*NbChannels+1]) + 
+		  iRawTimeNs[dstart*NbChannels+2] - iRawTimeNs[dstop*NbChannels+2];
 	      fh1_RawTof_AtTcalMult1[nTof]->Fill(iRawTof); 
 	      fh2_RawTof_vs_RawPosStart_AtTcalMult1[nTof]->Fill(iRawTimeNs[dstart*NbChannels]-iRawTimeNs[dstart*NbChannels+1],iRawTof);
 	      fh2_RawTof_vs_RawPosStop_AtTcalMult1[nTof]->Fill(iRawTimeNs[dstop*NbChannels]-iRawTimeNs[dstop*NbChannels+1],iRawTof);
