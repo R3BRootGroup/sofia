@@ -173,7 +173,7 @@ void R3BSofSciTcal2RawTofPar::Exec(Option_t* opt) {
       // check if mult=1 at RIGHT PMT [0] and mult=1 at LEFT PMT [1]
       if( (mult[dstart*NUMBER_OF_SOFSCI_CHANNELS]==1) && (mult[dstart*NUMBER_OF_SOFSCI_CHANNELS+1]==1) &&
 	  (mult[dstop*NUMBER_OF_SOFSCI_CHANNELS]==1)  && (mult[dstop*NUMBER_OF_SOFSCI_CHANNELS+1]==1) ){
-	fh_RawTofMult1[rank]->Fill(iTrawStop-iTrawStart);
+	fh_RawTofMult1[rank]->Fill(iTrawStop-iTrawStart+iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS+2]-iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS+2]);
       }
       rank++;
     }
