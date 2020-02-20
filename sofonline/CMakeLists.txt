@@ -25,6 +25,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/trackingData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
 ${R3BSOF_SOURCE_DIR}/sofonline
+${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
