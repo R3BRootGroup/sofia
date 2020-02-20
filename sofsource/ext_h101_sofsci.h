@@ -146,7 +146,6 @@ typedef struct EXT_STR_h101_SOFSCI_onion_t
         EXT_STR_ITEM_INFO_ZZP(ok, si, offset, struct_t, printerr, SOFSCI4TCv, UINT32, "SOFSCI4TCv", "SOFSCI4TC");    \
                                                                                                                      \
     } while (0);
-
 /********************************************************
  *
  * For internal use by the network data reader:
@@ -331,5 +330,4 @@ typedef struct EXT_STR_h101_SOFSCI_layout_t
       } };
 
 #endif /*__GUARD_H101_SOFSCI_EXT_H101_SOFSCI_H__*/
-
 /*******************************************************/
