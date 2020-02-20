@@ -9,7 +9,7 @@
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
  *  @since Feb 20th, 2020
  *
- */1
+ */
 
 typedef struct EXT_STR_h101_t
 {
@@ -21,6 +21,8 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_AMS_t ams;
     EXT_STR_h101_WRMASTER_t wrmaster;
     EXT_STR_h101_WRSOFIA_t wrsofia;
+    EXT_STR_h101_WRS2_t wrs2;
+    EXT_STR_h101_WRS8_t wrs8;
     EXT_STR_h101_CALIFA_t califa;
     EXT_STR_h101_WRCALIFA_t wrcalifa;
     EXT_STR_h101_SOFTWIM_onion_t twim;
@@ -84,7 +86,10 @@ void main_online()
     ucesb_path.ReplaceAll("//", "/");
 
     // Setup: Selection of detectors ------------------------
-    Bool_t fFrs = false;     // FRS for production of exotic beams
+    Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
+    Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
+    Bool_t fFrsMws = false;  // MWs at FRS (S8) for beam position
+    Bool_t fFrsSci = true;   // Start: Plastic scintillators at FRS
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
@@ -129,6 +134,8 @@ void main_online()
 
     R3BMusicReader* unpackmusic;
     R3BSofSciReader* unpacksci;
+    R3BWhiterabbitS2Reader* unpackWRS2;
+    R3BWhiterabbitS8Reader* unpackWRS8;
     R3BWhiterabbitMasterReader* unpackWRMaster;
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BAmsReader* unpackams;
@@ -143,6 +150,13 @@ void main_online()
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
+
+    if(fFrsSci) {
+     unpackWRS2 = new R3BWhiterabbitS2Reader(
+            (EXT_STR_h101_WRS2*)&ucesb_struct.wrs2, offsetof(EXT_STR_h101, wrs2), 0x200);
+     unpackWRS8 = new R3BWhiterabbitS8Reader(
+            (EXT_STR_h101_WRS8*)&ucesb_struct.wrs8, offsetof(EXT_STR_h101, wrs8), 0x800);
+    }
 
     if (fSci)
     {
@@ -201,6 +215,14 @@ void main_online()
         unpackWRSofia->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRSofia);
     }
+
+    if(fFrsSci) {
+        unpackWRS2->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRS2);
+        unpackWRS8->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRS8);
+    }
+
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
     {
         unpackmwpc->SetOnline(NOTstoremappeddata);
