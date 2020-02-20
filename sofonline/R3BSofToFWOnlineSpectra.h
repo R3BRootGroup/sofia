@@ -17,8 +17,10 @@
 #include <iostream>
 #include <sstream>
 
-#define NbDets 28
-#define NbChs 2
+#include "detectors_cfg.h"
+
+#define NbDets NUMBER_OF_SOFTOFW_PLASTICS
+#define NbChs NUMBER_OF_SOFTOFW_PMTS_PER_PLASTIC
 
 class TClonesArray;
 class R3BEventHeader;
