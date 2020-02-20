@@ -18,11 +18,12 @@ using std::endl;
 R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, const char* context)
   : FairParGenericSet(name, title, context)
   , fFirstStaSci(1)
-  , fFirstStoSci(NUMBER_OF_SOFSCI_DETECTORS) //last SofSci at cave C
+  , fFirstStoSci(ID_SOFSCI_CAVEC)
   , fNumSignals(0)
   , fNumParsPerSignal(0)
 {
   fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
+  SetFirstTof(fFirstStaSci,fFirstStoSci);
 }
 
 // ----  Destructor ------------------------------------------------------------
