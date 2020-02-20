@@ -7179,4 +7179,24 @@ RawPosPar:  Float_t \
 nDetectorsRawPosPar:  Int_t  4 
 nChannelsRawPosPar:  Int_t  3 
 nSignalsRawPosPar:  Int_t  4 
-nRawPosParsPerSignal:  Int_t  2 
+nRawPosParsPerSignal:  Int_t  2
+##############################################################################
+##############################################################################
+# Class:   SofSciRawTofPar
+# Context: SofSciParContext
+##############################################################################
+[SofSciRawTofPar]
+//----------------------------------------------------------------------------
+RawTofPar:  Float_t \
+  -200   200 \
+  -200   200 \
+  -200   200 \
+  -200   200 \
+  -100   100 \
+  -10    20
+selectionFirstStart:  Int_t  2 
+selectionFirstStop:  Int_t  4
+nSignalsRawTofPar:  Int_t  6 
+nSignalsRawPosPar:  Int_t  4 
+nRawTofParsPerSignal:  Int_t  2 
+ 

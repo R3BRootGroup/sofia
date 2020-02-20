@@ -30,13 +30,14 @@ void R3BSofSciContFact::setAllContainers()
   /** Creates the Container objects with all accepted contexts and adds them fto
    *  the list of containers for the STS library.*/
   
-  FairContainer* p1 = new FairContainer("SofSciRawPosPar", "Sof Sci Parameters", "SofSciParContext");
-  p1->addContext("SofSciParContext");
+  FairContainer* p1 = new FairContainer("SofSciRawPosPar", "Sof Sci RawPos Parameters", "SofSciPosParContext");
+  p1->addContext("SofSciPosParContext");
   containers->Add(p1);
     
 #ifdef NUMBER_OF_SOFSCI_TOF 
-  FairContainer* p2 = new FairContainer("SofSciRawTofPar", "Sof Sci Parameters", "SofSciParContext");
-  p2->addContext("SofSciParContext");
+
+  FairContainer* p2 = new FairContainer("SofSciRawTofPar", "Sof Sci RawTof Parameters", "SofSciTofParContext");
+  p2->addContext("SofSciTofParContext");
   containers->Add(p2);
 #endif
 }
