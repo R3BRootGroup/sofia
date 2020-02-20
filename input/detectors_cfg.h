@@ -4,9 +4,9 @@
 // --- -------------------- --- //`
 // --- SINGLE SCINTILLATORS --- //
 // --- -------------------- --- //
-#define NUMBER_OF_SOFSCI_DETECTORS 1
+#define NUMBER_OF_SOFSCI_DETECTORS 4
 #define NUMBER_OF_SOFSCI_CHANNELS  3
-#define ID_SOFSCI_CAVEC            1
+#define ID_SOFSCI_CAVEC            4
 #if NUMBER_OF_SOFSCI_DETECTORS > 1
 #define NUMBER_OF_SOFSCI_TOF (NUMBER_OF_SOFSCI_DETECTORS*(NUMBER_OF_SOFSCI_DETECTORS-1)/2)
 #endif

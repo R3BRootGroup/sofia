@@ -10,6 +10,7 @@
 #include "TCanvas.h"
 #include "TH1.h"
 #include "TH2F.h"
+#include "TH2D.h"
 #include "TMath.h"
 #include <array>
 #include <cstdlib>
@@ -17,8 +18,11 @@
 #include <iostream>
 #include <sstream>
 
-#define NbDetectors 1
-#define NbChannels 3
+#include "detectors_cfg.h"
+
+#define NbDetectors NUMBER_OF_SOFSCI_DETECTORS
+#define NbChannels  NUMBER_OF_SOFSCI_CHANNELS
+#define NbTof       NUMBER_OF_SOFSCI_TOF
 
 class TClonesArray;
 class R3BEventHeader;
@@ -98,6 +102,8 @@ class R3BSofSciOnlineSpectra : public FairTask
     // Canvas
     TCanvas* cSciMult[NbDetectors];
     TCanvas* cSciRawPos[NbDetectors];
+    TCanvas* cSciRawTof[NbTof];
+    TCanvas* cSciRawTofvsRawPos[NbTof];
 
     // Histograms for Mapped data : Fine Time and Mult
     TH1I* fh1_finetime[NbDetectors * NbChannels];
@@ -105,6 +111,11 @@ class R3BSofSciOnlineSpectra : public FairTask
 
     // Histograms for PosRaw Data at Tcal and SingleTcal
     TH1F* fh1_RawPos_AtTcalMult1[NbDetectors];
+    TH1D* fh1_RawTof_AtTcalMult1[NbTof];
+    TH1D* fh1_RawTof_AtTcalMult1_wTref[NbTof];
+    TH2D* fh2_RawTof_vs_RawPosStart_AtTcalMult1[NbTof];
+    TH2D* fh2_RawTof_vs_RawPosStop_AtTcalMult1[NbTof];
+
     //    TH1F * fh1_RawPos_AtSingleTcal[NbDetectors];
 
     // Histogram for correlation with R3B-Music

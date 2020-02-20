@@ -8,6 +8,7 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
+${R3BSOF_SOURCE_DIR}/input
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
