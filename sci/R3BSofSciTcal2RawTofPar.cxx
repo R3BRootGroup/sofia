@@ -50,7 +50,6 @@ R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar()
   , fRawTofPar(NULL)
   , fOutputFile(NULL) 
 {
-  SetFirstTofNumber(fFirstStaSci, fFirstStoSci);
 }
 
 //R3BSofSciTcal2RawTofPar: Standard Constructor --------------------------
@@ -205,7 +204,6 @@ void R3BSofSciTcal2RawTofPar::CalculateRawTofParams()
   
   fRawTofPar->SetFirstStart(fFirstStaSci);
   fRawTofPar->SetFirstStop(fFirstStoSci);
-  fRawTofPar->SetFirstTof(fFirstTofNumber);
   fRawTofPar->SetNumSignals(fNumSignals);
   fRawTofPar->SetNumParsPerSignal(fNumParsPerSignal);
 
