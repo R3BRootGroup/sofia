@@ -41,6 +41,8 @@
 //R3BSofSciTcal2RawTofPar: Default Constructor --------------------------
 R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar() 
   : FairTask("R3BSofSciTcal2RawTofPar",1)
+  , fFirstStaSci(1)
+  , fFirstStoSci(NUMBER_OF_SOFSCI_DETECTORS)
   , fNumSignals(NUMBER_OF_SOFSCI_TOF)
   , fNumParsPerSignal(2)
   , fMinStatistics(0)
@@ -48,6 +50,7 @@ R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar()
   , fRawTofPar(NULL)
   , fOutputFile(NULL) 
 {
+  SetFirstTofNumber(fFirstStaSci, fFirstStoSci);
 }
 
 //R3BSofSciTcal2RawTofPar: Standard Constructor --------------------------
@@ -200,6 +203,9 @@ void R3BSofSciTcal2RawTofPar::CalculateRawTofParams()
 {
   LOG(INFO) << "R3BSofSciTcal2RawTofPar: CalculateRawTofParams()";
   
+  fRawTofPar->SetFirstStart(fFirstStaSci);
+  fRawTofPar->SetFirstStop(fFirstStoSci);
+  fRawTofPar->SetFirstTof(fFirstTofNumber);
   fRawTofPar->SetNumSignals(fNumSignals);
   fRawTofPar->SetNumParsPerSignal(fNumParsPerSignal);
 

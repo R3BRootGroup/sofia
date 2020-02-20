@@ -42,8 +42,10 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   {
     return fFirstStoSci;
   }
-  const Int_t GetFirstRank();
-
+  const Int_t GetFirstTof()
+  {
+    return fFirstTofNumber;
+  }
   const Int_t GetNumSignals() 
     { 
 	return fNumSignals; 
@@ -72,6 +74,22 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   {
     fFirstStoSci = detFirstStop;
   }
+  void SetFirstTof(Int_t firsttofnumber)
+  {
+    fFirstTofNumber = firsttofnumber;
+  }
+  void SetFirstTof(Int_t firststart, Int_t firststop)
+  {
+   fFirstTofNumber = 0; 
+   for(UShort_t istart=0; istart<NUMBER_OF_SOFSCI_DETECTORS-1; istart++)
+   {
+    for(UShort_t istop=istart+1; istop<NUMBER_OF_SOFSCI_DETECTORS; istop++)
+    {
+      fFirstTofNumber++;
+      if ( ((istart+1)==fFirstStaSci) && ((istop+1)==fFirstStoSci) ) break;
+    }
+   } 
+  }
   void SetNumSignals(Int_t nsig)
   {
     fNumSignals = nsig;
@@ -90,6 +108,7 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   TArrayF* fAllSignalsRawTofParams; // Calibration Parameters for all signals of one detector
   Int_t fFirstStaSci;  // if nDets>2, start the mult selection with detectors number fFirstStaSci (1-based)
   Int_t fFirstStoSci;  //                                                        and fFirstStoSci (1-based)
+  Int_t fFirstTofNumber;
   Int_t fNumSignals;   // = number of Tof
   Int_t fNumParsPerSignal; // = 2
   const R3BSofSciRawTofPar& operator=(const R3BSofSciRawTofPar&); 

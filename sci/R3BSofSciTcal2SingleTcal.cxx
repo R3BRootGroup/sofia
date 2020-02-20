@@ -159,7 +159,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     int nTof = NUMBER_OF_SOFSCI_TOF;
     int dSta = fRawTofPar->GetFirstStart()-1;
     int dSto = fRawTofPar->GetFirstStop()-1;
-    int rank = fRawTofPar->GetFirstRank()-1;
+    int rank = fRawTofPar->GetFirstTof()-1;
     Bool_t select[nDets];
     Double_t RawTof[nTof];
     for(UShort_t d=0; d<nDets; d++){
@@ -200,7 +200,8 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	}
       }
     }
-    // * second selection of the beam for the rest of the scintillators
+
+    // * second selection of the beam multiplicity for the rest of the scintillators
 
 
 #else

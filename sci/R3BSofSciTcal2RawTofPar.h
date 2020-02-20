@@ -49,14 +49,34 @@ class R3BSofSciTcal2RawTofPar : public FairTask {
   void SetOutputFile(const char *outFile);
   
   /** Accessor functions **/
+  const Int_t    GetFirstStaSci()     {return fFirstStaSci;}
+  const Int_t    GetFirstStoSci()     {return fFirstStoSci;}
+  const Int_t    GetFirstTofNumber()  {return fFirstTofNumber;}
   const Double_t GetNumSignals()    {return fNumSignals;}
   const Int_t    GetMinStatistics() {return fMinStatistics;}
 
+  void SetFirstStaSci(Int_t firststa)     {fFirstStaSci=firststa;}
+  void SetFirstStoSci(Int_t firststo)     {fFirstStoSci=firststo;}
+  void SetFirstTofNumber(Int_t firsttof)  {fFirstTofNumber=firsttof;}
   void SetNumSignals()                 {fNumSignals=NUMBER_OF_SOFSCI_TOF;}
   void SetNumParsPerSignal(Int_t n)    {fNumParsPerSignal=n;}
   void SetMinStatistics(Int_t minstat) {fMinStatistics=minstat;}
-
+  void SetFirstTofNumber(Int_t firststa, Int_t firststo)
+  {
+    fFirstTofNumber = 0; 
+    for(UShort_t istart=0; istart<NUMBER_OF_SOFSCI_DETECTORS-1; istart++)
+    {
+      for(UShort_t istop=istart+1; istop<NUMBER_OF_SOFSCI_DETECTORS; istop++)
+      {
+	fFirstTofNumber++;
+	if ( ((istart+1)==fFirstStaSci) && ((istop+1)==fFirstStoSci) ) break;
+      }
+    }
+  }
  protected:
+  Int_t fFirstStaSci;
+  Int_t fFirstStoSci;
+  Int_t fFirstTofNumber;
   Int_t fNumSignals;    // number of signal = number of ToF 
   Int_t fNumParsPerSignal; // =2 for each signal
   Int_t fMinStatistics; // minimum statistics to proceed to the calibration
