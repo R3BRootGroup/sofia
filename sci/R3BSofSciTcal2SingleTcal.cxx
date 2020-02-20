@@ -150,6 +150,8 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     UInt_t maskR[nDets]; // if mult_max>=32, doesn't work
     UInt_t maskL[nDets]; // if mult_max>=32, doesn't work
     Double_t iRawPos;
+    Double_t iRawTime_dSta;
+    Double_t iRawTime_dSto;
     Double_t RawPos[nDets];
     Double_t RawTime[nDets];
     UShort_t mult_selectHits[nDets];
@@ -164,28 +166,27 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
       select[d] = kFALSE;
       maskR[d] = 0x0;
       maskR[d] = 0x0;
-      iRawTime[d]= -1000000.;
     }
 
     // SELECTION OF THE MULTIPLICITY LOOKING AT THE ToFraw 
     // * first, start with two selected Sci by the user
     for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
-      for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsto++){
-	if((((maskR[dSta]>>multR)&(0x1))==1) || (((maskL[dSta]>multL)&(0x1))==1)) continue;
+      for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsta++){
+	if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
 	iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
 	if ((fRawPosPar->GetSignalTcalParams(2*dSta)>iRawPos)||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;	
 	for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
 	  for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
-	    if((((maskR[dSto]>>multR)&(0x1))==1) || (((maskL[dSto]>multL)&(0x1))==1)) continue;
+	    if((((maskR[dSto]>>multRsto)&(0x1))==1) || (((maskL[dSto]>multLsto)&(0x1))==1)) continue;
 	    iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
 	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
 	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
 	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
-	    if( (fRawTofPar->GetSignalTcalParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
-		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalTcalParams(2*rank))) {
-	      RawTof[rank] = (RawTime[dSto]-RawTime[dSta];
-	      RawPos[dSta] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	  
-	      RawPos[dSta] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
+	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=(RawTime[dSto]-RawTime[dSta])) && 
+		((RawTime[dSto]-RawTime[dSta])<=fRawTofPar->GetSignalRawTofParams(2*rank))) {
+	      RawTof[rank] = RawTime[dSto]-RawTime[dSta];
+	      RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	  
+	      RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
 	      RawTime[dSta] = iRawTime_dSta;
 	      RawTime[dSto] = iRawTime_dSto;
 	      select[dSta] = kTRUE;

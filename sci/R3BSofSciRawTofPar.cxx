@@ -72,11 +72,11 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
     {
         return kFALSE;
     }
-    if (!list->fill("selectionFirstStart"),&fFirstStaSci)
+    if (!list->fill("selectionFirstStart",&fFirstStaSci))
     {
       return kFALSE;
     }
-    if (!list->fill("selectionFirstStop"),&fFirstStoSci)
+    if (!list->fill("selectionFirstStop",&fFirstStoSci))
     {
       return kFALSE;
     }
