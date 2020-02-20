@@ -20,10 +20,10 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   
   /** Destructor **/
   virtual ~R3BSofSciRawTofPar();
-  
+ 
   /** Method to reset all parameters **/
   virtual void clear();
-  
+
   /** Method to store all parameters using FairRuntimeDB **/
   virtual void putParams(FairParamList* list);
   
@@ -42,6 +42,8 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   {
     return fFirstStoSci;
   }
+  const Int_t GetFirstRank();
+
   const Int_t GetNumSignals() 
     { 
 	return fNumSignals; 
@@ -58,6 +60,10 @@ class R3BSofSciRawTofPar : public FairParGenericSet
     { 
       return (Double_t)fAllSignalsRawTofParams->GetAt(rank); 
     }
+
+
+  /**   **/
+
   void SetFirstStart(Int_t detFirstStart)
   {
     fFirstStaSci = detFirstStart;
@@ -67,19 +73,19 @@ class R3BSofSciRawTofPar : public FairParGenericSet
     fFirstStoSci = detFirstStop;
   }
   void SetNumSignals(Int_t nsig)
-    { 
-      fNumSignals = nsig;   
-    }
+  {
+    fNumSignals = nsig;
+  }
   void SetNumParsPerSignal(Int_t npars)
-    { 
+    {
       fNumParsPerSignal = npars; 
     }
-  void SetSignalParams(Double_t parval, UInt_t rank)     
-    { 
+  void SetSignalParams(Double_t parval, UInt_t rank)
+    {
       fAllSignalsRawTofParams->AddAt(parval, rank); 
     }
   
-  
+ 
  private:
   TArrayF* fAllSignalsRawTofParams; // Calibration Parameters for all signals of one detector
   Int_t fFirstStaSci;  // if nDets>2, start the mult selection with detectors number fFirstStaSci (1-based)
