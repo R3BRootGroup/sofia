@@ -168,6 +168,49 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         cSciRawPos[i]->cd();
         fh1_RawPos_AtTcalMult1[i]->Draw("");
     }
+  Int_t nTof=0;
+  for (Int_t dstart = 0; dstart < NbDetectors-1 ; dstart++)
+  {
+    for(Int_t dstop = dstart+1; dstop < NbDetectors ; dstop++)
+    {
+      //1D - Raw time-of-flight from tcal data at mult=1
+      sprintf(Name1,"RawTof_Sci%02d_to_Sci%02d",dstart+1,dstop+1);
+      sprintf(Name2,"Raw time-of-flight from Sci%02d to Sci%02d",dstart+1, dstop+1);
+      cSciRawTof[nTof] = new TCanvas(Name1,Name2,10,10,800,800);
+      cSciRawTof[nTof]->Divide(1,2);
+      sprintf(Name1,"RawTofNs_Sci%02d_to_Sci%02d",dstart+1,dstop+1);
+      fh1_RawTof_AtTcalMult1[nTof] = new TH1D(Name1,Name1,200000,-10000,1000);
+      fh1_RawTof_AtTcalMult1[nTof]->GetXaxis()->SetTitle("Raw Tof [ns]");
+      fh1_RawTof_AtTcalMult1[nTof]->GetYaxis()->SetTitle("Counts per bin"); 
+      sprintf(Name1,"RawTofNs_wTref_Sci%02d_to_Sci%02d",dstart+1,dstop+1);
+      fh1_RawTof_AtTcalMult1_wTref[nTof] = new TH1D(Name1,Name1,200000,-10000,1000);
+      fh1_RawTof_AtTcalMult1_wTref[nTof]->GetXaxis()->SetTitle("Raw Tof [ns]");
+      fh1_RawTof_AtTcalMult1_wTref[nTof]->GetYaxis()->SetTitle("Counts per bin"); 
+      cSciRawTof[nTof]->cd(1);
+      fh1_RawTof_AtTcalMult1[nTof]->Draw("");
+      cSciRawTof[nTof]->cd(2);
+      fh1_RawTof_AtTcalMult1_wTref[nTof]->Draw("");
+     
+      // Raw Tof versus position in start and stop
+      sprintf(Name1,"RawTof_Sci%02d_Sci%02d_vs_RawPos",dstart+1,dstop+1);
+      sprintf(Name2,"Raw time-of-flight from Sci%02d to Sci%02d versus RawPos",dstart+1, dstop+1);
+      cSciRawTofvsRawPos[nTof] = new TCanvas(Name1,Name2,10,10,800,800);
+      cSciRawTofvsRawPos[nTof]->Divide(1,2);
+      sprintf(Name1,"RawTofNs_Sci%02d_Sci%02d_vs_RawPos%02d",dstart+1,dstop+1,dstart+1);
+      fh2_RawTof_vs_RawPosStart_AtTcalMult1[nTof] = new TH2D(Name1,Name1,1000,-10,10,2000,-10000,1000);
+      fh2_RawTof_vs_RawPosStart_AtTcalMult1[nTof]->GetXaxis()->SetTitle("Raw Pos [ns]");
+      fh2_RawTof_vs_RawPosStart_AtTcalMult1[nTof]->GetYaxis()->SetTitle("Raw Tof [ns]"); 
+      sprintf(Name1,"RawTofNs_Sci%02d_Sci%02d_vs_RawPos%02d",dstart+1,dstop+1,dstop+1);
+      fh2_RawTof_vs_RawPosStop_AtTcalMult1[nTof] = new TH2D(Name1,Name1,1000,-10,10,2000,-10000,1000);
+      fh2_RawTof_vs_RawPosStop_AtTcalMult1[nTof]->GetXaxis()->SetTitle("Raw Pos [ns]");
+      fh2_RawTof_vs_RawPosStop_AtTcalMult1[nTof]->GetYaxis()->SetTitle("Raw Tof [ns]"); 
+      cSciRawTofvsRawPos[nTof]->cd(1);
+      fh2_RawTof_vs_RawPosStart_AtTcalMult1[nTof]->Draw("col");
+      cSciRawTofvsRawPos[nTof]->cd(2);
+      fh2_RawTof_vs_RawPosStop_AtTcalMult1[nTof]->Draw("col");
+      nTof++;
+    }  
+  }
 
     // Music Hit data vs SCI-RawPos
     TCanvas* cMusicZvsRawPos =
@@ -223,6 +266,10 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         mainfolSci->Add(cSciMult[i]);
         mainfolSci->Add(cSciRawPos[i]);
     }
+    for(Int_t i = 0; i < NbTof ; i++)
+    {
+	mainfolSci->Add(cSciRawTof[i]);
+    }
     mainfolSci->Add(cMusicZvsRawPos);
     mainfolSci->Add(cMusicDTvsRawPos);
     mainfolSci->Add(cMwpc0vsRawPos);
@@ -248,6 +295,14 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         // === RAW POSITION === //
         fh1_RawPos_AtTcalMult1[i]->Reset();
     }
+    for(Int_t i = 0; i<NbTof; i++)
+    {
+      // === RAW TIME_OF_FLIGHT === //
+      fh1_RawTof_AtTcalMult1[i]->Reset();
+      fh1_RawTof_AtTcalMult1_wTref[i]->Reset();
+      fh2_RawTof_vs_RawPosStart_AtTcalMult1[i]->Reset();
+      fh2_RawTof_vs_RawPosStop_AtTcalMult1[i]->Reset();
+    }
     fh2_MusZvsRawPos->Reset();
     fh2_MusDTvsRawPos->Reset();
     fh2_Mwpc0vsRawPos->Reset();
@@ -262,7 +317,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     Int_t nHits;
     UShort_t iDet; // 0-bsed
     UShort_t iCh;  // 0-based
-    Double_t iRawTimeNs[NbDetectors * 2];
+    Double_t iRawTimeNs[NbDetectors * NbChannels];
     UShort_t mult[NbDetectors * NbChannels];
 
     // --- -------------- --- //
@@ -331,11 +386,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             R3BSofSciTcalData* hittcal = (R3BSofSciTcalData*)fTcalItemsSci->At(ihit);
             if (!hittcal)
                 continue;
-            if (hittcal->GetPmt() == 3)
-                continue;
             iDet = hittcal->GetDetector() - 1;
             iCh = hittcal->GetPmt() - 1;
-            iRawTimeNs[iDet * 2 + iCh] = hittcal->GetRawTimeNs();
+            iRawTimeNs[iDet * NbChannels + iCh] = hittcal->GetRawTimeNs();
             ;
         }
 
@@ -367,10 +420,10 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             {
                 fh2_mult[i]->Fill(j + 1, mult[i * NbChannels + j]);
             }
-            if ((mult[iDet * NbChannels] == 1) && (mult[iDet * NbChannels + 1] == 1))
+            if ((mult[i * NbChannels] == 1) && (mult[i * NbChannels + 1] == 1))
             {
                 // x position increases from left to right : TrawRIGHT - TrawLEFT
-                possci = iRawTimeNs[i * 2] - iRawTimeNs[i * 2 + 1];
+                possci = iRawTimeNs[i * NbChannels] - iRawTimeNs[i * NbChannels + 1];
                 fh1_RawPos_AtTcalMult1[i]->Fill(possci);
                 if (MusicZ > 0.)
                     fh2_MusZvsRawPos->Fill(possci, MusicZ);
@@ -384,6 +437,32 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 }
             }
         }
+	Int_t nTof=0;
+	Double_t iRawTof;
+	for(UShort_t dstart=0; dstart<NbDetectors-1; dstart++)
+	{
+	  for(UShort_t dstop=dstart+1; dstop<NbDetectors; dstop++)
+	  {
+	    if( (mult[dstart*NbChannels] == 1) && (mult[dstart*NbChannels+1] == 1) &&
+		(mult[dstop*NbChannels] == 1) && (mult[dstop*NbChannels+1] == 1) )
+	    {
+	      iRawTof = 0.5*(iRawTimeNs[dstop+NbChannels]+iRawTimeNs[dstop*NbChannels+1]) -
+			0.5*(iRawTimeNs[dstart*NbChannels]+iRawTimeNs[dstart*NbChannels+1]);
+	      fh1_RawTof_AtTcalMult1[nTof]->Fill(iRawTof); 
+	      fh2_RawTof_vs_RawPosStart_AtTcalMult1[nTof]->Fill(iRawTimeNs[dstart*NbChannels]-iRawTimeNs[dstart*NbChannels+1],iRawTof);
+	      fh2_RawTof_vs_RawPosStop_AtTcalMult1[nTof]->Fill(iRawTimeNs[dstop*NbChannels]-iRawTimeNs[dstop*NbChannels+1],iRawTof);
+	      if( (mult[dstart*NbChannels+2]==1) && (mult[dstop*NbChannels+2]==1))
+	      {
+		fh1_RawTof_AtTcalMult1_wTref[nTof]->Fill( 
+		  0.5*(iRawTimeNs[dstop+NbChannels]+iRawTimeNs[dstop*NbChannels+1]) - 
+		  0.5*(iRawTimeNs[dstart*NbChannels]+iRawTimeNs[dstart*NbChannels+1]) + 
+		  iRawTimeNs[dstart*NbChannels+2] - iRawTimeNs[dstop*NbChannels+2]
+		  ); 
+	      }
+	      nTof++;
+	    }
+	  }
+	}
     }
     fNEvents += 1;
 }
@@ -435,6 +514,15 @@ void R3BSofSciOnlineSpectra::FinishTask()
             fh1_RawPos_AtTcalMult1[i]->Write();
             cSciRawPos[i]->Write();
         }
+	for (UShort_t i = 0; i<NbTof ; i++)
+	{
+	    fh1_RawTof_AtTcalMult1[i]->Write();
+	    fh1_RawTof_AtTcalMult1_wTref[i]->Write();
+	    cSciRawTof[i]->Write();
+	    fh2_RawTof_vs_RawPosStart_AtTcalMult1[i]->Write();
+	    fh2_RawTof_vs_RawPosStop_AtTcalMult1[i]->Write();
+	    cSciRawTofvsRawPos[i];
+	}
         if (fMusHitItems)
         {
             fh2_MusZvsRawPos->Write();
