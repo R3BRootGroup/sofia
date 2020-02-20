@@ -426,7 +426,7 @@ void R3BSofToFWOnlineSpectra::Exec(Option_t* option)
             R3BSofSciSingleTcalData* hitsingletcalsci = (R3BSofSciSingleTcalData*)fSingleTcalItemsSci->At(0);
             if (hitsingletcalsci)
             {
-                TrawStart = hitsingletcalsci->GetRawTimeNs(1);
+                TrawStart = hitsingletcalsci->GetRawTimeNs(ID_SOFSCI_CAVEC);
             }
         } // end of if mult=1 in the Start
 
