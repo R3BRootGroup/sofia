@@ -13,9 +13,7 @@ extern "C"
 #include "ext_h101_wrsofia.h"
 }
 
-R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data,
-                                                       UInt_t offset,
-                                                       UInt_t whiterabbit_id)
+R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data, UInt_t offset, UInt_t whiterabbit_id)
     : R3BReader("R3BSofWhiterabbitReader")
     , fNEvent(0)
     , fData(data)
@@ -84,12 +82,11 @@ Bool_t R3BSofWhiterabbitReader::Read()
         LOG(error) << strMessage;
     }
 
-
     if (fEventHeader != nullptr)
     {
         uint64_t timestamp = ((uint64_t)fData->TIMESTAMP_SOFIA_WR_T4 << 48) |
-                              ((uint64_t)fData->TIMESTAMP_SOFIA_WR_T3 << 32) |
-                              ((uint64_t)fData->TIMESTAMP_SOFIA_WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA_WR_T1;
+                             ((uint64_t)fData->TIMESTAMP_SOFIA_WR_T3 << 32) |
+                             ((uint64_t)fData->TIMESTAMP_SOFIA_WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA_WR_T1;
 
         // fEventHeader->SetTimeStamp(timestamp);
         fNEvent = fEventHeader->GetEventno();

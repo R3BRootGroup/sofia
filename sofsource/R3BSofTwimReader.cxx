@@ -113,7 +113,6 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     }
     */
 
-
     // --- ----------------- --- //
     // --- TWIM MAPPED DATA --- //
     // --- ----------------- --- //
@@ -122,57 +121,57 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     uint32_t curTref = 0;
     uint32_t nextTref = 0;
     UShort_t idAnodeTref = 0;
-    
+
     // TREF id Anode = 16 (ch0-7) and 17 (ch8-15)
     for (UShort_t a = 0; a < nAnodesTref; a++)
     {
-	// TREFMI gives the 1-based Tref number 
-	// Tref1 --> should be assigned to index 16
-	// Tref2 --> should be assigned to index 17
+        // TREFMI gives the 1-based Tref number
+        // Tref1 --> should be assigned to index 16
+        // Tref2 --> should be assigned to index 17
 
         idAnodeTref = data->SOFTWIM_S[section].TREFMI[a] + 15;
-    	nextTref = data->SOFTWIM_S[section].TREFME[a];
+        nextTref = data->SOFTWIM_S[section].TREFME[a];
         multPerAnode[idAnodeTref] = nextTref - curTref;
-	//std::cout << " * idAnodeTref = " << idAnodeTref << std::endl;
-	//std::cout << "   multPerAnode[" << idAnodeTref << "] = " << multPerAnode[idAnodeTref] << std::endl;
-        for (int hit = curTref; hit < nextTref; hit++){
-	  pileupFLAG   = (data->SOFTWIM_S[section].TREFv[hit] & 0x00040000) >> 18;
-	  overflowFLAG = (data->SOFTWIM_S[section].TREFv[hit] & 0x00080000) >> 19;
-	  new ((*fArray)[fArray->GetEntriesFast()])
-                R3BSofTwimMappedData(section, idAnodeTref, data->SOFTWIM_S[section].TREFv[hit], 0, pileupFLAG,overflowFLAG);
-	    //std::cout << "valTimeTref = " << data->SOFTWIM_S[section].TREFv[hit] << std::endl;
-	}
-	curTref = nextTref;
+        // std::cout << " * idAnodeTref = " << idAnodeTref << std::endl;
+        // std::cout << "   multPerAnode[" << idAnodeTref << "] = " << multPerAnode[idAnodeTref] << std::endl;
+        for (int hit = curTref; hit < nextTref; hit++)
+        {
+            pileupFLAG = (data->SOFTWIM_S[section].TREFv[hit] & 0x00040000) >> 18;
+            overflowFLAG = (data->SOFTWIM_S[section].TREFv[hit] & 0x00080000) >> 19;
+            new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(
+                section, idAnodeTref, data->SOFTWIM_S[section].TREFv[hit], 0, pileupFLAG, overflowFLAG);
+            // std::cout << "valTimeTref = " << data->SOFTWIM_S[section].TREFv[hit] << std::endl;
+        }
+        curTref = nextTref;
     }
 
     // --- TRIG --- //
     uint32_t curTrig = 0;
     uint32_t nextTrig = 0;
     UShort_t idAnodeTrig = 0;
-    
-    //TRIG id Anode = 18 (ch0-7) and 19 (ch8-15)
+
+    // TRIG id Anode = 18 (ch0-7) and 19 (ch8-15)
     for (UShort_t a = 0; a < nAnodesTrig; a++)
     {
-	// again TRIGMI is 1 based
-	// Trig1 --> should be assigned to index 18
-	// Trig2 --> should be assigned to index 19
+        // again TRIGMI is 1 based
+        // Trig1 --> should be assigned to index 18
+        // Trig2 --> should be assigned to index 19
         idAnodeTrig = data->SOFTWIM_S[section].TRIGMI[a] + 17;
         nextTrig = data->SOFTWIM_S[section].TRIGME[a];
         multPerAnode[idAnodeTrig] = nextTrig - curTrig;
-	//std::cout << "  * idAnodeTrig = " << idAnodeTrig << std::endl;
-	//std::cout << "    multPerAnode[" << idAnodeTrig << "] = " << multPerAnode[idAnodeTrig] << std::endl;
-        for (int hit = curTrig; hit < nextTrig; hit++){
-	  pileupFLAG   = (data->SOFTWIM_S[section].TRIGv[hit] & 0x00040000) >> 18;
-	  overflowFLAG = (data->SOFTWIM_S[section].TRIGv[hit] & 0x00080000) >> 19;
-          new ((*fArray)[fArray->GetEntriesFast()])
-                R3BSofTwimMappedData(section, idAnodeTrig, data->SOFTWIM_S[section].TRIGv[hit], 0, pileupFLAG, overflowFLAG);
-	    //std::cout << "valTimeTrig = " << data->SOFTWIM_S[section].TRIGv[hit] << std::endl;
-	
-	}
-	curTrig = nextTrig;
+        // std::cout << "  * idAnodeTrig = " << idAnodeTrig << std::endl;
+        // std::cout << "    multPerAnode[" << idAnodeTrig << "] = " << multPerAnode[idAnodeTrig] << std::endl;
+        for (int hit = curTrig; hit < nextTrig; hit++)
+        {
+            pileupFLAG = (data->SOFTWIM_S[section].TRIGv[hit] & 0x00040000) >> 18;
+            overflowFLAG = (data->SOFTWIM_S[section].TRIGv[hit] & 0x00080000) >> 19;
+            new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(
+                section, idAnodeTrig, data->SOFTWIM_S[section].TRIGv[hit], 0, pileupFLAG, overflowFLAG);
+            // std::cout << "valTimeTrig = " << data->SOFTWIM_S[section].TRIGv[hit] << std::endl;
+        }
+        curTrig = nextTrig;
     }
-    
-    
+
     // --- ANODES --- //
     // return the number of anodes in the section with data
     // 0<=nAnodesEnergy<=16
@@ -184,7 +183,8 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     // mail from R. Schneider from May 21st 2019 : "the hits from one channel are kept in the chronological order."
     // --> for one anode with multi-hit, the first hit in energy correspond to the first hit in time
     if (nAnodesEnergy != nAnodesTime)
-        LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! NOT THE SAME NUMBER OF ANODES HITTED IN ENERGY () AND TIME ()";
+        LOG(ERROR)
+            << "R3BSofTwimReader::ReadData ERROR ! NOT THE SAME NUMBER OF ANODES HITTED IN ENERGY () AND TIME ()";
 
     // ENERGY AND TIME ARE SORTED
     uint32_t curAnodeTimeStart = 0;
@@ -194,7 +194,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
         // EMI and TMI give the 1-based anode number
         UShort_t idAnodeTime = data->SOFTWIM_S[section].TMI[a] - 1;
         UShort_t idAnodeEnergy = data->SOFTWIM_S[section].EMI[a] - 1;
-	
+
         if (idAnodeEnergy != idAnodeTime)
             LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR ANODE ID IN ENERGY #" << idAnodeEnergy
                        << " AND TIME #" << idAnodeTime;
@@ -205,16 +205,20 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
             LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
         for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
         {
-	  pileupFLAG   = (data->SOFTWIM_S[section].Ev[hit] & 0x00040000) >> 18;
-	  overflowFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00080000) >> 19;
-            new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(
-                section, idAnodeEnergy, data->SOFTWIM_S[section].Tv[hit], data->SOFTWIM_S[section].Ev[hit],pileupFLAG, overflowFLAG);
-            //std::cout << "valTimeAnode = " << data->SOFTWIM_S[section].Tv[hit] << std::endl;
-	}
+            pileupFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00040000) >> 18;
+            overflowFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00080000) >> 19;
+            new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(section,
+                                                                           idAnodeEnergy,
+                                                                           data->SOFTWIM_S[section].Tv[hit],
+                                                                           data->SOFTWIM_S[section].Ev[hit],
+                                                                           pileupFLAG,
+                                                                           overflowFLAG);
+            // std::cout << "valTimeAnode = " << data->SOFTWIM_S[section].Tv[hit] << std::endl;
+        }
         curAnodeEnergyStart = nextAnodeEnergyStart;
         curAnodeTimeStart = nextAnodeTimeStart;
     } // end of loop over the anodes from 1 to 16
-    //std::cout << "------------------------------" << std::endl;
+    // std::cout << "------------------------------" << std::endl;
 
     return kTRUE;
 }

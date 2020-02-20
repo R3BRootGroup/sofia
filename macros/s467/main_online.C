@@ -30,6 +30,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_SOFSCALERS_onion_t scalers;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
     EXT_STR_h101_WRNEULAND_t wrneuland;
+    EXT_STR_h101_FRS_t frs;
 } EXT_STR_h101;
 
 void main_online()
@@ -87,7 +88,7 @@ void main_online()
 
     // Setup: Selection of detectors ------------------------
     Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
-    Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
+    Bool_t fFrsTpcs = true; // Tpcs at FRS (S2) for scintillator calibration in position
     Bool_t fFrsMws = false;  // MWs at FRS (S8) for beam position
     Bool_t fFrsSci = true;   // Start: Plastic scintillators at FRS
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
@@ -101,7 +102,7 @@ void main_online()
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = true;  // SIS3820 scalers at Cave C
-    Bool_t fNeuland = true;  // NeuLAND for neutrons behind GLAD
+    Bool_t fNeuland = false;  // NeuLAND for neutrons behind GLAD
     Bool_t fTracking = true; // Tracking of fragments inside GLAD
 
     // Calibration files ------------------------------------
@@ -132,6 +133,7 @@ void main_online()
     R3BTrloiiTpatReader* unpacktpat =
         new R3BTrloiiTpatReader((EXT_STR_h101_TPAT*)&ucesb_struct, offsetof(EXT_STR_h101, unpacktpat));
 
+    R3BFrsReaderNov19* unpackfrs;
     R3BMusicReader* unpackmusic;
     R3BSofSciReader* unpacksci;
     R3BWhiterabbitS2Reader* unpackWRS2;
@@ -147,6 +149,11 @@ void main_online()
     R3BSofScalersReader* unpackscalers;
     R3BNeulandTamexReader* unpackneuland;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
+
+
+    if (fFrsTpcs)
+      unpackfrs= new R3BFrsReaderNov19((EXT_STR_h101_FRS*)&ucesb_struct.frs,
+					     offsetof(EXT_STR_h101, frs));
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
@@ -201,6 +208,13 @@ void main_online()
     // Add readers ------------------------------------------
     source->AddReader(unpackreader);
     source->AddReader(unpacktpat);
+
+    if (fFrsTpcs)
+    {
+     unpackfrs->SetOnline(NOTstoremappeddata);
+     source->AddReader(unpackfrs);
+    }
+
     if (fMusic)
     {
         unpackmusic->SetOnline(NOTstoremappeddata);
@@ -303,6 +317,16 @@ void main_online()
     }
 
     // Add analysis task ------------------------------------
+    // TPCs at S2
+    if (fFrsTpcs)
+    {
+      R3BTpcMapped2Cal* TpcMap2Cal = new R3BTpcMapped2Cal();
+      TpcMap2Cal->SetOnline(NOTstorecaldata);
+      run->AddTask(TpcMap2Cal);
+      R3BTpcCal2Hit* TpcCal2Hit = new R3BTpcCal2Hit();
+      TpcCal2Hit->SetOnline(NOTstorehitdata);
+      run->AddTask(TpcCal2Hit);
+    }
     // MWPC0
     if (fMwpc0)
     {
@@ -442,6 +466,12 @@ void main_online()
     }
 
     // Add online task ------------------------------------
+    if (fFrsTpcs)
+    {
+       FrsTpcOnlineSpectra* tpconline= new FrsTpcOnlineSpectra();
+       run->AddTask(tpconline);
+    }
+
     if (fScalers)
     {
         R3BSofScalersOnlineSpectra* scalersonline = new R3BSofScalersOnlineSpectra();

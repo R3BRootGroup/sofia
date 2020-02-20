@@ -323,7 +323,7 @@ InitStatus R3BSofOnlineSpectra::Init()
     // Difference between Califa-Sofia WRs
     sprintf(Name1, "WRs_Sofia_vs_others");
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
-    sprintf(Name2, "fh1_WR_Sofia_others");
+    sprintf(Name2, "fh1_WR_Sofia_Wixhausen");
     sprintf(Name3, "WR-Sofia - WR-Other"); // Messel (blue), Wixhausen (red)
     fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");

@@ -13,7 +13,7 @@
 // section 4 : LEFT UP
 
 // anodes 1 to 16 : energy and time
-// anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled 
+// anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled
 // anode 19 and 20 : trigger time   --> will be changed to 18 only when the full Twin-MUSIC will be cabled
 
 struct EXT_STR_h101_SOFTWIM_t;

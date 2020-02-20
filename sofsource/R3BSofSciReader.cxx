@@ -10,8 +10,6 @@ extern "C"
 #include "ext_h101_sofsci.h"
 }
 
-#define NUM_SOFSCI_DETECTORS 1 // for the engineering run
-#define NUM_SOFSCI_CHANNELS 3
 #include <iostream>
 
 using namespace std;
@@ -61,7 +59,7 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFSCI_onion* data = (EXT_STR_h101_SOFSCI_onion*)fData;
-    for (int d = 0; d < NUM_SOFSCI_DETECTORS; d++)
+    for (int d = 0; d < NUMBER_OF_SOFSCI_DETECTORS; d++)
         data->SOFSCI[d].TFM = 0;
 
     return kTRUE;
@@ -93,7 +91,7 @@ Bool_t R3BSofSciReader::Read()
     */
 
     // loop over all detectors
-    for (int d = 0; d < NUM_SOFSCI_DETECTORS; d++)
+    for (int d = 0; d < NUMBER_OF_SOFSCI_DETECTORS; d++)
     {
         uint32_t numberOfPMTsWithHits_TF = data->SOFSCI[d].TFM;
         uint32_t numberOfPMTsWithHits_TC = data->SOFSCI[d].TCM;
@@ -119,10 +117,10 @@ Bool_t R3BSofSciReader::Read()
                 for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++)
                 {
                     auto item = new ((*fArray)[fNumEntries++])
-		      R3BSofSciMappedData(d+1, // do not change into d !!!!!!! (Audrey) 
-					    pmtid_TF, 
-					    data->SOFSCI[d].TCv[hit], 
-					    data->SOFSCI[d].TFv[hit]);
+                        R3BSofSciMappedData(d + 1, // do not change into d !!!!!!! (Audrey)
+                                            pmtid_TF,
+                                            data->SOFSCI[d].TCv[hit],
+                                            data->SOFSCI[d].TFv[hit]);
                 }
                 curChannelStart = nextChannelStart;
             }

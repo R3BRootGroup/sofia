@@ -62,10 +62,12 @@ Bool_t R3BSofScalersReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFSCALERS_onion* data = (EXT_STR_h101_SOFSCALERS_onion*)fData;
-    for (int ch = 0; ch < NUM_CHANNELS_SOFSCALERS_UPSTREAM; ch++){
+    for (int ch = 0; ch < NUM_CHANNELS_SOFSCALERS_UPSTREAM; ch++)
+    {
         data->SOFSCALERS_UPSTREAM[ch] = 0;
     }
-    for (int ch = 0; ch < NUM_CHANNELS_SOFSCALERS_TOFW; ch++){
+    for (int ch = 0; ch < NUM_CHANNELS_SOFSCALERS_TOFW; ch++)
+    {
         data->SOFSCALERS_TOFW[ch] = 0;
     }
 
@@ -77,12 +79,14 @@ Bool_t R3BSofScalersReader::Read()
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFSCALERS_onion* data = (EXT_STR_h101_SOFSCALERS_onion*)fData;
 
-    for (int ch=0; ch<NUM_CHANNELS_SOFSCALERS_UPSTREAM;ch++){
-       auto item = new((*fArray)[fNumEntries++])R3BSofScalersMappedData(1,ch+1,data->SOFSCALERS_UPSTREAM[ch]);   
+    for (int ch = 0; ch < NUM_CHANNELS_SOFSCALERS_UPSTREAM; ch++)
+    {
+        auto item = new ((*fArray)[fNumEntries++]) R3BSofScalersMappedData(1, ch + 1, data->SOFSCALERS_UPSTREAM[ch]);
     }
 
-    for (int ch=0; ch<NUM_CHANNELS_SOFSCALERS_TOFW;ch++){
-       auto item = new((*fArray)[fNumEntries++])R3BSofScalersMappedData(2,ch+1,data->SOFSCALERS_TOFW[ch]);   
+    for (int ch = 0; ch < NUM_CHANNELS_SOFSCALERS_TOFW; ch++)
+    {
+        auto item = new ((*fArray)[fNumEntries++]) R3BSofScalersMappedData(2, ch + 1, data->SOFSCALERS_TOFW[ch]);
     }
 
     return kTRUE;
