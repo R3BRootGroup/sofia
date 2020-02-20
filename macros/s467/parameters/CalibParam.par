@@ -7178,5 +7178,5 @@ RawPosPar:  Float_t \
   -1    2
 nDetectorsRawPosPar:  Int_t  4 
 nChannelsRawPosPar:  Int_t  3 
-nSignalsRawPosPar:  Int_t  8 
+nSignalsRawPosPar:  Int_t  4 
 nRawPosParsPerSignal:  Int_t  2 
