@@ -10,6 +10,7 @@
 
 #include "R3BSofSciRawPosPar.h"
 #include "R3BSofSciSingleTcalData.h"
+#include "detectors_cfg.h"
 
 #ifdef NUMBER_OF_SOFSCI_TOF
 #include "R3BSofSciRawTofPar.h"
@@ -47,7 +48,7 @@ class R3BSofSciTcal2SingleTcal : public FairTask
   TClonesArray*  fSingleTcal;         
   R3BSofSciRawPosPar* fRawPosPar;
 #ifdef NUMBER_OF_SOFSCI_TOF
-  R3BSofScoRawTofPar* fRawTofPar;
+  R3BSofSciRawTofPar* fRawTofPar;
 #endif
   
   Bool_t fOnline; // Don't store data for online
