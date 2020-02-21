@@ -135,11 +135,16 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 
   int nDets = NUMBER_OF_SOFSCI_DETECTORS;
   int nChs = NUMBER_OF_SOFSCI_CHANNELS;
+#ifdef NUMBER_OF_SOFSCI_TOF
+  int nTof = NUMBER_OF_SOFSCI_TOF;
+#endif
   UShort_t iDet; // 0-based
   UShort_t iCh;  // 0-based
   Double_t iTraw[nDets*nChs][16];
   UShort_t mult[nDets*nChs];
   UShort_t mult_max=0;
+  UInt_t maskR[nDets]; // if mult_max>=32, doesn't work
+  UInt_t maskL[nDets]; // if mult_max>=32, doesn't work
   
   for(UShort_t i=0; i<nDets*nChs; i++) mult[i]=0;
 
@@ -149,7 +154,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     if(!hit)             continue;
     iDet  = hit->GetDetector()-1;
     iCh   = hit->GetPmt()-1;
-    if(mult_max>=16)     continue; // if multiplicity in a Pmt is higher than 16 are discarded, this code cannot handle it
+    if(mult_max>=32)     continue; // if multiplicity in a Pmt is higher than 16 are discarded, this code cannot handle it
     iTraw[iDet*nChs+iCh][mult[iDet*nChs+iCh]] = hit->GetRawTimeNs();
     mult[iDet*nChs+iCh]++;
     if (mult[iDet*nChs+iCh]>mult_max) mult_max=mult[iDet*nChs+iCh];
@@ -157,152 +162,118 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
   
   // LOOP OVER THE ENTRIES TO GET ALL THE POSSIBLE COMBINATION AND TO FIND THE GOOD ONE WITHOUT DOUBLE COUNTS
   if (nHitsPerEvent_SofSci>0){
-    UInt_t maskR[nDets]; // if mult_max>=32, doesn't work
-    UInt_t maskL[nDets]; // if mult_max>=32, doesn't work
     Double_t iRawPos;
     Double_t iRawTime_dSta;
     Double_t iRawTime_dSto;
-    Double_t iRawTof;
     Double_t RawPos[nDets];
     Double_t RawTime[nDets];
     UShort_t mult_selectHits[nDets];
 #ifdef NUMBER_OF_SOFSCI_TOF
-    int nTof = NUMBER_OF_SOFSCI_TOF;
-    int dSta = fRawTofPar->GetFirstStart()-1;
-    int dSto = fRawTofPar->GetFirstStop()-1;
-    int rank = GetTofRank(dSta,dSto);
-    Bool_t select[nDets];
     Double_t RawTof[nTof];
-    for(UShort_t d=0; d<nDets; d++){
-      select[d] = kFALSE;
-      maskR[d] = 0x0;
-      maskR[d] = 0x0;
+    Int_t selectLeftHit[nDets];
+    Int_t selectRightHit[nDets];
+    Double_t iRawTof; 
+    int dSta, dSto,rank;
+    for(UShort_t det=0; det <nDets; det++){
+      selectLeftHit[det]=-1;
+      selectRightHit[det]=-1;
+      mult_selectHits[det]=0;
+      maskR[det]= 0x0;
+      maskL[det]= 0x0;
     }
 
-    // SELECTION OF THE MULTIPLICITY LOOKING AT THE ToFraw 
-    // * first, start with two selected Sci by the user
+    // SELECTION OF THE MULTIPLICITY LOOKING AT THE ToFraw VERSUS Cave C SCINTILLATOR
+    // Since the multiplicity at Cave C is muchlower than at S2 or S8
+    // all the hit finder are done looking at the Tof from S2 or S8 to cave C
+
+    // first selection
+    if(nDets != ID_SOFSCI_CAVEC)
+      LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Exec() NUMBER_OF_SOFSCI_DETECTORS != ID_SOFSCI_CAVEC";
+    dSta = fRawTofPar->GetFirstStart()-1;
+    dSto = nDets-1;
+    rank = GetTofRank(dSta,dSto);
     for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
-      for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsta++){
+     for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1]; multLsta++){
+
 	if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
-	iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
+	iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
 	if ((fRawPosPar->GetSignalTcalParams(2*dSta)>iRawPos)||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;	
+  
 	for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
 	  for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
+	  
 	    if((((maskR[dSto]>>multRsto)&(0x1))==1) || (((maskL[dSto]>multLsto)&(0x1))==1)) continue;
-	    iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
+	    iRawPos = (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
 	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
 	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
 	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
 	    iRawTof = iRawTime_dSto - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
-	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=iRawTof) && 
-		(iRawTof<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
-	      RawTof[rank] = iRawTof;
-	      RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	  
-	      RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
-	      RawTime[dSta] = iRawTime_dSta;
-	      RawTime[dSto] = iRawTime_dSto;
-	      select[dSta] = kTRUE;
-	      select[dSto] = kTRUE;
+	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=iRawTof) && (iRawTof<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
+	      selectLeftHit[dSta] = multLsta;
+	      selectRightHit[dSta] = multRsta;
+	      mult_selectHits[dSta]++;	      
 	      maskR[dSta] |= (0x1)<<multRsta;
 	      maskL[dSta] |= (0x1)<<multLsta;
+	      selectLeftHit[dSto] = multLsto;
+	      selectRightHit[dSto] = multRsto;	      
+	      mult_selectHits[dSto]++;
 	      maskR[dSto] |= (0x1)<<multRsto;
 	      maskL[dSto] |= (0x1)<<multLsto;
 	    }
-	  }
+	  
+	  }// end of for (multLsto)
+	}// end of for (multRsto)
+
+      }// end of for(multLsta)
+    }// end of for(multRsta)
+
+    // second selection : over the rest of the scintillator versus SofSci at Cave C
+    if(mult_selectHits[dSto]>0){
+      for(dSta=0; dSta<nDets-1; dSta++){
+	if (dSta==fRawTofPar->GetFirstStart()-1) continue;
+	for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
+	  for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsta++){
+	
+	    if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
+	    iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
+	    if ((fRawPosPar->GetSignalTcalParams(2*dSta)>iRawPos)||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;	
+	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
+	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][selectLeftHit[dSto]]+iTraw[dSto*nChs+1][selectRightHit[dSto]]);
+	    iRawTof = iRawTime_dSto - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
+	    rank = GetTofRank(dSta,dSto);
+	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=iRawTof) && (iRawTof<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
+	      selectLeftHit[dSta] = multLsta;
+	      selectRightHit[dSta] = multRsta;	      
+	      mult_selectHits[dSta]++;	      
+	      maskR[dSta] |= (0x1)<<multRsta;
+	      maskL[dSta] |= (0x1)<<multLsta;
+	    }
+	  }// end of for(multLsta)
+	}// end of for(multRsta) 
+      }// end of dSta
+    }//end of if the first selection succeed
+
+    for(UShort_t d=0; d<nDets; d++){
+      if(mult_selectHits[d]>0){
+	RawPos[d] = iTraw[d*nChs][selectRightHit[d]] - iTraw[d*nChs+1][selectLeftHit[d]];
+	RawTime[d] = 0.5 * (iTraw[d*nChs][selectRightHit[d]] + iTraw[d*nChs+1][selectLeftHit[d]]);
+      }
+      else{
+	RawPos[d] = -1000000.;
+	RawTime[d] = -1000000.;
+      }
+    }
+    Int_t iTof=0;
+    for(UShort_t dstart=0; dstart<nDets-1; dstart++){
+      for(UShort_t dstop=dstart+1; dstop<nDets; dstop++){
+	if((mult_selectHits[dstart]>0)&&(mult_selectHits[dstop]>0)){
+	  RawTof[iTof] = RawTime[dstart] - RawTime[dstop]  + iTraw[dstart*nChs+2][0] - iTraw[dstop*nChs+2][0];
 	}
+	else
+	  RawTof[iTof] -1000000.;
       }
     }
 
-  // * second selection of the beam multiplicity for the rest of the scintillators
-  for(UShort_t istart=0; istart<NUMBER_OF_SOFSCI_DETECTORS-1; istart++)
-  {
-    for(UShort_t istop=istart+1; istop<NUMBER_OF_SOFSCI_DETECTORS; istop++)
-    {
-      dSta = istart;
-      dSto = istop;
-      rank = GetTofRank(istart,istop);
-      if ((select[dSta]=kTRUE)&&(select[dSto]==kTRUE))
-      {
-	continue;
-      }
-      else if( (select[dSta]==kTRUE) && (select[dSto]==kFALSE) )
-      {
-	for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
-	  for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
-	    if((((maskR[dSto]>>multRsto)&(0x1))==1) || (((maskL[dSto]>multLsto)&(0x1))==1)) continue;
-	    iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
-	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
-	    iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
-	    iRawTof = iRawTime_dSto - RawTime[dSta] + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
-	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=iRawTof) && 
-		(iRawTof<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
-	      RawTof[rank] = iRawTof;
-	      RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
-	      RawTime[dSto] = iRawTime_dSto;
-	      select[dSto] = kTRUE;
-	      maskR[dSto] |= (0x1)<<multRsto;
-	      maskL[dSto] |= (0x1)<<multLsto;
-	    }
-	  }
-	}
-      }
-      else  if( (select[dSta]==kFALSE) && (select[dSto]==kTRUE) )
-      {
-	for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
-	  for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1]; multLsta++){
-	    if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
-	    iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
-	    if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSta))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;
-	    iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);
-	    iRawTof = RawTime[dSto] - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
-	    if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=iRawTof) && 
-		(iRawTof<=fRawTofPar->GetSignalRawTofParams(2*rank+1))) {
-	      RawTof[rank] = iRawTof;
-	      RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	      
-	      RawTime[dSta] = iRawTime_dSta;
-	      select[dSta] = kTRUE;
-	      maskR[dSta] |= (0x1)<<multRsta;
-	      maskL[dSta] |= (0x1)<<multLsta;
-	    }
-	  }
-	}
-      }
-      else 
-      {
-	for(UShort_t multRsta=0; multRsta<mult[dSta*nChs]; multRsta++){
-	  for(UShort_t multLsta=0; multLsta<mult[dSta*nChs+1];multLsta++){
-	    if((((maskR[dSta]>>multRsta)&(0x1))==1) || (((maskL[dSta]>multLsta)&(0x1))==1)) continue;
-	    iRawPos = 0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
-	    if ((fRawPosPar->GetSignalTcalParams(2*dSta)>iRawPos)||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSta+1))) continue;	
-	    for(UShort_t multRsto=0; multRsto<mult[dSto*nChs]; multRsto++){
-	      for(UShort_t multLsto=0; multLsto<mult[dSto*nChs+1]; multLsto++){
-		if((((maskR[dSto]>>multRsto)&(0x1))==1) || (((maskL[dSto]>multLsto)&(0x1))==1)) continue;
-		iRawPos = 0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);
-		if ((iRawPos<fRawPosPar->GetSignalTcalParams(2*dSto))||(iRawPos>fRawPosPar->GetSignalTcalParams(2*dSto+1))) continue;
-		iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta]+iTraw[dSta*nChs+1][multLsta]);	
-		iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto]+iTraw[dSto*nChs+1][multLsto]);
-	        iRawTof = iRawTime_dSto - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
-		if( (fRawTofPar->GetSignalRawTofParams(2*rank)<=iRawTof) && 
-		    (iRawTof<=fRawTofPar->GetSignalRawTofParams(2*rank+1)) ) {
-		  RawTof[rank] = iRawTof;
-		  RawPos[dSta] =  0.5 * (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);  	  
-		  RawPos[dSto] =  0.5 * (iTraw[dSto*nChs][multRsto] - iTraw[dSto*nChs+1][multLsto]);  	      
-		  RawTime[dSta] = iRawTime_dSta;
-		  RawTime[dSto] = iRawTime_dSto;
-		  select[dSta] = kTRUE;
-		  select[dSto] = kTRUE;
-		  maskR[dSta] |= (0x1)<<multRsta;
-		  maskL[dSta] |= (0x1)<<multLsta;
-		  maskR[dSto] |= (0x1)<<multRsto;
-		  maskL[dSto] |= (0x1)<<multLsto;
-		}
-	      }
-	    }
-	  }
-	}
-      }// end of else (dSta=kFALSE && dSto=kFALSE)
-    }//enf of of (istop) second selection
-  }//end of if (istart) second selection
 #else
     for(UShort_t d=0; d<nDets;d++) {
       maskR[d]= 0x0;
