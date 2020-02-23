@@ -42,8 +42,7 @@
 R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar() 
   : FairTask("R3BSofSciTcal2RawTofPar",1)
   , fFirstStaSci(1)
-  , fFirstStoSci(NUMBER_OF_SOFSCI_DETECTORS)
-  , fNumSignals(NUMBER_OF_SOFSCI_TOF)
+  , fNumSignals(NUMBER_OF_SOFSCI_DETECTORS-1)
   , fNumParsPerSignal(2)
   , fMinStatistics(0)
   , fTcal(NULL)
@@ -55,7 +54,8 @@ R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar()
 //R3BSofSciTcal2RawTofPar: Standard Constructor --------------------------
 R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar(const char* name, Int_t iVerbose) 
   : FairTask(name, iVerbose)
-  , fNumSignals(NUMBER_OF_SOFSCI_TOF)
+  , fFirstStaSci(1)
+  , fNumSignals(NUMBER_OF_SOFSCI_DETECTORS-1)
   , fNumParsPerSignal(2)
   , fMinStatistics(0)
   , fTcal(NULL)
@@ -108,17 +108,11 @@ InitStatus R3BSofSciTcal2RawTofPar::Init() {
 
   char name[100];  
   fh_RawTofMult1 = new TH1D*[fNumSignals];
-  UShort_t rank = 0;
   for(Int_t detstart=0; detstart<NUMBER_OF_SOFSCI_DETECTORS-1; detstart++){
-    for(Int_t detstop=detstart+1; detstop<NUMBER_OF_SOFSCI_DETECTORS;detstop++){
-      sprintf(name,"TofRaw_Sci%i_to_Sci%i",detstart+1,detstop+1);
-      fh_RawTofMult1[rank] = new TH1D(name,name,400000,-2000,2000);
-      rank++;
-    }
+    sprintf(name,"TofRaw_Sci%i_to_Sci%i",detstart+1,ID_SOFSCI_CAVEC);
+     fh_RawTofMult1[detstart] = new TH1D(name,name,40000,-2000,2000);
   }
-  if(rank!=NUMBER_OF_SOFSCI_TOF)
-    LOG(ERROR) << "R3BSofSciTcal2RawTofPar::Init() error in the number of RawTof declaration";
-  
+
   return kSUCCESS;
 }
 
@@ -157,24 +151,21 @@ void R3BSofSciTcal2RawTofPar::Exec(Option_t* opt) {
       LOG(WARNING) << "R3BSofSciTcal2RawTofPar::Exec() : could not get hitSci";
       continue; // should not happen
     }           
-    iDet = hitSci->GetDetector()-1; // get the 0 based Det number
+    iDet = hitSci->GetDetector()-1; // get the 0 based DetiMax=20 number
     iPmt = hitSci->GetPmt()-1;      // get the 0 based Pmt number
     iRawTimeNs[iDet*NUMBER_OF_SOFSCI_CHANNELS+iPmt] = hitSci->GetRawTimeNs();
     mult[iDet*NUMBER_OF_SOFSCI_CHANNELS+iPmt]++;
   }// end of for(ihit) 
 
   // FILL THE HISTOGRAM ONLY FOR MULT=1 IN RIGHT AND MULT=1 IN LEFT
-  rank=0;
+  UShort_t dstop = ID_SOFSCI_CAVEC-1;
   for(UShort_t dstart=0; dstart<NUMBER_OF_SOFSCI_DETECTORS-1; dstart++){
-    iTrawStart = 0.5*(iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS]+iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS+1]);
-    for(UShort_t dstop=dstart+1; dstop<NUMBER_OF_SOFSCI_DETECTORS; dstop++){
+    // check if mult=1 at RIGHT PMT [0] and mult=1 at LEFT PMT [1]
+    if( (mult[dstart*NUMBER_OF_SOFSCI_CHANNELS]==1) && (mult[dstart*NUMBER_OF_SOFSCI_CHANNELS+1]==1) &&
+        (mult[dstop*NUMBER_OF_SOFSCI_CHANNELS]==1)  && (mult[dstop*NUMBER_OF_SOFSCI_CHANNELS+1]==1) ){
+      iTrawStart = 0.5*(iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS]+iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS+1]);
       iTrawStop = 0.5*(iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS]+iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS+1]);
-      // check if mult=1 at RIGHT PMT [0] and mult=1 at LEFT PMT [1]
-      if( (mult[dstart*NUMBER_OF_SOFSCI_CHANNELS]==1) && (mult[dstart*NUMBER_OF_SOFSCI_CHANNELS+1]==1) &&
-	  (mult[dstop*NUMBER_OF_SOFSCI_CHANNELS]==1)  && (mult[dstop*NUMBER_OF_SOFSCI_CHANNELS+1]==1) ){
-	fh_RawTofMult1[rank]->Fill(iTrawStop-iTrawStart+iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS+2]-iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS+2]);
-      }
-      rank++;
+      fh_RawTofMult1[dstart]->Fill(iTrawStop-iTrawStart+iRawTimeNs[dstart*NUMBER_OF_SOFSCI_CHANNELS+2]-iRawTimeNs[dstop*NUMBER_OF_SOFSCI_CHANNELS+2]);
     }
   }
 }
@@ -203,20 +194,19 @@ void R3BSofSciTcal2RawTofPar::CalculateRawTofParams()
   LOG(INFO) << "R3BSofSciTcal2RawTofPar: CalculateRawTofParams()";
   
   fRawTofPar->SetFirstStart(fFirstStaSci);
-  fRawTofPar->SetFirstStop(fFirstStoSci);
   fRawTofPar->SetNumSignals(fNumSignals);
   fRawTofPar->SetNumParsPerSignal(fNumParsPerSignal);
 
-  Double_t iMax;
+  Double_t iMax=0;
   Int_t bin, binLimit; 
   for(Int_t sig=0; sig<fNumSignals; sig++){
-    if(fh_RawTofMult1[sig]->GetEntries()>fMinStatistics){
-      iMax = fh_RawTofMult1[sig]->GetMaximum();
+    iMax = fh_RawTofMult1[sig]->GetMaximum();
+    if(fh_RawTofMult1[sig]->GetEntries()>fMinStatistics && iMax>0){
       //LOWER LIMIT
       bin=1;
       binLimit=1;
       while ((bin<=fh_RawTofMult1[sig]->GetNbinsX())&&(binLimit==1)){
-	if(fh_RawTofMult1[sig]->GetBinContent(bin)>(iMax/10000.)) binLimit=bin;
+	if(fh_RawTofMult1[sig]->GetBinContent(bin)>(iMax/1000.)) binLimit=bin;
 	bin++;
       }
       fRawTofPar->SetSignalParams(fh_RawTofMult1[sig]->GetBinLowEdge(binLimit),sig*2);
@@ -224,7 +214,7 @@ void R3BSofSciTcal2RawTofPar::CalculateRawTofParams()
       bin=fh_RawTofMult1[sig]->GetNbinsX();
       binLimit=fh_RawTofMult1[sig]->GetNbinsX();
       while ((bin>=1)&&(binLimit==fh_RawTofMult1[sig]->GetNbinsX())){
-	if(fh_RawTofMult1[sig]->GetBinContent(bin)>(iMax/10000.)) binLimit=bin;
+	if(fh_RawTofMult1[sig]->GetBinContent(bin)>(iMax/1000.)) binLimit=bin;
 	bin--;
       }
       fRawTofPar->SetSignalParams(fh_RawTofMult1[sig]->GetBinLowEdge(binLimit),sig*2+1);
