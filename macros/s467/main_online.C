@@ -45,13 +45,13 @@ void main_online()
     const Int_t expId = 467; // select experiment: 444 or 467
 
     // Create input -----------------------------------------
-    TString filename = "--stream=lxlanddaq01:9000";
+    //TString filename = "--stream=lxlanddaq01:9000";
     //TString filename = "--stream=lxir123:7803";
     //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
     //TString filename = "~/lmd/sofia2020/neu.lmd";
     //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
     //TString filename = "/lustre/land/202002_s444/stitched/main0076_0001.lmd";
-    //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_eng/main0073_0001.lmd";
+    TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_eng/main0340_0001.lmd";
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s467_online.root";
@@ -67,9 +67,9 @@ void main_online()
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
-    //TString upexps_dir = ucesb_dir + "/../upexps/";
+    TString upexps_dir = ucesb_dir + "/../upexps/";
     //TString upexps_dir = "/u/land/lynx.landexp/202002_s444/upexps/"; //for lxg computers
-    TString upexps_dir = "/u/land/fake_cvmfs/upexps"; //for lxlandana computers
+    //TString upexps_dir = "/u/land/fake_cvmfs/upexps"; //for lxlandana computers
     TString ucesb_path;
     if (expId == 444)
     {

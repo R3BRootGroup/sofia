@@ -18,11 +18,18 @@
 #include <iostream>
 #include <sstream>
 
+#include "R3BSofSciHitData.h"
+
 #include "detectors_cfg.h"
 
 #define NbDetectors NUMBER_OF_SOFSCI_DETECTORS
 #define NbChannels  NUMBER_OF_SOFSCI_CHANNELS
-#define NbTof       NUMBER_OF_SOFSCI_TOF
+
+#ifdef NUMBER_OF_SOFSCI_TOF
+#define NbTof NUMBER_OF_SOFSCI_TOF
+#else
+#define NbTof 0
+#endif
 
 class TClonesArray;
 class R3BEventHeader;
@@ -87,13 +94,17 @@ class R3BSofSciOnlineSpectra : public FairTask
      */
     virtual void Reset_Histo();
 
+    /** Virtual method Reset **/
+    virtual void Reset();
+
   private:
     TClonesArray* fMappedItemsSci; /**< Array with mapped items. */
     TClonesArray* fTcalItemsSci;   /**< Array with tcal items. */
-    // TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
+    TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
     TClonesArray* fMusHitItems;   /**< Array with MUSIC Hit items. */
     TClonesArray* fMusCalItems;   /**< Array with MUSIC Cal items. */
     TClonesArray* fCalItemsMwpc0; /**< Array with cal items of mwpc0. */
+    TClonesArray* fTofwHitData;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -102,8 +113,12 @@ class R3BSofSciOnlineSpectra : public FairTask
     // Canvas
     TCanvas* cSciMult[NbDetectors];
     TCanvas* cSciRawPos[NbDetectors];
+    TCanvas* cMusicZvsRawPos[NbDetectors];
+#ifdef NUMBER_OF_SOFSCI_TOF
     TCanvas* cSciRawTof[NbTof];
-    TCanvas* cSciRawTofvsRawPos[NbTof];
+    TCanvas* cMusicZvsRawTof[NbTof];
+    TCanvas* cAqvsq; 
+#endif
 
     // Histograms for Mapped data : Fine Time and Mult
     TH1I* fh1_finetime[NbDetectors * NbChannels];
@@ -111,21 +126,31 @@ class R3BSofSciOnlineSpectra : public FairTask
 
     // Histograms for PosRaw Data at Tcal and SingleTcal
     TH1F* fh1_RawPos_AtTcalMult1[NbDetectors];
+    TH1F* fh1_RawPos_AtSingleTcal[NbDetectors];
+#ifdef NUMBER_OF_SOFSCI_TOF
     TH1D* fh1_RawTof_AtTcalMult1[NbTof];
     TH1D* fh1_RawTof_AtTcalMult1_wTref[NbTof];
-    TH2D* fh2_RawTof_vs_RawPosStart_AtTcalMult1[NbTof];
-    TH2D* fh2_RawTof_vs_RawPosStop_AtTcalMult1[NbTof];
-
+    TH1D* fh1_RawTof_AtSingleTcal_wTref[NbTof];
+#endif
     //    TH1F * fh1_RawPos_AtSingleTcal[NbDetectors];
 
     // Histogram for correlation with R3B-Music
-    TH2F* fh2_MusZvsRawPos;
+    TH2F* fh2_MusZvsRawPos[NbDetectors];
     TH2F* fh2_MusDTvsRawPos;
+#ifdef NUMBER_OF_SOFSCI_TOF
+    TH2F* fh2_MusZvsRawTof[NbTof];
+    TH2F* fh2_Aqvsq;
+#endif
 
     // Histogram for correlation with Mwpc0
     TH2F* fh2_Mwpc0vsRawPos;
 
     // check how many raw pos found
+
+
+    /** Private method TofwHitData **/
+    //** Adds a TofwHitData to the detector
+    R3BSofSciHitData* AddHitData(Int_t paddle, Double_t X, Double_t time);
 
   public:
     ClassDef(R3BSofSciOnlineSpectra, 1)
