@@ -4,6 +4,7 @@
 #include "FairTask.h"
 #include "TH1F.h"
 #include "TH1D.h"
+
 #include "detectors_cfg.h"
 
 class TClonesArray;
@@ -50,19 +51,16 @@ class R3BSofSciTcal2RawTofPar : public FairTask {
   
   /** Accessor functions **/
   const Int_t    GetFirstStaSci()     {return fFirstStaSci;}
-  const Int_t    GetFirstStoSci()     {return fFirstStoSci;}
   const Double_t GetNumSignals()    {return fNumSignals;}
   const Int_t    GetMinStatistics() {return fMinStatistics;}
 
   void SetFirstStaSci(Int_t firststa)     {fFirstStaSci=firststa;}
-  void SetFirstStoSci(Int_t firststo)     {fFirstStoSci=firststo;}
-  void SetNumSignals()                 {fNumSignals=NUMBER_OF_SOFSCI_TOF;}
+  void SetNumSignals()                 {fNumSignals=NUMBER_OF_SOFSCI_DETECTORS-1;}
   void SetNumParsPerSignal(Int_t n)    {fNumParsPerSignal=n;}
   void SetMinStatistics(Int_t minstat) {fMinStatistics=minstat;}
  protected:
   Int_t fFirstStaSci;
-  Int_t fFirstStoSci;
-  Int_t fNumSignals;    // number of signal = number of ToF 
+  Int_t fNumSignals;    // number of signal = number of detector -1 (Tof selection from Sci to Sci(caveC)) 
   Int_t fNumParsPerSignal; // =2 for each signal
   Int_t fMinStatistics; // minimum statistics to proceed to the calibration
 

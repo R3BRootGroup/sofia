@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#define MAX_RAWTOFPAR NUMBER_OF_SOFSCI_DETECTORS * NUMBER_OF_SOFSCI_TOF
+#define MAX_RAWTOFPAR 2 * (NUMBER_OF_SOFSCI_DETECTORS-1)
 
 using std::cout;
 using std::endl;
@@ -18,9 +18,8 @@ using std::endl;
 R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, const char* context)
   : FairParGenericSet(name, title, context)
   , fFirstStaSci(1)
-  , fFirstStoSci(ID_SOFSCI_CAVEC)
-  , fNumSignals(0)
-  , fNumParsPerSignal(0)
+  , fNumSignals(NUMBER_OF_SOFSCI_DETECTORS-1)
+  , fNumParsPerSignal(2)
 {
   fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
 }
@@ -59,7 +58,6 @@ void R3BSofSciRawTofPar::putParams(FairParamList* list)
 
     list->add("RawTofPar", *fAllSignalsRawTofParams);
     list->add("selectionFirstStart",fFirstStaSci);
-    list->add("selectionFirstStop",fFirstStoSci);
     list->add("nSignalsRawTofPar", fNumSignals);
     list->add("nRawTofParsPerSignal", fNumParsPerSignal);
 }
@@ -73,10 +71,6 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
         return kFALSE;
     }
     if (!list->fill("selectionFirstStart",&fFirstStaSci))
-    {
-      return kFALSE;
-    }
-    if (!list->fill("selectionFirstStop",&fFirstStoSci))
     {
       return kFALSE;
     }

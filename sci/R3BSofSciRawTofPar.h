@@ -6,7 +6,9 @@
 #include "TObjArray.h"
 #include "TObject.h"
 #include <TObjString.h>
+
 #include "detectors_cfg.h"
+
 class FairParamList;
 
 class R3BSofSciRawTofPar : public FairParGenericSet
@@ -38,10 +40,6 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   {
     return fFirstStaSci;
   }
-  const Int_t GetFirstStop()
-  {
-    return fFirstStoSci;
-  }
   const Int_t GetNumSignals() 
     { 
 	return fNumSignals; 
@@ -66,10 +64,6 @@ class R3BSofSciRawTofPar : public FairParGenericSet
   {
     fFirstStaSci = detFirstStart;
   }
-  void SetFirstStop(Int_t detFirstStop)
-  {
-    fFirstStoSci = detFirstStop;
-  }
   void SetNumSignals(Int_t nsig)
   {
     fNumSignals = nsig;
@@ -87,8 +81,7 @@ class R3BSofSciRawTofPar : public FairParGenericSet
  private:
   TArrayF* fAllSignalsRawTofParams; // Calibration Parameters for all signals of one detector
   Int_t fFirstStaSci;  // if nDets>2, start the mult selection with detectors number fFirstStaSci (1-based)
-  Int_t fFirstStoSci;  //                                                        and fFirstStoSci (1-based)
-  Int_t fNumSignals;   // = number of Tof
+  Int_t fNumSignals;   // = number of Tof spectra with mult=1 = NUMBER_OF_SOFSCI_DETECTORs-1
   Int_t fNumParsPerSignal; // = 2
   const R3BSofSciRawTofPar& operator=(const R3BSofSciRawTofPar&); 
   R3BSofSciRawTofPar(const R3BSofSciRawTofPar&); // a copy constructor
