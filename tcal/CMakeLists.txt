@@ -8,6 +8,7 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/passive
+${R3BROOT_SOURCE_DIR}/neuland/shared
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
@@ -29,6 +30,7 @@ R3BSofSciMapped2TcalPar.cxx
 R3BSofSciMapped2Tcal.cxx
 R3BSofToFWMapped2TcalPar.cxx
 R3BSofToFWMapped2Tcal.cxx
+R3BSofiaProvideTStart.cxx
 )
 
 # fill list of header files from list of source files
