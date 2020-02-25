@@ -6,7 +6,7 @@
 // ----------------------------------------------------------------------
 
 #include "R3BSofTofWContFact.h"
-//#include "R3BSofTofWCalPar.h"
+#include "R3BSofTofWHitPar.h"
 #include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
@@ -31,15 +31,21 @@ void R3BSofTofWContFact::setAllContainers()
     // Creates the Container objects with all accepted contexts and adds them to
     // the list of containers for the TofW library.
 
-    FairContainer* p1 = new FairContainer("tofwCalPar", "TofW Cal Parameters", "TofWCalParContext");
-    p1->addContext("TofWCalParContext");
+    FairContainer* p1 = new FairContainer("tofwGeoPar", "TofW geometry parameters", "TestDefaultContext");
+    p1->addContext("TestNonDefaultContext");
 
     containers->Add(p1);
 
-    FairContainer* p2 = new FairContainer("tofwGeoPar", "TofW geometry parameters", "TestDefaultContext");
-    p2->addContext("TestNonDefaultContext");
+    FairContainer* p2 = new FairContainer("tofwCalPar", "TofW Cal Parameters", "TofWCalParContext");
+    p2->addContext("TofWCalParContext");
 
     containers->Add(p2);
+
+    FairContainer* p3 = new FairContainer("tofwHitPar", "TofW Hit Parameters", "TTofWHitParContext");
+    p3->addContext("TofWHitParContext");
+
+    containers->Add(p3);
+
 }
 
 FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
@@ -54,6 +60,11 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
     if (strcmp(name, "tofwCalPar") == 0)
     {
         // p = new R3BSofTofWCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());//FIXME
+    }
+
+    if (strcmp(name, "tofwHitPar") == 0)
+    {
+         p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());//FIXME
     }
 
     if (strcmp(name, "tofwGeoPar") == 0)

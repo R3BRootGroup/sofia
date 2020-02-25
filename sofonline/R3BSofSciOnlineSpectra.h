@@ -9,8 +9,8 @@
 #include "FairTask.h"
 #include "TCanvas.h"
 #include "TH1.h"
-#include "TH2F.h"
 #include "TH2D.h"
+#include "TH2F.h"
 #include "TMath.h"
 #include <array>
 #include <cstdlib>
@@ -18,12 +18,10 @@
 #include <iostream>
 #include <sstream>
 
-#include "R3BSofSciHitData.h"
-
 #include "detectors_cfg.h"
 
 #define NbDetectors NUMBER_OF_SOFSCI_DETECTORS
-#define NbChannels  NUMBER_OF_SOFSCI_CHANNELS
+#define NbChannels NUMBER_OF_SOFSCI_CHANNELS
 
 #ifdef NUMBER_OF_SOFSCI_TOF
 #define NbTof NUMBER_OF_SOFSCI_TOF
@@ -98,12 +96,12 @@ class R3BSofSciOnlineSpectra : public FairTask
     virtual void Reset();
 
   private:
-    TClonesArray* fMappedItemsSci; /**< Array with mapped items. */
-    TClonesArray* fTcalItemsSci;   /**< Array with tcal items. */
+    TClonesArray* fMappedItemsSci;     /**< Array with mapped items. */
+    TClonesArray* fTcalItemsSci;       /**< Array with tcal items. */
     TClonesArray* fSingleTcalItemsSci; /**< Array with tcal items. */
-    TClonesArray* fMusHitItems;   /**< Array with MUSIC Hit items. */
-    TClonesArray* fMusCalItems;   /**< Array with MUSIC Cal items. */
-    TClonesArray* fCalItemsMwpc0; /**< Array with cal items of mwpc0. */
+    TClonesArray* fMusHitItems;        /**< Array with MUSIC Hit items. */
+    TClonesArray* fMusCalItems;        /**< Array with MUSIC Cal items. */
+    TClonesArray* fCalItemsMwpc0;      /**< Array with cal items of mwpc0. */
     TClonesArray* fTofwHitData;
 
     // check for trigger should be done globablly (somewhere else)
@@ -117,7 +115,7 @@ class R3BSofSciOnlineSpectra : public FairTask
 #ifdef NUMBER_OF_SOFSCI_TOF
     TCanvas* cSciRawTof[NbTof];
     TCanvas* cMusicZvsRawTof[NbTof];
-    TCanvas* cAqvsq; 
+    TCanvas* cAqvsq;
 #endif
 
     // Histograms for Mapped data : Fine Time and Mult
@@ -146,11 +144,6 @@ class R3BSofSciOnlineSpectra : public FairTask
     TH2F* fh2_Mwpc0vsRawPos;
 
     // check how many raw pos found
-
-
-    /** Private method TofwHitData **/
-    //** Adds a TofwHitData to the detector
-    R3BSofSciHitData* AddHitData(Int_t paddle, Double_t X, Double_t time);
 
   public:
     ClassDef(R3BSofSciOnlineSpectra, 1)

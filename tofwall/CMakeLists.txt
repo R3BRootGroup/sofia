@@ -30,6 +30,8 @@ R3BSofTofWall.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofTofWContFact.cxx
 R3BSofTofWTcal2SingleTcal.cxx
+R3BSofTofWHitPar.cxx
+R3BSofTofWTcal2HitPar.cxx
 R3BSofTofWTCal2Hit.cxx
 )
 

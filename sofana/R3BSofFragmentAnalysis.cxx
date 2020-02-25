@@ -201,23 +201,23 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     for (Int_t i = 0; i < nHitMwpc; i++)
     {
         HitMwpc[i] = (R3BSofMwpcHitData*)(fMwpcHitDataCA->At(i));
-        mw3_x = HitMwpc[i]->GetX() / 10. * cos(18. * TMath::DegToRad()) -215.4;         // cm
-        mw3_z = 662. + HitMwpc[i]->GetX() / 10. * sin(18. * TMath::DegToRad()) - 163.4-fDist_mw3_tof; // cm
+        mw3_x = HitMwpc[i]->GetX() / 10. * cos(18. * TMath::DegToRad()) - 215.4;                        // cm
+        mw3_z = 662. + HitMwpc[i]->GetX() / 10. * sin(18. * TMath::DegToRad()) - 163.4 - fDist_mw3_tof; // cm
     }
     // Time from TofW
     for (Int_t i = 0; i < nHitTofW; i++)
     {
         HitTofW[i] = (R3BSofTofWHitData*)(fTofWHitDataCA->At(i));
         ToF_Cave = HitTofW[i]->GetTime();
-        //std::cout <<" init: "<< HitTofW[i]->GetPaddle() << " "<< ToF_Cave << std::endl;
+        // std::cout <<" init: "<< HitTofW[i]->GetPaddle() << " "<< ToF_Cave << std::endl;
     }
 
-        //std::cout <<" init: "<< mw3_z <<" "<< mw3_x << " "<< ToF_Cave << std::endl;
+    // std::cout <<" init: "<< mw3_z <<" "<< mw3_x << " "<< ToF_Cave << std::endl;
 
     if (ToF_Cave > 0. && mw3_z > 0. && mw3_x < 0.)
     {
 
-        v1.SetXYZ(-1.*mw3_x, 0., mw3_z);
+        v1.SetXYZ(-1. * mw3_x, 0., mw3_z);
 
         double rho = 88.5969 / (2. * sin(v1.Theta() / 2.) * cos(14. * TMath::DegToRad() - v1.Theta() / 2.));
         Brho_Cave = 4.0 * 0.8 * rho * 0.01;
@@ -227,7 +227,7 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
         double gamma = 1. / sqrt(1. - Beta * Beta);
         fAq = Brho_Cave / (3.10716 * Beta * gamma);
 
-        //std::cout << ToF_Cave <<" "<< vel <<" "<< Length << " "<< fAq <<" "<< Brho_Cave << " "<< Beta << std::endl;
+        // std::cout << ToF_Cave <<" "<< vel <<" "<< Length << " "<< fAq <<" "<< Brho_Cave << " "<< Beta << std::endl;
 
         // Fill the data
         if (fZ > 1 && fAq > 1. && Brho_Cave > 0. && Beta > 0.)

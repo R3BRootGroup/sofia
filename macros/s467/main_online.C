@@ -45,13 +45,14 @@ void main_online()
     const Int_t expId = 467; // select experiment: 444 or 467
 
     // Create input -----------------------------------------
-    //TString filename = "--stream=lxlanddaq01:9000";
+    TString filename = "--stream=lxlanddaq01:9000";
     //TString filename = "--stream=lxir123:7803";
-    //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
-    //TString filename = "~/lmd/sofia2020/neu.lmd";
-    //TString filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main0013_0001.lmd";
-    //TString filename = "/lustre/land/202002_s444/stitched/main0076_0001.lmd";
-    TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_eng/main0340_0001.lmd";
+    //TString filename = "~/lmd/sofia2020/main0353_0001.lmd";
+    //TString filename = "/lustre/land/202002_s467/stitched/main0340_0001.lmd";
+    //TString filename = "/lustre/land/202002_s467/stitched/main0246_0001.lmd"; // 86Kr direct
+    //TString filename = "/lustre/land/202002_s467/stitched/main0274_0001.lmd";
+    //TString filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_eng/main0073_0001.lmd";
+
 
     // Output file ------------------------------------------
     TString outputFileName = "data_s467_online.root";
@@ -67,9 +68,9 @@ void main_online()
     // UCESB configuration ----------------------------------
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
-    TString upexps_dir = ucesb_dir + "/../upexps/";
+    //TString upexps_dir = ucesb_dir + "/../upexps/";
     //TString upexps_dir = "/u/land/lynx.landexp/202002_s444/upexps/"; //for lxg computers
-    //TString upexps_dir = "/u/land/fake_cvmfs/upexps"; //for lxlandana computers
+    TString upexps_dir = "/u/land/fake_cvmfs/upexps"; //for lxlandana computers
     TString ucesb_path;
     if (expId == 444)
     {
@@ -87,8 +88,8 @@ void main_online()
     ucesb_path.ReplaceAll("//", "/");
 
     // Setup: Selection of detectors ------------------------
-    Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
-    Bool_t fFrsTpcs = true; // Tpcs at FRS (S2) for scintillator calibration in position
+    Bool_t fFrs = true;      // FRS for production of exotic beams (just scintillators)
+    Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
     Bool_t fFrsMws = false;  // MWs at FRS (S8) for beam position
     Bool_t fFrsSci = true;   // Start: Plastic scintillators at FRS
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
@@ -102,7 +103,7 @@ void main_online()
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = true;  // SIS3820 scalers at Cave C
-    Bool_t fNeuland = false;  // NeuLAND for neutrons behind GLAD
+    Bool_t fNeuland = true;  // NeuLAND for neutrons behind GLAD
     Bool_t fTracking = true; // Tracking of fragments inside GLAD
 
     // Calibration files ------------------------------------
@@ -363,6 +364,11 @@ void main_online()
         R3BSofSciTcal2SingleTcal* SofSciTcal2STcal = new R3BSofSciTcal2SingleTcal();
         SofSciTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciTcal2STcal);
+        // --- SingleTcal 2 Hit for SofSci
+        R3BSofSciSingleTCal2Hit* SofSciSTcal2Hit = new R3BSofSciSingleTCal2Hit();
+        SofSciSTcal2Hit->SetOnline(NOTstorehitdata);
+        SofSciSTcal2Hit->SetCalParams(675.,-1922.);//ToF calibration at Cave-C
+        run->AddTask(SofSciSTcal2Hit);
     }
 
     // FRS

@@ -47,7 +47,7 @@ class R3BSofTofWDigitizer : public FairTask
     void SetSigma_ELoss(Float_t sigma_ELoss) { fsigma_ELoss = sigma_ELoss; }
 
   private:
-    TClonesArray* fMCTrack; 
+    TClonesArray* fMCTrack;
     TClonesArray* fTofPoints;
     TClonesArray* fTofHits;
     Float_t fsigma_y;

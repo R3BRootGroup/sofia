@@ -36,6 +36,7 @@ R3BSofSciRawTofPar.cxx
 R3BSofSciTcal2RawPosPar.cxx
 R3BSofSciTcal2RawTofPar.cxx
 R3BSofSciTcal2SingleTcal.cxx
+R3BSofSciSingleTCal2Hit.cxx
 )
 
 # fill list of header files from list of source files

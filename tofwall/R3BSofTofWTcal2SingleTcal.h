@@ -17,23 +17,23 @@ class TRandom3;
 class R3BSofTofWTcal2SingleTcal : public FairTask
 {
 
- public:
-  // --- Default constructor --- //
-  R3BSofTofWTcal2SingleTcal();
-  
-  // --- Standard constructor --- //
-  R3BSofTofWTcal2SingleTcal(const char* name, Int_t iVerbose=1);
+  public:
+    // --- Default constructor --- //
+    R3BSofTofWTcal2SingleTcal();
 
-  // --- Destructor --- // 
-  virtual ~R3BSofTofWTcal2SingleTcal();
+    // --- Standard constructor --- //
+    R3BSofTofWTcal2SingleTcal(const char* name, Int_t iVerbose = 1);
 
-  virtual InitStatus Init();         
+    // --- Destructor --- //
+    virtual ~R3BSofTofWTcal2SingleTcal();
 
-  virtual void SetParContainers();
+    virtual InitStatus Init();
 
-  virtual InitStatus ReInit();
+    virtual void SetParContainers();
 
-  virtual void Exec(Option_t* option);
+    virtual InitStatus ReInit();
+
+    virtual void Exec(Option_t* option);
 
     /** Virtual method Reset **/
     virtual void Reset();
@@ -43,24 +43,23 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
 
     void SetOnline(Bool_t option) { fOnline = option; }
 
- private:
-  TClonesArray*  fSciSingleTcal;  // input data            
-  TClonesArray*  fToFWTcal;       // input data
-  TClonesArray*  fToFWSingleTcal; // output data 
+  private:
+    TClonesArray* fSciSingleTcal;  // input data
+    TClonesArray* fToFWTcal;       // input data
+    TClonesArray* fToFWSingleTcal; // output data
 
-  Bool_t fOnline; // Don't store data for online
-       
-  UInt_t fNumSingleTcal;
-  UInt_t fNevent;
+    Bool_t fOnline; // Don't store data for online
 
-  TRandom rand;
+    UInt_t fNumSingleTcal;
+    UInt_t fNevent;
 
-   // Adds a SofTofWHitData to the HitCollection
-   R3BSofToFWSingleTcalData* AddHitData(Int_t plastic, Double_t time, Double_t tof, Double_t pos);
+    TRandom rand;
 
- public:
-  ClassDef(R3BSofTofWTcal2SingleTcal, 1)
+    // Adds a SofTofWHitData to the HitCollection
+    R3BSofToFWSingleTcalData* AddHitData(Int_t plastic, Double_t time, Double_t tof, Double_t pos);
 
+  public:
+    ClassDef(R3BSofTofWTcal2SingleTcal, 1)
 };
 
-#endif  // R3BSOFTOFW_TCAL2SINGLETCAL
+#endif // R3BSOFTOFW_TCAL2SINGLETCAL
