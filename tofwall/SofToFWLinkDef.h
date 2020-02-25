@@ -10,11 +10,8 @@
 #pragma link C++ class R3BSofTofWContFact + ;
 #pragma link C++ class R3BSofTofWTCal2Hit + ;
 
-//#pragma link C++ class R3BSofTofWallHitPar+;
-//#pragma link C++ class R3BSofTofWallCalPar+;
-
-#pragma link C++ class R3BSofTofWTcal2SingleTcal +;
-//#pragma link C++ class R3BSofTofWallCal2Hit+;
-//#pragma link C++ class R3BSofTofWallCal2HitPar+;
+#pragma link C++ class R3BSofTofWHitPar + ;
+#pragma link C++ class R3BSofTofWTcal2HitPar + ;
+#pragma link C++ class R3BSofTofWTcal2SingleTcal + ;
 
 #endif

@@ -20,43 +20,42 @@ class TRandom3;
 class R3BSofToFWMapped2Tcal : public FairTask
 {
 
- public:
-  // --- Default constructor --- //
-  R3BSofToFWMapped2Tcal();
-  
-  // --- Standard constructor --- //
-  R3BSofToFWMapped2Tcal(const char* name, Int_t iVerbose=1);
+  public:
+    // --- Default constructor --- //
+    R3BSofToFWMapped2Tcal();
 
-  // --- Destructor --- // 
-  virtual ~R3BSofToFWMapped2Tcal();
+    // --- Standard constructor --- //
+    R3BSofToFWMapped2Tcal(const char* name, Int_t iVerbose = 1);
 
-  virtual InitStatus Init();         
-  virtual void SetParContainers();
-  virtual InitStatus ReInit();
-  virtual void Exec(Option_t* option);
-  virtual void FinishEvent();
-  virtual void FinishTask();
+    // --- Destructor --- //
+    virtual ~R3BSofToFWMapped2Tcal();
 
-  Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
+    virtual InitStatus Init();
+    virtual void SetParContainers();
+    virtual InitStatus ReInit();
+    virtual void Exec(Option_t* option);
+    virtual void FinishEvent();
+    virtual void FinishTask();
 
-  void SetOnline(Bool_t option) { fOnline = option; }
+    Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
 
- private:
-  TClonesArray*  fMapped;             // input data - SofToFWMappedData
-  R3BSofTcalPar* fTcalPar;            // tcal parameters container
-  TClonesArray*  fTcal;               // output data
+    void SetOnline(Bool_t option) { fOnline = option; }
 
-  Bool_t fOnline; // Don't store data for online
-  
-  UInt_t fNumTcal;               // number of Tcal items per event
+  private:
+    TClonesArray* fMapped;   // input data - SofToFWMappedData
+    R3BSofTcalPar* fTcalPar; // tcal parameters container
+    TClonesArray* fTcal;     // output data
 
-  UInt_t fNevent;
+    Bool_t fOnline; // Don't store data for online
 
-  TRandom rand;
+    UInt_t fNumTcal; // number of Tcal items per event
 
- public:
-  ClassDef(R3BSofToFWMapped2Tcal, 1)
+    UInt_t fNevent;
 
+    TRandom rand;
+
+  public:
+    ClassDef(R3BSofToFWMapped2Tcal, 1)
 };
 
-#endif  // R3BSOFTOFW_MAPPED2TCAL
+#endif // R3BSOFTOFW_MAPPED2TCAL

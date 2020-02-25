@@ -9,19 +9,19 @@
 
 #include <iostream>
 
-#define MAX_RAWTOFPAR 2 * (NUMBER_OF_SOFSCI_DETECTORS-1)
+#define MAX_RAWTOFPAR 2 * (NUMBER_OF_SOFSCI_DETECTORS - 1)
 
 using std::cout;
 using std::endl;
 
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, const char* context)
-  : FairParGenericSet(name, title, context)
-  , fFirstStaSci(1)
-  , fNumSignals(NUMBER_OF_SOFSCI_DETECTORS-1)
-  , fNumParsPerSignal(2)
+    : FairParGenericSet(name, title, context)
+    , fFirstStaSci(1)
+    , fNumSignals(NUMBER_OF_SOFSCI_DETECTORS - 1)
+    , fNumParsPerSignal(2)
 {
-  fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
+    fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -57,7 +57,7 @@ void R3BSofSciRawTofPar::putParams(FairParamList* list)
     fAllSignalsRawTofParams->Set(array_size);
 
     list->add("RawTofPar", *fAllSignalsRawTofParams);
-    list->add("selectionFirstStart",fFirstStaSci);
+    list->add("selectionFirstStart", fFirstStaSci);
     list->add("nSignalsRawTofPar", fNumSignals);
     list->add("nRawTofParsPerSignal", fNumParsPerSignal);
 }
@@ -70,9 +70,9 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
     {
         return kFALSE;
     }
-    if (!list->fill("selectionFirstStart",&fFirstStaSci))
+    if (!list->fill("selectionFirstStart", &fFirstStaSci))
     {
-      return kFALSE;
+        return kFALSE;
     }
     if (!list->fill("nSignalsRawTofPar", &fNumSignals))
     {
@@ -105,8 +105,8 @@ void R3BSofSciRawTofPar::printParams()
     cout << "--- --------------------------------------------" << endl;
     cout << "--- Single Tcal RawTof Parameters :  " << endl;
     cout << "--- --------------------------------------------" << endl;
-    for (Int_t param=0; param < array_size; param++)
-      {
-	cout << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param) << endl;
-      }
+    for (Int_t param = 0; param < array_size; param++)
+    {
+        cout << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param) << endl;
+    }
 }

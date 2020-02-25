@@ -356,20 +356,17 @@ twimZHitPar:  Float_t \
 ##############################################################################
 [soffrsAnaPar]
 //----------------------------------------------------------------------------
-//DisperisionS2:  Double_t  6.77 
-//MagnificationS2Cave:  Double_t  -1.072
-DisperisionS2:  Double_t  6.77 
-MagnificationS2Cave:  Double_t  -1.072
-PathS2Cave:  Double_t  15424.3  //"effective length"
-ToFS2Cave:  Double_t  -1246.9 
-//PosFocalS2:  Double_t  1205.0 
-//PosFocalCave:  Double_t  1970.0 
-PosFocalS2:  Double_t  0
-PosFocalCave:  Double_t  0
+//-- PathS2Cave is effective length ------------------------------------------
+DisperisionS2:  Double_t  12.397 
+MagnificationS2Cave:  Double_t 1.829
+PathS2Cave:  Double_t  15424.3 
+ToFS2Cave:  Double_t  0.0 
+PosFocalS2:  Double_t  1205.0 
+PosFocalCave:  Double_t  0.0
 Rho_S0_S2:  Double_t  11.25 
 Bfield_S0_S2:  Double_t  0.60551 
-Rho_S2_Cave:  Double_t  11.25 
-Bfield_S2_Cave:  Double_t  0.60551
+Rho_S2_Cave:  Double_t  1.0 
+Bfield_S2_Cave:  Double_t  9.048
 ##############################################################################
  /----------------------------------------------------------------------------
 ##############################################################################

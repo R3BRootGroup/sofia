@@ -24,44 +24,43 @@ class TRandom3;
 class R3BSofSciTcal2SingleTcal : public FairTask
 {
 
- public:
-  // --- Default constructor --- //
-  R3BSofSciTcal2SingleTcal();
-  
-  // --- Standard constructor --- //
-  R3BSofSciTcal2SingleTcal(const char* name, Int_t iVerbose=1);
+  public:
+    // --- Default constructor --- //
+    R3BSofSciTcal2SingleTcal();
 
-  // --- Destructor --- // 
-  virtual ~R3BSofSciTcal2SingleTcal();
+    // --- Standard constructor --- //
+    R3BSofSciTcal2SingleTcal(const char* name, Int_t iVerbose = 1);
 
-  virtual InitStatus Init();         
-  virtual void SetParContainers();
-  virtual InitStatus ReInit();
-  virtual void Exec(Option_t* option);
-  virtual void FinishEvent();
-  virtual void FinishTask();
+    // --- Destructor --- //
+    virtual ~R3BSofSciTcal2SingleTcal();
 
-  void SetOnline(Bool_t option) { fOnline = option; }
+    virtual InitStatus Init();
+    virtual void SetParContainers();
+    virtual InitStatus ReInit();
+    virtual void Exec(Option_t* option);
+    virtual void FinishEvent();
+    virtual void FinishTask();
 
- private:
-  TClonesArray*  fTcal;            
-  TClonesArray*  fSingleTcal;         
-  R3BSofSciRawPosPar* fRawPosPar;
+    void SetOnline(Bool_t option) { fOnline = option; }
+
+  private:
+    TClonesArray* fTcal;
+    TClonesArray* fSingleTcal;
+    R3BSofSciRawPosPar* fRawPosPar;
 #ifdef NUMBER_OF_SOFSCI_TOF
-  R3BSofSciRawTofPar* fRawTofPar;
+    R3BSofSciRawTofPar* fRawTofPar;
 #endif
-  
-  Bool_t fOnline; // Don't store data for online
 
-  UInt_t fNumSingleTcal;     
+    Bool_t fOnline; // Don't store data for online
 
-  UInt_t fNevent;
+    UInt_t fNumSingleTcal;
 
-  TRandom rand;
+    UInt_t fNevent;
 
- public:
-  ClassDef(R3BSofSciTcal2SingleTcal, 1)
+    TRandom rand;
 
+  public:
+    ClassDef(R3BSofSciTcal2SingleTcal, 1)
 };
 
-#endif  // R3BSOFSCI_TCAL2SINGLETCAL
+#endif // R3BSOFSCI_TCAL2SINGLETCAL

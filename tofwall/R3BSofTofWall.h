@@ -141,7 +141,7 @@ class R3BSofTofWall : public R3BDetector
                               Double_t eLoss);
 
     /** Adds a SofToFWCalData to the HitCollection
-    **/
+     **/
     R3BSofToFWCalData* AddCalHit(UShort_t ident, UShort_t pmt, Double_t time, Float_t eLoss);
 
     /** Private method ResetParameters

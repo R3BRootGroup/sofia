@@ -28,9 +28,7 @@
 #include "R3BSofMwpcHitData.h"
 #include "R3BSofSciHitData.h"
 
-Double_t const c = 299792458.0;     // Light velocity
-Double_t const e = 1.60217662e-19;  // Electron charge
-Double_t const u = 1.660538921e-27; // Atomic mass unit
+Double_t const c = 29.9792458; // Light velocity
 
 // R3BSofFrsAnalysis: Default Constructor --------------------------
 R3BSofFrsAnalysis::R3BSofFrsAnalysis()
@@ -118,7 +116,7 @@ void R3BSofFrsAnalysis::SetParameter()
     fPosFocalCave = fFrs_Par->GetPosFocalCave();
 
     LOG(INFO) << "R3BSofFrsAnalysis: Dispersion (S2): " << fDispS2 << " [m/per-cent]";
-    LOG(INFO) << "R3BSofFrsAnalysis: Magnification (S2-Cave): " << fMagS2Cave ;
+    LOG(INFO) << "R3BSofFrsAnalysis: Magnification (S2-Cave): " << fMagS2Cave;
     LOG(INFO) << "R3BSofFrsAnalysis: Path length (S2-Cave): " << fPathS2Cave << " [cm]";
     LOG(INFO) << "R3BSofFrsAnalysis: ToF correction (S2-Cave): " << fTOFS2Cave << " [ns]";
     LOG(INFO) << "R3BSofFrsAnalysis: Rho (S0-S2): " << frho_S0_S2;
@@ -233,20 +231,23 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     for (Int_t i = 0; i < nHitSci; i++)
     {
         HitSci[i] = (R3BSofSciHitData*)(fSciHitDataCA->At(i));
-        if (HitSci[i]->GetPaddle() == 1)// Sci at S2
+        if (HitSci[i]->GetSciId() == 2) // Sci at S2
             x_pos_s2 = HitSci[i]->GetX();
         else
-            ToF_S2_Cave = HitSci[i]->GetTof();// Sci at Cave-C
+        {
+            ToF_S2_Cave = HitSci[i]->GetTof(); // Sci at Cave-C
+        }
     }
 
     // Velocity
-    double Beta_S2_Cave = ((fPathS2Cave / (fTOFS2Cave + ToF_S2_Cave)) * pow(10., 7)) / c;
+    double Beta_S2_Cave = (fPathS2Cave / (fTOFS2Cave + ToF_S2_Cave)) / c;
     double Gamma_S2_Cave = 1. / (TMath::Sqrt(1. - (Beta_S2_Cave) * (Beta_S2_Cave)));
 
     // Brho and A/q
-    double Brho_Cave = fBfield_S2_Cave * frho_S2_Cave *
-                       (1. - (((x_pos_cave / 1000.) - fMagS2Cave * (x_pos_s2 / 1000.)) / fDispS2));
-    fAq = (Brho_Cave * e) / (Gamma_S2_Cave * Beta_S2_Cave * c * u);
+    // double deltax =  (x_pos_s2 / 100.) / fDispS2;
+    double deltax = (x_pos_s2 * fMagS2Cave - x_pos_cave) / (fDispS2 * 1000.);
+    double Brho_Cave = fBfield_S2_Cave * frho_S2_Cave * (1.0 + deltax);
+    fAq = Brho_Cave / (3.10716 * Gamma_S2_Cave * Beta_S2_Cave);
 
     // Fill the data
     if (fZ > 1 && fAq > 0. && Brho_Cave > 0.)

@@ -49,8 +49,6 @@ void R3BSofTcalContFact::setAllContainers()
     FairContainer* p2 = new FairContainer("SofToFWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
     p2->addContext("SofTcalParContext");
     containers->Add(p2);
-
-
 }
 
 FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
@@ -71,7 +69,6 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-
 
     return p;
 }

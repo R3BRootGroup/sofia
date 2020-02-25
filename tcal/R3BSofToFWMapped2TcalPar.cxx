@@ -96,11 +96,12 @@ InitStatus R3BSofToFWMapped2TcalPar::Init()
         LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Init() Couldn't get handle on SofToFWTcalPar container";
         return kFATAL;
     }
-    else{
-      fTcalPar->SetNumDetectors(fNumDetectors);
-      fTcalPar->SetNumChannels(fNumChannels);
-      fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
-      fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
+    else
+    {
+        fTcalPar->SetNumDetectors(fNumDetectors);
+        fTcalPar->SetNumChannels(fNumChannels);
+        fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
+        fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
     }
 
     // --- ---------------------- --- //
@@ -163,15 +164,14 @@ void R3BSofToFWMapped2TcalPar::Exec(Option_t* opt)
         // *** SofToFW PmtDown SIGNAL for P28 is 54  *** //
         // *** SofToFW PmtUp SIGNAL for P28 is 55    *** //
         // *** ************************************* *** //
-        UInt_t iSignal = (hit->GetDetector()-1) * fNumChannels + (hit->GetPmt()-1);
+        UInt_t iSignal = (hit->GetDetector() - 1) * fNumChannels + (hit->GetPmt() - 1);
         if ((0 <= iSignal) && (iSignal < fNumSignals))
             fh_TimeFineBin[iSignal]->Fill(hit->GetTimeFine());
         else
             LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Exec() Number of signals out of range: " << iSignal
                        << " instead of [0," << fNumSignals << "] "
-		       << " det = " << hit->GetDetector()
-		       << " fNumChannels = " << fNumChannels
-		       << " pmt = " << hit->GetPmt();
+                       << " det = " << hit->GetDetector() << " fNumChannels = " << fNumChannels
+                       << " pmt = " << hit->GetPmt();
 
     } // end of loop over the number of hits per event in MappedToFW
 }

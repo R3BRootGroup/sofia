@@ -1,7 +1,7 @@
 // *** *************************************************************** *** //
 // ***                  R3BSofSciMapped2Tcal                           *** //
-// *** convert Mapped data to tcal data :
-// *** ---> from the fine and coarse times, calculate a raw time in ns *** //
+// ***    convert Mapped data to tcal data                             *** //
+// ***    from the fine and coarse times, calculate a raw time in ns   *** //
 // *** *************************************************************** *** //
 
 #ifndef R3BSOFSCI_MAPPED2TCAL
@@ -19,59 +19,62 @@ class TRandom3;
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
-#include "FairRuntimeDb.h"
 #include "FairRunOnline.h"
+#include "FairRuntimeDb.h"
 
 // SofSci headers
-#include "R3BSofTcalPar.h"
-#include "R3BSofSciTcalData.h"
 #include "R3BSofSciMappedData.h"
-
+#include "R3BSofSciTcalData.h"
+#include "R3BSofTcalPar.h"
 
 class R3BSofSciMapped2Tcal : public FairTask
 {
 
- public:
-  // --- Default constructor --- //
-  R3BSofSciMapped2Tcal();
-  
-  // --- Standard constructor --- //
-  R3BSofSciMapped2Tcal(const char* name, Int_t iVerbose=1);
+  public:
+    // --- Default constructor --- //
+    R3BSofSciMapped2Tcal();
 
-  // --- Destructor --- // 
-  virtual ~R3BSofSciMapped2Tcal();
+    // --- Standard constructor --- //
+    R3BSofSciMapped2Tcal(const char* name, Int_t iVerbose = 1);
 
-  virtual void Exec(Option_t* option);
+    // --- Destructor --- //
+    virtual ~R3BSofSciMapped2Tcal();
 
-  virtual void SetParContainers();
+    virtual void Exec(Option_t* option);
 
-  virtual InitStatus Init();         
+    virtual void SetParContainers();
 
-  virtual InitStatus ReInit();
+    virtual InitStatus Init();
 
-  virtual void FinishEvent();
+    virtual InitStatus ReInit();
 
-  virtual void FinishTask();
+    virtual void Finish();
 
-  void SetOnline(Bool_t option) {fOnline = option;}
+    /** Virtual method Reset **/
+    virtual void Reset();
 
-  Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
+    void SetOnline(Bool_t option) { fOnline = option; }
 
- private:
-  Bool_t fOnline; // Don't store data for online
+    Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
 
-  TClonesArray*  fMapped;             // input data - SofSci
-  R3BSofTcalPar* fTcalPar;            // tcal parameters container - SofSci
-  TClonesArray*  fTcal;               // output data
-  
-  UInt_t fNumTcal;                    // number of Tcal items per event
-  UInt_t fNevent;
+  private:
+    Bool_t fOnline; // Don't store data for online
 
-  TRandom rand;
+    TClonesArray* fMapped;   // input data - SofSci
+    R3BSofTcalPar* fTcalPar; // tcal parameters container - SofSci
+    TClonesArray* fTcal;     // output data
 
- public:
-  ClassDef(R3BSofSciMapped2Tcal, 1)
+    UInt_t fNumTcal; // number of Tcal items per event
+    UInt_t fNevent;
 
+    TRandom rand;
+
+    /** Private method CalData **/
+    //** Adds a CalData to the detector
+    R3BSofSciTcalData* AddCalData(Int_t iDet, Int_t iCh, Double_t tns);
+
+  public:
+    ClassDef(R3BSofSciMapped2Tcal, 1)
 };
 
-#endif  // R3BSOFSCI_MAPPED2TCAL
+#endif // R3BSOFSCI_MAPPED2TCAL

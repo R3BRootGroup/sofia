@@ -29,8 +29,8 @@
 #include <iostream>
 #include <stdlib.h>
 
-using std::cout;
 using std::cerr;
+using std::cout;
 using std::endl;
 
 #define U_MEV 931.4940954

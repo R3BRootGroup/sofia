@@ -9,20 +9,20 @@
 
 #include <iostream>
 
-#define MAX_RAWPOSPAR 2*NUMBER_OF_SOFSCI_DETECTORS
+#define MAX_RAWPOSPAR 2 * NUMBER_OF_SOFSCI_DETECTORS
 
 using std::cout;
 using std::endl;
 
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, const char* context)
-  : FairParGenericSet(name, title, context)
-  , fNumDetectors(0)
-  , fNumChannels(0)
-  , fNumSignals(0)
-  , fNumParsPerSignal(0)
+    : FairParGenericSet(name, title, context)
+    , fNumDetectors(0)
+    , fNumChannels(0)
+    , fNumSignals(0)
+    , fNumParsPerSignal(0)
 {
-  fAllSignalsRawPosParams = new TArrayF(MAX_RAWPOSPAR);
+    fAllSignalsRawPosParams = new TArrayF(MAX_RAWPOSPAR);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -111,8 +111,8 @@ void R3BSofSciRawPosPar::printParams()
     cout << "--- --------------------------------------------" << endl;
     cout << "--- Single Tcal Parameters :  " << endl;
     cout << "--- --------------------------------------------" << endl;
-    for (Int_t param=0; param < array_size; param++)
-      {
-	cout << "LIMIT " << param << " = " << fAllSignalsRawPosParams->GetAt(param) << endl;
-      }
+    for (Int_t param = 0; param < array_size; param++)
+    {
+        cout << "LIMIT " << param << " = " << fAllSignalsRawPosParams->GetAt(param) << endl;
+    }
 }
