@@ -64,12 +64,12 @@ void R3BSofSciTcal2SingleTcal::SetParContainers()
 InitStatus R3BSofSciTcal2SingleTcal::Init()
 {
 
-    LOG(INFO) << "R3BSofSciTcal2SingleTcal: Init";
+    LOG(INFO) << "R3BSofSciTcal2SingleTcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
     {
-        LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Init() Couldn't instance the FairRootManager";
+        LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Couldn't instance the FairRootManager";
         return kFATAL;
     }
 
@@ -81,11 +81,11 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
     fTcal = (TClonesArray*)rm->GetObject("SofSciTcalData");
     if (!fTcal)
     {
-        LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Init() Couldn't get handle on SofSciTcalData container";
+        LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Couldn't get handle on SofSciTcalData container";
         return kFATAL;
     }
     else
-        LOG(INFO) << "R3BSofSciTcal2SingleTcal::Init() SofSciTcalData items found";
+        LOG(INFO) << "R3BSofSciTcal2SingleTcal::SofSciTcalData items found";
 
     // --- ----------------------- --- //
     // --- OUTPUT SINGLE TCAL DATA --- //
@@ -102,7 +102,7 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
         rm->Register("SofSciSingleTcalData", "SofSci", fSingleTcal, kFALSE);
     }
 
-    LOG(INFO) << "R3BSofSciTcal2SingleTcal::Init() R3BSofSciSingleTcalData items created";
+    LOG(INFO) << "R3BSofSciTcal2SingleTcal::SofSciSingleTcalData items created";
 
     // --- -------------------------- --- //
     // --- CHECK THE TCALPAR VALIDITY --- //
@@ -127,7 +127,7 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
     }
 #endif
 
-    LOG(INFO) << "R3BSofSciTcal2SingleTcal: Init DONE !";
+    LOG(INFO) << "R3BSofSciTcal2SingleTcal::Init DONE";
 
     return kSUCCESS;
 }

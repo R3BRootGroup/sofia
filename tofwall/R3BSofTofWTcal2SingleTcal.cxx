@@ -42,12 +42,12 @@ void R3BSofTofWTcal2SingleTcal::SetParContainers() {}
 InitStatus R3BSofTofWTcal2SingleTcal::Init()
 {
 
-    LOG(INFO) << "R3BSofTofWTcal2SingleTcal: Init";
+    LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
     {
-        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Init() Couldn't instance the FairRootManager";
+        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Couldn't instance the FairRootManager";
         return kFATAL;
     }
 
@@ -58,7 +58,7 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     fToFWTcal = (TClonesArray*)rm->GetObject("SofToFWTcalData");
     if (!fToFWTcal)
     {
-        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Init() Couldn't get handle on SofToFWTcalData container";
+        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Couldn't get handle on SofToFWTcalData container";
         return kFATAL;
     }
 
@@ -69,7 +69,7 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     fSciSingleTcal = (TClonesArray*)rm->GetObject("SofSciSingleTcalData");
     if (!fSciSingleTcal)
     {
-        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Init() Couldn't get handle on SofSciSingleTcalData container";
+        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Couldn't get handle on SofSciSingleTcalData container";
         return kFATAL;
     }
 
@@ -89,7 +89,7 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
         rm->Register("SofToFWSingleTcalData", "SofToFW", fToFWSingleTcal, kFALSE);
     }
 
-    LOG(INFO) << "R3BSofTofWTcal2SingleTcal: Init DONE !";
+    LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init DONE";
 
     return kSUCCESS;
 }
@@ -167,7 +167,7 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
                 {
                     iRawPos = iTraw[d * nChs + 1][0] - iTraw[d * nChs][0]; // Raw position = Tdown - Tup
                     iRawTime = 0.5 * (iTraw[d * nChs][0] + iTraw[d * nChs + 1][0]);
-                    iRawTof = 0.5 * (iRawTime - iRawTime_SofSci);
+                    iRawTof = (iRawTime - iRawTime_SofSci);
                     AddHitData(d + 1, iRawTime, iRawTof, iRawPos);
                 }
             }
