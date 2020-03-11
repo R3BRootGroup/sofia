@@ -304,7 +304,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
                             RawTime[dstop] - RawTime[dstart] + iTraw[dstart * nChs + 2][0] - iTraw[dstop * nChs + 2][0];
                     }
                     else
-                        RawTof[iTof] - 1000000.;
+                        RawTof[iTof] = - 1000000.;
                     fItem->SetRawTofNs(iTof, RawTof[iTof]);
                     iTof++;
                 }
