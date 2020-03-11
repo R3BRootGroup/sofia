@@ -32,7 +32,6 @@ R3BSofTcalPar::~R3BSofTcalPar()
     if (fAllSignalsTcalParams)
     {
         delete fAllSignalsTcalParams;
-        fAllSignalsTcalParams == NULL;
     }
 }
 

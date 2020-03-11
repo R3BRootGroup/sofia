@@ -79,16 +79,6 @@ void R3BSofTofWContFact::activateParIo(FairParIo* io)
 {
     // activates the input/output class for the parameters
     // needed by the tofw
-    /*
-    if (strcmp(io->IsA()->GetName(),"FairParRootFileIo")==0) {
-      R3BSofTofWParRootFileIo* p=new R3BSofTofWParRootFileIo(((FairParRootFileIo*)io)->getParRootFile());
-      io->setDetParIo(p);
-    }
-    if (strcmp(io->IsA()->GetName(),"FairParAsciiFileIo")==0) {
-      R3BSofTofWParAsciiFileIo* p=new R3BSofTofWParAsciiFileIo(((FairParAsciiFileIo*)io)->getFile());
-      io->setDetParIo(p);
-      }
-    */
 }
 
 ClassImp(R3BSofTofWContFact)

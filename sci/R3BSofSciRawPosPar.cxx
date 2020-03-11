@@ -32,7 +32,6 @@ R3BSofSciRawPosPar::~R3BSofSciRawPosPar()
     if (fAllSignalsRawPosParams)
     {
         delete fAllSignalsRawPosParams;
-        fAllSignalsRawPosParams == NULL;
     }
 }
 
