@@ -6,10 +6,7 @@
 #include "FairRuntimeDb.h"
 
 #include "R3BSofSciRawPosPar.h"
-
-#ifdef NUMBER_OF_SOFSCI_TOF
 #include "R3BSofSciRawTofPar.h"
-#endif
 
 #include "TClass.h"
 
@@ -29,17 +26,13 @@ void R3BSofSciContFact::setAllContainers()
 {
     /** Creates the Container objects with all accepted contexts and adds them fto
      *  the list of containers for the STS library.*/
-
     FairContainer* p1 = new FairContainer("SofSciRawPosPar", "Sof Sci RawPos Parameters", "SofSciPosParContext");
     p1->addContext("SofSciPosParContext");
     containers->Add(p1);
 
-#ifdef NUMBER_OF_SOFSCI_TOF
-
     FairContainer* p2 = new FairContainer("SofSciRawTofPar", "Sof Sci RawTof Parameters", "SofSciTofParContext");
     p2->addContext("SofSciTofParContext");
     containers->Add(p2);
-#endif
 }
 
 FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
@@ -56,12 +49,10 @@ FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofSciRawPosPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-#ifdef NUMBER_OF_SOFSCI_TOF
     if (strcmp(name, "SofSciRawTofPar") == 0)
     {
         p = new R3BSofSciRawTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-#endif
     return p;
 }
 

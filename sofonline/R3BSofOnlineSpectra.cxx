@@ -513,7 +513,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
     {
         // SOFIA
         Int_t nHits = fWRItemsSofia->GetEntriesFast();
-        int64_t wrs;
+        int64_t wrs=0.;
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsSofia->At(ihit);
@@ -579,7 +579,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0)
         {
             nHits = fWRItemsMaster->GetEntriesFast();
-            int64_t wrm;
+            int64_t wrm=0.;
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
                 R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsMaster->At(ihit);
