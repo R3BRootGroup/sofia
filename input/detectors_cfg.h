@@ -12,6 +12,16 @@
 #define NUMBER_OF_SOFSCI_TOF (NUMBER_OF_SOFSCI_DETECTORS*(NUMBER_OF_SOFSCI_DETECTORS-1)/2)
 #endif
 
+// --- ------------ --- //
+// --- TRIPLE-MUSIC --- //
+// --- ------------ --- //
+
+#define NbSections_SofTrim         3
+#define NbAnodesPerSection_SofTrim 6
+#define NbTrefPerSection_SofTrim   1
+#define NbTtrigPerSection_SofTrim  1
+
+
 // --- ------------------- --- //
 // --- TIME-OF-FLIGHT WALL --- //
 // --- ------------------- --- //

@@ -599,7 +599,7 @@ void main_online()
         run->AddTask(tofwonline);
     }
 
-    if (fMwpc2 && fTwim && fSci && fTracking)
+    if (fMwpc2 && fTwim && fSci && fTracking && fMusic)
     {
         if(fTofW && fMwpc3){
          R3BSofFragmentAnalysis* TrackingAna = new R3BSofFragmentAnalysis();

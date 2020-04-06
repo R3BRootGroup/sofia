@@ -22,6 +22,7 @@
 #include "R3BSofToFWOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
+#include "R3BSofTrimOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
 #include "R3BWRMasterData.h"
 #include "THttpServer.h"
@@ -74,6 +75,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fCalifaOnline(NULL)
     , fFrsOnline(NULL)
     , fTrackOnline(NULL)
+    , fTrimOnline(NULL)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
@@ -105,6 +107,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fCalifaOnline(NULL)
     , fFrsOnline(NULL)
     , fTrackOnline(NULL)
+    , fTrimOnline(NULL)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
@@ -285,6 +288,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     fTrackOnline = (R3BSofTrackingOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrackingOnlineSpectra");
     if (!fTrackOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTrackingOnlineSpectra not found";
+
+    // Looking for Trim online
+    fTrimOnline = (R3BSofTrimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrimOnlineSpectra");
+    if (!fTrimOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTrimOnlineSpectra not found";
 
     // Create histograms for detectors
     char Name1[255];
@@ -486,6 +494,10 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Tracking histograms if they exist somewhere
     if (fTrackOnline)
         fTrackOnline->Reset_Histo();
+    // Reset Trim histograms if they exist somewhere
+    if (fTrimOnline)
+        fTrimOnline->Reset_Histo();
+
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option)

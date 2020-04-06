@@ -250,8 +250,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
 #ifdef NUMBER_OF_SOFSCI_TOF
     Int_t nTof = 0;
-    Int_t TofMin[NbTof] = { 800, 800, 800, 1045, 1900, 855 };
-    Int_t TofMax[NbTof] = { 900, 900, 900, 1090, 1950, 875 };
+    //    Int_t TofMin[NbTof] = { 800, 800, 800, 1045, 1900, 855 };
+    //    Int_t TofMax[NbTof] = { 900, 900, 900, 1090, 1950, 875 };
     for (Int_t dstart = 0; dstart < NUMBER_OF_SOFSCI_DETECTORS - 1; dstart++)
     {
         for (Int_t dstop = dstart + 1; dstop < NUMBER_OF_SOFSCI_DETECTORS; dstop++)
@@ -284,8 +284,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             sprintf(Name1, "MUSIC_Z_vs_RawTof_Sci%02d_to_Sci%02d", dstart + 1, dstop + 1);
             cMusicZvsRawTof[nTof] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
             sprintf(Name1, "MusZ_vs_RawTof_Sci%02d_to_Sci%02d", dstart + 1, dstop + 1);
-            fh2_MusZvsRawTof[nTof] =
-                new TH2F(Name1, Name1, 10 * (TofMax[nTof] - TofMin[nTof]), TofMin[nTof], TofMax[nTof], 1200, 6, 40);
+            fh2_MusZvsRawTof[nTof] =  new TH2F(Name1, Name1, 1200 , 800, 2000, 1200, 6, 40);
+            //fh2_MusZvsRawTof[nTof] =  new TH2F(Name1, Name1, 10 * (TofMax[nTof] - TofMin[nTof]), TofMin[nTof], TofMax[nTof], 1200, 6, 40);
             fh2_MusZvsRawTof[nTof]->GetXaxis()->SetTitle("Raw-ToF-Cave-C [ns]");
             fh2_MusZvsRawTof[nTof]->GetYaxis()->SetTitle("Charge (Z)");
             fh2_MusZvsRawTof[nTof]->GetYaxis()->SetTitleOffset(1.1);
