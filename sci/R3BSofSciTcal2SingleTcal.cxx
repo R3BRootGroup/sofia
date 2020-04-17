@@ -351,12 +351,9 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
                     mult_selectHits[d]++;
                 } // end of loop over the hits of the left PMTs
             }     // end of loop over the hits of the right PMTs
-            for (UShort_t d = 0; d < nDets; d++)
-            {
-                fItem->SetRawTimeNs(d + 1, RawTime[d]);
-                fItem->SetRawPosNs(d + 1, RawPos[d]);
-                fItem->SetMultPerDet(d + 1, mult_selectHits[d]);
-            }
+	    fItem->SetRawTimeNs(d + 1, RawTime[d]);
+	    fItem->SetRawPosNs(d + 1, RawPos[d]);
+	    fItem->SetMultPerDet(d + 1, mult_selectHits[d]);
         }
 #endif // NUMBER_OF_SOFSCI_DETECTORS==1
 

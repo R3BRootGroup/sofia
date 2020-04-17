@@ -503,6 +503,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                     if (d == 1)
                         xs2 = hitsingletcal->GetRawPosNs(d + 1) * slope_calib;
                 }
+#ifdef NUMBER_OF_SOFSCI_TOF
                 for (UShort_t t = 0; t < NbTof; t++)
                 {
                     fh1_RawTof_AtSingleTcal_wTref[t]->Fill(hitsingletcal->GetRawTofNs(t));
@@ -521,6 +522,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
 
                     } // end of if MUSICZ>0
                 }
+#endif
             }
         }
 
