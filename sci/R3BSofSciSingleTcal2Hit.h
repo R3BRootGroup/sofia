@@ -9,22 +9,23 @@
 #include "FairTask.h"
 #include "R3BSofSciHitData.h"
 #include "R3BSofSciSingleTcalData.h"
+#include "R3BSofSciRawTofPar.h"
 #include <TRandom.h>
 
 class TClonesArray;
 
-class R3BSofSciSingleTCal2Hit : public FairTask
+class R3BSofSciSingleTcal2Hit : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofSciSingleTCal2Hit();
+    R3BSofSciSingleTcal2Hit();
 
     /** Standard constructor **/
-    R3BSofSciSingleTCal2Hit(const char* name, Int_t iVerbose = 1);
+    R3BSofSciSingleTcal2Hit(const char* name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofSciSingleTCal2Hit();
+    virtual ~R3BSofSciSingleTcal2Hit();
 
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
@@ -35,6 +36,8 @@ class R3BSofSciSingleTCal2Hit : public FairTask
     // Fair specific
     /** Virtual method Init **/
     virtual InitStatus Init();
+
+    virtual void SetParContainers();
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
@@ -55,8 +58,9 @@ class R3BSofSciSingleTCal2Hit : public FairTask
     Double_t fTof;
     Double_t fOffsetTof;
 
-    TClonesArray* fTCalDataCA; /**< Array with Cal input data. >*/
+    TClonesArray* fSingleTcalDataCA; /**< Array with SingleTcal input data. >*/
     TClonesArray* fHitDataCA;  /**< Array with Hit output data. >*/
+    R3BSofSciRawTofPar* fRawTofPar;
 
     /** Private method AddHitData **/
     // Adds a SofSciHitData to the HitCollection
@@ -64,7 +68,7 @@ class R3BSofSciSingleTCal2Hit : public FairTask
 
   public:
     // Class definition
-    ClassDef(R3BSofSciSingleTCal2Hit, 1)
+    ClassDef(R3BSofSciSingleTcal2Hit, 1)
 };
 
 #endif

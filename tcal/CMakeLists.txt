@@ -13,7 +13,6 @@ ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/tcal
-${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -28,8 +27,8 @@ R3BSofTcalPar.cxx
 R3BSofTcalContFact.cxx
 R3BSofSciMapped2TcalPar.cxx
 R3BSofSciMapped2Tcal.cxx
-R3BSofToFWMapped2TcalPar.cxx
-R3BSofToFWMapped2Tcal.cxx
+R3BSofTofWMapped2TcalPar.cxx
+R3BSofTofWMapped2Tcal.cxx
 R3BSofiaProvideTStart.cxx
 )
 

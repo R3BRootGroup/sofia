@@ -5,7 +5,7 @@
 #pragma link off all functions;
 
 #pragma link C++ class R3BSofSciReader + ;
-#pragma link C++ class R3BSofToFWReader + ;
+#pragma link C++ class R3BSofTofWReader + ;
 #pragma link C++ class R3BSofTwimReader + ;
 #pragma link C++ class R3BSofTrimReader + ;
 #pragma link C++ class R3BSofMwpcReader + ;

@@ -4,8 +4,6 @@
 #include "R3BReader.h"
 #include "TClonesArray.h"
 
-#include "detectors_cfg.h"
-
 struct EXT_STR_h101_SOFSCI_t;
 typedef struct EXT_STR_h101_SOFSCI_t EXT_STR_h101_SOFSCI;
 class FairLogger;
@@ -14,6 +12,7 @@ class R3BSofSciReader : public R3BReader
 {
   public:
     R3BSofSciReader(EXT_STR_h101_SOFSCI*, UInt_t);
+    R3BSofSciReader(EXT_STR_h101_SOFSCI*, UInt_t, Int_t);
     ~R3BSofSciReader();
 
     Bool_t Init(ext_data_struct_info*);
@@ -33,6 +32,7 @@ class R3BSofSciReader : public R3BReader
     /* the structs of type R3BSofSciMapped Item */
     TClonesArray* fArray; /**< Output array. */
     UInt_t fNumEntries;
+    Int_t fNumSci;
 
   public:
     ClassDef(R3BSofSciReader, 0);

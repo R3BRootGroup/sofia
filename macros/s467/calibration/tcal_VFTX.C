@@ -15,7 +15,7 @@ void tcal_VFTX()
   // *********************************** //
   // PLEASE CHANGE THE EXPERIMENT NUMBER //
   // *********************************** //
-  const Int_t expId = 444;               // 
+  const Int_t expId = 467;               // 
   // *********************************** //  
   
 
@@ -29,7 +29,7 @@ void tcal_VFTX()
     NumSofSci = 1; // s444: PRIMARY BEAM EXP, 1 SofSci at CAVE C ONLY
 
     //filename = "--stream=lxir123:7803";
-    filename = "/lustre/land/202002_s444/lustre/r3b/202002_s444/main004*_0001.lmd";
+    filename = "/lustre/land/202002_s444/stitched/main004*_0001.lmd";
 
     upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
     // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
@@ -40,7 +40,7 @@ void tcal_VFTX()
     NumSofSci = 4; // s467: SECONDARY BEAM EXP, 2 at S2, 1 at S8, 1 at CAVE C
 
     //filename = "--stream=lxir123:7803";
-    filename = "/lustre/land/202002_s467/lustre/r3b/202002_s444/main0341_0001.lmd";
+    filename = "/lustre/land/202002_s467/stitched/main0341_0001.lmd";
 
     upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
     // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers

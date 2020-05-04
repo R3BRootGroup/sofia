@@ -654,10 +654,10 @@ nSignalsTcalPar:  Int_t  3
 nTcalParsPerSignal:  Int_t  1000 
 ##############################################################################
 ##############################################################################
-# Class:   SofToFWTcalPar
+# Class:   SofTofWTcalPar
 # Context: SofTcalParContext
 ##############################################################################
-[SofToFWTcalPar]
+[SofTofWTcalPar]
 //----------------------------------------------------------------------------
 TcalPar:  Float_t \
   0 0 0 0 0 0 0 0 0 0  \
@@ -6277,3 +6277,19 @@ nDetectorsRawPosPar:  Int_t  1
 nChannelsRawPosPar:  Int_t  3 
 nSignalsRawPosPar:  Int_t  1 
 nRawPosParsPerSignal:  Int_t  2 
+##############################################################################
+##############################################################################
+# Class:   SofSciRawTofPar
+# Context: SofSciTofParContext
+##############################################################################
+[SofSciRawTofPar]
+//----------------------------------------------------------------------------
+RawTofPar:  Float_t \
+  
+nDetsRawTofPar:  Int_t  1 
+nChannelsRawTofPar:  Int_t  3 
+idDetS2:  Int_t  0 
+idDetS8:  Int_t  0 
+idDetCaveC:  Int_t  1 
+nSignalsRawTofPar:  Int_t  0 
+nRawTofParsPerSignal:  Int_t  2 

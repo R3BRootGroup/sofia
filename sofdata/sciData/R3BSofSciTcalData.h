@@ -21,9 +21,9 @@ class R3BSofSciTcalData : public TObject
     inline const Double_t& GetRawTimeNs() const { return fRawTimeNs; }
 
   private:
-    UShort_t fDetector; // 1..n (2014, n=2, 1=S2, 2=Cave C)
-    UShort_t fPmt;      // 1..3
-    Double_t fRawTimeNs;
+    UShort_t fDetector;  // 1..n (2014, n=2, 1=S2, 2=Cave C)
+    UShort_t fPmt;       // 1..3
+    Double_t fRawTimeNs; // (5*coarse_time - fine_time)
 
   public:
     ClassDef(R3BSofSciTcalData, 2)

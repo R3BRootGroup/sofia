@@ -46,7 +46,7 @@ void R3BSofTcalContFact::setAllContainers()
     // --- ----------------------- --- //
     // --- for time-of-flight wall --- //
     // --- ----------------------- --- //
-    FairContainer* p2 = new FairContainer("SofToFWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
+    FairContainer* p2 = new FairContainer("SofTofWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
     p2->addContext("SofTcalParContext");
     containers->Add(p2);
 }
@@ -65,7 +65,7 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "SofToFWTcalPar") == 0)
+    if (strcmp(name, "SofTofWTcalPar") == 0)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }

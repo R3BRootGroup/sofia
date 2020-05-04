@@ -8,8 +8,6 @@
 #include "TObject.h"
 #include <TObjString.h>
 
-#include "detectors_cfg.h"
-
 class FairParamList;
 
 class R3BSofSciRawPosPar : public FairParGenericSet
@@ -37,15 +35,15 @@ class R3BSofSciRawPosPar : public FairParGenericSet
     void printParams();
 
     /** Accessor functions **/
-    const Double_t GetNumDetectors() { return fNumDetectors; }
-    const Double_t GetNumChannels() { return fNumChannels; }
-    const Double_t GetNumSignals() { return fNumSignals; }
-    const Double_t GetNumParsPerSignal() { return fNumParsPerSignal; }
+    const Int_t GetNumDets() { return fNumDets; }
+    const Int_t GetNumPmts() { return fNumPmts; }
+    const Int_t GetNumSignals() { return fNumSignals; }
+    const Int_t GetNumParsPerSignal() { return fNumParsPerSignal; }
     TArrayF* GetAllSignalsTcalParams() { return fAllSignalsRawPosParams; }
     Double_t GetSignalTcalParams(UInt_t rank) { return (Double_t)fAllSignalsRawPosParams->GetAt(rank); }
 
-    void SetNumDetectors(Int_t ndets) { fNumDetectors = ndets; }
-    void SetNumChannels(Int_t nchs) { fNumChannels = nchs; }
+    void SetNumDets(Int_t ndets) { fNumDets = ndets; }
+    void SetNumPmts(Int_t nchs) { fNumPmts = nchs; }
     void SetNumSignals(Int_t ndets) { fNumSignals = ndets; }
     void SetNumParsPerSignal(Int_t npars) { fNumParsPerSignal = npars; }
     void SetSignalParams(Double_t parval, UInt_t rank) { fAllSignalsRawPosParams->AddAt(parval, rank); }
@@ -54,9 +52,9 @@ class R3BSofSciRawPosPar : public FairParGenericSet
 
   private:
     TArrayF* fAllSignalsRawPosParams; // Calibration Parameters for all signals of one detector
-    Int_t fNumChannels;               // number of detectors
-    Int_t fNumDetectors;              // number of channels of SofSciTcal data = 3 (need for Tcal2SingleTcal)
-    Int_t fNumSignals;                // =fNumDetectors if RawPos
+    Int_t fNumDets;              // number of detectors
+    Int_t fNumPmts;         // number of channels of SofSciTcal data = 3 (need for Tcal2SingleTcal)
+    Int_t fNumSignals;          // =fNumDets if RawPos
     Int_t fNumParsPerSignal;
     const R3BSofSciRawPosPar& operator=(const R3BSofSciRawPosPar&); /*< an assignment operator>*/
 

@@ -23,27 +23,27 @@
 #include <iostream>
 #include <stdlib.h>
 
-// for the engineering run (fNumDetectors(1) instead of fNumDetectors(2)
+// for the engineering run (fNumSci(1) instead of fNumSci(2)
 
 // R3BSofSciMapped2TcalPar: Default Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar()
     : FairTask("R3BSofSciMapped2TcalPar", 1)
-    , fNumDetectors(NUMBER_OF_SOFSCI_DETECTORS)
-    , fNumChannels(NUMBER_OF_SOFSCI_CHANNELS)
+    , fNumSci(2)
+    , fNumChannels(3)
     , fNumTcalParsPerSignal(1000)
     , fMinStatistics(0)
     , fMapped(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 {
-    fNumSignals = fNumDetectors * fNumChannels;
+    fNumSignals = fNumSci * fNumChannels;
 }
 
 // R3BSofSciMapped2TcalPar: Standard Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fNumDetectors(NUMBER_OF_SOFSCI_DETECTORS)
-    , fNumChannels(NUMBER_OF_SOFSCI_CHANNELS)
+    , fNumSci(2)
+    , fNumChannels(3)
     , fNumTcalParsPerSignal(1000)
     , fMinStatistics(0)
     , fMapped(NULL)
@@ -51,7 +51,7 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbos
     , fOutputFile(NULL)
 
 {
-    fNumSignals = fNumDetectors * fNumChannels;
+    fNumSignals = fNumSci * fNumChannels;
 }
 
 // R3BSofSciMapped2TcalPar: Destructor ----------------------------------------
@@ -103,9 +103,9 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     }
     else
     {
-        fTcalPar->SetNumDetectors(fNumDetectors);
+        fTcalPar->SetNumDetectors(fNumSci);
         fTcalPar->SetNumChannels(fNumChannels);
-        fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
+        fTcalPar->SetNumSignals(fNumSci, fNumChannels);
         fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
     }
 
@@ -121,7 +121,7 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     char name[100];
     fh_TimeFineBin = new TH1F*[fNumSignals];
     fh_TimeFineNs = new TH1F*[fNumSignals];
-    for (Int_t det = 0; det < fNumDetectors; det++)
+    for (Int_t det = 0; det < fNumSci; det++)
     {
         for (Int_t ch = 0; ch < fNumChannels; ch++)
         {

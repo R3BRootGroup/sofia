@@ -9,19 +9,23 @@
 
 #include <iostream>
 
-#define MAX_RAWTOFPAR 2 * (NUMBER_OF_SOFSCI_DETECTORS - 1)
-
 using std::cout;
 using std::endl;
+
+#define MAX_RAWTOFPAR 10
 
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
-    , fFirstStaSci(1)
-    , fNumSignals(NUMBER_OF_SOFSCI_DETECTORS - 1)
+    , fNumDets(1)
+    , fNumChannels(3)
+    , fDetIdCaveC(1)
+    , fDetIdS2(0)
+    , fDetIdS8(0)
     , fNumParsPerSignal(2)
 {
-    fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
+  fNumSignals = fNumDets-1;
+  fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -56,7 +60,11 @@ void R3BSofSciRawTofPar::putParams(FairParamList* list)
     fAllSignalsRawTofParams->Set(array_size);
 
     list->add("RawTofPar", *fAllSignalsRawTofParams);
-    list->add("selectionFirstStart", fFirstStaSci);
+    list->add("nDetsRawTofPar", fNumDets);
+    list->add("nChannelsRawTofPar", fNumChannels);
+    list->add("idDetS2", fDetIdS2);
+    list->add("idDetS8", fDetIdS8);
+    list->add("idDetCaveC", fDetIdCaveC);
     list->add("nSignalsRawTofPar", fNumSignals);
     list->add("nRawTofParsPerSignal", fNumParsPerSignal);
 }
@@ -69,7 +77,23 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
     {
         return kFALSE;
     }
-    if (!list->fill("selectionFirstStart", &fFirstStaSci))
+    if (!list->fill("nDetsRawTofPar", &fNumDets))
+    {
+        return kFALSE;
+    }
+    if (!list->fill("nChannelsRawTofPar", &fNumChannels))
+    {
+        return kFALSE;
+    }
+    if (!list->fill("idDetCaveC", &fDetIdCaveC))
+    {
+        return kFALSE;
+    }
+    if (!list->fill("idDetS2", &fDetIdS2))
+    {
+        return kFALSE;
+    }
+    if (!list->fill("idDetS8", &fDetIdS8))
     {
         return kFALSE;
     }

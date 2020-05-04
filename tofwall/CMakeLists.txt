@@ -14,7 +14,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/tofwall
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
-${R3BSOF_SOURCE_DIR}/input
+${R3BSOF_SOURCE_DIR}/sci
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -30,9 +30,9 @@ R3BSofTofWall.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofTofWContFact.cxx
 R3BSofTofWTcal2SingleTcal.cxx
-R3BSofTofWHitPar.cxx
 R3BSofTofWTcal2HitPar.cxx
 R3BSofTofWTCal2Hit.cxx
+R3BSofTofWHitPar.cxx
 )
 
 # fill list of header files from list of source files

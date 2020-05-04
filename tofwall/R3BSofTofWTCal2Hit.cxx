@@ -16,7 +16,7 @@
 #include <iomanip>
 
 // TofW headers
-#include "R3BSofToFWSingleTcalData.h"
+#include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWHitData.h"
 #include "R3BSofTofWTCal2Hit.h"
 
@@ -182,7 +182,7 @@ InitStatus R3BSofTofWTCal2Hit::Init()
         return kFATAL;
     }
 
-    fTCalDataCA = (TClonesArray*)rootManager->GetObject("SofToFWSingleTcalData");
+    fTCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
     if (!fTCalDataCA)
     {
         return kFATAL;
@@ -219,15 +219,15 @@ void R3BSofTofWTCal2Hit::Exec(Option_t* option)
         return;
 
     // Data from cal level
-    R3BSofToFWSingleTcalData** calDat;
-    calDat = new R3BSofToFWSingleTcalData*[nHits];
+    R3BSofTofWSingleTcalData** calDat;
+    calDat = new R3BSofTofWSingleTcalData*[nHits];
     Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0.;
 
     if (nHits == 1)
         for (Int_t i = 0; i < nHits; i++)
         {
-            calDat[i] = (R3BSofToFWSingleTcalData*)(fTCalDataCA->At(i));
+            calDat[i] = (R3BSofTofWSingleTcalData*)(fTCalDataCA->At(i));
             fPaddleId = calDat[i]->GetDetector();
             tofw = calDat[i]->GetRawTofNs();
             AddHitData(fPaddleId,

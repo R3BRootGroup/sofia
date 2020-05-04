@@ -18,17 +18,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "detectors_cfg.h"
-
-#define NbDetectors NUMBER_OF_SOFSCI_DETECTORS
-#define NbChannels NUMBER_OF_SOFSCI_CHANNELS
-
-#ifdef NUMBER_OF_SOFSCI_TOF
-#define NbTof NUMBER_OF_SOFSCI_TOF
-#else
-#define NbTof 0
-#endif
-
 class TClonesArray;
 class R3BEventHeader;
 
@@ -95,6 +84,16 @@ class R3BSofSciOnlineSpectra : public FairTask
     /** Virtual method Reset **/
     virtual void Reset();
 
+    void SetNbDetectors(Int_t ndets) {fNbDetectors = ndets;}
+    void SetNbChannels(Int_t nchs) {fNbChannels = nchs;}
+    void SetIdS2(Int_t id) {fIdS2 = id;}
+    void SetIdS8(Int_t id) {fIdS8 = id;}
+    Int_t GetNbDetectors() {return fNbDetectors;}
+    Int_t GetNbChannels() {return fNbChannels;}
+    Int_t GetIdS2() {return fIdS2;}
+    Int_t GetIdS8() {return fIdS8;}
+
+
   private:
     TClonesArray* fMappedItemsSci;     /**< Array with mapped items. */
     TClonesArray* fTcalItemsSci;       /**< Array with tcal items. */
@@ -103,45 +102,53 @@ class R3BSofSciOnlineSpectra : public FairTask
     TClonesArray* fMusCalItems;        /**< Array with MUSIC Cal items. */
     TClonesArray* fCalItemsMwpc0;      /**< Array with cal items of mwpc0. */
     TClonesArray* fTofwHitData;
+    
+    Int_t fNbDetectors;
+    Int_t fNbChannels;
+    Int_t fIdS2;
+    Int_t fIdS8;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
-    TCanvas* cSciMult[NbDetectors];
-    TCanvas* cSciRawPos[NbDetectors];
-    TCanvas* cMusicZvsRawPos[NbDetectors];
-#ifdef NUMBER_OF_SOFSCI_TOF
-    TCanvas* cSciRawTof[NbTof];
-    TCanvas* cMusicZvsRawTof[NbTof];
-    TCanvas* cAqvsq;
-#endif
+    TCanvas** cSciMult;                // [fNbDetectors];
+    TCanvas** cSciRawPos;              // [fNbDetectors];
+    TCanvas** cMusicZvsRawPos;         // [fNbDetectors];
+    TCanvas*  cMwpc0vsRawPos;
+    TCanvas*  cMusicDTvsRawPos;
+    TCanvas** cSciRawTof_FromS2;       // [fNbDetectors];
+    TCanvas** cMusicZvsRawTof_FromS2;  // [fNbDetectors];
+    TCanvas** cSciRawTof_FromS8;       // [fNbDetectors];
+    TCanvas** cMusicZvsRawTof_FromS8;  // [fNbDetectors];
+    TCanvas*  cAqvsq;
 
     // Histograms for Mapped data : Fine Time and Mult
-    TH1I* fh1_finetime[NbDetectors * NbChannels];
-    TH2I* fh2_mult[NbDetectors];
+    TH1I** fh1_finetime;   // [fNbDetectors * NbChannels];
+    TH2I** fh2_mult;       // [fNbDetectors];
 
     // Histograms for PosRaw Data at Tcal and SingleTcal
-    TH1F* fh1_RawPos_AtTcalMult1[NbDetectors];
-    TH1F* fh1_RawPos_AtSingleTcal[NbDetectors];
-#ifdef NUMBER_OF_SOFSCI_TOF
-    TH1D* fh1_RawTof_AtTcalMult1[NbTof];
-    TH1D* fh1_RawTof_AtTcalMult1_wTref[NbTof];
-    TH1D* fh1_RawTof_AtSingleTcal_wTref[NbTof];
-#endif
-    //    TH1F * fh1_RawPos_AtSingleTcal[NbDetectors];
+    TH1F** fh1_RawPos_AtTcalMult1;  // [fNbDetectors];
+    TH1F** fh1_RawPos_AtSingleTcal; // [fNbDetectors];
+
+    TH1D** fh1_RawTof_FromS2_AtTcalMult1;        // [fNbDetectors];
+    TH1D** fh1_RawTof_FromS2_AtTcalMult1_wTref;  // [fNbDetectors];
+    TH1D** fh1_RawTof_FromS2_AtSingleTcal_wTref; // [fNbDetectors];
+
+    TH1D** fh1_RawTof_FromS8_AtTcalMult1;        // [fNbDetectors];
+    TH1D** fh1_RawTof_FromS8_AtTcalMult1_wTref;  // [fNbDetectors];
+    TH1D** fh1_RawTof_FromS8_AtSingleTcal_wTref; // [fNbDetectors];
 
     // Histogram for correlation with R3B-Music
-    TH2F* fh2_MusZvsRawPos[NbDetectors];
-    TH2F* fh2_MusDTvsRawPos;
-#ifdef NUMBER_OF_SOFSCI_TOF
-    TH2F* fh2_MusZvsRawTof[NbTof];
-    TH2F* fh2_Aqvsq;
-#endif
+    TH2F** fh2_MusZvsRawPos;          //[fNbDetectors];
+    TH2F*  fh2_MusDTvsRawPos;
+    TH2F** fh2_MusZvsRawTof_FromS2;   //[fNbDetectors];
+    TH2F** fh2_MusZvsRawTof_FromS8;   //[fNbDetectors];
+    TH2F*  fh2_Aqvsq;
 
     // Histogram for correlation with Mwpc0
-    TH2F* fh2_Mwpc0vsRawPos;
+    TH2F*  fh2_Mwpc0vsRawPos;
 
     // check how many raw pos found
 

@@ -4,7 +4,6 @@
 #include "TObject.h"
 #include "FairLogger.h"
 
-#include "detectors_cfg.h"
 
 
 class R3BSofSciSingleTcalData : public TObject
@@ -12,34 +11,36 @@ class R3BSofSciSingleTcalData : public TObject
   public:
     // Default Constructor
     R3BSofSciSingleTcalData();
+    R3BSofSciSingleTcalData(UShort_t d, Double_t t, Double_t p, Double_t tS2, Double_t tS8);
 
     // Destructor
     virtual ~R3BSofSciSingleTcalData() {}
 
     // Getters
-    inline const Double_t& GetRawTimeNs(UShort_t det) const { return fRawTimeNs[det-1]; }
-    inline const Double_t& GetRawPosNs(UShort_t det)  const { return fRawPosNs[det-1]; }
-#ifdef NUMBER_OF_SOFSCI_TOF
-    inline const Double_t& GetRawTofNs(UShort_t rank) const { return fRawTofNs[rank];}
-#endif
+    inline const UShort_t& GetDetector() const { return fDetector; }
+    inline const Double_t& GetRawTimeNs() const { return fRawTimeNs; }
+    inline const Double_t& GetRawPosNs()  const { return fRawPosNs; }
+    inline const Double_t& GetRawTofNs_FromS2()  const { return fS2RawTofNs;}
+    inline const Double_t& GetRawTofNs_FromS8()  const { return fS8RawTofNs;}
 
     // Modifiers
-    void SetRawTimeNs(UShort_t det, Double_t time)  {fRawTimeNs[det-1]=time;}
-    void SetRawPosNs(UShort_t det, Double_t pos)    {fRawPosNs[det-1]=pos;}
-    void SetMultPerDet(UShort_t det, UShort_t m)    {fMultPerDet[det-1]=m;}
-#ifdef NUMBER_OF_SOFSCI_TOF
-    void SetRawTofNs(UShort_t rank, Double_t tof)   {fRawTofNs[rank]=tof;} 
-    void SetMultPerToF(UShort_t rank, UShort_t m)    {fMultPerDet[rank]=m;} 
-#endif
+    void SetDetector(UShort_t det)    {fDetector = det;}
+    void SetRawTimeNs(Double_t time)  {fRawTimeNs=time;}
+    void SetRawPosNs(Double_t pos)    {fRawPosNs=pos;}
+    void SetS2RawTofNs(Double_t tof)   {fS2RawTofNs=tof;} 
+    void SetS8RawTofNs(Double_t tof)   {fS8RawTofNs=tof;} 
 
   private:
-    Double_t fRawTimeNs[NUMBER_OF_SOFSCI_DETECTORS];           // 0.5*(Tleft + Tright)
-    Double_t fRawPosNs[NUMBER_OF_SOFSCI_DETECTORS];            // Tleft - Tright
-    UShort_t fMultPerDet[NUMBER_OF_SOFSCI_DETECTORS];        // number of hits with the proper pos 
-#ifdef NUMBER_OF_SOFSCI_TOF
-    Double_t fRawTofNs[NUMBER_OF_SOFSCI_TOF];
-    UShort_t fMultPerTof[NUMBER_OF_SOFSCI_TOF];              // number of hits with the proper tof 
-#endif
+    UShort_t fDetector;
+    Double_t fRawTimeNs;           // 0.5*(TrawRIGHT + TrawLEFT)
+    Double_t fRawPosNs;            //      TrawRIGHT - TrawLEFT        
+    Double_t fS2RawTofNs;
+    Double_t fS8RawTofNs;
+    // Remark for fRawPosNs:
+    //    * TrawRIGHT = 5*CCright - FTright
+    //    * TrawLEFT  = 5*CCleft  - FTleft
+    //    * fRawPosNs = TrawRIGHT - TrawLEFT = 5*(CCright-CCleft) + (FTleft-FTright) 
+    //                  x is increasing from right to left
   public:
     ClassDef(R3BSofSciSingleTcalData, 2)
 };

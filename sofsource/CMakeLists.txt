@@ -11,7 +11,6 @@ ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata/wrData
 ${R3BSOF_SOURCE_DIR}/sofsource
 ${R3BSOF_SOURCE_DIR}/sofdata
-${R3BSOF_SOURCE_DIR}/input
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/trimData
@@ -30,7 +29,7 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 R3BSofWhiterabbitReader.cxx
 R3BSofSciReader.cxx
-R3BSofToFWReader.cxx
+R3BSofTofWReader.cxx
 R3BSofTwimReader.cxx
 R3BSofTrimReader.cxx
 R3BSofMwpcReader.cxx

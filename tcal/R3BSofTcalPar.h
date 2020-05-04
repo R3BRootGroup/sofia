@@ -55,8 +55,8 @@ class R3BSofTcalPar : public FairParGenericSet
 
   private:
     TArrayF* fAllSignalsTcalParams; // Calibration Parameters for all signals of one detector
-    Int_t fNumDetectors;            // number of detectors (=2 for Sci, =28 for ToFW, =1 for Trim, =2 for Twim)
-    Int_t fNumChannels;             // number of channels  (=3 for Sci, =2 for ToFW, =6 for Twim, =16 for Twim)
+    Int_t fNumDetectors;            // number of detectors (=2 for Sci, =28 for TofW)
+    Int_t fNumChannels;             // number of channels  (=3 for Sci, =2 for TofW)
     Int_t fNumSignals;              // =fNumDetectors * fNumChannels
     Int_t fNumTcalParsPerSignal;
     const R3BSofTcalPar& operator=(const R3BSofTcalPar&); /*< an assignment operator>*/

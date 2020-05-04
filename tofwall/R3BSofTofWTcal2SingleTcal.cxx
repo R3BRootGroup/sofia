@@ -1,23 +1,37 @@
 #include "R3BSofTofWTcal2SingleTcal.h"
 
 #include "R3BSofSciSingleTcalData.h"
-#include "R3BSofToFWSingleTcalData.h"
-#include "R3BSofToFWTcalData.h"
+#include "R3BSofTofWSingleTcalData.h"
+#include "R3BSofTofWTcalData.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
-#include "detectors_cfg.h"
 
 R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal()
     : FairTask("R3BSofTofWTcal2SingleTcal", 1)
     , fSciSingleTcal(NULL)
-    , fToFWTcal(NULL)
-    , fToFWSingleTcal(NULL)
+    , fTofWTcal(NULL)
+    , fTofWSingleTcal(NULL)
+    , fSciRawTofPar(NULL)
     , fOnline(kFALSE)
     , fNevent(0)
+    , fNumPaddles(28)
+    , fNumPmts(2)
+{
+}
+R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal(Int_t nPaddles, Int_t nPmts)
+    : FairTask("R3BSofTofWTcal2SingleTcal", 1)
+    , fSciSingleTcal(NULL)
+    , fTofWTcal(NULL)
+    , fTofWSingleTcal(NULL)
+    , fSciRawTofPar(NULL)
+    , fOnline(kFALSE)
+    , fNevent(0)
+    , fNumPaddles(nPaddles)
+    , fNumPmts(nPmts)
 {
 }
 
@@ -27,17 +41,31 @@ R3BSofTofWTcal2SingleTcal::~R3BSofTofWTcal2SingleTcal()
     {
         delete fSciSingleTcal;
     }
-    if (fToFWTcal)
+    if (fTofWTcal)
     {
-        delete fToFWTcal;
+        delete fTofWTcal;
     }
-    if (fToFWSingleTcal)
+    if (fTofWSingleTcal)
     {
-        delete fToFWSingleTcal;
+        delete fTofWSingleTcal;
     }
 }
 
-void R3BSofTofWTcal2SingleTcal::SetParContainers() {}
+void R3BSofTofWTcal2SingleTcal::SetParContainers() {
+  
+  fSciRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
+  if (!fSciRawTofPar)
+    {
+      LOG(ERROR)
+	<< "R3BSofTofWTcal2SingleTcal::SetParContainers() : Could not get access to SofSciRawTofPar-Container.";
+      return;
+    }
+  else
+    LOG(INFO) << "R3BSofTofWTcal2SingleTcal::SetParContainers() : SofSciRawTofPar-Container found with "
+	      << fSciRawTofPar->GetNumSignals() << " signals"; 
+  
+  
+}
 
 InitStatus R3BSofTofWTcal2SingleTcal::Init()
 {
@@ -55,10 +83,10 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     // --- INPUT TCAL DATA FROM ToF WALL --- //
     // --- ----------------------------- --- //
 
-    fToFWTcal = (TClonesArray*)rm->GetObject("SofToFWTcalData");
-    if (!fToFWTcal)
+    fTofWTcal = (TClonesArray*)rm->GetObject("SofTofWTcalData");
+    if (!fTofWTcal)
     {
-        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Couldn't get handle on SofToFWTcalData container";
+        LOG(ERROR) << "R3BSofTofWTcal2SingleTcal::Couldn't get handle on SofTofWTcalData container";
         return kFATAL;
     }
 
@@ -78,15 +106,15 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     // --- ----------------------- --- //
 
     // Register output array in tree
-    fToFWSingleTcal = new TClonesArray("R3BSofToFWSingleTcalData", 10);
+    fTofWSingleTcal = new TClonesArray("R3BSofTofWSingleTcalData", 10);
 
     if (!fOnline)
     {
-        rm->Register("SofToFWSingleTcalData", "SofToFW", fToFWSingleTcal, kTRUE);
+        rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, kTRUE);
     }
     else
     {
-        rm->Register("SofToFWSingleTcalData", "SofToFW", fToFWSingleTcal, kFALSE);
+        rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, kFALSE);
     }
 
     LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init DONE";
@@ -106,72 +134,70 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
     // Reset entries in output arrays, local arrays
     Reset();
 
-    int nDets = int(NUMBER_OF_SOFTOFW_PLASTICS);
-    int nChs = int(NUMBER_OF_SOFTOFW_PMTS_PER_PLASTIC);
-    UShort_t iDet; // 0-based
-    UShort_t iCh;  // 0-based
-    Double_t iTraw[nDets * nChs][16];
-    UShort_t mult[nDets * nChs];
+    UShort_t iDet;  // 0-based
+    UShort_t iPmt;  // 0-based
+    Double_t iTraw[fNumPaddles * fNumPmts][16];
+    UShort_t mult[fNumPaddles * fNumPmts];
     UShort_t mult_max = 0;
 
-    for (UShort_t i = 0; i < nDets * nChs; i++)
+    for (UShort_t i = 0; i < fNumPaddles * fNumPmts; i++)
         mult[i] = 0;
 
     // --- ------------------------------------------- --- //
     // --- SOFSCI: GET THE Traw FROM THE SCI AT CAVE C --- //
     // --- ------------------------------------------- --- //
-    Int_t nHitsPerEvent_SofSci = fSciSingleTcal->GetEntries();
-    if (nHitsPerEvent_SofSci != 1)
-    {
-        //  LOG(ERROR) << "dimension of SingleTcal TClonesArray for SofSci should be 1 but is" << nHitsPerEvent_SofSci;
+    UInt_t   mult_SofSciCaveC = 0;
+    Double_t iRawTime_SofSci = -1000000.;
+    UInt_t   nHitsPerEvent_SofSci = fSciSingleTcal->GetEntries();
+
+    for(UInt_t i=0; i<nHitsPerEvent_SofSci; i++){
+      R3BSofSciSingleTcalData* hitSci = (R3BSofSciSingleTcalData*)fSciSingleTcal->At(i);
+      if(hitSci->GetDetector()==fSciRawTofPar->GetDetIdCaveC()){
+	mult_SofSciCaveC++;
+        iRawTime_SofSci = hitSci->GetRawTimeNs();
+      }
     }
 
-    if (nHitsPerEvent_SofSci == 1)
-    {
-
-        R3BSofSciSingleTcalData* hitSci = (R3BSofSciSingleTcalData*)fSciSingleTcal->At(0);
-        Double_t iRawTime_SofSci = hitSci->GetRawTimeNs(ID_SOFSCI_CAVEC);
-
-        // --- ------------------------------------------------------------------------- --- //
-        // --- SOFTOFW: CALCULATE THE RAW TIME, TOF AND POSITION FOR THE PLASTICS HITTED --- //
-        // --- ------------------------------------------------------------------------- --- //
-        Int_t nHitsPerEvent_SofToFW = fToFWTcal->GetEntries();
-        // get the multiplicity per PMT
-        for (int ihit = 0; ihit < nHitsPerEvent_SofToFW; ihit++)
+    // --- ------------------------------------------------------------------------- --- //
+    // --- SOFTOFW: CALCULATE THE RAW TIME, TOF AND POSITION FOR THE PLASTICS HITTED --- //
+    // --- ------------------------------------------------------------------------- --- //
+    if (mult_SofSciCaveC == 1){
+      Int_t nHitsPerEvent_SofTofW = fTofWTcal->GetEntries();
+      // get the multiplicity per PMT
+      for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
         {
-            R3BSofToFWTcalData* hit = (R3BSofToFWTcalData*)fToFWTcal->At(ihit);
-            if (!hit)
-                continue;
-            iDet = hit->GetDetector() - 1;
-            iCh = hit->GetPmt() - 1;
-            if (mult_max >= 16)
-                continue; // if multiplicity in a Pmt is higher than 16 are discarded, this code cannot handle it
-            iTraw[iDet * nChs + iCh][mult[iDet * nChs + iCh]] = hit->GetRawTimeNs();
-            mult[iDet * nChs + iCh]++;
-            if (mult[iDet * nChs + iCh] > mult_max)
-                mult_max = mult[iDet * nChs + iCh];
+	  R3BSofTofWTcalData* hit = (R3BSofTofWTcalData*)fTofWTcal->At(ihit);
+	  if (!hit) continue;
+	  iDet = hit->GetDetector() - 1;
+	  iPmt = hit->GetPmt() - 1;
+	  if (mult_max >= 16)
+	    continue; // if multiplicity in a Pmt is higher than 16 are discarded, this code cannot handle it
+	  iTraw[iDet * fNumPmts + iPmt][mult[iDet * fNumPmts + iPmt]] = hit->GetRawTimeNs();
+	  mult[iDet * fNumPmts + iPmt]++;
+	  if (mult[iDet * fNumPmts + iPmt] > mult_max)
+	    mult_max = mult[iDet * fNumPmts + iPmt];
         } // end of loop over the TClonesArray of Tcal data
 
-        if (nHitsPerEvent_SofToFW > 0)
+      if (nHitsPerEvent_SofTofW > 0)
         {
-            Double_t iRawPos;
-            Double_t iRawTime;
-            Double_t iRawTof;
-            for (UShort_t d = 0; d < nDets; d++)
+	  Double_t iRawPos;
+	  Double_t iRawTime;
+	  Double_t iRawTof;
+	  for (UShort_t d = 0; d < fNumPaddles; d++)
             {
-                iRawPos = -1000000.;
-                iRawTime = -1000000.;
-                iRawTof = -1000000.;
-                // check mult==1 for the PMTup and PMTdown
-                if ((mult[d * nChs + 1] == 1) && (mult[d * nChs] == 1))
+	      iRawPos = -1000000.;
+	      iRawTime = -1000000.;
+	      iRawTof = -1000000.;
+	      // check mult==1 for the PMTup and PMTdown
+	      if ((mult[d * fNumPmts + 1] == 1) && (mult[d * fNumPmts] == 1))
                 {
-                    iRawPos = iTraw[d * nChs + 1][0] - iTraw[d * nChs][0]; // Raw position = Tdown - Tup
-                    iRawTime = 0.5 * (iTraw[d * nChs][0] + iTraw[d * nChs + 1][0]);
-                    iRawTof = (iRawTime - iRawTime_SofSci);
-                    AddHitData(d + 1, iRawTime, iRawTof, iRawPos);
+		  iRawPos = iTraw[d * fNumPmts + 1][0] - iTraw[d * fNumPmts][0]; // Raw position = Tdown - Tup
+		  iRawTime = 0.5 * (iTraw[d * fNumPmts][0] + iTraw[d * fNumPmts + 1][0]);
+		  iRawTof = (iRawTime - iRawTime_SofSci);
+		  AddHitData(d + 1, iRawTime, iRawTof, iRawPos);
                 }
             }
-            ++fNevent;
+	  ++fNevent;
         }
     }
 }
@@ -179,23 +205,23 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTofWTcal2SingleTcal::Reset()
 {
-    LOG(DEBUG) << "Clearing SofToFWSingleTcalData structure";
-    if (fToFWSingleTcal)
-        fToFWSingleTcal->Clear();
+    LOG(DEBUG) << "Clearing SofTofWSingleTcalData structure";
+    if (fTofWSingleTcal)
+        fTofWSingleTcal->Clear();
 }
 
 void R3BSofTofWTcal2SingleTcal::Finish() {}
 
 // -----   Private method AddData  --------------------------------------------
-R3BSofToFWSingleTcalData* R3BSofTofWTcal2SingleTcal::AddHitData(Int_t plastic,
+R3BSofTofWSingleTcalData* R3BSofTofWTcal2SingleTcal::AddHitData(Int_t plastic,
                                                                 Double_t time,
                                                                 Double_t tof,
                                                                 Double_t pos)
 {
-    // It fills the R3BSofToFWSingleTcalData
-    TClonesArray& clref = *fToFWSingleTcal;
+    // It fills the R3BSofTofWSingleTcalData
+    TClonesArray& clref = *fTofWSingleTcal;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofToFWSingleTcalData(plastic, time, tof, pos);
+    return new (clref[size]) R3BSofTofWSingleTcalData(plastic, time, tof, pos);
 }
 
 ClassImp(R3BSofTofWTcal2SingleTcal)

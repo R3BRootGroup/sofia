@@ -25,7 +25,6 @@ ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/trackingData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
 ${R3BSOF_SOURCE_DIR}/sofonline
-${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -43,7 +42,7 @@ R3BSofMwpcvsMusicOnlineSpectra.cxx
 R3BSofAtOnlineSpectra.cxx
 R3BSofTwimOnlineSpectra.cxx
 R3BSofSciOnlineSpectra.cxx
-R3BSofToFWOnlineSpectra.cxx
+R3BSofTofWOnlineSpectra.cxx
 R3BSofFrsOnlineSpectra.cxx
 R3BSofTwimvsMusicOnlineSpectra.cxx
 R3BAmsCorrelationOnlineSpectra.cxx

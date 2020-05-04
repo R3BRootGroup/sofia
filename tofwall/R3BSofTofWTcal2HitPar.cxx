@@ -20,7 +20,7 @@
 // TofW headers
 #include "R3BSofTofWHitPar.h"
 #include "R3BSofTofWTcal2HitPar.h"
-#include "R3BSofToFWSingleTcalData.h"
+#include "R3BSofTofWSingleTcalData.h"
 
 #include <iomanip>
 
@@ -28,7 +28,7 @@
 R3BSofTofWTcal2HitPar::R3BSofTofWTcal2HitPar()
     : FairTask("R3BSof TofW Calibrator", 1)
     , fNumSci(28)
-    , fMinStadistics(1000)
+    , fMinStatistics(1000)
     , fLimit_left(0)
     , fLimit_right(24000)
     , fMaxSigma(200)
@@ -44,7 +44,7 @@ R3BSofTofWTcal2HitPar::R3BSofTofWTcal2HitPar(const TString& name,
                                                  Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNumSci(28)
-    , fMinStadistics(1000)
+    , fMinStatistics(1000)
     , fLimit_left(0)
     , fLimit_right(24000)
     , fMaxSigma(200)
@@ -75,10 +75,10 @@ InitStatus R3BSofTofWTcal2HitPar::Init()
         return kFATAL;
     }
 
-    fTofCalDataCA = (TClonesArray*)rootManager->GetObject("SofToFWSingleTcalData");
+    fTofCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
     if (!fTofCalDataCA)
     {
-        LOG(ERROR) << "R3BSofTofWTcal2HitPar: SofToFWSingleTcalData not found";
+        LOG(ERROR) << "R3BSofTofWTcal2HitPar: SofTofWSingleTcalData not found";
         return kFATAL;
     }
 
@@ -117,11 +117,11 @@ void R3BSofTofWTcal2HitPar::Exec(Option_t* option)
     if (nHits == 0)
         return;
 
-    R3BSofToFWSingleTcalData** calData = new R3BSofToFWSingleTcalData*[nHits];
+    R3BSofTofWSingleTcalData** calData = new R3BSofTofWSingleTcalData*[nHits];
     Int_t sciId = 0;
     for (Int_t i = 0; i < nHits; i++)
     {
-        calData[i] = (R3BSofToFWSingleTcalData*)(fTofCalDataCA->At(i));
+        calData[i] = (R3BSofTofWSingleTcalData*)(fTofCalDataCA->At(i));
     }
 
     if (calData)

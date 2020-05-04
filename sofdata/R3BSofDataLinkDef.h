@@ -25,9 +25,9 @@
 #pragma link C++ class R3BSofMwpcCalData + ;
 #pragma link C++ class R3BSofMwpcHitData + ;
 
-#pragma link C++ class R3BSofToFWMappedData + ;
-#pragma link C++ class R3BSofToFWTcalData + ;
-#pragma link C++ class R3BSofToFWSingleTcalData + ;
+#pragma link C++ class R3BSofTofWMappedData + ;
+#pragma link C++ class R3BSofTofWTcalData + ;
+#pragma link C++ class R3BSofTofWSingleTcalData + ;
 #pragma link C++ class R3BSofToFWCalData + ;
 #pragma link C++ class R3BSofTofWHitData + ;
 
