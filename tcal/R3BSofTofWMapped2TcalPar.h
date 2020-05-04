@@ -8,18 +8,18 @@ class TClonesArray;
 class R3BSofTcalPar;
 class R3BEventHeader;
 
-class R3BSofToFWMapped2TcalPar : public FairTask
+class R3BSofTofWMapped2TcalPar : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofToFWMapped2TcalPar();
+    R3BSofTofWMapped2TcalPar();
 
     /** Standard constructor **/
-    R3BSofToFWMapped2TcalPar(const char* name, Int_t iVerbose = 1);
+    R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofToFWMapped2TcalPar();
+    virtual ~R3BSofTofWMapped2TcalPar();
 
     /** Virtual method Init **/
     virtual InitStatus Init();
@@ -61,8 +61,8 @@ class R3BSofToFWMapped2TcalPar : public FairTask
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
-    Int_t fNumDetectors; // number of detectors (=2 for Sci, =28 for ToFW)
-    Int_t fNumChannels;  // number of channels  (=3 for Sci, =2 for ToFW)
+    Int_t fNumDetectors; // number of detectors (=2 for Sci, =28 for TofW)
+    Int_t fNumChannels;  // number of channels  (=3 for Sci, =2 for TofW)
     Int_t fNumSignals;
     Int_t fNumTcalParsPerSignal;
     Int_t fMinStatistics; // minimum statistics to proceed to the calibration
@@ -71,7 +71,7 @@ class R3BSofToFWMapped2TcalPar : public FairTask
     R3BSofTcalPar* fTcalPar; // Tcal Parameters
 
     // input data
-    TClonesArray* fMappedToFW; // Array with mapped data from scintillator detectors - input data.
+    TClonesArray* fMappedTofW; // Array with mapped data from scintillator detectors - input data.
 
     // histograms
     TH1F** fh_TimeFineBin;
@@ -79,7 +79,7 @@ class R3BSofToFWMapped2TcalPar : public FairTask
     char* fOutputFile;
 
   public:
-    ClassDef(R3BSofToFWMapped2TcalPar, 0);
+    ClassDef(R3BSofTofWMapped2TcalPar, 0);
 };
 
 #endif //__R3BSOFTOFWMAPPED2TCALPAR_H__

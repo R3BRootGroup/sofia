@@ -1,8 +1,8 @@
 #include "FairLogger.h"
 
 #include "FairRootManager.h"
-#include "R3BSofToFWMappedData.h"
-#include "R3BSofToFWReader.h"
+#include "R3BSofTofWMappedData.h"
+#include "R3BSofTofWReader.h"
 
 extern "C"
 {
@@ -10,57 +10,66 @@ extern "C"
 #include "ext_h101_softofw.h"
 }
 
-#define NUM_SOFTOFW_DETECTORS 28
-#define NUM_SOFTOFW_CHANNELS 2
 #include <iostream>
 
 using namespace std;
 
-R3BSofToFWReader::R3BSofToFWReader(EXT_STR_h101_SOFTOFW* data, UInt_t offset)
-    : R3BReader("R3BSofToFWReader")
+R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, UInt_t offset)
+    : R3BReader("R3BSofTofWReader")
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
-    , fArray(new TClonesArray("R3BSofToFWMappedData"))
+    , fArray(new TClonesArray("R3BSofTofWMappedData"))
+    , fNumPaddles(28)
 {
 }
 
-R3BSofToFWReader::~R3BSofToFWReader()
+R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, UInt_t offset, Int_t num)
+    : R3BReader("R3BSofTofWReader")
+    , fData(data)
+    , fOffset(offset)
+    , fOnline(kFALSE)
+    , fArray(new TClonesArray("R3BSofTofWMappedData"))
+    , fNumPaddles(num)
 {
-    LOG(INFO) << "R3BSofToFWReader: Delete instance";
+}
+
+R3BSofTofWReader::~R3BSofTofWReader()
+{
+    LOG(INFO) << "R3BSofTofWReader: Delete instance";
     if (fArray)
     {
         delete fArray;
     }
 }
 
-Bool_t R3BSofToFWReader::Init(ext_data_struct_info* a_struct_info)
+Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofToFWReader::Init";
+    LOG(INFO) << "R3BSofTofWReader::Init";
     EXT_STR_h101_SOFTOFW_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTOFW, 0);
     if (!ok)
     {
         perror("ext_data_struct_info_item");
-        LOG(ERROR) << "R3BSofToFWReader::Failed to setup structure information.";
+        LOG(ERROR) << "R3BSofTofWReader::Failed to setup structure information.";
         return kFALSE;
     }
 
     // Register output array in tree
     if (!fOnline)
     {
-        FairRootManager::Instance()->Register("SofToFWMappedData", "SofToFW", fArray, kTRUE);
+        FairRootManager::Instance()->Register("SofTofWMappedData", "SofTofW", fArray, kTRUE);
     }
     else
     {
-        FairRootManager::Instance()->Register("SofToFWMappedData", "SofToFW", fArray, kFALSE);
+        FairRootManager::Instance()->Register("SofTofWMappedData", "SofTofW", fArray, kFALSE);
     }
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFTOFW_onion* data = (EXT_STR_h101_SOFTOFW_onion*)fData;
-    for (int d = 0; d < NUM_SOFTOFW_DETECTORS; d++)
+    for (int d = 0; d < fNumPaddles; d++)
     {
         data->SOFTOFW_P[d].TFM = 0;
         data->SOFTOFW_P[d].TCM = 0;
@@ -70,7 +79,7 @@ Bool_t R3BSofToFWReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofToFWReader::Read()
+Bool_t R3BSofTofWReader::Read()
 {
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFTOFW_onion* data = (EXT_STR_h101_SOFTOFW_onion*)fData;
@@ -99,7 +108,7 @@ Bool_t R3BSofToFWReader::Read()
     */
 
     // loop over all detectors
-    for (Int_t d = 0; d < NUM_SOFTOFW_DETECTORS; d++)
+    for (Int_t d = 0; d < fNumPaddles; d++)
     {
 
         uint32_t NumberOfPMTsWithHits = data->SOFTOFW_P[d].TFM; // could also be data->SOFTOFW_P[d].TCM;
@@ -117,7 +126,7 @@ Bool_t R3BSofToFWReader::Read()
             uint32_t pmtval = data->SOFTOFW_P[d].TFMI[pmmult];
             if (pmtval != data->SOFTOFW_P[d].TCMI[pmmult])
             {
-                LOG(ERROR) << "R3BSofToFWReader::Reader() mismatch in PMt id for ToFW between TF / TC "
+                LOG(ERROR) << "R3BSofTofWReader::Reader() mismatch in PMt id for ToFW between TF / TC "
                            << "TF: PMT = " << data->SOFTOFW_P[d].TFMI[pmmult]
                            << "TC: PMT = " << data->SOFTOFW_P[d].TCMI[pmmult];
             }
@@ -125,7 +134,7 @@ Bool_t R3BSofToFWReader::Read()
             // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
             for (int hit = curChannelStart; hit < nextChannelStart; hit++)
             {
-                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofToFWMappedData(d + 1, // do not change into d !!!!!!!
+                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTofWMappedData(d + 1, // do not change into d !!!!!!!
                                                                                pmtval,
                                                                                data->SOFTOFW_P[d].TCv[hit],
                                                                                data->SOFTOFW_P[d].TFv[hit],
@@ -139,10 +148,10 @@ Bool_t R3BSofToFWReader::Read()
     return kTRUE;
 }
 
-void R3BSofToFWReader::Reset()
+void R3BSofTofWReader::Reset()
 {
     // Reset the output array
     fArray->Clear();
 }
 
-ClassImp(R3BSofToFWReader)
+ClassImp(R3BSofTofWReader)

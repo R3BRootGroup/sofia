@@ -110,9 +110,9 @@ InitStatus R3BSofSciMapped2Tcal::Init()
     }
     else
     {
-        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): fNumSignals=" << fTcalPar->GetNumSignals();
-        LOG(INFO) << " R3BSofSciMapped2Tcal::Init(): fNumDetectors=" << fTcalPar->GetNumDetectors();
-        LOG(INFO) << "  R3BSofSciMapped2Tcal::Init(): fNumChannels=" << fTcalPar->GetNumChannels();
+        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of Signals =" << fTcalPar->GetNumSignals();
+        LOG(INFO) << " R3BSofSciMapped2Tcal::Init(): Number of SofSci =" << fTcalPar->GetNumDetectors();
+        LOG(INFO) << "  R3BSofSciMapped2Tcal::Init(): Number of Channel per SofSci =" << fTcalPar->GetNumChannels();
     }
     return kSUCCESS;
 }

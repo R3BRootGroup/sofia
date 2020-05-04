@@ -4,8 +4,6 @@
 #include "FairTask.h"
 #include "TH1F.h"
 
-#include "detectors_cfg.h"
-
 class TClonesArray;
 class R3BSofTcalPar;
 class R3BEventHeader;
@@ -47,25 +45,21 @@ class R3BSofSciMapped2TcalPar : public FairTask
     void SetOutputFile(const char* outFile);
 
     /** Accessor functions **/
-    const Double_t GetNumDetectors() { return fNumDetectors; }
-    const Double_t GetNumChannels() { return fNumChannels; }
-    const Double_t GetNumSignals() { return fNumSignals; }
+    const UShort_t GetNumSci() { return fNumSci; }
+    const UShort_t GetNumChannels() { return fNumChannels; }
+    const UShort_t GetNumSignals() { return fNumSignals; }
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
-    void SetNumDetectors(Int_t NumberOfDetectors) { fNumDetectors = NumberOfDetectors; }
-    void SetNumChannels(Int_t NumberOfChannels) { fNumChannels = NumberOfChannels; }
-    void SetNumSignals(Int_t NumberOfDetectors, Int_t NumberOfChannels)
-    {
-
-        fNumSignals = NumberOfDetectors * NumberOfChannels;
-    }
+    void SetNumSci(UShort_t num) { fNumSci = num; }
+    void SetNumChannels(UShort_t num) { fNumChannels = num; }
+    void SetNumSignals(UShort_t NumSci, UShort_t NumChs) {fNumSignals = NumSci * NumChs;}
     void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) { fNumTcalParsPerSignal = NumberOfTcalParsPerSignal; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
-    Int_t fNumDetectors;         // number of detectors (=2 for Sci, =28 for ToFW)
-    Int_t fNumChannels;          // number of channels  (=3 for Sci, =2  for ToFW)
-    Int_t fNumSignals;           // number of signal    (=6 for Sci, =56 for ToFW)
+    UShort_t fNumSci;               // number of detectors (=1 if cave C only, 2 or more if FRS in used)
+    UShort_t fNumChannels;          // number of channels  (=2 if cave C only, 3 if FRS in used: LEFT, RIGHT, Tref)
+    UShort_t fNumSignals;           // number of signal    
     Int_t fNumTcalParsPerSignal; // =1000 for each signal
     Int_t fMinStatistics;        // minimum statistics to proceed to the calibration
 

@@ -21,6 +21,18 @@ R3BSofSciReader::R3BSofSciReader(EXT_STR_h101_SOFSCI* data, UInt_t offset)
     , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofSciMappedData")) // class name
     , fNumEntries(0)
+    , fNumSci(0)
+{
+}
+
+R3BSofSciReader::R3BSofSciReader(EXT_STR_h101_SOFSCI* data, UInt_t offset, Int_t num)
+    : R3BReader("R3BSofSciReader")
+    , fData(data)
+    , fOffset(offset)
+    , fOnline(kFALSE)
+    , fArray(new TClonesArray("R3BSofSciMappedData")) // class name
+    , fNumEntries(0)
+    , fNumSci(num)
 {
 }
 
@@ -59,7 +71,7 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFSCI_onion* data = (EXT_STR_h101_SOFSCI_onion*)fData;
-    for (int d = 0; d < NUMBER_OF_SOFSCI_DETECTORS; d++)
+    for (int d = 0; d < fNumSci; d++)
         data->SOFSCI[d].TFM = 0;
 
     return kTRUE;
@@ -85,13 +97,13 @@ Bool_t R3BSofSciReader::Read()
        uint32_t TCME[3 // TCM ]; : this is equal to TFME
        uint32_t TC;              : this is equal to TF
        uint32_t TCv[30 // TC ];  : coarse time value for this hit
-       } SOFSCI[1]; [1] for engineering run, [2] for experiment
+       } SOFSCI[fNumSci]; [fNumSci=1] for primary beam experiment, [fNumSci>1] for secondary beam experiment
 
        } EXT_STR_h101_SOFSCI_onion;
     */
 
     // loop over all detectors
-    for (int d = 0; d < NUMBER_OF_SOFSCI_DETECTORS; d++)
+    for (int d = 0; d < fNumSci; d++)
     {
         uint32_t numberOfPMTsWithHits_TF = data->SOFSCI[d].TFM;
         uint32_t numberOfPMTsWithHits_TC = data->SOFSCI[d].TCM;
@@ -117,7 +129,7 @@ Bool_t R3BSofSciReader::Read()
                 for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++)
                 {
                     auto item = new ((*fArray)[fNumEntries++])
-                        R3BSofSciMappedData(d + 1, // do not change into d !!!!!!! (Audrey)
+                        R3BSofSciMappedData(d + 1, // 1-based numbering
                                             pmtid_TF,
                                             data->SOFSCI[d].TCv[hit],
                                             data->SOFSCI[d].TFv[hit]);

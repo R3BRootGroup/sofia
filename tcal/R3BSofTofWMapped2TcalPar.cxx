@@ -1,7 +1,7 @@
-#include "R3BSofToFWMapped2TcalPar.h"
+#include "R3BSofTofWMapped2TcalPar.h"
 
 #include "R3BSofTcalPar.h"
-#include "R3BSofToFWMappedData.h"
+#include "R3BSofTofWMappedData.h"
 
 #include "R3BEventHeader.h"
 
@@ -23,28 +23,28 @@
 #include <iostream>
 #include <stdlib.h>
 
-// R3BSofToFWMapped2TcalPar: Default Constructor --------------------------
-R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar()
-    : FairTask("R3BSofToFWMapped2TcalPar", 1)
+// R3BSofTofWMapped2TcalPar: Default Constructor --------------------------
+R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar()
+    : FairTask("R3BSofTofWMapped2TcalPar", 1)
     , fNumDetectors(28)
     , fNumChannels(2)
     , fNumTcalParsPerSignal(1000)
     , fMinStatistics(0)
-    , fMappedToFW(NULL)
+    , fMappedTofW(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 {
     fNumSignals = fNumDetectors * fNumChannels;
 }
 
-// R3BSofToFWMapped2TcalPar: Standard Constructor --------------------------
-R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar(const char* name, Int_t iVerbose)
+// R3BSofTofWMapped2TcalPar: Standard Constructor --------------------------
+R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNumDetectors(28)
     , fNumChannels(2)
     , fNumTcalParsPerSignal(1000)
     , fMinStatistics(0)
-    , fMappedToFW(NULL)
+    , fMappedTofW(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 
@@ -52,18 +52,18 @@ R3BSofToFWMapped2TcalPar::R3BSofToFWMapped2TcalPar(const char* name, Int_t iVerb
     fNumSignals = fNumDetectors * fNumChannels;
 }
 
-// R3BSofToFWMapped2TcalPar: Destructor ----------------------------------------
-R3BSofToFWMapped2TcalPar::~R3BSofToFWMapped2TcalPar()
+// R3BSofTofWMapped2TcalPar: Destructor ----------------------------------------
+R3BSofTofWMapped2TcalPar::~R3BSofTofWMapped2TcalPar()
 {
     if (fTcalPar)
         delete fTcalPar;
 }
 
 // -----   Public method Init   --------------------------------------------
-InitStatus R3BSofToFWMapped2TcalPar::Init()
+InitStatus R3BSofTofWMapped2TcalPar::Init()
 {
 
-    LOG(INFO) << "R3BSofToFWMapped2TcalPar: Init";
+    LOG(INFO) << "R3BSofTofWMapped2TcalPar: Init";
 
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
@@ -75,8 +75,8 @@ InitStatus R3BSofToFWMapped2TcalPar::Init()
     // --- INPUT MAPPED DATA --- //
     // --- ----------------- --- //
 
-    fMappedToFW = (TClonesArray*)rm->GetObject("SofToFWMappedData"); // see Instance->Register in R3BSofToFWReader.cxx
-    if (!fMappedToFW)
+    fMappedTofW = (TClonesArray*)rm->GetObject("SofTofWMappedData"); // see Instance->Register in R3BSofTofWReader.cxx
+    if (!fMappedTofW)
     {
         return kFATAL;
     }
@@ -90,10 +90,10 @@ InitStatus R3BSofToFWMapped2TcalPar::Init()
     {
         return kFATAL;
     }
-    fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofToFWTcalPar");
+    fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofTofWTcalPar");
     if (!fTcalPar)
     {
-        LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Init() Couldn't get handle on SofToFWTcalPar container";
+        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() Couldn't get handle on SofTofWTcalPar container";
         return kFATAL;
     }
     else
@@ -115,10 +115,10 @@ InitStatus R3BSofToFWMapped2TcalPar::Init()
     {
         for (Int_t ch = 0; ch < fNumChannels; ch++)
         {
-            sprintf(name, "TimeFineBin_ToFW_P%i_Pmt%i_Sig%i", det + 1, ch + 1, det * fNumChannels + ch);
+            sprintf(name, "TimeFineBin_TofW_P%i_Pmt%i_Sig%i", det + 1, ch + 1, det * fNumChannels + ch);
             fh_TimeFineBin[det * fNumChannels + ch] =
                 new TH1F(name, name, fNumTcalParsPerSignal, 0, fNumTcalParsPerSignal);
-            sprintf(name, "TimeFineNs_ToFW_P%i_Pmt%i_Sig%i", det + 1, ch + 1, det * fNumChannels + ch);
+            sprintf(name, "TimeFineNs_TofW_P%i_Pmt%i_Sig%i", det + 1, ch + 1, det * fNumChannels + ch);
             fh_TimeFineNs[det * fNumChannels + ch] =
                 new TH1F(name, name, fNumTcalParsPerSignal, 0, fNumTcalParsPerSignal);
         }
@@ -128,10 +128,10 @@ InitStatus R3BSofToFWMapped2TcalPar::Init()
 }
 
 // -----   Public method ReInit   --------------------------------------------
-InitStatus R3BSofToFWMapped2TcalPar::ReInit() { return kSUCCESS; }
+InitStatus R3BSofTofWMapped2TcalPar::ReInit() { return kSUCCESS; }
 
 // -----   Public method Exec   --------------------------------------------
-void R3BSofToFWMapped2TcalPar::Exec(Option_t* opt)
+void R3BSofTofWMapped2TcalPar::Exec(Option_t* opt)
 {
 
     // --- --------------------- --- //
@@ -139,13 +139,13 @@ void R3BSofToFWMapped2TcalPar::Exec(Option_t* opt)
     // --- --------------------- --- //
 
     // nHits = number of hits per event
-    UInt_t nHits = fMappedToFW->GetEntries();
+    UInt_t nHits = fMappedTofW->GetEntries();
     for (UInt_t ihit = 0; ihit < nHits; ihit++)
     {
-        R3BSofToFWMappedData* hit = (R3BSofToFWMappedData*)fMappedToFW->At(ihit);
+        R3BSofTofWMappedData* hit = (R3BSofTofWMappedData*)fMappedTofW->At(ihit);
         if (!hit)
         {
-            LOG(WARNING) << "R3BSofToFWMapped2TcalPar::Exec() : could not get hit";
+            LOG(WARNING) << "R3BSofTofWMapped2TcalPar::Exec() : could not get hit";
             continue; // should not happen
         }
 
@@ -156,42 +156,42 @@ void R3BSofToFWMapped2TcalPar::Exec(Option_t* opt)
         // *** PmtDown is 1                          *** //
         // *** PmtUp is 2                            *** //
         // *** ************************************* *** //
-        // *** SofToFW PmtDown SIGNAL for P1 is 0    *** //
-        // *** SofToFW PmtUp SIGNAL for P1 is 1      *** //
-        // *** SofToFW PmtDown SIGNAL for P2 is 2    *** //
-        // *** SofToFW PmtUp SIGNAL for P2 is 3      *** //
+        // *** SofTofW PmtDown SIGNAL for P1 is 0    *** //
+        // *** SofTofW PmtUp SIGNAL for P1 is 1      *** //
+        // *** SofTofW PmtDown SIGNAL for P2 is 2    *** //
+        // *** SofTofW PmtUp SIGNAL for P2 is 3      *** //
         // ***     (...)                             *** //
-        // *** SofToFW PmtDown SIGNAL for P28 is 54  *** //
-        // *** SofToFW PmtUp SIGNAL for P28 is 55    *** //
+        // *** SofTofW PmtDown SIGNAL for P28 is 54  *** //
+        // *** SofTofW PmtUp SIGNAL for P28 is 55    *** //
         // *** ************************************* *** //
         UInt_t iSignal = (hit->GetDetector() - 1) * fNumChannels + (hit->GetPmt() - 1);
         if ((0 <= iSignal) && (iSignal < fNumSignals))
             fh_TimeFineBin[iSignal]->Fill(hit->GetTimeFine());
         else
-            LOG(ERROR) << "R3BSofToFWMapped2TcalPar::Exec() Number of signals out of range: " << iSignal
+            LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Exec() Number of signals out of range: " << iSignal
                        << " instead of [0," << fNumSignals << "] "
                        << " det = " << hit->GetDetector() << " fNumChannels = " << fNumChannels
                        << " pmt = " << hit->GetPmt();
 
-    } // end of loop over the number of hits per event in MappedToFW
+    } // end of loop over the number of hits per event in MappedTofW
 }
 
 // ---- Public method Reset   --------------------------------------------------
-void R3BSofToFWMapped2TcalPar::Reset() {}
+void R3BSofTofWMapped2TcalPar::Reset() {}
 
-void R3BSofToFWMapped2TcalPar::FinishEvent() {}
+void R3BSofTofWMapped2TcalPar::FinishEvent() {}
 
 // ---- Public method Finish   --------------------------------------------------
-void R3BSofToFWMapped2TcalPar::FinishTask()
+void R3BSofTofWMapped2TcalPar::FinishTask()
 {
     CalculateVftxTcalParams();
     fTcalPar->printParams();
 }
 
 //------------------
-void R3BSofToFWMapped2TcalPar::CalculateVftxTcalParams()
+void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
 {
-    LOG(INFO) << "R3BSofToFWMapped2TcalPar: CalculateVftxTcalParams()";
+    LOG(INFO) << "R3BSofTofWMapped2TcalPar: CalculateVftxTcalParams()";
 
     UInt_t IntegralTot;
     UInt_t IntegralPartial;
@@ -218,4 +218,4 @@ void R3BSofToFWMapped2TcalPar::CalculateVftxTcalParams()
     return;
 }
 
-ClassImp(R3BSofToFWMapped2TcalPar)
+ClassImp(R3BSofTofWMapped2TcalPar)

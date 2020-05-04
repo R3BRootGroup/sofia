@@ -1,5 +1,5 @@
 // *** *************************************************************** *** //
-// ***                  R3BSofToFWMapped2Tcal                          *** //
+// ***                  R3BSofTofWMapped2Tcal                          *** //
 // *** convert Mapped data to tcal data :                              *** //
 // *** ---> from the fine and coarse times, calculate a raw time in ns *** //
 // *** *************************************************************** *** //
@@ -10,25 +10,25 @@
 #include "FairTask.h"
 
 #include "R3BSofTcalPar.h"
-#include "R3BSofToFWTcalData.h"
+#include "R3BSofTofWTcalData.h"
 
 #include "TClonesArray.h"
 #include "TMath.h"
 #include "TRandom.h"
 class TRandom3;
 
-class R3BSofToFWMapped2Tcal : public FairTask
+class R3BSofTofWMapped2Tcal : public FairTask
 {
 
   public:
     // --- Default constructor --- //
-    R3BSofToFWMapped2Tcal();
+    R3BSofTofWMapped2Tcal();
 
     // --- Standard constructor --- //
-    R3BSofToFWMapped2Tcal(const char* name, Int_t iVerbose = 1);
+    R3BSofTofWMapped2Tcal(const char* name, Int_t iVerbose = 1);
 
     // --- Destructor --- //
-    virtual ~R3BSofToFWMapped2Tcal();
+    virtual ~R3BSofTofWMapped2Tcal();
 
     virtual InitStatus Init();
     virtual void SetParContainers();
@@ -42,7 +42,7 @@ class R3BSofToFWMapped2Tcal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    TClonesArray* fMapped;   // input data - SofToFWMappedData
+    TClonesArray* fMapped;   // input data - SofTofWMappedData
     R3BSofTcalPar* fTcalPar; // tcal parameters container
     TClonesArray* fTcal;     // output data
 
@@ -55,7 +55,7 @@ class R3BSofToFWMapped2Tcal : public FairTask
     TRandom rand;
 
   public:
-    ClassDef(R3BSofToFWMapped2Tcal, 1)
+    ClassDef(R3BSofTofWMapped2Tcal, 1)
 };
 
 #endif // R3BSOFTOFW_MAPPED2TCAL

@@ -7,7 +7,7 @@
 #define R3BSofTofWTCal2Hit_H
 
 #include "FairTask.h"
-#include "R3BSofToFWTcalData.h"
+#include "R3BSofTofWTcalData.h"
 #include "R3BSofTofWHitData.h"
 #include "TH1F.h"
 #include <TRandom.h>

@@ -1,6 +1,3 @@
-// REMINDER : RawPos = TrawRIGHT - TrawLEFT
-//                   = 5*(CCr-CCl) + (FTl-FTr)
-//                   --> x is increasing from RIGHT to LEFT
 #include "R3BSofSciTcal2SingleTcal.h"
 #include "R3BSofSciTcalData.h"
 
@@ -113,13 +110,13 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
     else{
       LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fRawPosPar: fNumSignals=" << fRawPosPar->GetNumSignals();
     }
-    
-    if (fRawTofPar->GetNumDets() == 0){    // ATTENTION IN CASE OF PRIMARY BEAM, fRawTofPar->GetNumSignals() could be == 0
-        LOG(ERROR) << " There are no SofSci detectors declared";
+
+    if (fRawTofPar->GetNumSignals() == 0){
+        LOG(ERROR) << " There are not RawTofPar Tcal parameters for SofSci";
 	return kFATAL;
     }
     else{
-        LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fRawTofPar: fNumSignals=" << fRawTofPar->GetNumSignals();
+        LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fRawPosPar: fNumSignals=" << fRawTofPar->GetNumSignals();
     }
 
     if(fRawTofPar->GetDetIdCaveC()==0){
@@ -141,17 +138,14 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
       LOG(ERROR) << "Number of SofSci declared >1 (secondary beam), but idS2 = " << fRawTofPar->GetDetIdS2() << " but should be [1;" << fRawTofPar->GetNumDets()-1 << "]";
       return kFATAL;
     }
+    if(fRawPosPar->GetNumDets()!=fRawTofPar->GetNumDets()){
+      LOG(ERROR) << "Mismatch between the number of SofSci detectors in RawPosPar and RawTofPar";
+      return kFATAL;
+    }
 
-    if(fRawPosPar->GetNumDets()>1){
-      if(fRawPosPar->GetNumDets()!=fRawTofPar->GetNumDets()){
-	LOG(ERROR) << "Mismatch between the number of SofSci detectors in RawPosPar (" << fRawPosPar->GetNumDets() << ") and RawTofPar )" << fRawTofPar->GetNumDets() << ")";
-	return kFATAL;
-      }
-      
-      if(fRawPosPar->GetNumPmts()!=fRawTofPar->GetNumChannels()){
-	LOG(ERROR) << "Mismatch between the number of SofSci channels in RawPosPar and RawTofPar";
-	return kFATAL;
-      }
+    if(fRawPosPar->GetNumPmts()!=fRawTofPar->GetNumChannels()){
+      LOG(ERROR) << "Mismatch between the number of SofSci channels in RawPosPar and RawTofPar";
+      return kFATAL;
     }
 
 
@@ -169,9 +163,9 @@ InitStatus R3BSofSciTcal2SingleTcal::ReInit()
 void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 {
 
+  UShort_t idCaveC = fRawTofPar->GetDetIdCaveC(); // 1-based
   UShort_t nDets = fRawPosPar->GetNumDets();
   UShort_t nChs = fRawPosPar->GetNumPmts();
-  UShort_t idCaveC = nDets;
   UShort_t iDet; // 0-based
   UShort_t iCh;  // 0-based
   Double_t iTraw[nDets * nChs][32];
@@ -179,15 +173,15 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
   UShort_t mult_max = 0;
   UInt_t maskR[nDets]; // if mult_max>=32, doesn't work
   UInt_t maskL[nDets]; // if mult_max>=32, doesn't work
-
+  
   for (UShort_t i = 0; i < nDets * nChs; i++)      mult[i] = 0;
   
   Int_t nHitsPerEvent_SofSci = fTcal->GetEntries();
   for (int ihit = 0; ihit < nHitsPerEvent_SofSci; ihit++){
     R3BSofSciTcalData* hit = (R3BSofSciTcalData*)fTcal->At(ihit);
     if (!hit) continue;
-    iDet = hit->GetDetector() - 1; 
-    iCh = hit->GetPmt() - 1; 
+    iDet = hit->GetDetector() - 1;
+    iCh = hit->GetPmt() - 1;
     if (mult_max > 32)        continue; // if multiplicity in a Pmt is higher than 32, this code cannot handle it
     iTraw[iDet*nChs+iCh][mult[iDet*nChs+iCh]] = hit->GetRawTimeNs();
     mult[iDet*nChs+iCh]++;
@@ -215,7 +209,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
       maskR[0] = 0x0;
       for (UShort_t multR=0; multR<mult[0]; multR++){
 	for (UShort_t multL=0; multL<mult[1]; multL++){
-	  // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
+	  // RawPosNs = TrawRIGHT - TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
 	  iRawPos = iTraw[0][multR] - iTraw[1][multL]; 
 	  // if the raw position is outside the range: continue
 	  if (iRawPos < fRawPosPar->GetSignalTcalParams(0)) continue;
@@ -254,6 +248,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	for (UShort_t multLsto = 0; multLsto < mult[dSto*nChs+1]; multLsto++){
 	  
 	  // check the position in the stop detector
+	  // RawPosNs = TrawRIGHT - TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
 	  iRawPos = (iTraw[dSto * nChs][multRsto] - iTraw[dSto * nChs + 1][multLsto]);
 	  if ((iRawPos < fRawPosPar->GetSignalTcalParams(2*dSto)) ||
 	      (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSto+1)))
@@ -263,7 +258,6 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	    for (UShort_t multLsta = 0; multLsta < mult[dSta*nChs+1]; multLsta++){
 	      
 	      // check the position in the start detector
-	      // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
 	      iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
 	      if ((fRawPosPar->GetSignalTcalParams(2*dSta) > iRawPos) ||
 		  (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSta+1)))
@@ -299,7 +293,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	  if (dSta==idS2-1) continue;
 	  for (UShort_t multRsta = 0; multRsta < mult[dSta*nChs]; multRsta++){
 	    for (UShort_t multLsta = 0; multLsta < mult[dSta*nChs+1]; multLsta++){
-	      // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
+	      // RawPosNs = TrawRIGHT - TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
 	      iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
 	      if ((iRawPos < fRawPosPar->GetSignalTcalParams(2*dSta)) ||
 		  (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSta+1)))
@@ -321,11 +315,11 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	iRawTime_S8 = -1000000.;
 	if(idS8>0)
 	  if(mult_selectHits[idS8-1]==1)
-            iRawTime_S8 = 0.5 * (iTraw[(idS8-1)*nChs][selectRightHit[idS8-1]] + iTraw[(idS8-1)*nChs+1][selectLeftHit[idS8-1]]);
-
+	    iRawTime_S8 = 0.5 * (iTraw[(idS8-1)*nChs][selectRightHit[idS8-1]] + iTraw[(idS8-1)*nChs+1][selectRightHit[idS8-1]]);
+       
 	for(UShort_t d=0; d<nDets; d++){
 	  if(mult_selectHits[d]==1){
-	    // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
+	    // RawPosNs = TrawRIGHT - TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
 	    iRawPos = iTraw[d*nChs][selectRightHit[d]] - iTraw[d*nChs+1][selectLeftHit[d]];
 	    iRawTime = 0.5 * (iTraw[d*nChs][selectRightHit[d]] + iTraw[d*nChs+1][selectLeftHit[d]]);  
 	    iRawTof_S2 = -1000000.;

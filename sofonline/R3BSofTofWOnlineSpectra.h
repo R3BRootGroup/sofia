@@ -1,10 +1,10 @@
 // ------------------------------------------------------------
-// -----              R3BSofToFWOnlineSpectra             -----
+// -----              R3BSofTofWOnlineSpectra             -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
-#ifndef R3BSofToFWOnlineSpectra_H
-#define R3BSofToFWOnlineSpectra_H
+#ifndef R3BSofTofWOnlineSpectra_H
+#define R3BSofTofWOnlineSpectra_H
 
 #include "FairTask.h"
 #include "TCanvas.h"
@@ -17,10 +17,9 @@
 #include <iostream>
 #include <sstream>
 
-#include "detectors_cfg.h"
-
-#define NbDets NUMBER_OF_SOFTOFW_PLASTICS
-#define NbChs NUMBER_OF_SOFTOFW_PMTS_PER_PLASTIC
+// to be fixed
+#define NbDets 28
+#define NbChs   2
 
 class TClonesArray;
 class R3BEventHeader;
@@ -28,7 +27,7 @@ class R3BEventHeader;
 /**
  * This taks reads SCI data and plots online histograms
  */
-class R3BSofToFWOnlineSpectra : public FairTask
+class R3BSofTofWOnlineSpectra : public FairTask
 {
 
   public:
@@ -36,7 +35,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
      * Default constructor.
      * Creates an instance of the task with default parameters.
      */
-    R3BSofToFWOnlineSpectra();
+    R3BSofTofWOnlineSpectra();
 
     /**
      * Standard constructor.
@@ -44,13 +43,13 @@ class R3BSofToFWOnlineSpectra : public FairTask
      * @param name a name of the task.
      * @param iVerbose a verbosity level.
      */
-    R3BSofToFWOnlineSpectra(const char* name, Int_t iVerbose = 1);
+    R3BSofTofWOnlineSpectra(const char* name, Int_t iVerbose = 1);
 
     /**
      * Destructor.
      * Frees the memory used by the object.
      */
-    virtual ~R3BSofToFWOnlineSpectra();
+    virtual ~R3BSofTofWOnlineSpectra();
 
     /**
      * Method for task initialization.
@@ -90,26 +89,30 @@ class R3BSofToFWOnlineSpectra : public FairTask
         fTwimTofRangeMin = min;
         fTwimTofRangeMax = max;
     }
+    inline void Set_IdSofSciCaveC(Int_t id){fIdSofSciCaveC=id;}
 
   private:
-    TClonesArray* fMappedItemsToFW;    /**< Array with mapped items. */
-    TClonesArray* fTcalItemsToFW;      /**< Array with tcal items. */
+    TClonesArray* fMappedItemsTofW;    /**< Array with mapped items. */
+    TClonesArray* fTcalItemsTofW;      /**< Array with tcal items. */
+    TClonesArray* fSingleTcalItemsTofW;      /**< Array with tcal items. */
     TClonesArray* fSingleTcalItemsSci; /**< Array with single tcal items of Sci */
     TClonesArray* fHitItemsTwim;       /**< Array with hit items of twim. */
     TClonesArray* fCalItemsMwpc;       /**< Array with cal items of mwpc3. */
     Float_t fTwimTofRangeMax;          // Range for Twim vs ToF histograms
     Float_t fTwimTofRangeMin;
+    Int_t   fIdSofSciCaveC;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
-    TCanvas* cToFWFineTime[NbChs];
-    TCanvas* cToFWMult;
-    TCanvas* cToFWRawPos;
-    TCanvas* cToFWEneRaw[NbChs];
-    TCanvas* cToFWRawTof[NbDets];
+    TCanvas* cTofWFineTime[NbChs];
+    TCanvas* cTofWMult;
+    TCanvas* cTofWRawPos;
+    TCanvas* cTofWRawPosST;
+    TCanvas* cTofWEneRaw[NbChs];
+    TCanvas* cTofWRawTof[NbDets];
     TCanvas* cTwimvsTof[NbDets];
     TCanvas* cMwpc3XvsTof;
     TCanvas* cMwpc3YvsPosTof[NbDets];
@@ -120,9 +123,11 @@ class R3BSofToFWOnlineSpectra : public FairTask
 
     // Histograms for PosRaw Data
     TH1F* fh1_RawPos_AtTcalMult1[NbDets];
+    TH1F* fh1_RawPos_AtSingleTcal[NbDets];
 
     // Histograms for ToFraw
     TH1D* fh1_RawTof_AtTcalMult1[NbDets];
+    TH1D* fh1_RawTof_AtSingleTcal[NbDets];
 
     // Histograms for EneRaw
     TH1D* fh1_EneRaw[NbDets * NbChs];
@@ -135,7 +140,7 @@ class R3BSofToFWOnlineSpectra : public FairTask
     TH2F* fh2_Mwpc3Y_PosTof[NbDets];
 
   public:
-    ClassDef(R3BSofToFWOnlineSpectra, 1)
+    ClassDef(R3BSofTofWOnlineSpectra, 1)
 };
 
 #endif

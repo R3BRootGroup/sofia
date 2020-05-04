@@ -9,8 +9,8 @@
 #pragma link C++ class R3BSofTcalPar+;
 #pragma link C++ class R3BSofSciMapped2TcalPar+;
 #pragma link C++ class R3BSofSciMapped2Tcal+;
-#pragma link C++ class R3BSofToFWMapped2TcalPar+;
-#pragma link C++ class R3BSofToFWMapped2Tcal+;
+#pragma link C++ class R3BSofTofWMapped2TcalPar+;
+#pragma link C++ class R3BSofTofWMapped2Tcal+;
 #pragma link C++ class R3BSofiaProvideTStart+;
 
 

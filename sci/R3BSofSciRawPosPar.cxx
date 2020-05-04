@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#define MAX_RAWPOSPAR 2 * NUMBER_OF_SOFSCI_DETECTORS
+#define MAX_RAWPOSPAR 10
 
 using std::cout;
 using std::endl;
@@ -17,8 +17,8 @@ using std::endl;
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
-    , fNumDetectors(0)
-    , fNumChannels(0)
+    , fNumDets(0)
+    , fNumPmts(0)
     , fNumSignals(0)
     , fNumParsPerSignal(0)
 {
@@ -57,8 +57,8 @@ void R3BSofSciRawPosPar::putParams(FairParamList* list)
     fAllSignalsRawPosParams->Set(array_size);
 
     list->add("RawPosPar", *fAllSignalsRawPosParams);
-    list->add("nDetectorsRawPosPar", fNumDetectors);
-    list->add("nChannelsRawPosPar", fNumChannels);
+    list->add("nDetectorsRawPosPar", fNumDets);
+    list->add("nChannelsRawPosPar", fNumPmts);
     list->add("nSignalsRawPosPar", fNumSignals);
     list->add("nRawPosParsPerSignal", fNumParsPerSignal);
 }
@@ -71,11 +71,11 @@ Bool_t R3BSofSciRawPosPar::getParams(FairParamList* list)
     {
         return kFALSE;
     }
-    if (!list->fill("nDetectorsRawPosPar", &fNumDetectors))
+    if (!list->fill("nDetectorsRawPosPar", &fNumDets))
     {
         return kFALSE;
     }
-    if (!list->fill("nChannelsRawPosPar", &fNumChannels))
+    if (!list->fill("nChannelsRawPosPar", &fNumPmts))
     {
         return kFALSE;
     }

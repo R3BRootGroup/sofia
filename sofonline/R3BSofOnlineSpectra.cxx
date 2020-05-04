@@ -19,7 +19,7 @@
 #include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
-#include "R3BSofToFWOnlineSpectra.h"
+#include "R3BSofTofWOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
@@ -67,7 +67,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fMwpc3Online(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
-    , fToFWOnline(NULL)
+    , fTofWOnline(NULL)
     , fScalersOnline(NULL)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
@@ -98,7 +98,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fMwpc3Online(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
-    , fToFWOnline(NULL)
+    , fTofWOnline(NULL)
     , fScalersOnline(NULL)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
@@ -256,10 +256,10 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fSciOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofSciOnlineSpectra not found";
 
-    // Looking for ToFW online
-    fToFWOnline = (R3BSofToFWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofToFWOnlineSpectra");
-    if (!fToFWOnline)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofToFWOnlineSpectra not found";
+    // Looking for TofW online
+    fTofWOnline = (R3BSofTofWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTofWOnlineSpectra");
+    if (!fTofWOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTofWOnlineSpectra not found";
 
     // Looking for Scalers online
     fScalersOnline = (R3BSofScalersOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofScalersOnlineSpectra");
@@ -468,9 +468,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Scalers histograms if they exist somewhere
     if (fScalersOnline)
         fScalersOnline->Reset_Histo();
-    // Reset ToFW histograms if they exist somewhere
-    if (fToFWOnline)
-        fToFWOnline->Reset_Histo();
+    // Reset TofW histograms if they exist somewhere
+    if (fTofWOnline)
+        fTofWOnline->Reset_Histo();
     // Reset Music histograms if they exist somewhere
     if (fMusicOnline)
         fMusicOnline->Reset_Histo();

@@ -8,7 +8,6 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/neulandData
-${R3BSOF_SOURCE_DIR}/input
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
@@ -18,7 +17,6 @@ ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
-${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -42,9 +40,9 @@ sciData/R3BSofSciTcalData.cxx
 sciData/R3BSofSciSingleTcalData.cxx
 sciData/R3BSofSciCalData.cxx
 sciData/R3BSofSciHitData.cxx
-tofwData/R3BSofToFWMappedData.cxx
-tofwData/R3BSofToFWTcalData.cxx
-tofwData/R3BSofToFWSingleTcalData.cxx
+tofwData/R3BSofTofWMappedData.cxx
+tofwData/R3BSofTofWTcalData.cxx
+tofwData/R3BSofTofWSingleTcalData.cxx
 tofwData/R3BSofToFWCalData.cxx
 tofwData/R3BSofTofWHitData.cxx
 twimData/R3BSofTwimMappedData.cxx

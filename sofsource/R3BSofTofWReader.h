@@ -8,11 +8,12 @@ struct EXT_STR_h101_SOFTOFW_t;
 typedef struct EXT_STR_h101_SOFTOFW_t EXT_STR_h101_SOFTOFW;
 class FairLogger;
 
-class R3BSofToFWReader : public R3BReader
+class R3BSofTofWReader : public R3BReader
 {
   public:
-    R3BSofToFWReader(EXT_STR_h101_SOFTOFW*, UInt_t);
-    ~R3BSofToFWReader();
+    R3BSofTofWReader(EXT_STR_h101_SOFTOFW*, UInt_t);
+    R3BSofTofWReader(EXT_STR_h101_SOFTOFW*, UInt_t, Int_t);
+    ~R3BSofTofWReader();
 
     Bool_t Init(ext_data_struct_info*);
     Bool_t Read();
@@ -28,11 +29,12 @@ class R3BSofToFWReader : public R3BReader
     UInt_t fOffset;
     // Don't store data for online
     Bool_t fOnline;
-    /* the structs of type R3BSofToFWMapped Item */
+    /* the structs of type R3BSofTofWMapped Item */
     TClonesArray* fArray; /**< Output array. */
+    Int_t fNumPaddles;
 
   public:
-    ClassDef(R3BSofToFWReader, 0);
+    ClassDef(R3BSofTofWReader, 0);
 };
 
 #endif

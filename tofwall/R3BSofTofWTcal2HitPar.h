@@ -8,7 +8,6 @@
 #define R3BSofTofWTcal2HitPar_H
 
 #include "FairTask.h"
-#include "R3BSofToFWSingleTcalData.h"
 #include "TH1F.h"
 
 class TClonesArray;
@@ -54,7 +53,7 @@ class R3BSofTofWTcal2HitPar : public FairTask
 
   private:
     Int_t fNumSci;
-    Int_t fMinStadistics;
+    Int_t fMinStatistics;
     Int_t fLimit_left;
     Int_t fLimit_right;
     Int_t fMaxSigma;

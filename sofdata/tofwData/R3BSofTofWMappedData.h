@@ -5,17 +5,17 @@
 
 // for the data analysis of the SOFIA TIME-OF-FLIGHT WALL
 
-class R3BSofToFWMappedData : public TObject
+class R3BSofTofWMappedData : public TObject
 {
   public:
     // Default Constructor
-    R3BSofToFWMappedData();
+    R3BSofTofWMappedData();
 
     // Standard Constructor
-    R3BSofToFWMappedData(UShort_t detector, UShort_t pm, UInt_t tc, UInt_t tf, UInt_t e, Bool_t flag);
+    R3BSofTofWMappedData(UShort_t detector, UShort_t pm, UInt_t tc, UInt_t tf, UInt_t e, Bool_t flag);
 
     // Destructor
-    virtual ~R3BSofToFWMappedData() {}
+    virtual ~R3BSofTofWMappedData() {}
 
     // Getters
     inline const UShort_t& GetDetector() const { return fDetector; }
@@ -36,7 +36,7 @@ class R3BSofToFWMappedData : public TObject
     // Any event which has at least one plastic turned to kFALSE should be discarded
 
   public:
-    ClassDef(R3BSofToFWMappedData, 2)
+    ClassDef(R3BSofTofWMappedData, 2)
 };
 
 #endif
