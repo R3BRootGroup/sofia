@@ -4,15 +4,13 @@
 #include "R3BReader.h"
 #include "TClonesArray.h"
 
-#define NUM_SOFTRIM_SECTIONS 3
-#define NUM_SOFTRIM_ANODES 7
-
 // section 1 : FIRST SECTION ALONG Z AXIS
 // section 2 : MIDDLE SECTION ALONG Z AXIS
 // section 3 : LAST SECTION ALONG Z AXIS
 
 // anodes 1 to 6 : energy and time
 // anode 7 : reference time
+// anode 8 : trigger time
 
 struct EXT_STR_h101_SOFTRIM_t;
 typedef struct EXT_STR_h101_SOFTRIM_t EXT_STR_h101_SOFTRIM;
@@ -24,6 +22,7 @@ class R3BSofTrimReader : public R3BReader
 {
   public:
     R3BSofTrimReader(EXT_STR_h101_SOFTRIM*, UInt_t);
+    R3BSofTrimReader(EXT_STR_h101_SOFTRIM*, UInt_t, Int_t);
     ~R3BSofTrimReader();
 
   public:
@@ -31,7 +30,11 @@ class R3BSofTrimReader : public R3BReader
     Bool_t Read();
     void Reset();
 
-    uint32_t multPerAnode[NUM_SOFTRIM_ANODES];
+    /** Accessor to select online mode **/
+    void SetOnline(Bool_t option) { fOnline = option; }
+
+    void SetNumSections(Int_t num) {fSections=num;}
+
 
   private:
     Bool_t ReadData(EXT_STR_h101_SOFTRIM_onion*, UShort_t);
@@ -41,10 +44,14 @@ class R3BSofTrimReader : public R3BReader
     EXT_STR_h101_SOFTRIM* fData;
     /* Data offset */
     UInt_t fOffset;
+    // Don't store data for online
+    Bool_t fOnline;
     /* FairLogger */
     FairLogger* fLogger;
     /* the structs of type R3BSofTrimMappedData Item */
     TClonesArray* fArray; /**< Output array. */
+    /* Number of Sections */
+    Int_t fSections;
 
   public:
     ClassDef(R3BSofTrimReader, 0);

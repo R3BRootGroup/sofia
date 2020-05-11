@@ -23,6 +23,7 @@ class R3BEventHeader;
 class R3BSofAtOnlineSpectra;
 class R3BSofMwpcOnlineSpectra;
 class R3BSofMwpcCorrelationOnlineSpectra;
+class R3BSofTrimOnlineSpectra;
 class R3BSofTwimOnlineSpectra;
 class R3BSofSciOnlineSpectra;
 class R3BSofTofWOnlineSpectra;
@@ -115,6 +116,7 @@ class R3BSofOnlineSpectra : public FairTask
     R3BSofMwpcOnlineSpectra* fMwpc1Online;
     R3BSofMwpcOnlineSpectra* fMwpc2Online;
     R3BSofMwpcOnlineSpectra* fMwpc3Online;
+    R3BSofTrimOnlineSpectra* fTrimOnline;
     R3BSofTwimOnlineSpectra* fTwimOnline;
     R3BSofSciOnlineSpectra* fSciOnline;
     R3BSofTofWOnlineSpectra* fTofWOnline;
