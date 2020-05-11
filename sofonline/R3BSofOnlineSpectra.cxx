@@ -21,6 +21,7 @@
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofTofWOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
+#include "R3BSofTrimOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
 #include "R3BWRMasterData.h"
@@ -65,6 +66,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fMwpc1Online(NULL)
     , fMwpc2Online(NULL)
     , fMwpc3Online(NULL)
+    , fTrimOnline(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
     , fTofWOnline(NULL)
@@ -96,6 +98,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fMwpc1Online(NULL)
     , fMwpc2Online(NULL)
     , fMwpc3Online(NULL)
+    , fTrimOnline(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
     , fTofWOnline(NULL)
@@ -245,6 +248,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     fMwpc3Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc3OnlineSpectra");
     if (!fMwpc3Online)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc3OnlineSpectra not found";
+
+    // Looking for Trim online
+    fTrimOnline = (R3BSofTrimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrimOnlineSpectra");
+    if (!fTrimOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTrimOnlineSpectra not found";
 
     // Looking for Twim online
     fTwimOnline = (R3BSofTwimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTwimOnlineSpectra");
@@ -459,6 +467,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Mwpc3 histograms if they exist somewhere
     if (fMwpc3Online)
         fMwpc3Online->Reset_Histo();
+    // Reset Trim histograms if they exist somewhere
+    if (fTrimOnline)
+        fTrimOnline->Reset_Histo();
     // Reset Twim histograms if they exist somewhere
     if (fTwimOnline)
         fTwimOnline->Reset_Histo();

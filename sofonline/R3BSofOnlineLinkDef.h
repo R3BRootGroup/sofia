@@ -11,6 +11,7 @@
 #pragma link C++ class R3BSofMwpcCorrelationOnlineSpectra + ;
 #pragma link C++ class R3BSofMwpcvsMusicOnlineSpectra + ;
 #pragma link C++ class R3BSofAtOnlineSpectra + ;
+#pragma link C++ class R3BSofTrimOnlineSpectra + ;
 #pragma link C++ class R3BSofTwimOnlineSpectra + ;
 #pragma link C++ class R3BSofSciOnlineSpectra + ;
 #pragma link C++ class R3BSofTofWOnlineSpectra + ;

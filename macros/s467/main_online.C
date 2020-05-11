@@ -79,7 +79,8 @@ void main_online()
       sofiaWR = 0xe00;
       
       //filename = "--stream=lxir123:7803";
-      filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
+      //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
+      filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_s467/main0*_0001.lmd";
       outputFilename = "data_s467_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
