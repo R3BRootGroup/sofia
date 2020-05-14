@@ -88,7 +88,7 @@ InitStatus R3BSofSciMapped2Tcal::Init()
     // --- ---------------- --- //
     // --- OUTPUT TCAL DATA --- //
     // --- ---------------- --- //
-    fTcal = new TClonesArray("R3BSofSciTcalData", 10);
+    fTcal = new TClonesArray("R3BSofSciTcalData", 25);
     if (!fOnline)
     {
         rm->Register("SofSciTcalData", "SofSci", fTcal, kTRUE);

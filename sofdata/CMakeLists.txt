@@ -49,6 +49,7 @@ twimData/R3BSofTwimMappedData.cxx
 twimData/R3BSofTwimCalData.cxx
 twimData/R3BSofTwimHitData.cxx
 trimData/R3BSofTrimMappedData.cxx
+trimData/R3BSofTrimCalData.cxx
 frsData/R3BSofFrsData.cxx
 trackingData/R3BSofTrackingData.cxx
 scalersData/R3BSofScalersMappedData.cxx

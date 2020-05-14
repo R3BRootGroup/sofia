@@ -32,6 +32,7 @@
 #pragma link C++ class R3BSofTofWHitData + ;
 
 #pragma link C++ class R3BSofTrimMappedData + ;
+#pragma link C++ class R3BSofTrimCalData + ;
 
 #pragma link C++ class R3BSofTwimMappedData + ;
 #pragma link C++ class R3BSofTwimCalData + ;

@@ -4,6 +4,7 @@
 
 #include "R3BSofTrimOnlineSpectra.h"
 #include "R3BSofTrimMappedData.h"
+#include "R3BSofTrimCalData.h"
 #include "R3BEventHeader.h"
 #include "THttpServer.h"
 
@@ -35,30 +36,34 @@ using namespace std;
 R3BSofTrimOnlineSpectra::R3BSofTrimOnlineSpectra()
     : FairTask("SofTrimOnlineSpectra", 1)
     , fMappedItemsTrim(NULL)
+    , fCalItemsTrim(NULL)
     , fNEvents(0)
     , fNumSections(3)
     , fNumAnodes(6)
     , fNumTref(1)
     , fNumTtrig(1)
 {
+  fNumPairs = fNumAnodes / 2;
 }
 
 R3BSofTrimOnlineSpectra::R3BSofTrimOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMappedItemsTrim(NULL)
+    , fCalItemsTrim(NULL)
     , fNEvents(0)
     , fNumSections(3)
     , fNumAnodes(6)
     , fNumTref(1)
     , fNumTtrig(1)
 {
+  fNumPairs = fNumAnodes / 2;
 }
 
 R3BSofTrimOnlineSpectra::~R3BSofTrimOnlineSpectra()
 {
     LOG(INFO) << "R3BSofTrimOnlineSpectra::Delete instance";
-    if (fMappedItemsTrim)
-        delete fMappedItemsTrim;
+    if (fMappedItemsTrim)        delete fMappedItemsTrim;
+    if (fCalItemsTrim)           delete fCalItemsTrim;
 }
 
 InitStatus R3BSofTrimOnlineSpectra::Init()
@@ -77,7 +82,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
-    // === get access to mapped data of the TRIPLE-MUSIC
+    // === get access to mapped data of the Triple-MUSIC
     fMappedItemsTrim = (TClonesArray*)mgr->GetObject("TrimMappedData");
     if (!fMappedItemsTrim)
     {
@@ -85,9 +90,20 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
       return kFATAL;
     }
 
+    // === get access to cal data of the Triple-MUSIC === //
+    fCalItemsTrim = (TClonesArray*)mgr->GetObject("TrimCalData");
+    if(!fCalItemsTrim){
+      LOG(FATAL) << " R3BSofTrimOnlineSpectra::Init(), TrimCalData not found" ;
+      return kFATAL;
+    }
+    
     // === Create histograms for detectors
     char Name1[255];
     char Name2[255];
+
+    // === =========== === //
+    // === MAPPED DATA === //
+    // === =========== === //
 
     // --- TRIM: 1-D MAPPED data for ENERGY, DRIFT-TIME and MULTIPLICITY
     cTrimMap_E = new TCanvas*[fNumSections];
@@ -96,6 +112,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh1_trimmap_DT = new TH1F*[fNumSections*fNumAnodes];
     cTrimMap_Mult = new TCanvas*[fNumSections];
     fh1_trimmap_Mult = new TH1F*[fNumSections];
+
     for (Int_t i = 0; i < fNumSections; i++){
       sprintf(Name1, "Trim_Emap_Sec_%d",i+1);
       sprintf(Name2, "Section %d",i+1);
@@ -147,7 +164,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
       sprintf(Name1, "fh1_trim_mult_sec_%d", i+1);
       sprintf(Name2, "Trim: Multiplicity section %d", i + 1);
-      fh1_trimmap_Mult[i] = new TH1F(Name1, Name2, fNumAnodes+fNumTref+fNumTtrig, 0, fNumAnodes+fNumTref+fNumTtrig);
+      fh1_trimmap_Mult[i] = new TH1F(Name1, Name2, fNumAnodes+fNumTref+fNumTtrig, 0.5, fNumAnodes+fNumTref+fNumTtrig+0.5);
       fh1_trimmap_Mult[i]->GetXaxis()->SetTitle("Anode");
       fh1_trimmap_Mult[i]->GetYaxis()->SetTitle("Counts");
       fh1_trimmap_Mult[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -228,15 +245,118 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
       }
     }// end of for (i, fNumSections) 2-D MAPPED
 
-    // === MAIN FOLDER-Trim
-    TFolder* mainfolTrim = new TFolder("Trim", "Trim info");
-    for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimMap_E[i]);
-    for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimMap_DT[i]);
-    for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimMap_Mult[i]);
-    mainfolTrim->Add(cTrimMap_DeltaTrefTtrig);
+    // === ======== === //
+    // === CAL DATA === //
+    // === ======== === //
+
+    LOG(INFO) << "START THE INIT OF CAL HISTO" ;
+    cTrimCal_Ene = new TCanvas*[fNumSections];
+    cTrimCal_DT = new TCanvas*[fNumSections];
+
+    fh1_trimcal_Esub = new TH1F*[fNumSections*fNumAnodes];
+    fh1_trimcal_Ematch = new TH1F*[fNumSections*fNumAnodes];
+    fh1_trimcal_DTraw = new TH1D*[fNumSections*fNumAnodes];
+    fh1_trimcal_DTalign = new TH1D*[fNumSections*fNumAnodes];
+
     for (Int_t i = 0; i < fNumSections; i++){
+      LOG(INFO) << "SECTION = " << i+1;
+      sprintf(Name1, "TrimCal_E_PerAnode_Sec_%d",i+1);
+      sprintf(Name2, "Section %d",i+1);
+      cTrimCal_Ene[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+      cTrimCal_Ene[i]->Divide(2,3); // 2 col and 3 raws (if triangular anodes: one raw per pair)
+
+      sprintf(Name1, "TrimCal_DT_PerAnode_Sec_%d",i+1);
+      sprintf(Name2, "Section %d",i+1);
+      cTrimCal_DT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+      cTrimCal_DT[i]->Divide(2,3); // 2 col and 3 raws (if triangular anodes: one raw per pair)
+      
+      for(Int_t j = 0; j < fNumAnodes; j++){
+	sprintf(Name1, "fh1_trimcal_Esub_sec%d_a%d", i+1, j+1);
+	sprintf(Name2, "Sec %d:Anode %d", i+1, j+1);
+	fh1_trimcal_Esub[j+fNumAnodes*i] = new TH1F(Name1, Name2, 8192, 0, 8192);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetYaxis()->SetTitle("Counts");
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetYaxis()->SetTitleOffset(1.1);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetXaxis()->CenterTitle(true);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetYaxis()->CenterTitle(true);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetXaxis()->SetLabelSize(0.045);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetXaxis()->SetTitleSize(0.045);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetYaxis()->SetLabelSize(0.045);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->GetYaxis()->SetTitleSize(0.045);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->SetLineColor(kBlue);
+	cTrimCal_Ene[i]->cd(j+1);
+	fh1_trimcal_Esub[j+fNumAnodes*i]->Draw("");
+
+	sprintf(Name1, "fh1_trimcal_Ematch_sec%d_a%d", i+1, j+1);
+	sprintf(Name2, "Sec %d:Anode %d", i+1, j+1);
+	fh1_trimcal_Ematch[j+fNumAnodes*i] = new TH1F(Name1, Name2, 8192, 0, 8192);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetYaxis()->SetTitle("Counts");
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetYaxis()->SetTitleOffset(1.1);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetXaxis()->CenterTitle(true);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetYaxis()->CenterTitle(true);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetXaxis()->SetLabelSize(0.045);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetXaxis()->SetTitleSize(0.045);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetYaxis()->SetLabelSize(0.045);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->GetYaxis()->SetTitleSize(0.045);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->SetLineColor(kRed);
+	cTrimCal_Ene[i]->cd(j+1);
+	fh1_trimcal_Ematch[j+fNumAnodes*i]->Draw("same");
+
+	sprintf(Name1, "fh1_trimcal_DTraw_sec%d_a%d", i+1, j+1);
+	sprintf(Name2, "Sec %d:Anode %d", i+1, j+1);
+	fh1_trimcal_DTraw[j+fNumAnodes*i] = new TH1D(Name1, Name2, 40000, 0, 40000);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetXaxis()->SetTitle("Drift Time [channels, 100 ps TDC resolution], if mult==1");
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetYaxis()->SetTitle("Counts");
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetYaxis()->SetTitleOffset(1.1);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetXaxis()->CenterTitle(true);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetYaxis()->CenterTitle(true);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetXaxis()->SetLabelSize(0.045);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetXaxis()->SetTitleSize(0.045);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetYaxis()->SetLabelSize(0.045);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->GetYaxis()->SetTitleSize(0.045);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->SetLineColor(kBlue);
+	cTrimCal_DT[i]->cd(j+1);
+	fh1_trimcal_DTraw[j+fNumAnodes*i]->Draw("");
+	
+	sprintf(Name1, "fh1_trimcal_DTalign_sec%d_a%d", i+1, j+1);
+	sprintf(Name2, "Sec %d:Anode %d", i+1, j+1);
+	fh1_trimcal_DTalign[j+fNumAnodes*i] = new TH1D(Name1, Name2, 40000, 0, 40000);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetXaxis()->SetTitle("Drift Time [channels, 100 ps TDC resolution], if mult==1");
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetYaxis()->SetTitle("Counts");
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetYaxis()->SetTitleOffset(1.1);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetXaxis()->CenterTitle(true);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetYaxis()->CenterTitle(true);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetXaxis()->SetLabelSize(0.045);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetXaxis()->SetTitleSize(0.045);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetYaxis()->SetLabelSize(0.045);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->GetYaxis()->SetTitleSize(0.045);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->SetLineColor(kRed);
+	cTrimCal_DT[i]->cd(j+1);
+	fh1_trimcal_DTalign[j+fNumAnodes*i]->Draw("sames");
+
+      }//end of loop over the anodes
+    }//end of loop over the sections
+
+
+    // === ================ === //
+    // === MAIN FOLDER-Trim === //
+    // === ================ === //
+
+    TFolder* mainfolTrim = new TFolder("Trim", "Trim info");
+    if (fMappedItemsTrim){
+      for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimMap_E[i]);
+      for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimMap_DT[i]);
+      for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimMap_Mult[i]);
+      mainfolTrim->Add(cTrimMap_DeltaTrefTtrig);
+      for (Int_t i = 0; i < fNumSections; i++){
         mainfolTrim->Add(cTrimMap_EvsDT[i]);
         mainfolTrim->Add(cTrimMap_DTvsDT[i]);
+      }
+    }
+    if (fCalItemsTrim){
+      for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimCal_Ene[i]);
+      for (Int_t i = 0; i < fNumSections; i++) mainfolTrim->Add(cTrimCal_DT[i]);
     }
     run->AddObject(mainfolTrim);
 
@@ -251,25 +371,42 @@ void R3BSofTrimOnlineSpectra::Reset_Histo()
     LOG(INFO) << "R3BSofTrimOnlineSpectra::Reset_Histo";
 
     // Mapped data
-    for (Int_t i = 0; i < fNumSections; i++){
-      fh1_trimmap_DeltaTrefTtrig[i]->Reset();
-      fh1_trimmap_Mult[i]->Reset();
-      for (Int_t j = 0; j < fNumAnodes; j++){
-	fh1_trimmap_E[i*fNumAnodes+j]->Reset();
-	fh1_trimmap_DT[i*fNumAnodes+j]->Reset();
-	fh2_trimmap_EvsDT[i*fNumAnodes+j]->Reset();
-      }
-      for (Int_t j = 0; j < fNumAnodes-1; j++){
-	fh2_trimmap_DTvsDT[i*(fNumAnodes-1)+j]->Reset();
+    if(fMappedItemsTrim){
+      for (Int_t i = 0; i < fNumSections; i++){
+	fh1_trimmap_DeltaTrefTtrig[i]->Reset();
+	fh1_trimmap_Mult[i]->Reset();
+	for (Int_t j = 0; j < fNumAnodes; j++){
+	  fh1_trimmap_E[i*fNumAnodes+j]->Reset();
+	  fh1_trimmap_DT[i*fNumAnodes+j]->Reset();
+	  fh2_trimmap_EvsDT[i*fNumAnodes+j]->Reset();
+	}
+	for (Int_t j = 0; j < fNumAnodes-1; j++){
+	  fh2_trimmap_DTvsDT[i*(fNumAnodes-1)+j]->Reset();
+	}
       }
     }
+    // Cal data
+    if(fCalItemsTrim){
+      for (Int_t i = 0; i < fNumSections; i++){
+	for (Int_t j = 0; j < fNumAnodes; j++){
+	  fh1_trimcal_Esub[i*fNumAnodes+j]->Reset();
+	  fh1_trimcal_Ematch[i*fNumAnodes+j]->Reset();
+	  fh1_trimcal_DTraw[i*fNumAnodes+j]->Reset();
+	  fh1_trimcal_DTalign[i*fNumAnodes+j]->Reset();
+	}
+      }
+    }
+
 }
 
 void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
 {
+
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofTrimOnlineSpectra::Exec FairRootManager not found";
+
+    Int_t nHits;
 
     // === MAPPED data : Section ID: GetSecID() returns 1-based section number
     // ===               Anode ID: GetAnodeID returns 1-based anode number
@@ -290,7 +427,7 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
 	  mult[j][i] = 0;
 	}
 
-      Int_t nHits = fMappedItemsTrim->GetEntriesFast();
+      nHits = fMappedItemsTrim->GetEntriesFast();
       for (Int_t ihit = 0; ihit < nHits; ihit++){
 	R3BSofTrimMappedData* hit = (R3BSofTrimMappedData*)fMappedItemsTrim->At(ihit);
 	if (!hit) continue;
@@ -323,12 +460,30 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
 
     }// end of if (MappedItemsTrim)
 
+
+    // === CAL data 
+    Int_t iSec, iAnode;
+    if (fCalItemsTrim && fCalItemsTrim->GetEntriesFast() > 0){
+      nHits = fCalItemsTrim->GetEntriesFast();
+      for (Int_t ihit = 0; ihit < nHits; ihit++){
+	R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fCalItemsTrim->At(ihit);
+	if (!hit) continue;
+	iSec = hit->GetSecID()-1;
+	iAnode = hit->GetAnodeID()-1;
+	fh1_trimcal_Esub[iAnode+iSec*fNumAnodes]->Fill(hit->GetEnergySub());
+	fh1_trimcal_Ematch[iAnode+iSec*fNumAnodes]->Fill(hit->GetEnergyMatch());
+	fh1_trimcal_DTraw[iAnode+iSec*fNumAnodes]->Fill(hit->GetDriftTimeRaw());
+	fh1_trimcal_DTalign[iAnode+iSec*fNumAnodes]->Fill(hit->GetDriftTimeAligned());
+      }//end of lopp over the cal data      
+    }
+
     fNEvents += 1;
 }
 
 void R3BSofTrimOnlineSpectra::FinishEvent()
 {
-    if (fMappedItemsTrim)     fMappedItemsTrim->Clear();
+    if (fMappedItemsTrim)  fMappedItemsTrim->Clear();
+    if (fCalItemsTrim)     fCalItemsTrim->Clear();
 }
 
 void R3BSofTrimOnlineSpectra::FinishTask()
@@ -343,6 +498,14 @@ void R3BSofTrimOnlineSpectra::FinishTask()
       cTrimMap_DTvsDT[i]->Write();
     }
   }
+
+  if (fCalItemsTrim){
+    for (Int_t s=0; s<fNumSections; s++){
+      cTrimCal_Ene[s]->Write();
+      cTrimCal_DT[s]->Write();
+    }
+  }
+
 }
 
 ClassImp(R3BSofTrimOnlineSpectra)

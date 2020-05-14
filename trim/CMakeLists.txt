@@ -10,6 +10,7 @@ ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/trimData
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/trim
 )
@@ -23,6 +24,11 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
+R3BSofTrimContFact.cxx
+R3BSofTrimCalPar.cxx
+R3BSofTrimMapped2Cal.cxx
+R3BSofTrimCalculateMatchGainPar.cxx
+R3BSofTrimCalculateDriftTimeOffsetPar.cxx
 )
 
 # fill list of header files from list of source files
