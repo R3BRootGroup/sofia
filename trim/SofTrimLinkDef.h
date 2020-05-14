@@ -6,4 +6,11 @@
 
 #pragma link C++ class R3BSofTRIM + ;
 
+#pragma link C++ class R3BSofTrimContFact + ;
+#pragma link C++ class R3BSofTrimCalPar + ;
+
+#pragma link C++ class R3BSofTrimMapped2Cal + ;
+#pragma link C++ class R3BSofTrimCalculateMatchGainPar + ;
+#pragma link C++ class R3BSofTrimCalculateDriftTimeOffsetPar + ;
+
 #endif

@@ -78,6 +78,7 @@ class R3BSofTrimOnlineSpectra : public FairTask
 
     void SetNumSections(Int_t num) {fNumSections=num;}
     void SetNumAnodes(Int_t num) {fNumAnodes=num;}
+    void SetNumPairs(Int_t num) {fNumPairs=num;}
     void SetNumTref(Int_t num) {fNumTref=num;}
     void SetNumTtrig(Int_t num) {fNumTtrig=num;}
 
@@ -86,10 +87,12 @@ class R3BSofTrimOnlineSpectra : public FairTask
     
     Int_t    fNumSections;
     Int_t    fNumAnodes;
+    Int_t    fNumPairs;
     Int_t    fNumTref;
     Int_t    fNumTtrig;
 
     TClonesArray* fMappedItemsTrim; /**< Array with mapped items. */
+    TClonesArray* fCalItemsTrim;    /**< Array with cal items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -110,6 +113,17 @@ class R3BSofTrimOnlineSpectra : public FairTask
     TH1F** fh1_trimmap_DeltaTrefTtrig;//[NbSectionsTrim];
     TH2F** fh2_trimmap_EvsDT;//[NbSectionsTrim][NbAnodesTrim];
     TH2F** fh2_trimmap_DTvsDT;//[NbSectionsTrim][NbAnodesTrim-1];
+
+    // Canvas for Cal data
+    TCanvas** cTrimCal_Ene;
+    TCanvas** cTrimCal_DT;
+
+    // Histograms for Cal data
+    TH1F** fh1_trimcal_Esub;
+    TH1F** fh1_trimcal_Ematch;
+    TH1D** fh1_trimcal_DTraw;
+    TH1D** fh1_trimcal_DTalign;
+
 
   public:
     ClassDef(R3BSofTrimOnlineSpectra, 1)
