@@ -20,8 +20,7 @@ class R3BSofTofWTcal2HitPar : public FairTask
     R3BSofTofWTcal2HitPar();
 
     /** Standard constructor **/
-    R3BSofTofWTcal2HitPar(const TString& name,
-                            Int_t iVerbose = 1);
+    R3BSofTofWTcal2HitPar(const TString& name, Int_t iVerbose = 1);
 
     /** Destructor **/
     virtual ~R3BSofTofWTcal2HitPar();
@@ -60,10 +59,8 @@ class R3BSofTofWTcal2HitPar : public FairTask
     TArrayF* TofParams;
     TArrayF* PosParams;
 
-    R3BSofTofWHitPar* fHit_Par;   /**< Parameter container. >*/
+    R3BSofTofWHitPar* fHit_Par;  /**< Parameter container. >*/
     TClonesArray* fTofCalDataCA; /**< Array with Tof-Tcal data. >*/
-
-
 
   public:
     // Class definition

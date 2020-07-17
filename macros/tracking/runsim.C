@@ -55,7 +55,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fMwpc1 = true; // MWPC1 Detector
     TString fMwpc1Geo = "mwpc_1.geo.root";
 
-    Bool_t fTwim = false; // Twin-Music Detector
+    Bool_t fTwim = true; // Twin-Music Detector
     TString fTwimGeo = "twinmusic_v19a.geo.root";
 
     Bool_t fMwpc2 = true; // MWPC2 Detector
@@ -163,7 +163,7 @@ void runsim(Int_t nEvents = 0)
     // Twim definition
     if (fTwim)
     {
-        run->AddModule(new R3BSofTWIM(fTwimGeo, { 0., 0., 50. }));
+        run->AddModule(new R3BSofTWIM(fTwimGeo, { 2., 0., 50. }));
     }
 
     // MWPC2 definition
@@ -268,9 +268,18 @@ void runsim(Int_t nEvents = 0)
         // primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(18, 40, 18, 1, 0., 0., 0.951);
+        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 132, 50, 1, 0.0, 0., 0.951);
         ionGen->SetSpotRadius(0.0, -65.5, 0.);
         primGen->AddGenerator(ionGen);
+
+        // 128-Sn fragment
+        R3BIonGenerator* ionGen1 = new R3BIonGenerator(18, 39, 18, 1, 0., 0., 0.951);
+        ionGen1->SetSpotRadius(0.0, -65.5, 0.);
+        //primGen->AddGenerator(ionGen1);
+
+        R3BIonGenerator* ionGen2 = new R3BIonGenerator(17, 39, 17, 1, -0.05, 0., 0.951);
+        ionGen2->SetSpotRadius(0.0, -65.5, 0.);
+        //primGen->AddGenerator(ionGen2);
 
         // neutrons
         FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);

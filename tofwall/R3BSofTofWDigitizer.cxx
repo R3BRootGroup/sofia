@@ -127,7 +127,7 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
 
         time = pointData[i]->GetTime() + rand->Gaus(0., fsigma_t);
 
-        if (pointData[i]->GetZFF() == 36)
+        if (pointData[i]->GetZFF() > 10)
             AddHitData(paddle, x, y, time);
         //}
     }

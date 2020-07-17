@@ -9,6 +9,7 @@
 //
 
 #include "R3BSofTwimContFact.h"
+#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
@@ -45,6 +46,11 @@ void R3BSofTwimContFact::setAllContainers()
     p2->addContext("TwimHitParContext");
 
     containers->Add(p2);
+
+    FairContainer* p3 = new FairContainer("twimGeoPar", "Twim-Music geometry parameters", "GeometryParameterContext");
+    p3->addContext("GeometryParameterContext");
+
+    containers->Add(p3);
 }
 
 FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
@@ -64,6 +70,10 @@ FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTwimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+    if (strcmp(name, "twimGeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
     return p;
 }
 
@@ -71,16 +81,6 @@ void R3BSofTwimContFact::activateParIo(FairParIo* io)
 {
     // activates the input/output class for the parameters
     // needed by the Twim
-    /*
-    if (strcmp(io->IsA()->GetName(),"FairParRootFileIo")==0) {
-      R3BSofTwimParRootFileIo* p=new R3BSofTwimParRootFileIo(((FairParRootFileIo*)io)->getParRootFile());
-      io->setDetParIo(p);
-    }
-    if (strcmp(io->IsA()->GetName(),"FairParAsciiFileIo")==0) {
-      R3BSofTwimParAsciiFileIo* p=new R3BSofTwimParAsciiFileIo(((FairParAsciiFileIo*)io)->getFile());
-      io->setDetParIo(p);
-      }
-    */
 }
 
 ClassImp(R3BSofTwimContFact)

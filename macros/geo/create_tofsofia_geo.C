@@ -183,7 +183,7 @@ void create_tofsofia_geo(const char* geoTag="v19")
 
    sprintf(buf,"PM_up_%i",i+1);
 
-   dx=3.15*i-3.15*13.-3.15/2.;
+   dx=-3.15*i+3.15*13.+3.15/2.;
    dy=66./2.+6.001;
    dz=0.00;
 
@@ -196,7 +196,7 @@ void create_tofsofia_geo(const char* geoTag="v19")
    pGlobalPMsu[i] = GetGlobalPosition(pMatrixPMsu[i]);
    ptof->AddNode(pPM_nbu[i], i, pGlobalPMsu[i] );
 
-   dx=3.15*i-3.15*13.-3.15/2.;
+   dx=-3.15*i+3.15*13.+3.15/2.;
    dy=0.00;
    dz=0.00;
 
@@ -206,7 +206,7 @@ void create_tofsofia_geo(const char* geoTag="v19")
 
    sprintf(buf,"PM_down_%i",i+1);
 
-   dx=3.15*i-3.15*13.-3.15/2.;
+   dx=-3.15*i+3.15*13.+3.15/2.;
    dy=-66./2.-6.001;
    dz=0.00;
 
