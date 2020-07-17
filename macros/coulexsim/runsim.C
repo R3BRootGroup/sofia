@@ -1,4 +1,4 @@
-void run_sim(Int_t nEvents = 0)
+void runsim(Int_t nEvents = 0)
 {
     TString transport = "TGeant4";
 
@@ -23,6 +23,8 @@ void run_sim(Int_t nEvents = 0)
     TString target3 = "Para45";
     TString target4 = "LiH";
     TString targetType = target4;
+
+    Int_t fCalifaGeoVer = 2020;
 
     // ------------------------------------------------------------------------
     // Stable part ------------------------------------------------------------
@@ -56,13 +58,11 @@ void run_sim(Int_t nEvents = 0)
     // To skip the detector comment out the line with: run->AddModule(...
 
     // GLAD
-    run->AddModule(new R3BGladMagnet("glad_v17_flange.geo.root")); // GLAD should not be moved or rotated
+    run->AddModule(new R3BGladMagnet("glad_s455.geo.root"));
 
     // CALIFA
-    R3BCalifa* califa = new R3BCalifa("califa_10_v8.11.geo.root");
-    califa->SelectGeometryVersion(10);
-    // Selecting the Non-uniformity of the crystals (1 means +-1% max deviation)
-    califa->SetNonUniformity(1.0);
+    R3BCalifa* califa = new R3BCalifa("califa_2020.geo.root");
+    califa->SelectGeometryVersion(fCalifaGeoVer);
     // run->AddModule(califa);
 
     // NeuLAND
@@ -74,16 +74,16 @@ void run_sim(Int_t nEvents = 0)
     run->AddModule(new R3BSofAT("sof_at_v19a.geo.root", { 0., 0., -65.5 }));
 
     // TWIM
-    run->AddModule(new R3BSofTWIM("twinmusic_v0.geo.root", { 0., 0., 50. }));
+    run->AddModule(new R3BSofTWIM("twinmusic_v19a.geo.root", { 0., 0., 50. }));
 
     // MWPC1
-    run->AddModule(new R3BSofMWPC("mwpc_1.geo.root", { 0., 0., 95. }));
+    run->AddModule(new R3BSofMwpc1("mwpc_1.geo.root", { 0., 0., 95. }));
 
-    // MWPC2
-    run->AddModule(new R3BSofMWPC2("mwpc_2.geo.root"));
+    // MWPC3
+    run->AddModule(new R3BSofMwpc3("mwpc_3.geo.root"));
 
     // ToF Wall
-    run->AddModule(new R3BSofTofWall("sof_tof_v0.geo.root"));
+    run->AddModule(new R3BSofTofW("sof_tof_v19.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>
@@ -194,16 +194,11 @@ void run_sim(Int_t nEvents = 0)
 
     run->SetStoreTraj(storeTrajectories);
 
-    FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
+    //FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();
-    TVirtualMC::GetMC()->SetRandom(new TRandom3(randomSeed));
-
-    // ------  Increase nb of step for CALO
-    Int_t nSteps = -15000;
-    TVirtualMC::GetMC()->SetMaxNStep(nSteps);
 
     // -----   Runtime database   ---------------------------------------------
     R3BFieldPar* fieldPar = (R3BFieldPar*)rtdb->getContainer("R3BFieldPar");

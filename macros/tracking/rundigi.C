@@ -15,8 +15,8 @@ void RemoveGeoManager();
 void rundigi()
 {
     // ----- Files ---------------------------------------------------------------
-    TString inFile = "sim.root";
-    TString parFile = "par.root";
+    TString inFile = "../p2psim/sim.root";
+    TString parFile = "../p2psim/par.root";
     TString outFile = "digi.root";
     // ---------------------------------------------------------------------------
 
@@ -35,27 +35,38 @@ void rundigi()
 
     // MWPC1
     R3BSofMwpcDigitizer* mw1_digitizer = new R3BSofMwpcDigitizer("Mwpc1",1);
-    mw1_digitizer->SetPosZ(16.);
+    mw1_digitizer->SetPosZ(177.75);
     run->AddTask(mw1_digitizer);
+
+    // TWIM
+    R3BSofTwimDigitizer* twim_digitizer = new R3BSofTwimDigitizer("TWIM",1);
+    //twim_digitizer->SetPosZ(16.);
+    //run->AddTask(twim_digitizer);
 
     // MWPC2
     R3BSofMwpcDigitizer* mw2_digitizer = new R3BSofMwpcDigitizer("Mwpc2",1);
-    mw2_digitizer->SetPosZ(95.);
-    run->AddTask(mw2_digitizer);
+    //mw2_digitizer->SetPosZ(95.);
+    //run->AddTask(mw2_digitizer);
 
     // MWPC3
     R3BSofMwpcDigitizer* mw3_digitizer = new R3BSofMwpcDigitizer("Mwpc3",1);
-    mw3_digitizer->SetPosX(-243.);
-    mw3_digitizer->SetPosZ(689.);
-    mw3_digitizer->SetAngle(-29.);
+    //mw3_digitizer->SetPosX(-243.);
+    //mw3_digitizer->SetPosZ(689.);
+    //mw3_digitizer->SetAngle(-29.);
+    mw3_digitizer->SetPosX(-84.72);
+    mw3_digitizer->SetPosZ(749.);
+    mw3_digitizer->SetAngle(-13.178);
     mw3_digitizer->SetSigma_y(0.1);//1mm
     run->AddTask(mw3_digitizer);
 
     // TOF-Wall
     R3BSofTofWDigitizer* tofw_digitizer = new R3BSofTofWDigitizer();
-    tofw_digitizer->SetPosX(-257.);
-    tofw_digitizer->SetPosZ(710.);
-    tofw_digitizer->SetAngle(-29.);
+    //tofw_digitizer->SetPosX(-257.);
+    //tofw_digitizer->SetPosZ(710.);
+    //tofw_digitizer->SetAngle(-29.);
+    tofw_digitizer->SetPosX(-100.72);
+    tofw_digitizer->SetPosZ(817.30);
+    tofw_digitizer->SetAngle(-13.178);
     run->AddTask(tofw_digitizer);
 
     // ----- Runtime DataBase info -----------------------------------------------

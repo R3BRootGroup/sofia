@@ -7,6 +7,7 @@
 // Comments:
 //         - 29/10/19 : Initial setup
 //         - 26/12/19 : Added new califa tasks and mwpc0 geometry
+//         - 05/01/21 : Added container with detector parameters
 //
 //--------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ void runsim(Int_t nEvents = 0)
 
     Bool_t fVis = true;             // Store tracks for visualization
     Bool_t fUserPList = false;      // Use of R3B special physics list
-    Bool_t fR3BMagnet = true;       // Magnetic field definition
+    Bool_t fR3BMagnet = false;      // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
     Bool_t fCalifaHitFinder = true; // Apply hit finder task
 
@@ -112,7 +113,22 @@ void runsim(Int_t nEvents = 0)
     run->SetSink(new FairRootFileSink(OutFile)); // Output file
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
-    //  R3B Special Physics List in G4 case
+    // -----   Load detector parameters    ------------------------------------
+    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();
+    parIo1->open("s455_setup.par", "in");
+    rtdb->setFirstInput(parIo1);
+    rtdb->print();
+    // ----- Containers
+    R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
+    R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("mwpc1GeoPar");
+    R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("twimGeoPar");
+    R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("mwpc2GeoPar");
+    R3BTGeoPar* mwpc3Par = (R3BTGeoPar*)rtdb->getContainer("mwpc3GeoPar");
+    R3BTGeoPar* tofwPar = (R3BTGeoPar*)rtdb->getContainer("tofwGeoPar");
+    UInt_t runId = 1;
+    rtdb->initContainers(runId);
+
+    // -----   R3B Special Physics List in G4 case
     if ((fUserPList) && (fMC.CompareTo("TGeant4") == 0))
     {
         run->SetUserConfig("g4R3bConfig.C");
@@ -138,13 +154,24 @@ void runsim(Int_t nEvents = 0)
     // MWPC0 definition
     if (fMwpc0)
     {
-        run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -190. }));
+        if (mwpc0Par)
+        {
+            mwpc0Par->printParams();
+            TGeoRotation* rmwpc0 = new TGeoRotation("Mwpc0rot");
+            rmwpc0->RotateX(mwpc0Par->GetRotX());
+            rmwpc0->RotateY(mwpc0Par->GetRotY());
+            rmwpc0->RotateZ(mwpc0Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc0(fMwpc0Geo, { mwpc0Par->GetPosX(), mwpc0Par->GetPosY(), mwpc0Par->GetPosZ(), rmwpc0 }));
+        }
+        else
+            run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -190. }));
     }
 
     // Tracker, vacuum chamber and LH2 target definitions
     if (fTracker)
     {
-        R3BTra* tra = new R3BTra(fTrackerGeo, { 0., 0., -65.5 });
+        R3BTra* tra = new R3BTra(fTrackerGeo, { 0., 0., -0.75 - 65. });
         tra->SetEnergyCut(1e-6); // 1 keV
         run->AddModule(tra);
     }
@@ -152,7 +179,7 @@ void runsim(Int_t nEvents = 0)
     // CALIFA Calorimeter
     if (fCalifa)
     {
-        R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -66.5 });
+        R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -65. });
         califa->SelectGeometryVersion(fCalifaGeoVer);
         run->AddModule(califa);
     }
@@ -160,25 +187,59 @@ void runsim(Int_t nEvents = 0)
     // MWPC1 definition
     if (fMwpc1)
     {
-        run->AddModule(new R3BSofMwpc1(fMwpc1Geo, { 0., 0., 16. }));
+        if (mwpc1Par)
+        {
+            mwpc1Par->printParams();
+            TGeoRotation* rmwpc1 = new TGeoRotation("Mwpc1rot");
+            rmwpc1->RotateX(mwpc1Par->GetRotX());
+            rmwpc1->RotateY(mwpc1Par->GetRotY());
+            rmwpc1->RotateZ(mwpc1Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc1(fMwpc1Geo, { mwpc1Par->GetPosX(), mwpc1Par->GetPosY(), mwpc1Par->GetPosZ(), rmwpc1 }));
+        }
+        else
+            run->AddModule(new R3BSofMwpc1(fMwpc1Geo, { 0., 0., 42. }));
     }
 
     // Twim definition
     if (fTwim)
     {
-        run->AddModule(new R3BSofTWIM(fTwimGeo, { 0., 0., 50. }));
+        if (twimPar)
+        {
+            twimPar->printParams();
+            TGeoRotation* rtwim = new TGeoRotation("Twimrot");
+            rtwim->RotateX(twimPar->GetRotX());
+            rtwim->RotateY(twimPar->GetRotY());
+            rtwim->RotateZ(twimPar->GetRotZ());
+            run->AddModule(
+                new R3BSofTWIM(fTwimGeo, { twimPar->GetPosX(), twimPar->GetPosY(), twimPar->GetPosZ(), rtwim }));
+        }
+        else
+            run->AddModule(new R3BSofTWIM(fTwimGeo, { 0., 0., 69. }));
     }
 
     // MWPC2 definition
     if (fMwpc2)
     {
-        run->AddModule(new R3BSofMwpc2(fMwpc2Geo, { 0., 0., 95. }));
+        if (mwpc2Par)
+        {
+            mwpc2Par->printParams();
+            TGeoRotation* rmwpc2 = new TGeoRotation("Mwpc2rot");
+            rmwpc2->RotateX(mwpc2Par->GetRotX());
+            rmwpc2->RotateY(mwpc2Par->GetRotY());
+            rmwpc2->RotateZ(mwpc2Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc2(fMwpc2Geo, { mwpc2Par->GetPosX(), mwpc2Par->GetPosY(), mwpc2Par->GetPosZ(), rmwpc2 }));
+        }
+        else
+            run->AddModule(new R3BSofMwpc2(fMwpc2Geo, { 0., 0., 100. }));
     }
 
     // Aladin Magnet definition
     if (fAladin && !fGlad)
     {
         fFieldMap = 0;
+        fR3BMagnet = true;
         run->AddModule(new R3BAladinMagnet(fAladinGeo));
     }
 
@@ -186,23 +247,48 @@ void runsim(Int_t nEvents = 0)
     if (fGlad && !fAladin)
     {
         fFieldMap = 1;
+        fR3BMagnet = true;
         run->AddModule(new R3BGladMagnet(fGladGeo));
     }
 
     // MWPC3 definition
     if (fMwpc3)
     {
-        TGeoRotation* rmw3 = new TGeoRotation("Mwpc3rot");
-        rmw3->RotateY(-29.0);
-        run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -243., 0., 689., rmw3 }));
+        TGeoRotation* rmwpc3 = new TGeoRotation("Mwpc3rot");
+        if (mwpc3Par)
+        {
+            mwpc3Par->printParams();
+            rmwpc3->RotateX(mwpc3Par->GetRotX());
+            rmwpc3->RotateY(mwpc3Par->GetRotY());
+            rmwpc3->RotateZ(mwpc3Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc3(fMwpc3Geo, { mwpc3Par->GetPosX(), mwpc3Par->GetPosY(), mwpc3Par->GetPosZ(), rmwpc3 }));
+        }
+        else
+        {
+            rmwpc3->RotateY(-28.);
+            run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -300., 0., 749., rmwpc3 }));
+        }
     }
 
     // Sofia ToF-Wall definition
     if (fSofTofWall)
     {
         TGeoRotation* rtof = new TGeoRotation("Tofrot");
-        rtof->RotateY(-29.0);
-        run->AddModule(new R3BSofTofWall(fSofTofWallGeo, { -257., 0., 710., rtof }));
+        if (tofwPar)
+        {
+            tofwPar->printParams();
+            rtof->RotateX(tofwPar->GetRotX());
+            rtof->RotateY(tofwPar->GetRotY());
+            rtof->RotateZ(tofwPar->GetRotZ());
+            run->AddModule(
+                new R3BSofTofW(fSofTofWallGeo, { tofwPar->GetPosX(), tofwPar->GetPosY(), tofwPar->GetPosZ(), rtof }));
+        }
+        else
+        {
+            rtof->RotateY(-28.);
+            run->AddModule(new R3BSofTofW(fSofTofWallGeo, { -330., 0., 817., rtof }));
+        }
     }
 
     // NeuLand Scintillator Detector
@@ -259,21 +345,22 @@ void runsim(Int_t nEvents = 0)
     if (fGenerator.CompareTo("box") == 0)
     {
         // 2- Define the BOX generator
-        Int_t pdgId = 2212;     // proton beam
-        Double32_t theta1 = 0.; // polar angle distribution
-        Double32_t theta2 = 2.;
-        Double32_t momentum = 1.;
+        Int_t pdgId = 2212;      // proton beam
+        Double32_t theta1 = 45.; // polar angle distribution
+        Double32_t theta2 = 49.;
+        Double32_t momentum = 0.8;
         FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 1);
         boxGen->SetThetaRange(theta1, theta2);
-        boxGen->SetPRange(momentum, momentum * 1.2);
-        boxGen->SetPhiRange(0, 360);
-        boxGen->SetXYZ(0.0, 0.0, -1.5);
-        // primGen->AddGenerator(boxGen);
+        boxGen->SetPRange(momentum, momentum);
+        // boxGen->SetPhiRange(88, 88);
+        // boxGen->SetXYZ(0.0, 0.0, 4.);
+        primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(18, 40, 18, 1, 0., 0., 0.951);
-        ionGen->SetSpotRadius(0.0, -300., 0.);
-        primGen->AddGenerator(ionGen);
+        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 129, 50, 1, 0., 0., 0.9);
+        ionGen->SetSpotRadius(0.0, -65.5, 0.0);
+        ionGen->SetBeamParameter(0.0, 0.0);
+        // primGen->AddGenerator(ionGen);
 
         // neutrons
         FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
@@ -287,7 +374,8 @@ void runsim(Int_t nEvents = 0)
     if (fGenerator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + fEventFile).Data());
-        gen->SetXYZ(0.0, 0.0, -65.5);
+        gen->SetXYZ(0.0, 0.0, 0.0);
+        gen->SetDxDyDz(0., 0., 0.0);
         primGen->AddGenerator(gen);
     }
 

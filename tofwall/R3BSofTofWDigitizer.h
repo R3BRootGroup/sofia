@@ -7,8 +7,8 @@
 #define R3BSofTofWDigitizer_H 1
 
 #include "FairTask.h"
-#include "TRandom1.h"
 #include "R3BSofTofWHitData.h"
+#include "TRandom1.h"
 #include <map>
 #include <string>
 
