@@ -10,15 +10,19 @@ R3BSofTofWHitData::R3BSofTofWHitData()
     , fX(0.)
     , fY(0.)
     , fTime(0.)
+    , fBrho(0.)
+    , fvel(0.)
 {
 }
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTofWHitData::R3BSofTofWHitData(Int_t paddle, Double_t x, Double_t y, Double_t time)
+R3BSofTofWHitData::R3BSofTofWHitData(Int_t paddle, Double_t x, Double_t y, Double_t time, Double_t brho, Double_t vel)
     : fPaddleId(paddle)
     , fX(x)
     , fY(y)
     , fTime(time)
+    , fBrho(brho)
+    , fvel(vel)
 {
 }
 // -------------------------------------------------------------------------

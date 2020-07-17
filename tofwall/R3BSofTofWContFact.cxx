@@ -32,8 +32,8 @@ void R3BSofTofWContFact::setAllContainers()
     // Creates the Container objects with all accepted contexts and adds them to
     // the list of containers for the TofW library.
 
-    FairContainer* p1 = new FairContainer("tofwGeoPar", "TofW geometry parameters", "TestDefaultContext");
-    p1->addContext("TestNonDefaultContext");
+    FairContainer* p1 = new FairContainer("tofwGeoPar", "TofW geometry parameters", "GeometryParameterContext");
+    p1->addContext("GeometryParameterContext");
 
     containers->Add(p1);
 

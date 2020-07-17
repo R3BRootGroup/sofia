@@ -29,10 +29,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-using std::cout;
-using std::cerr;
-using std::endl;
-
 #define U_MEV 931.4940954
 
 R3BSofAT::R3BSofAT()
@@ -80,7 +76,7 @@ void R3BSofAT::Initialize()
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofAT::ProcessHits(FairVolume* vol)
 {
-    Int_t nodeId;
+    Int_t nodeId = 0;
     if (gMC->IsTrackEntering())
     {
         gGeoManager->cd(gMC->CurrentVolPath());

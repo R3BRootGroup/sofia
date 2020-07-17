@@ -120,7 +120,6 @@ void R3BSofMwpcDigitizer::Exec(Option_t* opt)
 
             x = (((x - fPosX) * cos(fangle * TMath::DegToRad())) - ((z - fPosZ) * sin(fangle * TMath::DegToRad()))) +
                 gRandom->Gaus(0., fsigma_x);
-            ;
 
             AddHitData(x, y);
         }

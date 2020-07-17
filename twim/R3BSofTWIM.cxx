@@ -28,10 +28,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 #define U_MEV 931.4940954
 
 // -----   Default constructor
@@ -43,6 +39,7 @@ R3BSofTWIM::R3BSofTWIM()
 R3BSofTWIM::R3BSofTWIM(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
     : R3BSofTWIM(geoFile, { trans, rot })
 {
+    ResetParameters();
 }
 
 // -----   Standard constructor

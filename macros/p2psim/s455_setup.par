@@ -1,0 +1,107 @@
+#################################################
+[mwpc0GeoPar]
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -190.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 0.5
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#################################################
+[TargetGeoPar]
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -65.5
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 0.5
+DimensionY: Double_t 0.5
+DimensionZ: Double_t 1.0
+Z: Double_t 1.
+A: Double_t 1.
+Density: Double_t 0.07
+IonisationEnergy: Double_t 55.9e-6
+#################################################
+[mwpc1GeoPar]
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t 42.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 0.5
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#################################################
+[twimGeoPar]
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t 69.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 50.
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#################################################
+[mwpc2GeoPar]
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t 100.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 3.0
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#################################################
+[mwpc3GeoPar]
+PositionX: Double_t -300.
+PositionY: Double_t 0.
+PositionZ: Double_t 749.
+RotationX: Double_t 0.
+RotationY: Double_t -28.
+RotationZ: Double_t 0.
+DimensionX: Double_t 90.
+DimensionY: Double_t 60.
+DimensionZ: Double_t 3.0
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#################################################
+[tofwGeoPar]
+PositionX: Double_t -330.
+PositionY: Double_t 0.
+PositionZ: Double_t 817.
+RotationX: Double_t 0.
+RotationY: Double_t -28.
+RotationZ: Double_t 0.
+DimensionX: Double_t 90.
+DimensionY: Double_t 60.
+DimensionZ: Double_t 0.5
+Z: Double_t 5.57354
+A: Double_t 11.0723
+Density: Double_t 1.032
+IonisationEnergy: Double_t 57.4e-6
+#################################################
+

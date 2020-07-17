@@ -48,14 +48,14 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
 
     void SetOnline(Bool_t option) { fOnline = option; }
 
-    void SetNumPaddles(Int_t n) { fNumPaddles=n; }
-    void SetNumPmts(Int_t n)    { fNumPmts=n; }
+    void SetNumPaddles(Int_t n) { fNumPaddles = n; }
+    void SetNumPmts(Int_t n) { fNumPmts = n; }
 
   private:
-    TClonesArray* fSciSingleTcal;  // input data
-    TClonesArray* fTofWTcal;       // input data
-    TClonesArray* fTofWSingleTcal; // output data
-    R3BSofSciRawTofPar* fSciRawTofPar; //needed to get the Cave C Sci ID
+    TClonesArray* fSciSingleTcal;      // input data
+    TClonesArray* fTofWTcal;           // input data
+    TClonesArray* fTofWSingleTcal;     // output data
+    R3BSofSciRawTofPar* fSciRawTofPar; // needed to get the Cave C Sci ID
 
     Bool_t fOnline; // Don't store data for online
 
