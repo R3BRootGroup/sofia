@@ -196,7 +196,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
   
   // It makes no sense to continue if there is no Left and Right signal on the SofSci at cave C
   if ((nHitsPerEvent_SofSci > 0) && (mult[(idCaveC-1)*nChs] > 0) && (mult[(idCaveC-1)*nChs+1] > 0)){
-    Double_t iRawPos, iRawTime;
+    Double_t iRawPos=-100000., iRawTime=-100000.;
     UShort_t mult_selectHits[nDets];
     Int_t selectLeftHit[nDets];
     Int_t selectRightHit[nDets];
@@ -226,7 +226,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
 	  // tag which hit is used
 	  maskR[0] |= (0x1) << multR;
 	  maskL[0] |= (0x1) << multL;
-	  AddSingleTcalData(1,iRawTime,iRawPos,-1000000.,-1000000.);
+	  AddSingleTcalData(1,iRawTime,iRawPos,-100000.,-100000.);
 	} // end of loop over the hits of the left PMTs
       }// end of loop over the hits of the right PMTs
 
@@ -242,106 +242,79 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     else{
       UShort_t idS2 = fRawTofPar->GetDetIdS2(); // 1-based
       UShort_t idS8 = fRawTofPar->GetDetIdS8(); // 1-based if 0: no detector at S8
-      Double_t iRawTime_dSta, iRawTime_dSto, iRawTime_S2, iRawTime_S8;
-      Double_t iRawTof, iRawTof_S2, iRawTof_S8;
-      int dSta, dSto=idCaveC-1;
+      Double_t iRawTime_dSta = -100000., iRawTime_dSto = -100000., iRawTime_S2 = -100000., iRawTime_S8 = -100000.;
+      Double_t iRawTof = -100000., iRawTof_S2 = -100000., iRawTof_S8 = -100000.;
+      Int_t  dSto=idCaveC-1; // Fix the CaveC SofSci as the stop detector
 
-      // --- first ToF selection from START at S2 to STOP at CAVE C --- //
-      dSta = idS2-1;
-      iRawTime_S2 = -1000000.;
+      // --- selection for the scintillators along FRS versus SofSci at Cave C --- //
+      // --- only if a proper selection has been found at cave C               --- //
+      // --- in this case : fill the SingleTcalItem for all detectors          --- //
       
-      for (UShort_t multRsto = 0; multRsto < mult[dSto*nChs]; multRsto++){
-	for (UShort_t multLsto = 0; multLsto < mult[dSto*nChs+1]; multLsto++){
-	  
-	  // check the position in the stop detector
-	  iRawPos = (iTraw[dSto * nChs][multRsto] - iTraw[dSto * nChs + 1][multLsto]);
-	  if ((iRawPos < fRawPosPar->GetSignalTcalParams(2*dSto)) ||
-	      (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSto+1)))
-	    continue;
-
-	  for (UShort_t multRsta = 0; multRsta < mult[dSta*nChs]; multRsta++){
-	    for (UShort_t multLsta = 0; multLsta < mult[dSta*nChs+1]; multLsta++){
-	      
-	      // check the position in the start detector
-	      // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
-	      iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
-	      if ((fRawPosPar->GetSignalTcalParams(2*dSta) > iRawPos) ||
-		  (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSta+1)))
-		continue;
-	      
-	      iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta] + iTraw[dSta*nChs+1][multLsta]);
-	      iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto] + iTraw[dSto*nChs+1][multLsto]);
-	      iRawTof = iRawTime_dSto - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
-
-	      if ((fRawTofPar->GetSignalRawTofParams(2*dSta) <= iRawTof) &&
-		  (iRawTof <= fRawTofPar->GetSignalRawTofParams(2*dSta+1))){
-		iRawTime_S2 = iRawTime_dSta;
-		selectLeftHit[dSta] = multLsta;
-		selectRightHit[dSta] = multRsta;
-		mult_selectHits[dSta]++;
-		selectLeftHit[dSto] = multLsto;
-		selectRightHit[dSto] = multRsto;
-		mult_selectHits[dSto]++;
-	      }// end of good hit in position and ToFraw
-
-	    }// end of loop over multLsta
-	  }// end of loop over multRsta
-	}// end of loop over multLsto
-      }// end of loop over multRsto
-
-      // --- selection for the other scintillator versus SofSci at Cave C --- //
-      // --- only if a proper selection has been found at cave C          --- //
-      // --- in this case : fill the SingleTcalItem for all detectors     --- //
-      if (mult_selectHits[dSto]==1){
-
-	// calculate the other Tof and Pos
-	for (dSta = 0; dSta < nDets-1; dSta++){
-	  if (dSta==idS2-1) continue;
-	  for (UShort_t multRsta = 0; multRsta < mult[dSta*nChs]; multRsta++){
-	    for (UShort_t multLsta = 0; multLsta < mult[dSta*nChs+1]; multLsta++){
-	      // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
-	      iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
-	      if ((iRawPos < fRawPosPar->GetSignalTcalParams(2*dSta)) ||
-		  (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSta+1)))
-		continue;
-	      iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta] + iTraw[dSta*nChs+1][multLsta]);
-	      iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][selectRightHit[dSto]] + iTraw[dSto*nChs+1][selectLeftHit[dSto]]);
-	      iRawTof = iRawTime_dSto - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
-	      if ((fRawTofPar->GetSignalRawTofParams(2*dSta) <= iRawTof) &&
-		  (iRawTof <= fRawTofPar->GetSignalRawTofParams(2*dSta + 1))){
-		selectLeftHit[dSta] = multLsta;
-		selectRightHit[dSta] = multRsta;
-		mult_selectHits[dSta]++;
-	      }
-	    }// end of multLsta
-	  }// end of multRsta
-	}//end of calculation of all Tof and Pos = end of for(dSta)
-
-	// Fill the TClonesArray of R3BSofSciSingleTcal
-	iRawTime_S8 = -1000000.;
-	if(idS8>0)
-	  if(mult_selectHits[idS8-1]==1)
-            iRawTime_S8 = 0.5 * (iTraw[(idS8-1)*nChs][selectRightHit[idS8-1]] + iTraw[(idS8-1)*nChs+1][selectLeftHit[idS8-1]]);
-
-	for(UShort_t d=0; d<nDets; d++){
+      for (Int_t dSta = 0; dSta < nDets-1; dSta++){
+	UShort_t multLstotmp = 0, multRstotmp=0;
+	for (UShort_t multRsto = 0; multRsto < mult[dSto*nChs]; multRsto++){
+	  for (UShort_t multLsto = 0; multLsto < mult[dSto*nChs+1]; multLsto++){
+	    // check the position in the stop detector
+	    iRawPos = (iTraw[dSto * nChs][multRsto] - iTraw[dSto * nChs + 1][multLsto]);
+	    if ((iRawPos < fRawPosPar->GetSignalTcalParams(2*dSto)) ||
+		(iRawPos > fRawPosPar->GetSignalTcalParams(2*dSto+1)))
+	      continue;
+	    for (UShort_t multRsta = 0; multRsta < mult[dSta*nChs]; multRsta++){
+	      for (UShort_t multLsta = 0; multLsta < mult[dSta*nChs+1]; multLsta++){
+		// RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
+		iRawPos = (iTraw[dSta*nChs][multRsta] - iTraw[dSta*nChs+1][multLsta]);
+		if ((iRawPos < fRawPosPar->GetSignalTcalParams(2*dSta)) ||
+		    (iRawPos > fRawPosPar->GetSignalTcalParams(2*dSta+1)))
+		  continue;
+		iRawTime_dSta = 0.5 * (iTraw[dSta*nChs][multRsta] + iTraw[dSta*nChs+1][multLsta]);
+		iRawTime_dSto = 0.5 * (iTraw[dSto*nChs][multRsto] + iTraw[dSto*nChs+1][multLsto]);
+		iRawTof = iRawTime_dSto - iRawTime_dSta + iTraw[dSta*nChs+2][0] - iTraw[dSto*nChs+2][0];
+		if ((fRawTofPar->GetSignalRawTofParams(2*dSta) <= iRawTof) &&
+		    (iRawTof <= fRawTofPar->GetSignalRawTofParams(2*dSta + 1))){
+		  selectLeftHit[dSta] = multLsta;
+		  selectRightHit[dSta] = multRsta;
+		  multLstotmp = multLsto;
+		  multRstotmp = multRsto;
+		  mult_selectHits[dSta]++;
+		}
+	      }// end of multLsta
+	    }// end of multRsta
+	  }// end of multLsto
+	}// end of multRsto
+	if(mult_selectHits[dSta] > 0 && ( mult_selectHits[dSto] == 0 || mult_selectHits[dSta] < mult_selectHits[dSto] )){
+	  // Check if this TOF is better than previous TOF conditions
+	  selectLeftHit[dSto] = multLstotmp;
+	  selectRightHit[dSto] = multRstotmp;
+	  mult_selectHits[dSto] = mult_selectHits[dSta];
+	}
+      }//end of calculation of all Tof and Pos = end of for(dSta)
+      
+      // Fill the TClonesArray of R3BSofSciSingleTcal
+      if(idS2>0)
+	if(mult_selectHits[idS2-1]==1)
+	  iRawTime_S2 = 0.5 * (iTraw[(idS2-1)*nChs][selectRightHit[idS2-1]] + iTraw[(idS2-1)*nChs+1][selectLeftHit[idS2-1]]);
+      if(idS8>0)
+	if(mult_selectHits[idS8-1]==1)
+	  iRawTime_S8 = 0.5 * (iTraw[(idS8-1)*nChs][selectRightHit[idS8-1]] + iTraw[(idS8-1)*nChs+1][selectLeftHit[idS8-1]]);
+    
+      for(UShort_t d=0; d<nDets; d++){
 	  if(mult_selectHits[d]==1){
 	    // RawPos = TrawRIGHT - TrawLEFT corresponds to x increasing from RIGHT to LEFT
 	    iRawPos = iTraw[d*nChs][selectRightHit[d]] - iTraw[d*nChs+1][selectLeftHit[d]];
 	    iRawTime = 0.5 * (iTraw[d*nChs][selectRightHit[d]] + iTraw[d*nChs+1][selectLeftHit[d]]);  
-	    iRawTof_S2 = -1000000.;
+	    iRawTof_S2 = -100000.;
 	    if(iRawTime_S2>0)
 	      iRawTof_S2 = iRawTime - iRawTime_S2 + iTraw[(idS2-1)*nChs+2][0] - iTraw[d*nChs+2][0];;
-	    iRawTof_S8 = -1000000.;
+	    iRawTof_S8 = -100000.;
 	    if(iRawTime_S8>0)
 	      iRawTof_S8 = iRawTime - iRawTime_S8 + iTraw[(idS8-1)*nChs+2][0] - iTraw[d*nChs+2][0];;
 	    AddSingleTcalData(d+1,iRawTime,iRawPos,iRawTof_S2,iRawTof_S8);
 	  }
-	}
       } // end of if the first selection succeed
 
     }// end of CAVE C + FRS
 
-  } // end of if nHitsPerEvent_SofSci>0 + data on LEFT and data RIGHT on SofSci at CAVE C
+} // end of if nHitsPerEvent_SofSci>0 + data on LEFT and data RIGHT on SofSci at CAVE C
 
   ++fNevent;
 }

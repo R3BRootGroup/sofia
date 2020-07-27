@@ -20,6 +20,7 @@ class R3BSofTwimHitData : public TObject
      *@param z        Atomic number Z in charge units
      **/
     R3BSofTwimHitData(Int_t secID, Double_t theta, Double_t z);
+    R3BSofTwimHitData(Int_t secID, Double_t theta, Double_t z, Double_t ene);
 
     /** Destructor **/
     virtual ~R3BSofTwimHitData() {}
@@ -28,15 +29,17 @@ class R3BSofTwimHitData : public TObject
     inline const Int_t& GetSecID() const { return fSecID; }
     inline const Double_t& GetTheta() const { return fTheta; }
     inline const Double_t& GetZcharge() const { return fZ; }
+    inline const Double_t& GetEave() const { return fE; }
 
     /** Modifiers **/
     void SetSecID(Int_t id) { fSecID = id; };
     void SetTheta(Double_t theta) { fTheta = theta; };
     void SetZcharge(Double_t z) { fZ = z; };
+    void SetEave(Double_t ene) { fE = ene; };
 
   protected:
     Int_t fSecID;
-    Double_t fTheta, fZ;
+    Double_t fTheta, fZ, fE;
 
   public:
     ClassDef(R3BSofTwimHitData, 1)

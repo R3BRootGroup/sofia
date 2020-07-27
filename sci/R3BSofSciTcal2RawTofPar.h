@@ -4,6 +4,7 @@
 #include "FairTask.h"
 #include "TH1D.h"
 #include "TH1F.h"
+#include "TF1.h"
 
 class TClonesArray;
 class R3BSofSciRawTofPar;
@@ -83,6 +84,9 @@ class R3BSofSciTcal2RawTofPar : public FairTask
     TH1D** fh_RawTofMult1;
     char* fOutputFile;
 
+    // fit functions
+    TF1** fitRawTof;
+    
   public:
     ClassDef(R3BSofSciTcal2RawTofPar, 0);
 };

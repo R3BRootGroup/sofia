@@ -90,6 +90,7 @@ class R3BSofTwimvsMusicOnlineSpectra : public FairTask
     Int_t fNEvents;         /**< Event counter.     */
 
     // Histograms for Hit data
+    TH2F* fh2_hit_e;
     TH2F* fh2_hit_z;
     TH2F* fh2_hit_theta;
 

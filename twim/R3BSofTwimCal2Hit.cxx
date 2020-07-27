@@ -258,7 +258,7 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
             Double_t zhit =
                 fZ0 + fZ1 * TMath::Sqrt(Esum / nba) + fZ2 * TMath::Sqrt(Esum / nba) * TMath::Sqrt(Esum / nba);
             if (zhit > 0 && theta > -5000.)
-                AddHitData(i, theta, zhit);
+	      AddHitData(i, theta, zhit, Esum / nba);
         }
     }
 
@@ -285,4 +285,12 @@ R3BSofTwimHitData* R3BSofTwimCal2Hit::AddHitData(UShort_t secid, Double_t theta,
     TClonesArray& clref = *fTwimHitDataCA;
     Int_t size = clref.GetEntriesFast();
     return new (clref[size]) R3BSofTwimHitData(secid, theta, charge_z);
+}
+// -----   For later analysis with reconstructed beta -----
+R3BSofTwimHitData* R3BSofTwimCal2Hit::AddHitData(UShort_t secid, Double_t theta, Double_t charge_z, Double_t ene_ave)
+{
+  // It fills the R3BSofTwimHitData
+  TClonesArray& clref = *fTwimHitDataCA;
+  Int_t size = clref.GetEntriesFast();
+  return new (clref[size]) R3BSofTwimHitData(secid, theta, charge_z, ene_ave);
 }
