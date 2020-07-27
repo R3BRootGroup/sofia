@@ -22,4 +22,14 @@ R3BSofTwimHitData::R3BSofTwimHitData(Int_t secID, Double_t theta, Double_t z)
 }
 // -------------------------------------------------------------------------
 
+// -----   For later analysis with reconstructed beta   --------------------
+R3BSofTwimHitData::R3BSofTwimHitData(Int_t secID, Double_t theta, Double_t z, Double_t ene)
+  : fSecID(secID)
+  , fTheta(theta)
+  , fZ(z)
+  , fE(ene)
+{
+}
+// -------------------------------------------------------------------------
+
 ClassImp(R3BSofTwimHitData)

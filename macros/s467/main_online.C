@@ -146,11 +146,6 @@ void main_online()
     source->SetMaxEvents(nev);
 
     // Definition of reader ---------------------------------
-    R3BUnpackReader* unpackreader =
-        new R3BUnpackReader((EXT_STR_h101_unpack*)&ucesb_struct, offsetof(EXT_STR_h101, unpack));
-    R3BTrloiiTpatReader* unpacktpat =
-        new R3BTrloiiTpatReader((EXT_STR_h101_TPAT*)&ucesb_struct, offsetof(EXT_STR_h101, unpacktpat));
-
     R3BFrsReaderNov19* unpackfrs;
     R3BMusicReader* unpackmusic;
     R3BSofSciReader* unpacksci;
@@ -222,8 +217,8 @@ void main_online()
     }
 
     // Add readers ------------------------------------------
-    source->AddReader(unpackreader);
-    source->AddReader(unpacktpat);
+    source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack,offsetof(EXT_STR_h101, unpack)));
+    source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat,offsetof(EXT_STR_h101, unpacktpat)));
 
     if (fFrsTpcs)
     {

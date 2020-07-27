@@ -4,6 +4,7 @@
 #include "FairTask.h"
 #include "TH1D.h"
 #include "TH1F.h"
+#include "TF1.h"
 
 class TClonesArray;
 class R3BSofSciRawPosPar;
@@ -77,6 +78,9 @@ class R3BSofSciTcal2RawPosPar : public FairTask
     // histograms
     TH1D** fh_RawPosMult1;
     char* fOutputFile;
+
+    // fit functions
+    TF1** fitRawPos;
 
   public:
     ClassDef(R3BSofSciTcal2RawPosPar, 0);

@@ -111,10 +111,12 @@ InitStatus R3BSofSciTcal2RawPosPar::Init()
 
     char name[100];
     fh_RawPosMult1 = new TH1D*[fNumSignals];
+    fitRawPos = new TF1*[fNumSignals];
     for (Int_t det = 0; det < fNumDets; det++){
       sprintf(name, "PosRaw_Sci%i", det + 1);
       fh_RawPosMult1[det] = new TH1D(name, name, 20000, -10, 10);
       fh_RawPosMult1[det]->GetXaxis()->SetTitle("(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side)");
+      fitRawPos[det] = new TF1(Form("fitRawPos%i",det), "gaus", -10, 10);
     }
 
     return kSUCCESS;
@@ -191,30 +193,26 @@ void R3BSofSciTcal2RawPosPar::CalculateRawPosRawPosParams()
     fRawPosPar->SetNumSignals(fNumSignals);
     fRawPosPar->SetNumParsPerSignal(fNumParsPerSignal);
 
+    Int_t binmax=0;
+    Double_t maxx=0.;
     Double_t iMax;
-    Int_t bin, binLimit;
+
     for (Int_t sig = 0; sig < fNumSignals; sig++){
-      if (fh_RawPosMult1[sig]->GetEntries() > fMinStatistics){
-	iMax = fh_RawPosMult1[sig]->GetMaximum();
-	// LOWER LIMIT
-	bin = 1;
-	binLimit = 1;
-	while ((bin <= fh_RawPosMult1[sig]->GetNbinsX()) && (binLimit == 1)){
-	  if (fh_RawPosMult1[sig]->GetBinContent(bin) > (iMax / 10000.))
-	    binLimit = bin;
-	  bin++;
+      if (fh_RawPosMult1[sig]->GetEntries() > fMinStatistics)
+	{
+	  binmax = fh_RawPosMult1[sig]->GetMaximumBin();
+	  maxx = fh_RawPosMult1[sig]->GetXaxis()->GetBinCenter(binmax);
+	  iMax = fh_RawPosMult1[sig]->GetBinContent(binmax);
+	  //Set fit functions
+	  fitRawPos[sig]->SetParameter(0, iMax);
+	  fitRawPos[sig]->SetParameter(1, maxx);
+	  fitRawPos[sig]->SetParameter(2, 1.);
+	  fitRawPos[sig]->SetParLimits(2, .1, 5.);
+	  fh_RawPosMult1[sig]->Fit(fitRawPos[sig],"L", "", maxx - 5., maxx + 5.);
+	  //
+	  fRawPosPar->SetSignalParams(fitRawPos[sig]->GetParameter(1) - 5.*fitRawPos[sig]->GetParameter(2), sig * 2 );
+	  fRawPosPar->SetSignalParams(fitRawPos[sig]->GetParameter(1) + 5.*fitRawPos[sig]->GetParameter(2), sig * 2 + 1);
 	}
-	fRawPosPar->SetSignalParams(fh_RawPosMult1[sig]->GetBinLowEdge(binLimit), sig * 2);
-	// HIGHER LIMIT
-	bin = fh_RawPosMult1[sig]->GetNbinsX();
-	binLimit = fh_RawPosMult1[sig]->GetNbinsX();
-	while ((bin >= 1) && (binLimit == fh_RawPosMult1[sig]->GetNbinsX())){
-	  if (fh_RawPosMult1[sig]->GetBinContent(bin) > (iMax / 10000.))
-	    binLimit = bin;
-	  bin--;
-	}
-	fRawPosPar->SetSignalParams(fh_RawPosMult1[sig]->GetBinLowEdge(binLimit), sig * 2 + 1);
-      }
       fh_RawPosMult1[sig]->Write();
     }
     
