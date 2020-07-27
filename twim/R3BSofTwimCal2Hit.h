@@ -72,6 +72,7 @@ class R3BSofTwimCal2Hit : public FairTask
     /** Private method TwimHitData **/
     //** Adds a TwimHitData to the detector
     R3BSofTwimHitData* AddHitData(UShort_t secID, Double_t theta, Double_t charge_z);
+    R3BSofTwimHitData* AddHitData(UShort_t secID, Double_t theta, Double_t charge_z, Double_t ene_ave);
 
   public:
     // Class definition

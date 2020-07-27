@@ -120,10 +120,12 @@ InitStatus R3BSofSciTcal2RawTofPar::Init()
 
     char name[100];
     fh_RawTofMult1 = new TH1D*[fNumSignals];
+    fitRawTof = new TF1*[fNumSignals];
     for (Int_t detstart = 0; detstart < fNumDets-1; detstart++)
     {
         sprintf(name, "TofRaw_Sci%i_to_Sci%i", detstart + 1, fDetIdCaveC);
         fh_RawTofMult1[detstart] = new TH1D(name, name, 40000, -1000, 3000);
+	fitRawTof[detstart] = new TF1(Form("fitRawTof%i",detstart), "gaus", -1000, 3000);
     }
 
     return kSUCCESS;
@@ -209,37 +211,30 @@ void R3BSofSciTcal2RawTofPar::CalculateRawTofParams()
     fRawTofPar->SetNumSignals(fNumSignals);
     fRawTofPar->SetNumParsPerSignal(fNumParsPerSignal);
 
+    Int_t binmax=0;
+    Double_t maxx=0.;
     Double_t iMax = 0;
-    Int_t bin, binLimit;
+
     for (Int_t sig = 0; sig < fNumSignals; sig++)
     {
-        iMax = fh_RawTofMult1[sig]->GetMaximum();
-        if (fh_RawTofMult1[sig]->GetEntries() > fMinStatistics && iMax > 0)
+      if (fh_RawTofMult1[sig]->GetEntries() > fMinStatistics)
         {
-            // LOWER LIMIT
-            bin = 1;
-            binLimit = 1;
-            while ((bin <= fh_RawTofMult1[sig]->GetNbinsX()) && (binLimit == 1))
-            {
-                if (fh_RawTofMult1[sig]->GetBinContent(bin) > (iMax / 500.))
-                    binLimit = bin;
-                bin++;
-            }
-            fRawTofPar->SetSignalParams(fh_RawTofMult1[sig]->GetBinLowEdge(binLimit), sig * 2);
-            // HIGHER LIMIT
-            bin = fh_RawTofMult1[sig]->GetNbinsX();
-            binLimit = fh_RawTofMult1[sig]->GetNbinsX();
-            while ((bin >= 1) && (binLimit == fh_RawTofMult1[sig]->GetNbinsX()))
-            {
-                if (fh_RawTofMult1[sig]->GetBinContent(bin) > (iMax / 500.))
-                    binLimit = bin;
-                bin--;
-            }
-            fRawTofPar->SetSignalParams(fh_RawTofMult1[sig]->GetBinLowEdge(binLimit), sig * 2 + 1);
-        }
-        fh_RawTofMult1[sig]->Write();
+	  binmax = fh_RawTofMult1[sig]->GetMaximumBin();
+	  maxx = fh_RawTofMult1[sig]->GetXaxis()->GetBinCenter(binmax);
+	  iMax = fh_RawTofMult1[sig]->GetBinContent(binmax);
+	  //Set fit functions
+	  fitRawTof[sig]->SetParameter(0, iMax);
+	  fitRawTof[sig]->SetParameter(1, maxx);
+	  fitRawTof[sig]->SetParameter(2, 5.);
+	  fitRawTof[sig]->SetParLimits(2, .1, 20.);
+	  fh_RawTofMult1[sig]->Fit(fitRawTof[sig],"L", "", maxx - 20., maxx + 20.);
+	  //
+	  fRawTofPar->SetSignalParams(fitRawTof[sig]->GetParameter(1) - 5.*fitRawTof[sig]->GetParameter(2), sig * 2 );
+	  fRawTofPar->SetSignalParams(fitRawTof[sig]->GetParameter(1) + 5.*fitRawTof[sig]->GetParameter(2), sig * 2 + 1);
+	}
+      fh_RawTofMult1[sig]->Write();
     }
-
+    
     fRawTofPar->setChanged();
     return;
 }

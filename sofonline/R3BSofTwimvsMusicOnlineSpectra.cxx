@@ -96,6 +96,20 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
     char Name2[255];
 
     // Hit data
+    TCanvas* c_E = new TCanvas("Charge_e_correlation", "Music #sqrt{E} correlation", 10, 10, 800, 700);
+    fh2_hit_e = new TH2F("fh2_Twim_vs_Music_charge_e", "Twim vs Music: #sqrt{E}", 1000, 0, 100, 1000, 0, 100);
+    fh2_hit_e->GetXaxis()->SetTitle("Music #sqrt{E}");
+    fh2_hit_e->GetYaxis()->SetTitle("Twim #sqrt{E}");
+    fh2_hit_e->GetYaxis()->SetTitleOffset(1.1);
+    fh2_hit_e->GetXaxis()->SetTitleOffset(1.);
+    fh2_hit_e->GetXaxis()->CenterTitle(true);
+    fh2_hit_e->GetYaxis()->CenterTitle(true);
+    fh2_hit_e->GetXaxis()->SetLabelSize(0.045);
+    fh2_hit_e->GetXaxis()->SetTitleSize(0.045);
+    fh2_hit_e->GetYaxis()->SetLabelSize(0.045);
+    fh2_hit_e->GetYaxis()->SetTitleSize(0.045);
+    fh2_hit_e->Draw("col");
+
     TCanvas* c_Z = new TCanvas("Charge_z_correlation", "Charge Z correlation", 10, 10, 800, 700);
     fh2_hit_z = new TH2F("fh2_Twim_vs_Music_charge_z", "Twim vs Music: Charge Z", 1000, 6, 38, 1000, 6, 38);
     fh2_hit_z->GetXaxis()->SetTitle("Music charge (Z)");
@@ -130,6 +144,7 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
     TFolder* mainfolTwim = new TFolder("TWIM_vs_MUSIC", "TWIM vs MUSIC info");
     if (fHitItemsTwim && fHitItemsMusic)
     {
+        mainfolTwim->Add(c_E);
         mainfolTwim->Add(c_Z);
         mainfolTwim->Add(c_theta);
     }
@@ -147,7 +162,8 @@ void R3BSofTwimvsMusicOnlineSpectra::Reset_Histo()
 
     if (fHitItemsTwim && fHitItemsMusic)
     {
-        fh2_hit_z->Reset();
+        fh2_hit_e->Reset();
+	fh2_hit_z->Reset();
         fh2_hit_theta->Reset();
     }
 }
@@ -161,7 +177,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
     // Fill hit data
     if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fHitItemsMusic && fHitItemsMusic->GetEntriesFast() > 0)
     {
-        Float_t z1 = 0., z2 = 0., theta1 = 0., theta2 = 0.;
+      Float_t e1 = 0., e2 = 0., z1 = 0., z2 = 0., theta1 = 0., theta2 = 0.;
         // MUSIC
         Int_t nHits1 = fHitItemsMusic->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits1; ihit++)
@@ -169,6 +185,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
             R3BMusicHitData* hit = (R3BMusicHitData*)fHitItemsMusic->At(ihit);
             if (!hit)
                 continue;
+	    e1 = hit->GetEave();
             z1 = hit->GetZcharge();
             theta1 = hit->GetTheta() * 1000.; // mrad
         }
@@ -179,10 +196,12 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
             R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
+	    e2 = hit->GetEave();
             z2 = hit->GetZcharge();
             theta2 = hit->GetTheta() * 1000.; // mrad
         }
         // Fill histograms
+        fh2_hit_e->Fill(TMath::Sqrt(e1), TMath::Sqrt(e2));
         fh2_hit_z->Fill(z1, z2);
         fh2_hit_theta->Fill(theta1, theta2);
     }
@@ -206,7 +225,8 @@ void R3BSofTwimvsMusicOnlineSpectra::FinishTask()
 {
     if (fHitItemsTwim && fHitItemsMusic)
     {
-        fh2_hit_z->Write();
+        fh2_hit_e->Write();
+	fh2_hit_z->Write();
         fh2_hit_theta->Write();
     }
 }
