@@ -302,7 +302,7 @@ musicAnodePosPar:  Float_t \
 -175.0 -125.0 -75.0 -25.0 25.0 75.0 125.0 175.0
 musicZHitParamsFitPar:  Int_t  3
 musicZHitPar:  Float_t \
-  1.40 0.307173 0.0
+  0.312 0.398 1.32E-04
 ##############################################################################
 //----------------------------------------------------------------------------
 ##############################################################################
@@ -346,7 +346,7 @@ twimAnodePosPar:  Float_t \
 12.5 37.5 62.5 87.5 112.5 137.5 162.5 187.5 
 twimZHitParamsFitPar:  Int_t  3
 twimZHitPar:  Float_t \
-  3.67 0.2683 0.0
+  0.181 0.3943570841 1.87E-04
 ##############################################################################
 //----------------------------------------------------------------------------
 ##############################################################################
@@ -357,16 +357,23 @@ twimZHitPar:  Float_t \
 [soffrsAnaPar]
 //----------------------------------------------------------------------------
 //-- PathS2Cave is effective length ------------------------------------------
-DisperisionS2:  Double_t  12.397 
-MagnificationS2Cave:  Double_t 1.829
-PathS2Cave:  Double_t  15424.3 
-ToFS2Cave:  Double_t  0.0 
-PosFocalS2:  Double_t  1205.0 
-PosFocalCave:  Double_t  0.0
-Rho_S0_S2:  Double_t  11.25 
-Bfield_S0_S2:  Double_t  0.60551 
-Rho_S2_Cave:  Double_t  1.0 
-Bfield_S2_Cave:  Double_t  9.048
+//-- Revised by RT in R3BSofFrsAnaPar.h
+// 50Ca setting
+BrhoS2S8:    Float_t  9.0607
+NumTof:      Int_t  3
+//SciId starting from 1. 1: FRS-S2, 2: SofSci-S2, 3: FRS-S8, 4: SofSci-Cave
+StaSciId:  Int_t \
+  2 2 3
+StoSciId:   Int_t \
+  4 3 4
+PathLength:  Float_t \
+  462.837731 279.088230 183.845298
+TofOffset:   Float_t \
+  -1318.258541 -694.519095 -623.62812
+UseS2x:	     Int_t \
+ 1 1 0
+S2PosCoef:   Float_t -5.8
+S2PosOffset: Float_t 0.
 ##############################################################################
  /----------------------------------------------------------------------------
 ##############################################################################
@@ -7201,7 +7208,7 @@ nTcalParsPerSignal:  Int_t  1000
 [SofSciRawPosPar]
 //----------------------------------------------------------------------------
 RawPosPar:  Float_t \
-  0 0 -7.485 9.315 -6.106 2.64 -0.141 1.707 
+  0 0 -2.42404 2.55108 -5.95738 -3.51855 0.44285 2.08567 
 nDetectorsRawPosPar:  Int_t  4 
 nChannelsRawPosPar:  Int_t  3 
 nSignalsRawPosPar:  Int_t  4 
@@ -7214,7 +7221,7 @@ nRawPosParsPerSignal:  Int_t  2
 [SofSciRawTofPar]
 //----------------------------------------------------------------------------
 RawTofPar:  Float_t \
-  0 0 -931.3 2938.8 857.4 869.5 
+  0 0 1899.67 1944.58 854.106 872.051
 nDetsRawTofPar:  Int_t  4 
 nChannelsRawTofPar:  Int_t  3 
 idDetS2:  Int_t  2 

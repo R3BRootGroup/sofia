@@ -1,17 +1,21 @@
 // ------------------------------------------------------------------
 // -----         R3BSofFrsAnaPar source file                    -----
 // -----         Created 27/01/20  by J.L. Rodriguez-Sanchez    -----
+// -----         Revised 07/08/20  by R. Taniuchi               -----
 // ------------------------------------------------------------------
 
 #ifndef R3BSofFrsAnaPar_H
 #define R3BSofFrsAnaPar_H
 
-#include "FairParGenericSet.h"
-
+#include "TString.h"
 #include "TArrayF.h"
-#include "TObjArray.h"
+#include "TArrayI.h"
 #include "TObject.h"
-#include <TObjString.h>
+#include <iostream>
+
+#include "FairParGenericSet.h"
+#include "FairLogger.h"
+#include "FairParamList.h"
 
 class FairParamList;
 
@@ -39,37 +43,37 @@ class R3BSofFrsAnaPar : public FairParGenericSet
     void printParams();
 
     /** Accessor functions **/
-    const Double_t GetMagnificationS2Cave() { return fMagS2Cave; }
-    const Double_t GetDispersionS2() { return fDispS2; }
-    const Double_t GetPathS2Cave() { return fPathS2Cave; }
-    const Double_t GetTOFS2Cave() { return fTOFS2Cave; }
-    const Double_t GetRhoS0S2() { return frho_S0_S2; }
-    const Double_t GetRhoS2Cave() { return frho_S2_Cave; }
-    const Double_t GetBfiedS0S2() { return fBfield_S0_S2; }
-    const Double_t GetBfiedS2Cave() { return fBfield_S2_Cave; }
-    const Double_t GetPosFocalS2() { return fPosFocalS2; }
-    const Double_t GetPosFocalCave() { return fPosFocalCave; }
+    const Float_t GetBrho() { return fBrho0; }
+    const Int_t GetNumTof() { return fNumTof; }
+    const Int_t GetStaSciId(Int_t i) { return fStaSciId->GetAt(i); }
+    const Int_t GetStoSciId(Int_t i) { return fStoSciId->GetAt(i); }
+    const Float_t GetPathLength(Int_t i) { return fPathLength->GetAt(i); }
+    const Float_t GetTofOffset(Int_t i) { return fTofOffset->GetAt(i); }
+    const Int_t GetUseS2x(Int_t i) { return fUseS2x->GetAt(i); }
+    const Float_t GetS2PosCoef() { return fS2PosCoef; }
+    const Float_t GetS2PosOffset() { return fS2PosOffset; }
 
-    void SetMagnificationS2Cave(Double_t theMag) { fMagS2Cave = theMag; }
-    void SetDispersionS2(Double_t theDisp) { fDispS2 = theDisp; }
-    void SetPathS2Cave(Double_t thePath) { fPathS2Cave = thePath; }
-    void SetTOFS2Cave(Double_t theTOF) { fTOFS2Cave = theTOF; }
-    void SetRhoS0S2(Double_t theRho) { frho_S0_S2 = theRho; }
-    void SetRhoS2Cave(Double_t theRho) { frho_S2_Cave = theRho; }
-    void SetBfiedS0S2(Double_t theB) { fBfield_S0_S2 = theB; }
-    void SetBfiedS2Cave(Double_t theB) { fBfield_S2_Cave = theB; }
-    void SetPosFocalS2(Double_t thePos) { fPosFocalS2 = thePos; }
-    void SetPosFocalCave(Double_t thePos) { fPosFocalCave = thePos; }
-
+    void SetBrho(Float_t brho) { fBrho0 = brho; }
+    void SetNumTof(Int_t num) { fNumTof = num; }
+    void SetStaSciId(Int_t i, Int_t val) { fStaSciId->AddAt(val, i); }
+    void SetStoSciId(Int_t i, Int_t val) {  fStoSciId->AddAt(val, i); }
+    void SetPathLength(Int_t i, Float_t val) {  fPathLength->AddAt(val, i); }
+    void SetTofOffset(Int_t i, Float_t val) { fTofOffset->AddAt(val, i); }
+    void SetUseS2x(Int_t i, Int_t val) { fUseS2x->AddAt(val, i); }
+    void SetS2PosCoef(Float_t val) { fS2PosCoef = val; }
+    void SetS2PosOffset(Float_t val) { fS2PosOffset = val; }
     /** Create more Methods if you need them! **/
 
   private:
-    Double_t fMagS2Cave;
-    Double_t fDispS2;
-    Double_t fPathS2Cave, fTOFS2Cave;
-    Double_t fPosFocalS2, fPosFocalCave;
-    Double_t frho_S0_S2, fBfield_S0_S2, frho_S2_Cave, fBfield_S2_Cave;
-
+    Float_t fBrho0;
+    Int_t fNumTof;
+    TArrayI* fStaSciId;
+    TArrayI* fStoSciId;
+    TArrayF* fPathLength;
+    TArrayF* fTofOffset;
+    TArrayI* fUseS2x;
+    Float_t fS2PosCoef;
+    Float_t fS2PosOffset;
     const R3BSofFrsAnaPar& operator=(const R3BSofFrsAnaPar&); /*< an assignment operator>*/
 
     R3BSofFrsAnaPar(const R3BSofFrsAnaPar&); /*< a copy constructor >*/
