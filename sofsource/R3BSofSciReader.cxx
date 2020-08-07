@@ -128,11 +128,10 @@ Bool_t R3BSofSciReader::Read()
                 // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
                 for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++)
                 {
-                    auto item = new ((*fArray)[fNumEntries++])
-                        R3BSofSciMappedData(d + 1, // 1-based numbering
-                                            pmtid_TF,
-                                            data->SOFSCI[d].TCv[hit],
-                                            data->SOFSCI[d].TFv[hit]);
+                    auto item = new ((*fArray)[fNumEntries++]) R3BSofSciMappedData(d + 1, // 1-based numbering
+                                                                                   pmtid_TF,
+                                                                                   data->SOFSCI[d].TCv[hit],
+                                                                                   data->SOFSCI[d].TFv[hit]);
                 }
                 curChannelStart = nextChannelStart;
             }

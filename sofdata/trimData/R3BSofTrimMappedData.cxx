@@ -17,7 +17,12 @@ R3BSofTrimMappedData::R3BSofTrimMappedData()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofTrimMappedData::R3BSofTrimMappedData(UShort_t secID, UShort_t anodeID, UShort_t time, UShort_t energy, Bool_t pu, Bool_t ov)
+R3BSofTrimMappedData::R3BSofTrimMappedData(UShort_t secID,
+                                           UShort_t anodeID,
+                                           UShort_t time,
+                                           UShort_t energy,
+                                           Bool_t pu,
+                                           Bool_t ov)
     : fSecID(secID)
     , fAnodeID(anodeID)
     , fTime(time)

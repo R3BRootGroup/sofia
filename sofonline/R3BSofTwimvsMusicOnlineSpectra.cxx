@@ -163,7 +163,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Reset_Histo()
     if (fHitItemsTwim && fHitItemsMusic)
     {
         fh2_hit_e->Reset();
-	fh2_hit_z->Reset();
+        fh2_hit_z->Reset();
         fh2_hit_theta->Reset();
     }
 }
@@ -177,7 +177,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
     // Fill hit data
     if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fHitItemsMusic && fHitItemsMusic->GetEntriesFast() > 0)
     {
-      Float_t e1 = 0., e2 = 0., z1 = 0., z2 = 0., theta1 = 0., theta2 = 0.;
+        Float_t e1 = 0., e2 = 0., z1 = 0., z2 = 0., theta1 = 0., theta2 = 0.;
         // MUSIC
         Int_t nHits1 = fHitItemsMusic->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits1; ihit++)
@@ -185,7 +185,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
             R3BMusicHitData* hit = (R3BMusicHitData*)fHitItemsMusic->At(ihit);
             if (!hit)
                 continue;
-	    e1 = hit->GetEave();
+            e1 = hit->GetEave();
             z1 = hit->GetZcharge();
             theta1 = hit->GetTheta() * 1000.; // mrad
         }
@@ -196,7 +196,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
             R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
-	    e2 = hit->GetEave();
+            e2 = hit->GetEave();
             z2 = hit->GetZcharge();
             theta2 = hit->GetTheta() * 1000.; // mrad
         }
@@ -226,7 +226,7 @@ void R3BSofTwimvsMusicOnlineSpectra::FinishTask()
     if (fHitItemsTwim && fHitItemsMusic)
     {
         fh2_hit_e->Write();
-	fh2_hit_z->Write();
+        fh2_hit_z->Write();
         fh2_hit_theta->Write();
     }
 }

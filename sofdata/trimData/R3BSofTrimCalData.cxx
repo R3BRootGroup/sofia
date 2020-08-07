@@ -27,10 +27,12 @@ R3BSofTrimCalData::R3BSofTrimCalData(Int_t secID, Int_t anodeID)
 {
 }
 
-
-R3BSofTrimCalData::R3BSofTrimCalData(Int_t    secID,   Int_t    anodeID,
-				     Double_t dtraw,   Double_t dtal, 
-				     Float_t  esub,    Float_t  ematch)
+R3BSofTrimCalData::R3BSofTrimCalData(Int_t secID,
+                                     Int_t anodeID,
+                                     Double_t dtraw,
+                                     Double_t dtal,
+                                     Float_t esub,
+                                     Float_t ematch)
     : fSecID(secID)
     , fAnodeID(anodeID)
     , fDriftTimeRaw(dtraw)

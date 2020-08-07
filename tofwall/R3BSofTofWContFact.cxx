@@ -45,7 +45,6 @@ void R3BSofTofWContFact::setAllContainers()
     p3->addContext("TofWHitParContext");
 
     containers->Add(p3);
-
 }
 
 FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
@@ -64,7 +63,7 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
 
     if (strcmp(name, "tofwHitPar") == 0)
     {
-         p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());//FIXME
+        p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext()); // FIXME
     }
 
     if (strcmp(name, "tofwGeoPar") == 0)
