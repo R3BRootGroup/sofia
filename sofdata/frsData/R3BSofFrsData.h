@@ -17,6 +17,8 @@ class R3BSofFrsData : public TObject
     R3BSofFrsData();
 
     /** Standard Constructor
+     *@param fStaId  ID of Start Sci starting from 1
+     *@param fStoId  ID of Stop Sci starting from 1
      *@param fZ      Z of fragments
      *@param fAq     A/q of fragments
      *@param fBeta   Beta of fragments
@@ -24,12 +26,14 @@ class R3BSofFrsData : public TObject
      *@param cs2     Position at S2
      *@param xc      Position at Cave
      **/
-    R3BSofFrsData(Double_t z, Double_t aq, Double_t beta, Double_t brho, Double_t xs2 = 0., Double_t xc = 0.);
+    R3BSofFrsData(Int_t StaId, Int_t StoId, Double_t z, Double_t aq, Double_t beta, Double_t brho, Double_t xs2 = 0., Double_t xc = 0.);
 
     // Destructor
     virtual ~R3BSofFrsData() {}
 
     // Getters
+    inline const Double_t GetStaId() const { return fStaId; }
+    inline const Double_t GetStoId() const { return fStoId; }
     inline const Double_t GetZ() const { return fZ; }
     inline const Double_t GetAq() const { return fAq; }
     inline const Double_t GetBeta() const { return fBeta; }
@@ -38,7 +42,8 @@ class R3BSofFrsData : public TObject
     inline const Double_t GetXCave() const { return fxc; }
 
   protected:
-    Double_t fZ, fAq; // ID
+    Int_t fStaId, fStoId;
+    Double_t fZ, fAq;
     Double_t fBeta, fBrho, fxs2, fxc;
 
   public:

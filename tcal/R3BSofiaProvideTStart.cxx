@@ -37,6 +37,7 @@ InitStatus R3BSofiaProvideTStart::Init()
     {
         throw std::runtime_error("R3BSofiaProvideTStart: No R3BEventHeader");
     }
+    return kSUCCESS;
 }
 
 void R3BSofiaProvideTStart::Exec(Option_t*) { fEventHeader->SetTStart(GetTStart()); }

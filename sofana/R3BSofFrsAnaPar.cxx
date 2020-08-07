@@ -1,36 +1,42 @@
 // ------------------------------------------------------------------
 // -----         R3BSofFrsAnaPar source file                    -----
 // -----         Created 27/01/20  by J.L. Rodriguez-Sanchez    -----
+// -----         Revised 07/08/20  by R. Taniuchi               -----
 // ------------------------------------------------------------------
 
 #include "R3BSofFrsAnaPar.h"
-#include "FairLogger.h"
-#include "FairParamList.h"
-
-#include "TArrayF.h"
-#include "TMath.h"
-#include "TString.h"
-
-#include <iostream>
+#define MAX_TOFNUM 5
 
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofFrsAnaPar::R3BSofFrsAnaPar(const TString& name, const TString& title, const TString& context)
     : FairParGenericSet(name, title, context)
-    , fMagS2Cave(0)
-    , fDispS2(0)
-    , fPathS2Cave(0)
-    , fTOFS2Cave(0)
-    , fPosFocalS2(0)
-    , fPosFocalCave(0)
-    , frho_S0_S2(0)
-    , fBfield_S0_S2(0)
-    , frho_S2_Cave(0)
-    , fBfield_S2_Cave(0)
+    , fBrho0(0)
+    , fNumTof(0)
+    , fS2PosCoef(0)
+    , fS2PosOffset(0)
 {
+    fStaSciId = new TArrayI(MAX_TOFNUM);
+    fStoSciId = new TArrayI(MAX_TOFNUM);
+    fPathLength = new TArrayF(MAX_TOFNUM);
+    fTofOffset = new TArrayF(MAX_TOFNUM);
+    fUseS2x = new TArrayI(MAX_TOFNUM);
 }
 
 // ----  Destructor ------------------------------------------------------------
-R3BSofFrsAnaPar::~R3BSofFrsAnaPar() { clear(); }
+R3BSofFrsAnaPar::~R3BSofFrsAnaPar()
+{
+    clear();
+    if (fStaSciId)
+        delete fStaSciId;
+    if (fStoSciId)
+        delete fStoSciId;
+    if (fPathLength)
+        delete fPathLength;
+    if (fTofOffset)
+        delete fTofOffset;
+    if (fUseS2x)
+        delete fUseS2x;
+}
 
 // ----  Method clear ----------------------------------------------------------
 void R3BSofFrsAnaPar::clear()
@@ -47,16 +53,22 @@ void R3BSofFrsAnaPar::putParams(FairParamList* list)
     {
         return;
     }
-    list->add("MagnificationS2Cave", fMagS2Cave);
-    list->add("DisperisionS2", fDispS2);
-    list->add("PathS2Cave", fPathS2Cave);
-    list->add("ToFS2Cave", fTOFS2Cave);
-    list->add("PosFocalS2", fPosFocalS2);
-    list->add("PosFocalCave", fPosFocalCave);
-    list->add("Rho_S0_S2", frho_S0_S2);
-    list->add("Bfield_S0_S2", fBfield_S0_S2);
-    list->add("Rho_S2_Cave", frho_S2_Cave);
-    list->add("Bfield_S2_Cave", fBfield_S2_Cave);
+    list->add("BrhoS2S8", fBrho0);
+    list->add("NumTof", fNumTof);
+
+    fStaSciId->Set(fNumTof);
+    fStoSciId->Set(fNumTof);
+    fPathLength->Set(fNumTof);
+    fTofOffset->Set(fNumTof);
+    fUseS2x->Set(fNumTof);
+    list->add("StaSciId", *fStaSciId);
+    list->add("StoSciId", *fStoSciId);
+    list->add("PathLength", *fPathLength);
+    list->add("TofOffset", *fTofOffset);
+    list->add("UseS2x", *fUseS2x);
+
+    list->add("S2PosCoef", fS2PosCoef);
+    list->add("S2PosOffset", fS2PosOffset);
 }
 
 // ----  Method getParams ------------------------------------------------------
@@ -68,47 +80,34 @@ Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
         return kFALSE;
     }
 
-    if (!list->fill("MagnificationS2Cave", &fMagS2Cave))
-    {
+    if (!list->fill("BrhoS2S8", &fBrho0))
         return kFALSE;
-    }
+    if (!list->fill("NumTof", &fNumTof))
+        return kFALSE;
 
-    if (!list->fill("DisperisionS2", &fDispS2))
-    {
+    fStaSciId->Set(fNumTof);
+    fStoSciId->Set(fNumTof);
+    fPathLength->Set(fNumTof);
+    fTofOffset->Set(fNumTof);
+    fUseS2x->Set(fNumTof);
+    if (!list->fill("StaSciId", fStaSciId))
         return kFALSE;
-    }
-    if (!list->fill("PathS2Cave", &fPathS2Cave))
-    {
+    if (!list->fill("StoSciId", fStoSciId))
         return kFALSE;
-    }
-    if (!list->fill("ToFS2Cave", &fTOFS2Cave))
-    {
+    if (!list->fill("PathLength", fPathLength))
         return kFALSE;
-    }
-    if (!list->fill("PosFocalS2", &fPosFocalS2))
-    {
+    if (!list->fill("TofOffset", fTofOffset))
         return kFALSE;
-    }
-    if (!list->fill("PosFocalCave", &fPosFocalCave))
-    {
+    if (!list->fill("UseS2x", fUseS2x))
         return kFALSE;
-    }
-    if (!list->fill("Rho_S0_S2", &frho_S0_S2))
-    {
+
+    if (!list->fill("S2PosCoef", &fS2PosCoef))
         return kFALSE;
-    }
-    if (!list->fill("Bfield_S0_S2", &fBfield_S0_S2))
-    {
+    if (!list->fill("S2PosOffset", &fS2PosOffset))
         return kFALSE;
-    }
-    if (!list->fill("Rho_S2_Cave", &frho_S2_Cave))
-    {
-        return kFALSE;
-    }
-    if (!list->fill("Bfield_S2_Cave", &fBfield_S2_Cave))
-    {
-        return kFALSE;
-    }
+
+    // printParams();
+
     return kTRUE;
 }
 
@@ -116,14 +115,16 @@ Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
 void R3BSofFrsAnaPar::printParams()
 {
     LOG(INFO) << "R3BSofFrsAnaPar: Frs Analysis Parameters: ";
-    LOG(INFO) << "MagnificationS2Cave " << fMagS2Cave;
-    LOG(INFO) << "DisperisionS2 " << fDispS2;
-    LOG(INFO) << "PathS2Cave " << fPathS2Cave;
-    LOG(INFO) << "ToFS2Cave " << fTOFS2Cave;
-    LOG(INFO) << "PosFocalS2 " << fPosFocalS2;
-    LOG(INFO) << "PosFocalCave " << fPosFocalCave;
-    LOG(INFO) << "Rho_S0_S2 " << frho_S0_S2;
-    LOG(INFO) << "Bfield_S0_S2 " << fBfield_S0_S2;
-    LOG(INFO) << "Rho_S2_Cave " << frho_S2_Cave;
-    LOG(INFO) << "Bfield_S2_Cave " << fBfield_S2_Cave;
+    LOG(INFO) << "BrhoS2S8: " << fBrho0;
+    LOG(INFO) << "NumTof: " << fNumTof;
+    for (Int_t i = 0; i < fNumTof; i++)
+    {
+        LOG(INFO) << "StaSciId(" << i << "): " << fStaSciId->GetAt(i);
+        LOG(INFO) << "StoSciId(" << i << "): " << fStoSciId->GetAt(i);
+        LOG(INFO) << "PathLength(" << i << "): " << fPathLength->GetAt(i);
+        LOG(INFO) << "TofOffset(" << i << "): " << fTofOffset->GetAt(i);
+        LOG(INFO) << "UseS2x(" << i << "): " << fUseS2x->GetAt(i);
+    }
+    LOG(INFO) << "S2PosCoef: " << fS2PosCoef;
+    LOG(INFO) << "S2PosOffset: " << fS2PosOffset;
 }
