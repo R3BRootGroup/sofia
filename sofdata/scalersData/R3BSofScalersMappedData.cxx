@@ -14,6 +14,4 @@ R3BSofScalersMappedData::R3BSofScalersMappedData(UShort_t s, UShort_t c, UInt_t 
 {
 }
 
-
-
 ClassImp(R3BSofScalersMappedData)

@@ -149,11 +149,13 @@ void R3BSofMwpc1Cal2Hit::Exec(Option_t* option)
         // Obtain position X ----
         qleft = (Double_t)fx[padmx - 1];
         qright = (Double_t)fx[padmx + 1];
-        if(qleft>0 && qright>0) x = GetPositionX(qmx, padmx, qleft, qright);
+        if (qleft > 0 && qright > 0)
+            x = GetPositionX(qmx, padmx, qleft, qright);
         // Obtain position Y ----
         qdown = fy[padmy - 1];
         qup = fy[padmy + 1];
-        if(qdown>0 && qup>0) y = GetPositionY(qmy, padmy, qdown, qup);
+        if (qdown > 0 && qup > 0)
+            y = GetPositionY(qmy, padmy, qdown, qup);
 
         AddHitData(x, y);
     }
@@ -167,9 +169,9 @@ void R3BSofMwpc1Cal2Hit::Exec(Option_t* option)
 Double_t R3BSofMwpc1Cal2Hit::GetPositionX(Double_t qmax, Int_t padmax, Double_t qleft, Double_t qright)
 {
     Double_t a3 = TMath::Pi() * fwx / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qleft) + TMath::Sqrt(qmax / qright))));
-    //Double_t a2 = gRandom->Uniform( -fwx / 2,    fwx / 2); 
+    // Double_t a2 = gRandom->Uniform( -fwx / 2,    fwx / 2);
     Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qleft) - TMath::Sqrt(qmax / qright)) /
-                                                           (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
+                                                    (2 * TMath::SinH(TMath::Pi() * fwx / a3)));
 
     return (-1. * padmax * fwx + (fSize / 2) - (fwx / 2) - a2); // Left is positive and right negative
 }
@@ -178,9 +180,9 @@ Double_t R3BSofMwpc1Cal2Hit::GetPositionX(Double_t qmax, Int_t padmax, Double_t 
 Double_t R3BSofMwpc1Cal2Hit::GetPositionY(Double_t qmax, Int_t padmax, Double_t qdown, Double_t qup)
 {
     Double_t a3 = TMath::Pi() * fwy / (TMath::ACosH(0.5 * (TMath::Sqrt(qmax / qdown) + TMath::Sqrt(qmax / qup))));
-    //Double_t a2 = gRandom->Uniform(-fwy / 2, fwy / 2); 
+    // Double_t a2 = gRandom->Uniform(-fwy / 2, fwy / 2);
     Double_t a2 = (a3 / TMath::Pi()) * TMath::ATanH((TMath::Sqrt(qmax / qdown) - TMath::Sqrt(qmax / qup)) /
-                                                                       (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
+                                                    (2 * TMath::SinH(TMath::Pi() * fwy / a3)));
 
     return (padmax * fwy - (fSize / 2) + (fwy / 2) + a2);
 }

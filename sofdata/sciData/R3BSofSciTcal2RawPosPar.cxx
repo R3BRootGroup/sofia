@@ -36,14 +36,14 @@
 R3BSofSciTcal2RawPosPar::R3BSofSciTcal2RawPosPar()
     : FairTask("R3BSofSciTcal2RawPosPar", 1)
     , fNumDets(0)
-    , fNumPmts(3) // Pmt + ref 
+    , fNumPmts(3) // Pmt + ref
     , fNumParsPerSignal(2)
     , fMinStatistics(0)
     , fTcal(NULL)
     , fRawPosPar(NULL)
     , fOutputFile(NULL)
 {
-  fNumSignals = fNumDets;
+    fNumSignals = fNumDets;
 }
 
 // R3BSofSciTcal2RawPosPar: Standard Constructor --------------------------
@@ -58,7 +58,7 @@ R3BSofSciTcal2RawPosPar::R3BSofSciTcal2RawPosPar(const char* name, Int_t iVerbos
     , fOutputFile(NULL)
 
 {
-  fNumSignals = fNumDets;
+    fNumSignals = fNumDets;
 }
 
 // R3BSofSciTcal2RawPosPar: Destructor ----------------------------------------
@@ -173,8 +173,7 @@ void R3BSofSciTcal2RawPosPar::Exec(Option_t* opt)
         // ATTENTION : x increasing from left to right : TrawRIGHT-TrawLEFT
         if ((mult[d * fNumPmts] == 1) && (mult[d * fNumPmts + 1] == 1))
         {
-            fh_RawPosMult1[d]->Fill(iRawTimeNs[d * fNumPmts] -
-                                    iRawTimeNs[d * fNumPmts + 1]);
+            fh_RawPosMult1[d]->Fill(iRawTimeNs[d * fNumPmts] - iRawTimeNs[d * fNumPmts + 1]);
         }
     }
 }

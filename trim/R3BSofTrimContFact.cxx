@@ -38,7 +38,6 @@ void R3BSofTrimContFact::setAllContainers()
     p1->addContext("TrimCalParContext");
 
     containers->Add(p1);
-
 }
 
 FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)

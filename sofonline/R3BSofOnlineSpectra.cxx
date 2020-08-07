@@ -346,8 +346,8 @@ InitStatus R3BSofOnlineSpectra::Init()
     fh1_wrs[1] = new TH1F("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
     fh1_wrs[1]->SetLineColor(4);
     fh1_wrs[1]->SetLineWidth(3);
-    if(fWRItemsCalifa)
-      fh1_wrs[1]->Draw("same");
+    if (fWRItemsCalifa)
+        fh1_wrs[1]->Draw("same");
     fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
     fh1_wrs[2]->SetLineColor(3);
     fh1_wrs[2]->SetLineWidth(3);
@@ -509,27 +509,31 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
     // Fill histogram with trigger information
 
     Int_t tpatbin;
-    if(fEventHeader->GetTpat()>0){
-      for (Int_t i = 0; i < 16; i++)
-	{
-	  tpatbin = (fEventHeader->GetTpat() & (1 << i));
-	  if (tpatbin != 0)
-            fh1_trigger->Fill(i + 1);
-	}
-    }else if(fEventHeader->GetTpat()==0){
-      fh1_trigger->Fill(0);
-    }else{
-      LOG(INFO) <<  fNEvents << " "<< fEventHeader->GetTpat();
+    if (fEventHeader->GetTpat() > 0)
+    {
+        for (Int_t i = 0; i < 16; i++)
+        {
+            tpatbin = (fEventHeader->GetTpat() & (1 << i));
+            if (tpatbin != 0)
+                fh1_trigger->Fill(i + 1);
+        }
+    }
+    else if (fEventHeader->GetTpat() == 0)
+    {
+        fh1_trigger->Fill(0);
+    }
+    else
+    {
+        LOG(INFO) << fNEvents << " " << fEventHeader->GetTpat();
     }
     // fh1_trigger->Fill(fEventHeader->GetTpat());
-
 
     // WR data
     if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0)
     {
         // SOFIA
         Int_t nHits = fWRItemsSofia->GetEntriesFast();
-        int64_t wrs=0.;
+        int64_t wrs = 0.;
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsSofia->At(ihit);
@@ -595,7 +599,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0)
         {
             nHits = fWRItemsMaster->GetEntriesFast();
-            int64_t wrm=0.;
+            int64_t wrm = 0.;
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
                 R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsMaster->At(ihit);
@@ -642,9 +646,10 @@ void R3BSofOnlineSpectra::FinishTask()
 {
     // Write trigger canvas in the root file
     cTrigger->Write();
-    if (fWRItemsMaster && fWRItemsSofia){
+    if (fWRItemsMaster && fWRItemsSofia)
+    {
         cWr->Write();
-	cWrs->Write();
+        cWrs->Write();
     }
 }
 

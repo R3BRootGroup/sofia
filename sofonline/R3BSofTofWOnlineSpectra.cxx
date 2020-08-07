@@ -12,8 +12,8 @@
 #include "R3BSofMwpcCalData.h"
 #include "R3BSofSciSingleTcalData.h"
 #include "R3BSofTofWMappedData.h"
-#include "R3BSofTofWTcalData.h"
 #include "R3BSofTofWSingleTcalData.h"
+#include "R3BSofTofWTcalData.h"
 #include "R3BSofTwimHitData.h"
 #include "THttpServer.h"
 
@@ -215,7 +215,6 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         fh1_RawPos_AtSingleTcal[i]->GetYaxis()->SetTitleSize(0.045);
         cTofWRawPosST->cd(i + 1);
         fh1_RawPos_AtSingleTcal[i]->Draw("");
-
     }
 
     // === ENE RAW === //
@@ -247,7 +246,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     {
         sprintf(Name1, "SofTofW_P%i_RawTof_AtTcal_Mult1", i + 1);
         cTofWRawTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
-	cTofWRawTof[i]->Divide(1,2);
+        cTofWRawTof[i]->Divide(1, 2);
         sprintf(Name1, "SofTofW%i_RawTofAtTcal_Mult1", i + 1);
         fh1_RawTof_AtTcalMult1[i] = new TH1D(Name1, Name1, 100000, -100, 100);
         fh1_RawTof_AtTcalMult1[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
@@ -432,16 +431,18 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
         }
     }
 
-    if (fSingleTcalItemsTofW && fSingleTcalItemsTofW->GetEntriesFast()){
-      // --- ------------------------- --- //
-      // --- loop over singe tcal data --- //
-      // --- ------------------------- --- //
-      nHits = fSingleTcalItemsTofW->GetEntriesFast();
-      for(Int_t ihit=0; ihit<nHits; ihit++){
-	R3BSofTofWSingleTcalData * hitST = (R3BSofTofWSingleTcalData*)fSingleTcalItemsTofW->At(ihit);
-	fh1_RawPos_AtSingleTcal[hitST->GetDetector()-1]->Fill(hitST->GetRawPosNs());
-	fh1_RawTof_AtSingleTcal[hitST->GetDetector()-1]->Fill(hitST->GetRawTofNs());
-      }//end of loop over the singletcal data
+    if (fSingleTcalItemsTofW && fSingleTcalItemsTofW->GetEntriesFast())
+    {
+        // --- ------------------------- --- //
+        // --- loop over singe tcal data --- //
+        // --- ------------------------- --- //
+        nHits = fSingleTcalItemsTofW->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTofWSingleTcalData* hitST = (R3BSofTofWSingleTcalData*)fSingleTcalItemsTofW->At(ihit);
+            fh1_RawPos_AtSingleTcal[hitST->GetDetector() - 1]->Fill(hitST->GetRawPosNs());
+            fh1_RawTof_AtSingleTcal[hitST->GetDetector() - 1]->Fill(hitST->GetRawTofNs());
+        } // end of loop over the singletcal data
     }
 
     if (fMappedItemsTofW && fMappedItemsTofW->GetEntriesFast() && fTcalItemsTofW && fTcalItemsTofW->GetEntriesFast())
@@ -484,14 +485,17 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
         // --- Get the Time at the Start detectors --- //
         // --- ----------------------------------- --- //
         Double_t TrawStart = -1000000.;
-        if (fSingleTcalItemsSci){
-	  for(Int_t i=0; i<fSingleTcalItemsSci->GetEntriesFast(); i++){
-            R3BSofSciSingleTcalData* hitsingletcalsci = (R3BSofSciSingleTcalData*)fSingleTcalItemsSci->At(i);
-            if (hitsingletcalsci && hitsingletcalsci->GetDetector()==fIdSofSciCaveC){
-	      TrawStart = hitsingletcalsci->GetRawTimeNs();
-            }
-	  } // end of if mult=1 in the Start
-	}
+        if (fSingleTcalItemsSci)
+        {
+            for (Int_t i = 0; i < fSingleTcalItemsSci->GetEntriesFast(); i++)
+            {
+                R3BSofSciSingleTcalData* hitsingletcalsci = (R3BSofSciSingleTcalData*)fSingleTcalItemsSci->At(i);
+                if (hitsingletcalsci && hitsingletcalsci->GetDetector() == fIdSofSciCaveC)
+                {
+                    TrawStart = hitsingletcalsci->GetRawTimeNs();
+                }
+            } // end of if mult=1 in the Start
+        }
 
         // Get hit data Twim
         Double_t twimZ = 0.;
@@ -621,8 +625,9 @@ void R3BSofTofWOnlineSpectra::FinishTask()
             fh1_RawPos_AtTcalMult1[i]->Write();
             if (fSingleTcalItemsSci)
             {
-	      if (fSingleTcalItemsTofW) cTofWRawTof[i]->Write();
-	      fh1_RawTof_AtTcalMult1[i]->Write();
+                if (fSingleTcalItemsTofW)
+                    cTofWRawTof[i]->Write();
+                fh1_RawTof_AtTcalMult1[i]->Write();
             }
         }
     }
@@ -632,9 +637,9 @@ void R3BSofTofWOnlineSpectra::FinishTask()
         cTofWRawPosST->Write();
         for (UShort_t i = 0; i < NbDets; i++)
         {
-	  fh1_RawPos_AtSingleTcal[i]->Write();
-	  fh1_RawTof_AtSingleTcal[i]->Write();
-	}      
+            fh1_RawPos_AtSingleTcal[i]->Write();
+            fh1_RawTof_AtSingleTcal[i]->Write();
+        }
     }
 
     if (fHitItemsTwim && fTcalItemsTofW)

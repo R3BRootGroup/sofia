@@ -46,7 +46,7 @@ R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar()
     , fRawTofPar(NULL)
     , fOutputFile(NULL)
 {
-  fNumSignals = fNumDets-1;
+    fNumSignals = fNumDets - 1;
 }
 
 // R3BSofSciTcal2RawTofPar: Standard Constructor --------------------------
@@ -64,7 +64,7 @@ R3BSofSciTcal2RawTofPar::R3BSofSciTcal2RawTofPar(const char* name, Int_t iVerbos
     , fOutputFile(NULL)
 
 {
-  fNumSignals = fNumDets - 1;
+    fNumSignals = fNumDets - 1;
 }
 
 // R3BSofSciTcal2RawTofPar: Destructor ----------------------------------------
@@ -120,7 +120,7 @@ InitStatus R3BSofSciTcal2RawTofPar::Init()
 
     char name[100];
     fh_RawTofMult1 = new TH1D*[fNumSignals];
-    for (Int_t detstart = 0; detstart < fNumDets-1; detstart++)
+    for (Int_t detstart = 0; detstart < fNumDets - 1; detstart++)
     {
         sprintf(name, "TofRaw_Sci%i_to_Sci%i", detstart + 1, fDetIdCaveC);
         fh_RawTofMult1[detstart] = new TH1D(name, name, 40000, -1000, 3000);
@@ -148,19 +148,23 @@ void R3BSofSciTcal2RawTofPar::Exec(Option_t* opt)
     UShort_t iPmt; // 0 based Pmt number
     Double_t iTrawStart, iTrawStop;
 
-    for (UShort_t d = 0; d < fNumDets; d++){
-      for (UShort_t ch = 0; ch < fNumChannels; ch++){
-	mult[d * fNumChannels + ch] = 0;
-	iRawTimeNs[d * fNumChannels + ch] = 0;
-      }
+    for (UShort_t d = 0; d < fNumDets; d++)
+    {
+        for (UShort_t ch = 0; ch < fNumChannels; ch++)
+        {
+            mult[d * fNumChannels + ch] = 0;
+            iRawTimeNs[d * fNumChannels + ch] = 0;
+        }
     }
 
     // CALCULATE THE MULTIPLICITY FOR EACH SIGNAL
-    for (UInt_t ihit = 0; ihit < nHitsSci; ihit++){
+    for (UInt_t ihit = 0; ihit < nHitsSci; ihit++)
+    {
         R3BSofSciTcalData* hitSci = (R3BSofSciTcalData*)fTcal->At(ihit);
-        if (!hitSci){
-	  LOG(WARNING) << "R3BSofSciTcal2RawTofPar::Exec() : could not get hitSci";
-	  continue; // should not happen
+        if (!hitSci)
+        {
+            LOG(WARNING) << "R3BSofSciTcal2RawTofPar::Exec() : could not get hitSci";
+            continue; // should not happen
         }
         iDet = hitSci->GetDetector() - 1; // get the 0 based DetiMax=20 number
         iPmt = hitSci->GetPmt() - 1;      // get the 0 based Pmt number
@@ -168,18 +172,18 @@ void R3BSofSciTcal2RawTofPar::Exec(Option_t* opt)
         mult[iDet * fNumChannels + iPmt]++;
     } // end of for(ihit)
 
-
     // FILL THE HISTOGRAM ONLY FOR MULT=1 IN RIGHT AND MULT=1 IN LEFT
-    UShort_t dstop = fDetIdCaveC-1;
-    for (UShort_t dstart = 0; dstart < fNumDets - 1; dstart++){
-      // check if mult=1 at RIGHT PMT [0] and mult=1 at LEFT PMT [1]
-      if ((mult[dstart * fNumChannels] == 1) && (mult[dstart * fNumChannels + 1] == 1) &&
-	  (mult[dstop * fNumChannels] == 1) && (mult[dstop * fNumChannels + 1] == 1)){
-	iTrawStart = 0.5 * (iRawTimeNs[dstart * fNumChannels] + iRawTimeNs[dstart * fNumChannels + 1]);
-	iTrawStop = 0.5 * (iRawTimeNs[dstop * fNumChannels] + iRawTimeNs[dstop * fNumChannels + 1]);
-	fh_RawTofMult1[dstart]->Fill(iTrawStop - iTrawStart + 
-				     iRawTimeNs[dstart * fNumChannels + 2] -
-				     iRawTimeNs[dstop * fNumChannels + 2]);
+    UShort_t dstop = fDetIdCaveC - 1;
+    for (UShort_t dstart = 0; dstart < fNumDets - 1; dstart++)
+    {
+        // check if mult=1 at RIGHT PMT [0] and mult=1 at LEFT PMT [1]
+        if ((mult[dstart * fNumChannels] == 1) && (mult[dstart * fNumChannels + 1] == 1) &&
+            (mult[dstop * fNumChannels] == 1) && (mult[dstop * fNumChannels + 1] == 1))
+        {
+            iTrawStart = 0.5 * (iRawTimeNs[dstart * fNumChannels] + iRawTimeNs[dstart * fNumChannels + 1]);
+            iTrawStop = 0.5 * (iRawTimeNs[dstop * fNumChannels] + iRawTimeNs[dstop * fNumChannels + 1]);
+            fh_RawTofMult1[dstart]->Fill(iTrawStop - iTrawStart + iRawTimeNs[dstart * fNumChannels + 2] -
+                                         iRawTimeNs[dstop * fNumChannels + 2]);
         }
     }
 }

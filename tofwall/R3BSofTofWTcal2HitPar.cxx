@@ -19,8 +19,8 @@
 
 // TofW headers
 #include "R3BSofTofWHitPar.h"
-#include "R3BSofTofWTcal2HitPar.h"
 #include "R3BSofTofWSingleTcalData.h"
+#include "R3BSofTofWTcal2HitPar.h"
 
 #include <iomanip>
 
@@ -40,8 +40,7 @@ R3BSofTofWTcal2HitPar::R3BSofTofWTcal2HitPar()
 }
 
 // R3BSofTofWTcal2HitParPar: Standard Constructor --------------------------
-R3BSofTofWTcal2HitPar::R3BSofTofWTcal2HitPar(const TString& name,
-                                                 Int_t iVerbose)
+R3BSofTofWTcal2HitPar::R3BSofTofWTcal2HitPar(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNumSci(28)
     , fMinStatistics(1000)
@@ -97,10 +96,9 @@ InitStatus R3BSofTofWTcal2HitPar::Init()
 
     // Define histograms
     char Name1[255];
-        for (Int_t i = 0; i < fNumSci; i++)
-        {
-
-        }
+    for (Int_t i = 0; i < fNumSci; i++)
+    {
+    }
 
     return kSUCCESS;
 }
@@ -138,7 +136,6 @@ void R3BSofTofWTcal2HitPar::Reset() {}
 void R3BSofTofWTcal2HitPar::FinishTask()
 {
     fHit_Par->SetNumSci(fNumSci);
-
 
     fHit_Par->setChanged();
 }

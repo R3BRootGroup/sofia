@@ -24,8 +24,8 @@ R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, cons
     , fDetIdS8(0)
     , fNumParsPerSignal(2)
 {
-  fNumSignals = fNumDets-1;
-  fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
+    fNumSignals = fNumDets - 1;
+    fAllSignalsRawTofParams = new TArrayF(MAX_RAWTOFPAR);
 }
 
 // ----  Destructor ------------------------------------------------------------

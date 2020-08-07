@@ -16,8 +16,8 @@
 #include <iomanip>
 
 // TofW headers
-#include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWHitData.h"
+#include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWTCal2Hit.h"
 
 // FIXME after beam 15 Feb 2020
