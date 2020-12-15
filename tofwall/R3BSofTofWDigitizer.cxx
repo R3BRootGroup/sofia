@@ -16,13 +16,12 @@
 #include "TVirtualMC.h"
 
 #include "TMath.h"
-#include "TRandom.h"
 #include "TVector3.h"
 #include <iostream>
 #include <string>
 
 #include "R3BMCTrack.h"
-#include "R3BSofToFWPoint.h"
+#include "R3BSofTofWPoint.h"
 
 // R3BSofTofWDigitizer: Default Constructor --------------------------
 R3BSofTofWDigitizer::R3BSofTofWDigitizer()
@@ -37,6 +36,7 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer()
     , fangle(0.)
     , fsigma_ELoss(0.)
 {
+    rand = new TRandom1();
 }
 
 // R3BSofTofWDigitizer: Standard Constructor --------------------------
@@ -52,6 +52,7 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer(const char* name, Int_t iVerbose)
     , fangle(0.)
     , fsigma_ELoss(0.)
 {
+    rand = new TRandom1();
 }
 
 // Virtual R3BSofTofWDigitizer: Destructor ----------------------------
@@ -76,7 +77,7 @@ InitStatus R3BSofTofWDigitizer::Init()
         LOG(fatal) << "Init: No FairRootManager";
 
     fMCTrack = (TClonesArray*)ioman->GetObject("MCTrack");
-    fTofPoints = (TClonesArray*)ioman->GetObject("SofTofWallPoint");
+    fTofPoints = (TClonesArray*)ioman->GetObject("SofTofWPoint");
 
     // Register output array fTofHits
     fTofHits = new TClonesArray("R3BSofTofWHitData", 10);
@@ -94,39 +95,45 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
     if (!nHits)
         return;
     // Data from Point level
-    R3BSofToFWPoint** pointData;
-    pointData = new R3BSofToFWPoint*[nHits];
-    UChar_t paddle = 0;
+    R3BSofTofWPoint** pointData;
+    pointData = new R3BSofTofWPoint*[nHits];
+    Int_t paddle = 0;
     Int_t TrackId = 0, PID = 0, mother = -1;
-    Double_t x = 0., y = 0., z = 0., time = 0.;
+    Double_t x = 0., y = 0., z = 0., time = 0., brho = 0., v = 0.;
     for (Int_t i = 0; i < nHits; i++)
     {
-        pointData[i] = (R3BSofToFWPoint*)(fTofPoints->At(i));
+        pointData[i] = (R3BSofTofWPoint*)(fTofPoints->At(i));
         TrackId = pointData[i]->GetTrackID();
 
-        R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);
-        PID = Track->GetPdgCode();
-        mother = Track->GetMotherId();
+        // R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);
+        // PID = Track->GetPdgCode();
+        // mother = Track->GetMotherId();
 
-        if (PID > 1000080160 && mother < 0) // Z=8 and A=16
-        {
-            Double_t fX_in = pointData[i]->GetXIn();
-            Double_t fY_in = pointData[i]->GetYIn();
-            Double_t fZ_in = pointData[i]->GetZIn();
-            Double_t fX_out = pointData[i]->GetXOut();
-            Double_t fY_out = pointData[i]->GetYOut();
-            Double_t fZ_out = pointData[i]->GetZOut();
-            paddle = pointData[i]->GetDetCopyID();
+        // if (PID > 1000080160 && mother < 0) // Z=8 and A=16
+        //{
+        Double_t fX_in = pointData[i]->GetXIn();
+        Double_t fY_in = pointData[i]->GetYIn();
+        Double_t fZ_in = pointData[i]->GetZIn();
+        Double_t fX_out = pointData[i]->GetXOut();
+        Double_t fY_out = pointData[i]->GetYOut();
+        Double_t fZ_out = pointData[i]->GetZOut();
+        paddle = pointData[i]->GetDetCopyID();
 
-            x = ((fX_in + fX_out) / 2.);
-            y = ((fY_in + fY_out) / 2.) + gRandom->Gaus(0., fsigma_y);
-            z = ((fZ_in + fZ_out) / 2.);
+        x = ((fX_in + fX_out) / 2.);
+        y = ((fY_in + fY_out) / 2.) + rand->Gaus(0., fsigma_y);
+        z = ((fZ_in + fZ_out) / 2.);
 
-            x = (((x - fPosX) * cos(fangle * TMath::DegToRad())) - ((z - fPosZ) * sin(fangle * TMath::DegToRad())));
+        x = (((x - fPosX) * cos(fangle * TMath::DegToRad())) - ((z - fPosZ) * sin(fangle * TMath::DegToRad())));
 
-            time = pointData[i]->GetTime() + gRandom->Gaus(0., fsigma_t);
-            AddHitData(paddle, x, y, time);
-        }
+        time = pointData[i]->GetTime() + rand->Gaus(0., fsigma_t);
+
+        brho = pointData[i]->GetPz() / pointData[i]->GetZFF() * 3.107;
+
+        v = pointData[i]->GetLength() / time;
+
+        if (pointData[i]->GetZFF() == 36)
+            AddHitData(paddle, x, y, time, brho, v);
+        //}
     }
     if (pointData)
         delete pointData;
@@ -145,12 +152,17 @@ void R3BSofTofWDigitizer::Reset()
 }
 
 // -----   Private method AddHitData  -------------------------------------------
-R3BSofTofWHitData* R3BSofTofWDigitizer::AddHitData(UChar_t paddle, Double_t x, Double_t y, Double_t time)
+R3BSofTofWHitData* R3BSofTofWDigitizer::AddHitData(Int_t paddle,
+                                                   Double_t x,
+                                                   Double_t y,
+                                                   Double_t time,
+                                                   Double_t brho,
+                                                   Double_t vel)
 {
     // It fills the R3BSofTofWHitData
     TClonesArray& clref = *fTofHits;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofTofWHitData(paddle, x, y, time);
+    return new (clref[size]) R3BSofTofWHitData(paddle, x, y, time, brho, vel);
 }
 
 // -----   Public method Finish  ------------------------------------------------

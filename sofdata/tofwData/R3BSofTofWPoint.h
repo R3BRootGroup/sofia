@@ -1,25 +1,25 @@
 // -------------------------------------------------------------------------
-// -----                      R3BSofToFWPoint header file              -----
+// -----                      R3BSofTofWPoint header file              -----
 // -----                  Created 06/12/17  by JL Rodriguez            -----
 // -------------------------------------------------------------------------
 
-/**  R3BSofToFWPoint.h
+/**  R3BSofTofWPoint.h
  **/
 
-#ifndef R3BSofToFWPoint_H
-#define R3BSofToFWPoint_H
+#ifndef R3BSofTofWPoint_H
+#define R3BSofTofWPoint_H
 
 #include "TObject.h"
 #include "TVector3.h"
 
 #include "FairMCPoint.h"
 
-class R3BSofToFWPoint : public FairMCPoint
+class R3BSofTofWPoint : public FairMCPoint
 {
 
   public:
     /** Default constructor **/
-    R3BSofToFWPoint();
+    R3BSofTofWPoint();
 
     /** Constructor with arguments
      *@param trackID  Index of MCTrack
@@ -35,7 +35,7 @@ class R3BSofToFWPoint : public FairMCPoint
      *@param length   Track length since creation [cm]
      *@param eLoss    Energy deposit [GeV]
      **/
-    R3BSofToFWPoint(Int_t trackID,
+    R3BSofTofWPoint(Int_t trackID,
                     Int_t detID,
                     Int_t detCopyID,
                     Double_t Z,
@@ -49,10 +49,10 @@ class R3BSofToFWPoint : public FairMCPoint
                     Double_t eLoss);
 
     /** Copy constructor **/
-    R3BSofToFWPoint(const R3BSofToFWPoint& point) { *this = point; };
+    R3BSofTofWPoint(const R3BSofTofWPoint& point) { *this = point; };
 
     /** Destructor **/
-    virtual ~R3BSofToFWPoint();
+    virtual ~R3BSofTofWPoint();
 
     /** Accessors **/
     Int_t GetDetCopyID() const { return fDetCopyID; }
@@ -93,17 +93,17 @@ class R3BSofToFWPoint : public FairMCPoint
     Int_t fDetCopyID;
     Double32_t fZFF, fAFF;
 
-    ClassDef(R3BSofToFWPoint, 1)
+    ClassDef(R3BSofTofWPoint, 1)
 };
 
-inline void R3BSofToFWPoint::SetPositionOut(TVector3 pos)
+inline void R3BSofTofWPoint::SetPositionOut(TVector3 pos)
 {
     fX_out = pos.X();
     fY_out = pos.Y();
     fZ_out = pos.Z();
 }
 
-inline void R3BSofToFWPoint::SetMomentumOut(TVector3 mom)
+inline void R3BSofTofWPoint::SetMomentumOut(TVector3 mom)
 {
     fPx_out = mom.Px();
     fPy_out = mom.Py();

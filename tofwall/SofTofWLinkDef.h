@@ -4,7 +4,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-#pragma link C++ class R3BSofTofWall + ;
+#pragma link C++ class R3BSofTofW + ;
 #pragma link C++ class R3BSofTofWDigitizer + ;
 
 #pragma link C++ class R3BSofTofWContFact + ;

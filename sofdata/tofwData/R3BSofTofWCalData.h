@@ -1,23 +1,23 @@
 // -------------------------------------------------------------------------
-// -----              R3BSofToFWCalData header file                    -----
+// -----              R3BSofTofWCalData header file                    -----
 // -----              Created 28/11/17  by H. Alvarez Pol              -----
 // -------------------------------------------------------------------------
 
-/**  R3BSofToFWCalData.h
+/**  R3BSofTofWCalData.h
  **  SOFIA TIME-OF-FLIGHT WALL calibrated data
  **/
 
-#ifndef R3BSOFTOFWCALDATA_H
-#define R3BSOFTOFWCALDATA_H
+#ifndef R3BSofTofWCalData_H
+#define R3BSofTofWCalData_H
 
 #include "FairMultiLinkedData.h"
 #include "TObject.h"
 
-class R3BSofToFWCalData : public FairMultiLinkedData
+class R3BSofTofWCalData : public FairMultiLinkedData
 {
   public:
     /** Default constructor **/
-    R3BSofToFWCalData();
+    R3BSofTofWCalData();
 
     /** Constructor with arguments
      *@param fDetector    Detector unique identifier
@@ -25,15 +25,15 @@ class R3BSofToFWCalData : public FairMultiLinkedData
      *@param fTime        Calibrated Time
      *@param fEnergy      Calibrated Energy
      **/
-    R3BSofToFWCalData(UChar_t ident, UShort_t pmt, Double_t time, Float_t energy);
+    R3BSofTofWCalData(UChar_t ident, UShort_t pmt, Double_t time, Float_t energy);
 
     /** Copy constructor **/
-    R3BSofToFWCalData(const R3BSofToFWCalData&);
+    R3BSofTofWCalData(const R3BSofTofWCalData&);
 
-    R3BSofToFWCalData& operator=(const R3BSofToFWCalData&) { return *this; }
+    R3BSofTofWCalData& operator=(const R3BSofTofWCalData&) { return *this; }
 
     /** Destructor **/
-    virtual ~R3BSofToFWCalData();
+    virtual ~R3BSofTofWCalData();
 
     /** Accessors **/
     UChar_t GetDetector() const { return fDetector; }
@@ -56,7 +56,7 @@ class R3BSofToFWCalData : public FairMultiLinkedData
     Double_t fTime;
     Float_t fEnergy;
 
-    ClassDef(R3BSofToFWCalData, 1)
+    ClassDef(R3BSofTofWCalData, 1)
 };
 
 #endif

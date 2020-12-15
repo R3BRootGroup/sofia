@@ -34,7 +34,7 @@ mwpcData/R3BSofMwpcMappedData.cxx
 mwpcData/R3BSofMwpcCalData.cxx
 mwpcData/R3BSofMwpcHitData.cxx
 twimData/R3BSofTWIMPoint.cxx
-tofwData/R3BSofToFWPoint.cxx
+tofwData/R3BSofTofWPoint.cxx
 sciData/R3BSofSciMappedData.cxx
 sciData/R3BSofSciTcalData.cxx
 sciData/R3BSofSciSingleTcalData.cxx
@@ -43,7 +43,7 @@ sciData/R3BSofSciHitData.cxx
 tofwData/R3BSofTofWMappedData.cxx
 tofwData/R3BSofTofWTcalData.cxx
 tofwData/R3BSofTofWSingleTcalData.cxx
-tofwData/R3BSofToFWCalData.cxx
+tofwData/R3BSofTofWCalData.cxx
 tofwData/R3BSofTofWHitData.cxx
 twimData/R3BSofTwimMappedData.cxx
 twimData/R3BSofTwimCalData.cxx

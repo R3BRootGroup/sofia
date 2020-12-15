@@ -10,7 +10,7 @@
 #pragma link C++ class R3BSofATPoint + ;
 #pragma link C++ class R3BSofMWPCPoint + ;
 #pragma link C++ class R3BSofTWIMPoint + ;
-#pragma link C++ class R3BSofToFWPoint + ;
+#pragma link C++ class R3BSofTofWPoint + ;
 
 // General
 #pragma link C++ class R3BSofAtMappedData + ;
@@ -28,7 +28,7 @@
 #pragma link C++ class R3BSofTofWMappedData + ;
 #pragma link C++ class R3BSofTofWTcalData + ;
 #pragma link C++ class R3BSofTofWSingleTcalData + ;
-#pragma link C++ class R3BSofToFWCalData + ;
+#pragma link C++ class R3BSofTofWCalData + ;
 #pragma link C++ class R3BSofTofWHitData + ;
 
 #pragma link C++ class R3BSofTrimMappedData + ;

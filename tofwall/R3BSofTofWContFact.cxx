@@ -23,6 +23,7 @@ R3BSofTofWContFact::R3BSofTofWContFact()
     fName = "R3BSofTofWContFact";
     fTitle = "Factory for parameter containers in libR3BSofTofW";
     setAllContainers();
+    LOG(INFO) << "Enter in the R3BSofTofWContFact constructor";
     FairRuntimeDb::instance()->addContFactory(this);
 }
 
