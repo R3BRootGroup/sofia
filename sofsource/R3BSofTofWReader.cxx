@@ -126,12 +126,12 @@ Bool_t R3BSofTofWReader::Read()
             uint32_t pmtval = data->SOFTOFW_P[d].TFMI[pmmult];
             if (pmtval != data->SOFTOFW_P[d].TCMI[pmmult])
             {
-                LOG(ERROR) << "R3BSofTofWReader::Reader() mismatch in PMt id for ToFW between TF / TC "
+                LOG(ERROR) << "R3BSofTofWReader::Reader() mismatch in PMt id for TofW between TF / TC "
                            << "TF: PMT = " << data->SOFTOFW_P[d].TFMI[pmmult]
                            << "TC: PMT = " << data->SOFTOFW_P[d].TCMI[pmmult];
             }
             uint32_t nextChannelStart = data->SOFTOFW_P[d].TFME[pmmult];
-            // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
+            // put the mapped items {det,pmt,coarsetime,finetime} one after the other in the fArray
             for (int hit = curChannelStart; hit < nextChannelStart; hit++)
             {
                 new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTofWMappedData(d + 1, // do not change into d !!!!!!!

@@ -1,4 +1,4 @@
-# Create a library called "libR3BSofToFW" which includes the source files given in
+# Create a library called "libR3BSofTofW" which includes the source files given in
 # the array .
 # The extension is already found.  Any number of sources could be listed here.
 
@@ -26,7 +26,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-R3BSofTofWall.cxx
+R3BSofTofW.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofTofWContFact.cxx
 R3BSofTofWTcal2SingleTcal.cxx
@@ -39,8 +39,8 @@ R3BSofTofWHitPar.cxx
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
-set(LINKDEF SofToFWLinkDef.h)
-set(LIBRARY_NAME R3BSofToFW)
+set(LINKDEF SofTofWLinkDef.h)
+set(LIBRARY_NAME R3BSofTofW)
 set(DEPENDENCIES
     R3Bbase R3BData R3BSofData R3BSofTcal)
 

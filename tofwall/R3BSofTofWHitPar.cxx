@@ -22,6 +22,8 @@ R3BSofTofWHitPar::R3BSofTofWHitPar(const char* name, const char* title, const ch
     fSci_tof = new TArrayF(fNumSci);
     fSci_pos = new TArrayF(fNumSci);
     fIn_use = new TArrayI(fNumSci);
+    fSci_vel0 = new TArrayF(fNumSci);
+    fSci_vel1 = new TArrayF(fNumSci);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -34,6 +36,10 @@ R3BSofTofWHitPar::~R3BSofTofWHitPar()
         delete fSci_pos;
     if (fSci_tof)
         delete fSci_tof;
+    if (fSci_vel0)
+        delete fSci_vel0;
+    if (fSci_vel1)
+        delete fSci_vel1;
 }
 
 // ----  Method clear ----------------------------------------------------------
@@ -61,6 +67,10 @@ void R3BSofTofWHitPar::putParams(FairParamList* list)
     list->add("tofwPosPar", *fSci_pos);
     fSci_tof->Set(array_sci);
     list->add("tofwTofPar", *fSci_tof);
+    fSci_vel0->Set(array_sci);
+    list->add("tofwVelPar0", *fSci_vel0);
+    fSci_vel1->Set(array_sci);
+    list->add("tofwVelPar1", *fSci_vel1);
 }
 
 // ----  Method getParams ------------------------------------------------------
@@ -100,6 +110,20 @@ Bool_t R3BSofTofWHitPar::getParams(FairParamList* list)
         return kFALSE;
     }
 
+    fSci_vel0->Set(array_sci);
+    if (!(list->fill("tofwVelPar0", fSci_vel0)))
+    {
+        LOG(INFO) << "---Could not initialize tofwVelPar0";
+        return kFALSE;
+    }
+
+    fSci_vel1->Set(array_sci);
+    if (!(list->fill("tofwVelPar1", fSci_vel1)))
+    {
+        LOG(INFO) << "---Could not initialize tofwVelPar1";
+        return kFALSE;
+    }
+
     return kTRUE;
 }
 
@@ -107,12 +131,13 @@ Bool_t R3BSofTofWHitPar::getParams(FairParamList* list)
 void R3BSofTofWHitPar::printParams()
 {
     LOG(INFO) << "R3BSofTofWHitPar: detector Parameters";
-    LOG(INFO) << "R3BSofTofWHitPar: sci in use: ";
+    LOG(INFO) << "R3BSofTofWHitPar: " << fNumSci << " sci in use: ";
 
     for (Int_t s = 0; s < fNumSci; s++)
     {
 
         LOG(INFO) << "Sci " << s + 1 << " in use " << fIn_use->GetAt(s) << ", Position: " << fSci_pos->GetAt(s)
-                  << ", Tof: " << fSci_tof->GetAt(s);
+                  << ", Tof: " << fSci_tof->GetAt(s) << ", Vel0: " << fSci_vel0->GetAt(s)
+                  << ", Vel1: " << fSci_vel1->GetAt(s);
     }
 }

@@ -1,8 +1,8 @@
 // -------------------------------------------------------------------------
-// -----            R3BSofToFWCalData source file                      -----
+// -----            R3BSofTofWCalData source file                      -----
 // -------------------------------------------------------------------------
 
-#include "R3BSofToFWCalData.h"
+#include "R3BSofTofWCalData.h"
 
 #include <iostream>
 
@@ -11,17 +11,17 @@ using std::endl;
 using std::flush;
 
 // -----   Default constructor   -------------------------------------------
-R3BSofToFWCalData::R3BSofToFWCalData()
+R3BSofTofWCalData::R3BSofTofWCalData()
     : FairMultiLinkedData()
-    , fDetector(99)
-    , fPmt(99)
+    , fDetector(0)
+    , fPmt(0)
     , fTime(-1.)
     , fEnergy(-1.)
 {
 }
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofToFWCalData::R3BSofToFWCalData(UChar_t ident, UShort_t pmt, Double_t time, Float_t energy)
+R3BSofTofWCalData::R3BSofTofWCalData(UChar_t ident, UShort_t pmt, Double_t time, Float_t energy)
     : FairMultiLinkedData()
     , fDetector(ident)
     , fPmt(pmt)
@@ -31,7 +31,7 @@ R3BSofToFWCalData::R3BSofToFWCalData(UChar_t ident, UShort_t pmt, Double_t time,
 }
 
 // -----   Copy constructor   ------------------------------------------
-R3BSofToFWCalData::R3BSofToFWCalData(const R3BSofToFWCalData& right)
+R3BSofTofWCalData::R3BSofTofWCalData(const R3BSofTofWCalData& right)
     : FairMultiLinkedData(right)
     , fDetector(right.fDetector)
     , fPmt(right.fPmt)
@@ -41,12 +41,12 @@ R3BSofToFWCalData::R3BSofToFWCalData(const R3BSofToFWCalData& right)
 }
 
 // -----   Destructor   ----------------------------------------------------
-R3BSofToFWCalData::~R3BSofToFWCalData() {}
+R3BSofTofWCalData::~R3BSofTofWCalData() {}
 
 // -----   Public method Print   -------------------------------------------
-void R3BSofToFWCalData::Print(const Option_t* opt) const
+void R3BSofTofWCalData::Print(const Option_t* opt) const
 {
-    cout << "-I- R3BSofToFWCalData: Sofia ToFW Cal Data level for:" << endl;
+    cout << "-I- R3BSofTofWCalData: Sofia TofW Cal Data level for:" << endl;
     cout << "   fDetector " << fDetector << "  fPmt = " << fPmt << endl;
     cout << "    fTime = " << fTime << " (ns)" << endl;
     cout << "    fEnergy = " << fEnergy << " (GeV in sim)" << endl;

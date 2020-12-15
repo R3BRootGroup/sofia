@@ -20,7 +20,7 @@ Mapped data of the SOFIA ACTIVE TARGET, in case the readout is done with a MDPP1
      fTimeCoarse // coarse time of the reference signal
      fTimeFine   // fine time of the reference signal
 
-#R3BSofToFWMappedData
+#R3BSofTofWMappedData
 ----------------------
 the arguments are the following:
      fDetector   1..28   1: first plastic on the right, 28: first plastic on the left

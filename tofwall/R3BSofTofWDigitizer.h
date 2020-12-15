@@ -7,6 +7,7 @@
 #define R3BSofTofWDigitizer_H 1
 
 #include "FairTask.h"
+#include "TRandom1.h"
 #include "R3BSofTofWHitData.h"
 #include <map>
 #include <string>
@@ -50,6 +51,7 @@ class R3BSofTofWDigitizer : public FairTask
     TClonesArray* fMCTrack;
     TClonesArray* fTofPoints;
     TClonesArray* fTofHits;
+    TRandom1* rand;
     Float_t fsigma_y;
     Float_t fsigma_t;
     Float_t fsigma_ELoss;
@@ -58,7 +60,7 @@ class R3BSofTofWDigitizer : public FairTask
 
     /** Private method AddHitData **/
     // Adds a R3BSofTofWHitData to the TofWHitCollection
-    R3BSofTofWHitData* AddHitData(UChar_t paddle, Double_t x, Double_t y, Double_t time);
+    R3BSofTofWHitData* AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t time, Double_t brho, Double_t vel);
 
   public:
     // Class definition

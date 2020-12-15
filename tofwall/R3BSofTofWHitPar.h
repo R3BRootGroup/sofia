@@ -45,11 +45,15 @@ class R3BSofTofWHitPar : public FairParGenericSet
     const Int_t GetInUse(Int_t sci) { return fIn_use->GetAt(sci - 1); }
     const Float_t GetPosPar(Int_t sci) { return fSci_pos->GetAt(sci - 1); }
     const Float_t GetTofPar(Int_t sci) { return fSci_tof->GetAt(sci - 1); }
+    const Float_t GetVelPar0(Int_t sci) { return fSci_vel0->GetAt(sci - 1); }
+    const Float_t GetVelPar1(Int_t sci) { return fSci_vel1->GetAt(sci - 1); }
 
     void SetNumSci(Int_t nb) { fNumSci = nb; }
     void SetInUse(Int_t value, Int_t sci) { fIn_use->AddAt(value, sci - 1); }
     void SetTofPar(Float_t value, Int_t sci) { fSci_tof->AddAt(value, sci - 1); }
     void SetPosPar(Float_t value, Int_t sci) { fSci_pos->AddAt(value, sci - 1); }
+    void SetVelPar0(Float_t value, Int_t sci) { fSci_vel0->AddAt(value, sci - 1); }
+    void SetVelPar1(Float_t value, Int_t sci) { fSci_vel1->AddAt(value, sci - 1); }
 
     // Create more Methods if you need them!
 
@@ -57,6 +61,8 @@ class R3BSofTofWHitPar : public FairParGenericSet
     TArrayF* fSci_tof; // Calibration Parameters for tof
     TArrayF* fSci_pos; // Calibration Parameters for pos
     TArrayI* fIn_use;  // 1: in use, 0:otherwise
+    TArrayF* fSci_vel0; // Calibration Parameters for velocity reconstruction
+    TArrayF* fSci_vel1; // Calibration Parameters for velocity reconstruction
     Int_t fNumSci;
 
     const R3BSofTofWHitPar& operator=(const R3BSofTofWHitPar&); /*< an assignment operator>*/
