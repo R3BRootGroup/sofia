@@ -60,7 +60,7 @@ class R3BSofTofWDigitizer : public FairTask
 
     /** Private method AddHitData **/
     // Adds a R3BSofTofWHitData to the TofWHitCollection
-    R3BSofTofWHitData* AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t time, Double_t brho, Double_t vel);
+    R3BSofTofWHitData* AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t time);
 
   public:
     // Class definition

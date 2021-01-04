@@ -97,8 +97,15 @@ void R3BSofFragmentAnalysis::SetParContainers()
         LOG(ERROR) << "FairRuntimeDb not opened!";
     }
     //
+    fFragPar = (R3BSofFragmentAnaPar*)rtdb->getContainer("soffragmentAnaPar");
+    if (!fFragPar)
+    {
+        LOG(ERROR) << "R3BSofFragmentAnaPar::Init() Couldn't get handle on soffragmentAnaPar container";
+    }
+    // fFragPar->printParams();
+    //
     // Getting Twim Parameters
-    R3BSofTwimHitPar* fTwimPar = (R3BSofTwimHitPar*)rtdb->getContainer("twimHitPar");
+    fTwimPar = (R3BSofTwimHitPar*)rtdb->getContainer("twimHitPar");
     if (!fTwimPar)
     {
         LOG(ERROR) << "R3BSofTwimCal2HitPar::Init() Couldn't get handle on twimHitPar container";
@@ -221,7 +228,6 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     Double_t fZ = 0., fE = 0., fAq = 0.;
     Double_t Beta = 0., Brho_Cave = 0., Length = 0.;
     Double_t ToF_Cave = 0.;
-    Double_t mw3_x = 0., mw3_z = 0.;
     Double_t mw[4][4] = { { -5000. } }; // mwpc[ID:0-4][x,y,a,b]
     Int_t Paddle = 0;
 
@@ -263,15 +269,9 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
         HitMwpc3[i] = (R3BSofMwpcHitData*)(fMwpc3HitDataCA->At(i));
         mw[3][0] = HitMwpc3[i]->GetX();
         mw[3][1] = HitMwpc3[i]->GetY();
-        // mw3_x = HitMwpc3[i]->GetX() / 10. * cos(18. * TMath::DegToRad()) - 215.4;                        // cm
-        // mw3_z = 662. + HitMwpc3[i]->GetX() / 10. * sin(18. * TMath::DegToRad()) - 163.4 - fDist_mw3_tof; // cm
     }
-    //
-    //(Mw3_X - 107.612277 - (Mw2_X-Mw1_X) *(7.969415))+ (- 10.967255 - Mw1_X *(2.033001))+ (- 3.300145 - (Mw2_Y-Mw1_Y)
-    //*(0.076592))+ (- 1.705562 - Mw1_Y *(0.096213))
     Double_t Dispersion_MW3 = (mw[3][0] - 107.612277 - mw[1][2] * (7.969415)) + (-10.967255 - mw[1][0] * (2.033001)) +
                               (-3.300145 - mw[1][3] * (0.076592)) + (-1.705562 - mw[1][1] * (0.096213));
-    // 100, -2152.65, 247.966 // Temporal fit
     Brho_Cave = (Dispersion_MW3 + 2152.65) / 247.966 + 0.3;
 
     ////
@@ -279,30 +279,20 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     for (Int_t i = 0; i < nHitTofW; i++)
     {
         HitTofW[i] = (R3BSofTofWHitData*)(fTofWHitDataCA->At(i));
-        ToF_Cave = HitTofW[i]->GetTime();
-        Beta = HitTofW[i]->GetVel();
-        Length = Beta * ToF_Cave * 2.998e2; // in mm. 0th order approx. To be modified later.
         Paddle = HitTofW[i]->GetPaddle();
+        if (fFragPar->GetInUse(Paddle) != 1)
+            continue;
+        ToF_Cave = HitTofW[i]->GetTime() - fFragPar->GetTofWOffset(Paddle);
+        Beta = fFragPar->GetEffectivLength(Paddle) / ToF_Cave;
+        Length = fFragPar->GetEffectivLength(Paddle) * 2.998e2; // in mm. 0th order approx. To be modified later.
         // std::cout <<" init: "<< HitTofW[i]->GetPaddle() << " "<< ToF_Cave << std::endl;
     }
 
-    // std::cout << "R3BSofFragmentAnalysis: " << mw3_z << " " << mw3_x << " " << ToF_Cave ;//<< std::endl;
-
-    if (ToF_Cave <= 0.) // || mw3_z <= 0. || mw3_x >= 0.)
+    if (ToF_Cave <= 0.)
         return;
 
-    v1.SetXYZ(-1. * mw3_x, 0., mw3_z);
-
-    // double rho = 88.5969 / (2. * sin(v1.Theta() / 2.) * cos(14. * TMath::DegToRad() - v1.Theta() / 2.));
-    // Brho_Cave = 4.0 * 0.8 * rho * 0.01;
-    // Length = fDist_start_glad + sqrt(mw3_x * mw3_x + mw3_z * mw3_z) + fDist_mw3_tof;
-    // double vel = Length / ToF_Cave;
-    // Beta = vel / c;
     double gamma = 1. / sqrt(1. - Beta * Beta);
     fAq = Brho_Cave / (3.10716 * Beta * gamma);
-
-    // std::cout << ToF_Cave << " " << vel << " " << Length << " " << fAq << " " << Brho_Cave << " " << Beta
-    //          << std::endl;
 
     // Z from twim-music ------------------------------------
     Double_t countz = 0;

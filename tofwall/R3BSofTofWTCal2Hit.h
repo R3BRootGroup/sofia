@@ -81,7 +81,7 @@ class R3BSofTofWTCal2Hit : public FairTask
     
     /** Private method AddHitData **/
     // Adds a SofTofWHitData to the HitCollection
-    R3BSofTofWHitData* AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t tof, Double_t brho, Double_t vel);
+    R3BSofTofWHitData* AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t tof);
 
   public:
     // Class definition

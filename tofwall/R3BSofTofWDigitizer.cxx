@@ -99,7 +99,7 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
     pointData = new R3BSofTofWPoint*[nHits];
     Int_t paddle = 0;
     Int_t TrackId = 0, PID = 0, mother = -1;
-    Double_t x = 0., y = 0., z = 0., time = 0., brho = 0., v = 0.;
+    Double_t x = 0., y = 0., z = 0., time = 0.;
     for (Int_t i = 0; i < nHits; i++)
     {
         pointData[i] = (R3BSofTofWPoint*)(fTofPoints->At(i));
@@ -127,12 +127,8 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
 
         time = pointData[i]->GetTime() + rand->Gaus(0., fsigma_t);
 
-        brho = pointData[i]->GetPz() / pointData[i]->GetZFF() * 3.107;
-
-        v = pointData[i]->GetLength() / time;
-
         if (pointData[i]->GetZFF() == 36)
-            AddHitData(paddle, x, y, time, brho, v);
+            AddHitData(paddle, x, y, time);
         //}
     }
     if (pointData)
@@ -152,17 +148,12 @@ void R3BSofTofWDigitizer::Reset()
 }
 
 // -----   Private method AddHitData  -------------------------------------------
-R3BSofTofWHitData* R3BSofTofWDigitizer::AddHitData(Int_t paddle,
-                                                   Double_t x,
-                                                   Double_t y,
-                                                   Double_t time,
-                                                   Double_t brho,
-                                                   Double_t vel)
+R3BSofTofWHitData* R3BSofTofWDigitizer::AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t time)
 {
     // It fills the R3BSofTofWHitData
     TClonesArray& clref = *fTofHits;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofTofWHitData(paddle, x, y, time, brho, vel);
+    return new (clref[size]) R3BSofTofWHitData(paddle, x, y, time);
 }
 
 // -----   Public method Finish  ------------------------------------------------
