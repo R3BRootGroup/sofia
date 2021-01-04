@@ -10,15 +10,6 @@
 
 #include "R3BSofAnaContFact.h"
 
-#include "FairLogger.h"
-#include "FairParAsciiFileIo.h"
-#include "FairParRootFileIo.h"
-#include "FairRuntimeDb.h"
-
-#include "R3BSofFrsAnaPar.h"
-
-#include "TClass.h"
-
 static R3BSofAnaContFact gR3BSofAnaContFact;
 
 R3BSofAnaContFact::R3BSofAnaContFact()
@@ -39,6 +30,12 @@ void R3BSofAnaContFact::setAllContainers()
     p1->addContext("SofFRSParContext");
 
     containers->Add(p1);
+
+    FairContainer* p2 =
+        new FairContainer("soffragmentAnaPar", "Fragment in Cave-C Parameters", "SofFragmentParContext");
+    p2->addContext("SofFragmentParContext");
+
+    containers->Add(p2);
 }
 
 FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
@@ -53,6 +50,11 @@ FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
     if (strcmp(name, "soffrsAnaPar") == 0)
     {
         p = new R3BSofFrsAnaPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+
+    if (strcmp(name, "soffragmentAnaPar") == 0)
+    {
+        p = new R3BSofFragmentAnaPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
     return p;

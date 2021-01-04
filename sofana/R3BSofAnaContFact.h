@@ -2,6 +2,16 @@
 #define R3BSofAnaContFact_H
 
 #include "FairContFact.h"
+#include "FairLogger.h"
+#include "FairParAsciiFileIo.h"
+#include "FairParRootFileIo.h"
+#include "FairRuntimeDb.h"
+
+#include "R3BSofFrsAnaPar.h"
+#include "R3BSofFragmentAnaPar.h"
+
+#include "TClass.h"
+
 
 class FairContainer;
 

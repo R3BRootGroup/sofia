@@ -100,7 +100,7 @@ void R3BSofTofWTCal2Hit::Exec(Option_t* option)
     // Data from cal level
     calDat = new R3BSofTofWSingleTcalData*[nHits];
     Int_t fPaddleId = 0; // from 1 to 28
-    Double_t tofw = 0., posx = 0., posy = 0., vel = 0.;
+    Double_t tofw = 0., posx = 0., posy = 0.;
     Int_t mult = 0;
 
     for (Int_t i = 0; i < nHits; i++)
@@ -118,12 +118,10 @@ void R3BSofTofWTCal2Hit::Exec(Option_t* option)
     {
         posx = (TofWPosition - 525.) - 14. * 30. + (Double_t)(fPaddleId - 1) * 30.; // x=0 at the gap of bars 14 and 15
         posy = posy - fTofWHitPar->GetPosPar(fPaddleId);
-        tofw = tofw - fTofWHitPar->GetTofPar(fPaddleId) - fTofWHitPar->GetVelPar0(fPaddleId) + Tof_lise;
+        tofw = tofw - fTofWHitPar->GetTofPar(fPaddleId) + Tof_lise;
         // TofPar is adjusted to align the time 0 with motor sweep runs,
-        // Tof_lise + VelPar0 is to adjust the velocity correlation with FRS with a certain setting,
         // And the Tof_lise is to adjust the difference of the flight path from sofsci to target setting-by-setting.
-        vel = fTofWHitPar->GetVelPar1(fPaddleId) / tofw;
-        AddHitData(fPaddleId, posx, posy, tofw, 0., vel);
+        AddHitData(fPaddleId, posx, posy, tofw);
     }
     if (calDat)
         delete calDat;
@@ -145,17 +143,12 @@ void R3BSofTofWTCal2Hit::Reset()
 }
 
 // -----   Private method AddHitData  --------------------------------------------
-R3BSofTofWHitData* R3BSofTofWTCal2Hit::AddHitData(Int_t paddle,
-                                                  Double_t x,
-                                                  Double_t y,
-                                                  Double_t tof,
-                                                  Double_t brho,
-                                                  Double_t vel)
+R3BSofTofWHitData* R3BSofTofWTCal2Hit::AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t tof)
 {
     // It fills the R3BSofTofWHitData
     TClonesArray& clref = *fHitDataCA;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofTofWHitData(paddle, x, y, tof, brho, vel);
+    return new (clref[size]) R3BSofTofWHitData(paddle, x, y, tof);
 }
 
 ClassImp(R3BSofTofWTCal2Hit)

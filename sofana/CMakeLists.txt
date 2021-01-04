@@ -34,6 +34,7 @@ set(SRCS
 R3BSofFrsAnalysis.cxx
 R3BSofFragmentAnalysis.cxx
 R3BSofFrsAnaPar.cxx
+R3BSofFragmentAnaPar.cxx
 R3BSofAnaContFact.cxx
 )
 
