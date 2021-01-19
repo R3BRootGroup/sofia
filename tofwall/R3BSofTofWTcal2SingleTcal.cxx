@@ -1,9 +1,5 @@
 #include "R3BSofTofWTcal2SingleTcal.h"
 
-#include "R3BSofSciSingleTcalData.h"
-#include "R3BSofTofWSingleTcalData.h"
-#include "R3BSofTofWTcalData.h"
-
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
@@ -79,7 +75,7 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     }
 
     // --- ----------------------------- --- //
-    // --- INPUT TCAL DATA FROM ToF WALL --- //
+    // --- INPUT TCAL DATA FROM TOF WALL --- //
     // --- ----------------------------- --- //
 
     fTofWTcal = (TClonesArray*)rm->GetObject("SofTofWTcalData");
