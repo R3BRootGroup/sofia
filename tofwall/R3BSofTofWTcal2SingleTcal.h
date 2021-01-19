@@ -7,13 +7,16 @@
 
 #include "FairTask.h"
 
-#include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofSciRawTofPar.h"
 
 #include "TClonesArray.h"
 #include "TMath.h"
 #include "TRandom.h"
 class TRandom3;
+
+#include "R3BSofSciSingleTcalData.h"
+#include "R3BSofTofWSingleTcalData.h"
+#include "R3BSofTofWTcalData.h"
 
 class R3BSofTofWTcal2SingleTcal : public FairTask
 {
@@ -63,7 +66,6 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
 
     TRandom rand;
 
-    // Adds a SofTofWHitData to the HitCollection
     R3BSofTofWSingleTcalData* AddHitData(Int_t plastic, Double_t time, Double_t tof, Double_t pos);
 
   public:

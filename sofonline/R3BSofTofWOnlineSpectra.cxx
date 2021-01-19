@@ -45,6 +45,7 @@ R3BSofTofWOnlineSpectra::R3BSofTofWOnlineSpectra()
     , fMappedItemsTofW(NULL)
     , fTcalItemsTofW(NULL)
     , fSingleTcalItemsTofW(NULL)
+    , fSingleTcalItemsSci(NULL)
     , fHitItemsTwim(NULL)
     , fCalItemsMwpc(NULL)
     , fTwimTofRangeMax(-65.)
@@ -59,6 +60,7 @@ R3BSofTofWOnlineSpectra::R3BSofTofWOnlineSpectra(const char* name, Int_t iVerbos
     , fMappedItemsTofW(NULL)
     , fTcalItemsTofW(NULL)
     , fSingleTcalItemsTofW(NULL)
+    , fSingleTcalItemsSci(NULL)
     , fHitItemsTwim(NULL)
     , fCalItemsMwpc(NULL)
     , fTwimTofRangeMax(-65.)
@@ -77,6 +79,8 @@ R3BSofTofWOnlineSpectra::~R3BSofTofWOnlineSpectra()
         delete fTcalItemsTofW;
     if (fSingleTcalItemsTofW)
         delete fSingleTcalItemsTofW;
+    if (fSingleTcalItemsSci)
+        delete fSingleTcalItemsSci;
     if (fHitItemsTwim)
         delete fHitItemsTwim;
     if (fCalItemsMwpc)
@@ -100,7 +104,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     run->GetHttpServer()->Register("", this);
 
     // --- ------------------------------------- --- //
-    // --- get access to mapped data of the TOfW --- //
+    // --- get access to mapped data of the TofW --- //
     // --- ------------------------------------- --- //
     fMappedItemsTofW = (TClonesArray*)mgr->GetObject("SofTofWMappedData");
     if (!fMappedItemsTofW)
@@ -118,7 +122,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     }
 
     // --- ------------------------------------------ --- //
-    // --- get access to single tcal data of the TOfW --- //
+    // --- get access to single tcal data of the TofW --- //
     // --- ------------------------------------------ --- //
     fSingleTcalItemsTofW = (TClonesArray*)mgr->GetObject("SofTofWSingleTcalData");
     if (!fSingleTcalItemsTofW)

@@ -92,13 +92,13 @@ class R3BSofTofWOnlineSpectra : public FairTask
     inline void Set_IdSofSciCaveC(Int_t id){fIdSofSciCaveC=id;}
 
   private:
-    TClonesArray* fMappedItemsTofW;    /**< Array with mapped items. */
-    TClonesArray* fTcalItemsTofW;      /**< Array with tcal items. */
-    TClonesArray* fSingleTcalItemsTofW;      /**< Array with tcal items. */
-    TClonesArray* fSingleTcalItemsSci; /**< Array with single tcal items of Sci */
-    TClonesArray* fHitItemsTwim;       /**< Array with hit items of twim. */
-    TClonesArray* fCalItemsMwpc;       /**< Array with cal items of mwpc3. */
-    Float_t fTwimTofRangeMax;          // Range for Twim vs ToF histograms
+    TClonesArray* fMappedItemsTofW;     /**< Array with mapped items. */
+    TClonesArray* fTcalItemsTofW;       /**< Array with tcal items. */
+    TClonesArray* fSingleTcalItemsTofW; /**< Array with single tcal items. */
+    TClonesArray* fSingleTcalItemsSci;  /**< Array with single tcal items of Sci */
+    TClonesArray* fHitItemsTwim;        /**< Array with hit items of twim. */
+    TClonesArray* fCalItemsMwpc;        /**< Array with cal items of mwpc3. */
+    Float_t fTwimTofRangeMax;           // Range for Twim vs ToF histograms
     Float_t fTwimTofRangeMin;
     Int_t   fIdSofSciCaveC;
 

@@ -110,23 +110,27 @@ void main_online()
     Int_t port = 8888; // Port number for the online visualization, example lxgXXXX:8888
 
     // Setup: Selection of detectors ------------------------
-    Bool_t fFrs = false;      // FRS for production of exotic beams (just scintillators)
+    // --- FRS --------------------------------------------------------------------------
+    Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
     Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
     Bool_t fFrsMws = false;  // MWs at FRS (S8) for beam position
-    Bool_t fFrsSci = true;   // Start: Plastic scintillators at FRS
-    Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
-    Bool_t fSci = true;      // Start: Plastic scintillator for ToF
+    Bool_t fFrsSci = false;   // Start: Plastic scintillators at FRS
+    // --- R3B standard -----------------------------------------------------------------
+    Bool_t fNeuland = false;  // NeuLAND for neutrons behind GLAD
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
+    Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
+    // --- Sofia ------------------------------------------------------------------------
+    Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
+    Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = true;  // SIS3820 scalers at Cave C
-    Bool_t fNeuland = true;  // NeuLAND for neutrons behind GLAD
-    Bool_t fTracking = true; // Tracking of fragments inside GLAD
+    // --- Traking ----------------------------------------------------------------------
+    Bool_t fTracking = false; // Tracking of fragments inside GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -477,9 +481,9 @@ void main_online()
         run->AddTask(SofTofWTcal2STcal);
 
         // --- Tcal 2 Hit for SofTofW : TO CHECK why not SingleTcal2Hit ?
-        R3BSofTofWTCal2Hit* SofTofWTcal2Hit = new R3BSofTofWTCal2Hit();
-        SofTofWTcal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(SofTofWTcal2Hit);
+        //R3BSofTofWTCal2Hit* SofTofWTcal2Hit = new R3BSofTofWTCal2Hit();
+        //SofTofWTcal2Hit->SetOnline(NOTstorehitdata);
+        //run->AddTask(SofTofWTcal2Hit);
     }
 
     // Add online task ------------------------------------
@@ -609,10 +613,10 @@ void main_online()
 
     if (fTofW)
     {
-        R3BSofTofWOnlineSpectra* tofwonline = new R3BSofTofWOnlineSpectra();
-        tofwonline->Set_TwimvsTof_range(-87.,-65.);
-	tofwonline->Set_IdSofSciCaveC(NumSofSci);
-        run->AddTask(tofwonline);
+      R3BSofTofWOnlineSpectra* tofwonline = new R3BSofTofWOnlineSpectra();
+      tofwonline->Set_TwimvsTof_range(-87.,-65.);
+      tofwonline->Set_IdSofSciCaveC(NumSofSci);
+      run->AddTask(tofwonline);
     }
 
     if (fMwpc2 && fTwim && fSci && fTracking)
