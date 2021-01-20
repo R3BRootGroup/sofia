@@ -102,8 +102,10 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     UShort_t nAnodesTrig = data->SOFTWIM_S[section].TRIGM;
     UShort_t nAnodesEnergy = data->SOFTWIM_S[section].EM;
     UShort_t nAnodesTime = data->SOFTWIM_S[section].TM;
-    /* if (nAnodesTref>0) {
+    /*
+    if ((nAnodesEnergy>0)||(nAnodesTref>0)) {
       std::cout << "------------------------------" << std::endl;
+      std::cout << "R3BSofTwimReader::ReadDatai=()" << std::endl;
       std::cout << "------------------------------" << std::endl;
       std::cout <<" * nAnodesTref = "<< nAnodesTref <<std::endl;
       std::cout <<"  * nAnodesTrig = "<< nAnodesTrig <<std::endl;
@@ -112,6 +114,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
       std::cout << "------------------------------" << std::endl;
     }
     */
+    
 
     // --- ----------------- --- //
     // --- TWIM MAPPED DATA --- //

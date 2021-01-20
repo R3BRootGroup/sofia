@@ -93,6 +93,7 @@ class R3BSofTrimOnlineSpectra : public FairTask
 
     TClonesArray* fMappedItemsTrim; /**< Array with mapped items. */
     TClonesArray* fCalItemsTrim;    /**< Array with cal items. */
+    TClonesArray* fHitItemsTrim;    /**< Array with hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -124,6 +125,28 @@ class R3BSofTrimOnlineSpectra : public FairTask
     TH1D** fh1_trimcal_DTraw;
     TH1D** fh1_trimcal_DTalign;
 
+    // Canvas for Hit data
+    TCanvas* cTrimHit_E; 
+    TCanvas* cTrimHit_Z;
+    TCanvas** cTrimHit_CorrDep; 
+    TCanvas* cTrimHit_EvsE;
+    TCanvas* cTrimHit_ZvsZ;
+
+    // Histograms for Hit data
+    TH1F** fh1_trimhit_Eraw;
+    TH1F** fh1_trimhit_Ebeta;
+    TH1F** fh1_trimhit_Edt;
+    TH1F** fh1_trimhit_Etheta;
+    TH1F** fh1_trimhit_Z;
+    TH2F** fh2_trimhit_Ebeta_vs_DT;
+    TH2F** fh2_trimhit_Edt_vs_DT;
+    TH2F** fh2_trimhit_Edt_vs_theta;
+    TH2F** fh2_trimhit_Etheta_vs_theta;
+    TH2F** fh2_trimhit_EvsE_raw; 
+    TH2F** fh2_trimhit_EvsE_beta;
+    TH2F** fh2_trimhit_EvsE_dt;
+    TH2F** fh2_trimhit_EvsE_theta;
+    TH2F** fh2_trimhit_ZvsZ;
 
   public:
     ClassDef(R3BSofTrimOnlineSpectra, 1)

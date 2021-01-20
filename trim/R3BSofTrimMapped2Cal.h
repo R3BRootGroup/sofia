@@ -53,8 +53,8 @@ class R3BSofTrimMapped2Cal : public FairTask
     Bool_t fOnline; // Don't store data for online
 
     R3BSofTrimCalPar*  fCal_Par;             /**< Parameter container. >*/
-    TClonesArray* fTrimMappedDataCA;         /**< Array with Mapped-input data. >*/
-    TClonesArray* fTrimCalDataCA;            /**< Array with Cal-output data. >*/
+    TClonesArray* fTrimMappedData;         /**< Array with Mapped-input data. >*/
+    TClonesArray* fTrimCalData;            /**< Array with Cal-output data. >*/
 
     Int_t  fNumSections;
     Int_t  fNumAnodes;

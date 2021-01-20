@@ -23,7 +23,6 @@ R3BSofTrimCalPar::R3BSofTrimCalPar(const char* name, const char* title, const ch
     fDriftTimeOffsets = new TArrayD(fNumSections * fNumAnodes);
     fEnergyPedestals = new TArrayF(fNumSections * fNumAnodes);
     fEnergyMatchGains = new TArrayF(fNumSections * fNumAnodes);
-    fEnergyAlignGains = new TArrayF(fNumSections * fNumAnodes);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -36,8 +35,6 @@ R3BSofTrimCalPar::~R3BSofTrimCalPar()
         delete fEnergyPedestals;
     if (fEnergyMatchGains)
         delete fEnergyMatchGains;
-    if (fEnergyAlignGains)
-        delete fEnergyAlignGains;
 }
 
 // ----  Method clear ----------------------------------------------------------
@@ -61,14 +58,12 @@ void R3BSofTrimCalPar::putParams(FairParamList* list)
     fDriftTimeOffsets->Set(array_size);
     fEnergyPedestals->Set(array_size);
     fEnergyMatchGains->Set(array_size);
-    fEnergyAlignGains->Set(array_size);
 
     list->add("trimNumSections", fNumSections);
     list->add("trimNumAnodesPerSection", fNumAnodes);
     list->add("trimDriftTimeOffsets", *fDriftTimeOffsets);
     list->add("trimEnergyPedestals", *fEnergyPedestals);
     list->add("trimEnergyMatchGains", *fEnergyMatchGains);
-    list->add("trimEnergyAlignGains", *fEnergyAlignGains);
 }
 
 // ----  Method getParams ------------------------------------------------------
@@ -115,13 +110,6 @@ Bool_t R3BSofTrimCalPar::getParams(FairParamList* list)
         return kFALSE;
     }
 
-    fEnergyAlignGains->Set(array_anode);
-    if (!(list->fill("trimEnergyAlignGains", fEnergyAlignGains)))
-    {
-        LOG(INFO) << "---Could not initialize trimEnergyAlignGains";
-        return kFALSE;
-    }
-
     return kTRUE;
 }
 
@@ -156,16 +144,6 @@ void R3BSofTrimCalPar::printParams()
         for (Int_t a = 0; a < fNumAnodes; a++)
         {
             LOG(INFO) << "Anode number: " << a + 1 << ": Energy Match Gain = " << GetEnergyMatchGain(s + 1, a + 1);
-        }
-    }
-
-    LOG(INFO) << "R3BSofTrimCalPar: Triple MUSIC energy aligne gain per pair of down/up anode: ";
-    for (Int_t s = 0; s < fNumSections; s++)
-    {
-        LOG(INFO) << "Trim section: " << s + 1;
-        for (Int_t a = 0; a < fNumAnodes; a++)
-        {
-            LOG(INFO) << "Anode number: " << a + 1 << ": Energy Align Gain = " << GetEnergyAlignGain(s + 1, a + 1);
         }
     }
 }

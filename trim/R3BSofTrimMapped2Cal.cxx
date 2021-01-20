@@ -16,17 +16,16 @@
 #include <iomanip>
 
 // Trim headers
-#include "R3BSofTrimCalData.h"
-#include "R3BSofTrimCalPar.h"
 #include "R3BSofTrimMapped2Cal.h"
 #include "R3BSofTrimMappedData.h"
+#include "R3BSofTrimCalPar.h"
 
 // R3BSofTrimMapped2Cal: Default Constructor --------------------------
 R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal()
     : FairTask("R3BSof Trim Cal Calibrator", 1)
     , fCal_Par(NULL)
-    , fTrimMappedDataCA(NULL)
-    , fTrimCalDataCA(NULL)
+    , fTrimMappedData(NULL)
+    , fTrimCalData(NULL)
     , fOnline(kFALSE)
     , fNumSections(3)
     , fNumAnodes(6)
@@ -38,8 +37,8 @@ R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal()
 R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fCal_Par(NULL)
-    , fTrimMappedDataCA(NULL)
-    , fTrimCalDataCA(NULL)
+    , fTrimMappedData(NULL)
+    , fTrimCalData(NULL)
     , fOnline(kFALSE)
     , fNumSections(3)
     , fNumAnodes(6)
@@ -51,35 +50,30 @@ R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal(const char* name, Int_t iVerbose)
 R3BSofTrimMapped2Cal::~R3BSofTrimMapped2Cal()
 {
     LOG(INFO) << "R3BSofTrimMapped2Cal: Delete instance";
-    if (fTrimMappedDataCA)
-        delete fTrimMappedDataCA;
-    if (fTrimCalDataCA)
-        delete fTrimCalDataCA;
+    if (fTrimMappedData)
+        delete fTrimMappedData;
+    if (fTrimCalData)
+        delete fTrimCalData;
 }
 
 void R3BSofTrimMapped2Cal::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
+    if (!rtdb) {
         LOG(ERROR) << "FairRuntimeDb not opened!";
     }
 
     fCal_Par = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
-    if (!fCal_Par)
-    {
+    if (!fCal_Par) {
         LOG(ERROR) << "R3BSofTrimMapped2CalPar::Init() Couldn't get handle on trimCalPar container";
         return;
     }
-    else
-    {
-        if (fNumSections != fCal_Par->GetNumSections())
-            LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumSections=" << fNumSections << " different from parameter "
-                      << fCal_Par->GetNumSections();
-        if (fNumAnodes != fCal_Par->GetNumAnodes())
-            LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumAnodes=" << fNumAnodes << " different from parameter "
-                      << fCal_Par->GetNumAnodes();
-        LOG(INFO) << "R3BSofTrimMapped2CalPar:: trimCalPar container open";
+    else {
+      if (fNumSections != fCal_Par->GetNumSections())
+          LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumSections=" << fNumSections << " different from parameter " << fCal_Par->GetNumSections();
+      if (fNumAnodes != fCal_Par->GetNumAnodes())
+            LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumAnodes=" << fNumAnodes << " different from parameter " << fCal_Par->GetNumAnodes();
+      LOG(INFO) << "R3BSofTrimMapped2CalPar:: trimCalPar container open";
     }
 }
 
@@ -88,35 +82,31 @@ InitStatus R3BSofTrimMapped2Cal::Init()
 {
     LOG(INFO) << "R3BSofTrimMapped2Cal: Init";
 
+    FairRootManager* rootManager = FairRootManager::Instance();
+    if (!rootManager){
+      return kFATAL;
+    }
+
     // --- ----------------- --- //
     // --- INPUT MAPPED DATA --- //
     // --- ----------------- --- //
-    FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager)
-    {
-        return kFATAL;
+    fTrimMappedData = (TClonesArray*)rootManager->GetObject("TrimMappedData");
+    if (!fTrimMappedData){
+      return kFATAL;
     }
 
-    fTrimMappedDataCA = (TClonesArray*)rootManager->GetObject("TrimMappedData");
-    if (!fTrimMappedDataCA)
-    {
-        return kFATAL;
-    }
+    // --- --------------- --- //
+    // --- OUTPUT L DATA --- //
+    // --- --------------- --- //
+    fTrimCalData = new TClonesArray("R3BSofTrimCalData", MAX_MULT_TRIM_CAL * 8);
 
-    // --- ------------------------ --- //
-    // --- OUTPUT TRIANGLE CAL DATA --- //
-    // --- ------------------------ --- //
-    fTrimCalDataCA = new TClonesArray("R3BSofTrimCalData", MAX_MULT_TRIM_CAL * 8);
-
-    if (!fOnline)
-    {
-        rootManager->Register("TrimCalData", "Trim Cal", fTrimCalDataCA, kTRUE);
+    if (!fOnline){
+      rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kTRUE);
     }
-    else
-    {
-        rootManager->Register("TrimCalData", "Trim Cal", fTrimCalDataCA, kFALSE);
+    else{
+      rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kFALSE);
     }
-
+ 
     return kSUCCESS;
 }
 
@@ -140,9 +130,10 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
     }
 
     // Reading input mapped data per anode
-    //   --> number of channels = number of anodes (6: id=1..6) + number of Tref (1: id=fNumAnodes+1) + number of Ttrig
-    //   (1: id=fNumAnodes+2)
-    Int_t nHits = fTrimMappedDataCA->GetEntries();
+    //   --> number of channels = number of anodes (6: id=1..6) 
+    //                             + number of Tref (1: id=fNumAnodes+1) 
+    //                             + number of Ttrig (1: id=fNumAnodes+2)
+    Int_t nHits = fTrimMappedData->GetEntries();
     if (!nHits)
         return;
     // FIX ME TO BE MOVED TO Init()
@@ -166,7 +157,7 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
 
     for (Int_t ihit = 0; ihit < nHits; ihit++)
     {
-        R3BSofTrimMappedData* hit = (R3BSofTrimMappedData*)fTrimMappedDataCA->At(ihit);
+        R3BSofTrimMappedData* hit = (R3BSofTrimMappedData*)fTrimMappedData->At(ihit);
         if (hit->GetPileupStatus() || hit->GetOverflowStatus())
             continue;
         iSec = hit->GetSecID() - 1;
@@ -213,8 +204,8 @@ void R3BSofTrimMapped2Cal::Finish() {}
 void R3BSofTrimMapped2Cal::Reset()
 {
     LOG(DEBUG) << "Clearing TrimCalData Structure";
-    if (fTrimCalDataCA)
-        fTrimCalDataCA->Clear();
+    if (fTrimCalData)
+        fTrimCalData->Clear();
 }
 
 // -----   Private method AddCalData  --------------------------------------------
@@ -226,7 +217,7 @@ R3BSofTrimCalData* R3BSofTrimMapped2Cal::AddCalData(Int_t secID,
                                                     Float_t ematch)
 {
     // It fills the R3BSofTrimCalData
-    TClonesArray& clref = *fTrimCalDataCA;
+    TClonesArray& clref = *fTrimCalData;
     Int_t size = clref.GetEntriesFast();
     return new (clref[size]) R3BSofTrimCalData(secID, anodeID, dtraw, dtal, esub, ematch);
 }

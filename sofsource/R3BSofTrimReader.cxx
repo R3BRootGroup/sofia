@@ -118,7 +118,12 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
         LOG(INFO) << "nAnodesTime = " << nAnodesTime;
         std::cout << "------------------------------" << std::endl;
         }
-    */
+        for (UShort_t a = 0; a < nAnodesEnergy; a++)
+        {
+          // EMI gives the 1-based anode number
+          LOG(INFO) << " idAnodeEnergy = " << data->SOFTRIM_S[section].EMI[a] ;
+       }
+     */	
 
     // --- ----------------- --- //
     // --- TRIM MAPPED DATA --- //
@@ -156,7 +161,7 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     uint32_t nextTtrig = 0;
     UShort_t idAnodeTtrig = 0;
 
-    // TRIG id Anode = 8
+    // TTRIG id Anode = 8
     for (UShort_t a = 0; a < nAnodesTtrig; a++)
     {
         // again TTRIGMI is 1 based
@@ -178,7 +183,7 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     // --- ENERGY and TIME OF THE ANODE SIGNALS --- //
     if (nAnodesEnergy != nAnodesTime)
         LOG(ERROR)
-            << "R3BSofTrimReader::ReadData ERROR ! NOT THE SAME NUMBER OF ANODES HITTED IN ENERGY () AND TIME ()";
+            << "R3BSofTrimReader::ReadData ERROR ! NOT THE SAME NUMBER OF ANODES HITTED IN ENERGY (" << nAnodesEnergy << ") AND TIME (" << nAnodesTime << ")";
 
     // ENERGY AND TIME ARE SORTED
     uint32_t curAnodeTimeStart = 0;
