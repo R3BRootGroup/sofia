@@ -15,6 +15,7 @@
 #include "FairRuntimeDb.h"
 
 #include "R3BSofTrimCalPar.h"
+#include "R3BSofTrimHitPar.h"
 
 #include "TClass.h"
 
@@ -38,6 +39,11 @@ void R3BSofTrimContFact::setAllContainers()
     p1->addContext("TrimCalParContext");
 
     containers->Add(p1);
+
+    FairContainer* p2 = new FairContainer("trimHitPar", "Triple MUSIC Hit Parameters", "TrimHitParContext");
+    p2->addContext("TrimHitParContext");
+
+    containers->Add(p2);
 }
 
 FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
@@ -52,6 +58,10 @@ FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
     if (strcmp(name, "trimCalPar") == 0)
     {
         p = new R3BSofTrimCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+    if (strcmp(name, "trimHitPar") == 0)
+    {
+        p = new R3BSofTrimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;
 }

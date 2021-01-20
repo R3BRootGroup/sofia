@@ -35,13 +35,14 @@ We need to check if this should be changed to a more "real" drift velocity, whic
 at the begining the calibration parameters of the energy loss are given with default values in CalibParams.par
 
 trimEnergyPedestals: Float_t \
-  0. 0. 0. 0. 0. 0.  \
-  0. 0. 0. 0. 0. 0.  \
-  0. 0. 0. 0. 0. 0. 
+  0.0 0.0 0.0 0.0 0.0 0.0  \
+  0.0 0.0 0.0 0.0 0.0 0.0  \
+  0.0 0.0 0.0 0.0 0.0 0.0 
+
 trimEnergyMatchGains: Float_t \
-  1. 1. 1. 1. 1. 1.  \
-  1. 1. 1. 1. 1. 1.  \
-  1. 1. 1. 1. 1. 1.
+  1.0 1.0 1.0 1.0 1.0 1.0  \
+  1.0 1.0 1.0 1.0 1.0 1.0  \
+  1.0 1.0 1.0 1.0 1.0 1.0
 
 ### Step 1: subtraction of the pedestal for the raw energy of each anode Esub
 * All parameters of the MDPP16 should be adjusted first: gain, shaping-time, integration/differention, etc...
@@ -67,7 +68,7 @@ For the triangular shape, the calibration parameters correspond to a gain for th
 
 ### Step 1: alignement of the energy loss on primary beam : Ealign and calculation of the energy loss per section Eraw_sum
 * This step is slightly different for rectangular or triangular anodes.
-* For the rectangular anode, each anode is aligned to the same channel, whereas for the triangular anode, the sum of Ealign per pair is aligned to the same channel. This sum will be assigned to the first anode (down) therefore the value for the second anode (up) will be assigned to 0.
+* For the rectangular anode, each anode is aligned to the same channel, whereas for the triangular anode, the sum of Ealign per pair is aligned to the same channel. 
 * Since the Ematch is calculated in Mapped2Cal, the calculation of the trimEnergyAlignGains take as input SofTrimCalData.
 * Then, it is quite simple to get the raw energy loss per section : Eraw_sum = Sum_i {Ealign_i}
 
@@ -79,9 +80,9 @@ trimEnergyAlignGains: Float_t \
 
 In case of triangular anode shape :
 trimEnergyAlignGains: Float_t \
-  val_S1_P1 0. val_S1_P2 0. val_S1_P3 0.  \
-  val_S2_P1 0. val_S2_P2 0. val_S2_P3 0.  \
-  val_S3_P1 0. val_S3_P2 0. val_S3_P3 0. 
+  val_S1_P1  val_S1_P2  val_S1_P3   \
+  val_S2_P1  val_S2_P2  val_S2_P3  \
+  val_S3_P1  val_S3_P2  val_S3_P3 
 
 ### Step 2: correction from beta: Ecorr_beta
 

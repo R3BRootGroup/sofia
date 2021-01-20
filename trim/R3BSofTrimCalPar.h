@@ -45,18 +45,15 @@ class R3BSofTrimCalPar : public FairParGenericSet
     Double_t GetDriftTimeOffset(Int_t section, Int_t anode) { return fDriftTimeOffsets->GetAt((anode-1)+(section-1)*6 ); }
     Float_t  GetEnergyPedestal(Int_t section, Int_t anode)  { return fEnergyPedestals->GetAt((anode-1)+(section-1)*6 ); }
     Float_t  GetEnergyMatchGain(Int_t section, Int_t anode) { return fEnergyMatchGains->GetAt((anode-1)+(section-1)*6 ); }
-    Float_t  GetEnergyAlignGain(Int_t section, Int_t anode) { return fEnergyAlignGains->GetAt((anode-1)+(section-1)*6 ); }
     TArrayD* GetDriftTimeOffsets() { return fDriftTimeOffsets; }
     TArrayF* GetEnergyPedestals()  { return fEnergyPedestals; }
     TArrayF* GetEnergyMatchGains() { return fEnergyMatchGains; }
-    TArrayF* GetEnergyAlignGains() { return fEnergyAlignGains; }
 
     void SetNumSections(Int_t num) { fNumSections = num; }
     void SetNumAnodes(Int_t num)   { fNumAnodes = num; }
     void SetDriftTimeOffset(Double_t val, Int_t section, Int_t anode) { fDriftTimeOffsets->AddAt(val, (anode-1)+(section-1)*6); }
     void SetEnergyPedestal(Float_t val, Int_t section, Int_t anode)   { fEnergyPedestals->AddAt(val, (anode-1)+(section-1)*6); }
     void SetEnergyMatchGain(Float_t val, Int_t section, Int_t anode)  { fEnergyMatchGains->AddAt(val, (anode-1)+(section-1)*6);}
-    void SetEnergyAlignGain(Float_t val, Int_t section, Int_t anode)  { fEnergyAlignGains->AddAt(val, (anode-1)+(section-1)*6);}
 
     // Create more Methods if you need them!
 
@@ -66,7 +63,6 @@ class R3BSofTrimCalPar : public FairParGenericSet
     TArrayD* fDriftTimeOffsets;      // Drift Time offset to align drift time for a similar position
     TArrayF* fEnergyPedestals;        // Energy pedestals
     TArrayF* fEnergyMatchGains;       // Gain matching of the triangular pair of anodes
-    TArrayF* fEnergyAlignGains;       // EnergyGain matching of the triangular pair of anodes
 
     const R3BSofTrimCalPar& operator=(const R3BSofTrimCalPar&); /*< an assignment operator>*/
 
