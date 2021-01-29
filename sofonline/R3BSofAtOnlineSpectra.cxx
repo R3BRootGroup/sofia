@@ -41,6 +41,7 @@ using namespace std;
 R3BSofAtOnlineSpectra::R3BSofAtOnlineSpectra()
     : FairTask("SofAtOnlineSpectra", 1)
     , fMappedItemsAt(NULL)
+    , fNumAnodes(4)
     , fNEvents(0)
 {
 }
@@ -48,6 +49,7 @@ R3BSofAtOnlineSpectra::R3BSofAtOnlineSpectra()
 R3BSofAtOnlineSpectra::R3BSofAtOnlineSpectra(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fMappedItemsAt(NULL)
+    , fNumAnodes(4)
     , fNEvents(0)
 {
 }
@@ -75,62 +77,141 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
-    // get access to mapped data of the active target
+    // === get access to mapped data of the active target === //
     fMappedItemsAt = (TClonesArray*)mgr->GetObject("AtMappedData");
     if (!fMappedItemsAt)
     {
         return kFATAL;
     }
 
-    // Create histograms for detectors
+    // === Create histograms === //
     char Name1[255];
     char Name2[255];
 
-    cAtMap = new TCanvas("AT_map", "AT mapped info", 10, 10, 800, 700);
-    cAtMap->Divide(2, 2);
+    // MAPPED DATA - MULTIPLICITY
+    cAtMap_mult = new TCanvas("at_mult", "Active Target - multiplicity", 10, 10, 800, 700);
+    cAtMap_mult->Divide(2, 2);
 
-    char Name3[255];
-    char Name4[255];
-    // AT: Map data
-    for (Int_t i = 0; i < 3; i++)
-    { // 3 correlations between sections
-        sprintf(Name1, "fh2_at_energy_map_%d", i);
-        sprintf(Name2, "Section A%d vs Section A%d", i + 1, i + 2);
-        sprintf(Name3, "A%d [channels]", i + 1);
-        sprintf(Name4, "A%d [channels]", i + 2);
-        fh2_atmap[i] = new TH2F(Name1, Name2, 1000, 0, 8192, 1000, 0, 8192);
-        fh2_atmap[i]->GetXaxis()->SetTitle(Name3);
-        fh2_atmap[i]->GetYaxis()->SetTitle(Name4);
-        fh2_atmap[i]->GetYaxis()->SetTitleOffset(1.1);
-        fh2_atmap[i]->GetXaxis()->CenterTitle(true);
-        fh2_atmap[i]->GetYaxis()->CenterTitle(true);
-        fh2_atmap[i]->GetXaxis()->SetLabelSize(0.045);
-        fh2_atmap[i]->GetXaxis()->SetTitleSize(0.045);
-        fh2_atmap[i]->GetYaxis()->SetLabelSize(0.045);
-        fh2_atmap[i]->GetYaxis()->SetTitleSize(0.045);
-        cAtMap->cd(i + 1);
-        fh2_atmap[i]->Draw("col");
+    fh1_atmap_mult = new TH1F("at_SumMult", "AT - MULTIPLICITY", fNumAnodes + 1, -0.5, fNumAnodes + 0.5);
+    fh1_atmap_mult->GetXaxis()->SetTitle("Anode (1-based)");
+    fh1_atmap_mult->GetYaxis()->SetTitle("Total Multiplicity");
+    fh1_atmap_mult->GetYaxis()->SetTitleOffset(1.1);
+    fh1_atmap_mult->GetXaxis()->CenterTitle(true);
+    fh1_atmap_mult->GetYaxis()->CenterTitle(true);
+    fh1_atmap_mult->GetXaxis()->SetLabelSize(0.045);
+    fh1_atmap_mult->GetXaxis()->SetTitleSize(0.045);
+    fh1_atmap_mult->GetYaxis()->SetLabelSize(0.045);
+    fh1_atmap_mult->GetYaxis()->SetTitleSize(0.045);
+    fh1_atmap_mult->SetLineColor(kBlue);
+    cAtMap_mult->cd(1);
+    fh1_atmap_mult->Draw("");
+
+    fh1_atmap_mult_wo_pu =
+        new TH1F("at_SumMult_wo_pu", "AT - MULTIPLICITY - pile up rejection", fNumAnodes + 1, -0.5, fNumAnodes + 0.5);
+    fh1_atmap_mult_wo_pu->GetXaxis()->SetTitle("Anode (1-based)");
+    fh1_atmap_mult_wo_pu->GetYaxis()->SetTitle("Total Multiplicity");
+    fh1_atmap_mult_wo_pu->GetYaxis()->SetTitleOffset(1.1);
+    fh1_atmap_mult_wo_pu->GetXaxis()->CenterTitle(true);
+    fh1_atmap_mult_wo_pu->GetYaxis()->CenterTitle(true);
+    fh1_atmap_mult_wo_pu->GetXaxis()->SetLabelSize(0.045);
+    fh1_atmap_mult_wo_pu->GetXaxis()->SetTitleSize(0.045);
+    fh1_atmap_mult_wo_pu->GetYaxis()->SetLabelSize(0.045);
+    fh1_atmap_mult_wo_pu->GetYaxis()->SetTitleSize(0.045);
+    fh1_atmap_mult_wo_pu->SetLineColor(kBlue);
+    cAtMap_mult->cd(2);
+    fh1_atmap_mult_wo_pu->Draw("");
+
+    fh2_atmap_mult = new TH2F("at_MultVsAnode",
+                              "Active Target - MultPerEvent vs Anodes",
+                              fNumAnodes + 1,
+                              -0.5,
+                              fNumAnodes + 0.5,
+                              10,
+                              -0.5,
+                              9.5);
+    fh2_atmap_mult->GetXaxis()->SetTitle("Anode (1-based)");
+    fh2_atmap_mult->GetYaxis()->SetTitle("Multiplicity Per Event");
+    fh2_atmap_mult->GetYaxis()->SetTitleOffset(1.1);
+    fh2_atmap_mult->GetXaxis()->CenterTitle(true);
+    fh2_atmap_mult->GetYaxis()->CenterTitle(true);
+    fh2_atmap_mult->GetXaxis()->SetLabelSize(0.045);
+    fh2_atmap_mult->GetXaxis()->SetTitleSize(0.045);
+    fh2_atmap_mult->GetYaxis()->SetLabelSize(0.045);
+    fh2_atmap_mult->GetYaxis()->SetTitleSize(0.045);
+    cAtMap_mult->cd(3);
+    fh2_atmap_mult->Draw("colz");
+
+    fh2_atmap_mult_wo_pu = new TH2F("at_MultVsAnode_wo_pu",
+                                    "Active Target - MultPerEvent vs Anodes - pile up rejection",
+                                    fNumAnodes + 1,
+                                    -0.5,
+                                    fNumAnodes + 0.5,
+                                    10,
+                                    -0.5,
+                                    9.5);
+    fh2_atmap_mult_wo_pu->GetXaxis()->SetTitle("Anode (1-based)");
+    fh2_atmap_mult_wo_pu->GetYaxis()->SetTitle("Multiplicity Per Event");
+    fh2_atmap_mult_wo_pu->GetYaxis()->SetTitleOffset(1.1);
+    fh2_atmap_mult_wo_pu->GetXaxis()->CenterTitle(true);
+    fh2_atmap_mult_wo_pu->GetYaxis()->CenterTitle(true);
+    fh2_atmap_mult_wo_pu->GetXaxis()->SetLabelSize(0.045);
+    fh2_atmap_mult_wo_pu->GetXaxis()->SetTitleSize(0.045);
+    fh2_atmap_mult_wo_pu->GetYaxis()->SetLabelSize(0.045);
+    fh2_atmap_mult_wo_pu->GetYaxis()->SetTitleSize(0.045);
+    cAtMap_mult->cd(4);
+    fh2_atmap_mult_wo_pu->Draw("colz");
+
+    // MAPPED 1D DATA - ENERGY
+    cAtMap_E = new TCanvas("at_E", "at_E", 10, 10, 800, 700);
+    cAtMap_E->Divide(1, fNumAnodes);
+    fh1_atmap_E = new TH1F*[fNumAnodes];
+    fh1_atmap_E_mult1_wo_pu_ov = new TH1F*[fNumAnodes];
+    for (Int_t a = 0; a < fNumAnodes; a++)
+    {
+        sprintf(Name1, "AT_E_anode%d", a + 1);
+        sprintf(Name2, "AT - Energy - Anode %d", a + 1);
+        fh1_atmap_E[a] = new TH1F(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
+        fh1_atmap_E[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
+        fh1_atmap_E[a]->GetYaxis()->SetTitle("Counts");
+        fh1_atmap_E[a]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_atmap_E[a]->GetXaxis()->CenterTitle(true);
+        fh1_atmap_E[a]->GetYaxis()->CenterTitle(true);
+        fh1_atmap_E[a]->GetXaxis()->SetLabelSize(0.045);
+        fh1_atmap_E[a]->GetXaxis()->SetTitleSize(0.045);
+        fh1_atmap_E[a]->GetYaxis()->SetLabelSize(0.045);
+        fh1_atmap_E[a]->GetYaxis()->SetTitleSize(0.045);
+        fh1_atmap_E[a]->SetLineColor(kBlue);
+        cAtMap_E->cd(a + 1);
+        fh1_atmap_E[a]->Draw("");
+
+        sprintf(Name1, "AT_E_m1_anode%d", a + 1);
+        sprintf(Name2, "AT - Energy - Anode %d - mult=1, pu and ov rejection", a + 1);
+        fh1_atmap_E_mult1_wo_pu_ov[a] = new TH1F(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitle("Counts");
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetXaxis()->CenterTitle(true);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->CenterTitle(true);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetXaxis()->SetLabelSize(0.045);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetXaxis()->SetTitleSize(0.045);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetLabelSize(0.045);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitleSize(0.045);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->SetLineColor(kRed);
+        cAtMap_E->cd(a + 1);
+        fh1_atmap_E_mult1_wo_pu_ov[a]->Draw("sames");
     }
 
-    fh1_atmapevt = new TH1F("fh_at_events", "Events per section", 4, 0.5, 4.5);
-    fh1_atmapevt->GetXaxis()->SetTitle("AT section");
-    fh1_atmapevt->GetYaxis()->SetTitle("Counts");
-    fh1_atmapevt->GetYaxis()->SetTitleOffset(1.);
-    fh1_atmapevt->GetXaxis()->CenterTitle(true);
-    fh1_atmapevt->GetYaxis()->CenterTitle(true);
-    fh1_atmapevt->GetXaxis()->SetLabelSize(0.045);
-    fh1_atmapevt->GetXaxis()->SetTitleSize(0.045);
-    fh1_atmapevt->GetYaxis()->SetLabelSize(0.045);
-    fh1_atmapevt->GetYaxis()->SetTitleSize(0.045);
-    cAtMap->cd(4);
-    fh1_atmapevt->Draw("");
+    // === MAIN FOLDER-AT === //
 
-    // MAIN FOLDER-AT
-    TFolder* mainfolAt = new TFolder("AT", "Active target info");
-    mainfolAt->Add(cAtMap);
+    TFolder* mainfolAt = new TFolder("At", "At info");
+    if (fMappedItemsAt)
+    {
+        mainfolAt->Add(cAtMap_mult);
+        mainfolAt->Add(cAtMap_E);
+    }
     run->AddObject(mainfolAt);
 
-    // Register command to reset histograms
+    // === Register command to reset histograms === /
     run->GetHttpServer()->RegisterCommand("Reset_AT_HIST", Form("/Objects/%s/->Reset_Histo()", GetName()));
 
     return kSUCCESS;
@@ -139,10 +220,20 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 void R3BSofAtOnlineSpectra::Reset_Histo()
 {
     LOG(INFO) << "R3BSofAtOnlineSpectra::Reset_Histo";
-    // Map data
-    for (Int_t i = 0; i < 3; i++)
-        fh2_atmap[i]->Reset();
-    fh1_atmapevt->Reset();
+
+    // Mapped Data
+    if (fMappedItemsAt)
+    {
+        fh1_atmap_mult->Reset();
+        fh1_atmap_mult_wo_pu->Reset();
+        fh2_atmap_mult->Reset();
+        fh2_atmap_mult_wo_pu->Reset();
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
+            fh1_atmap_E[a]->Reset();
+            fh1_atmap_E_mult1_wo_pu_ov[a]->Reset();
+        }
+    }
 }
 
 void R3BSofAtOnlineSpectra::Exec(Option_t* option)
@@ -151,26 +242,65 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofAtOnlineSpectra::Exec FairRootManager not found";
 
-    // Fill mapped data
-    if (fMappedItemsAt && fMappedItemsAt->GetEntriesFast())
+    Int_t nHits;
+    if (fMappedItemsAt && fMappedItemsAt->GetEntriesFast() > 0)
     {
-        Int_t atmap[4] = { 0, 0, 0, 0 };
-        Int_t nHits = fMappedItemsAt->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
+
+        // local variables
+        Int_t E[fNumAnodes];
+        Int_t mult[fNumAnodes];
+        Bool_t pu[fNumAnodes];
+        Bool_t ov[fNumAnodes];
+        Int_t iAnode;
+
+        // initialization of these variables
+        for (Int_t a = 0; a < fNumAnodes; a++)
         {
-            R3BSofAtMappedData* hit = (R3BSofAtMappedData*)fMappedItemsAt->At(ihit);
-            if (!hit)
-                continue;
-            atmap[hit->GetSecID()] = hit->GetEnergy();
-            fh1_atmapevt->Fill(hit->GetSecID() + 1);
+            E[a] = -1;
+            mult[a] = 0;
+            pu[a] = kFALSE;
+            ov[a] = kFALSE;
         }
-        if (atmap[0] > 0 && atmap[1] > 0)
-            fh2_atmap[0]->Fill(atmap[0], atmap[1]);
-        if (atmap[1] > 0 && atmap[2] > 0)
-            fh2_atmap[1]->Fill(atmap[1], atmap[2]);
-        if (atmap[2] > 0 && atmap[3] > 0)
-            fh2_atmap[2]->Fill(atmap[2], atmap[3]);
-    }
+
+        // number of entries per event in the AtMappedData TClonesArray
+        nHits = fMappedItemsAt->GetEntriesFast();
+
+        // loop over the entries
+        for (Int_t entry = 0; entry < nHits; entry++)
+        {
+
+            // get the mapped data
+            R3BSofAtMappedData* map = (R3BSofAtMappedData*)fMappedItemsAt->At(entry);
+            if (!map)
+                continue;
+            iAnode = map->GetAnodeID() - 1; // iAnode is 0-based
+            E[iAnode] = map->GetEnergy();   // outside of the loop --> last entry if mult>1
+            if (map->GetPileupStatus() == kTRUE)
+                pu[iAnode] = kTRUE; // at least one entry has pile up
+            if (map->GetOverflowStatus() == kTRUE)
+                ov[iAnode] = kTRUE; // at least one entry has overflow
+            mult[iAnode]++;
+            fh1_atmap_mult->Fill(iAnode + 1);
+            fh1_atmap_E[iAnode]->Fill(E[iAnode]);
+        } // end of loop over the Mapped data
+
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
+            if (mult[a] > 0)
+            {
+                fh2_atmap_mult->Fill(a + 1, mult[a]);
+                if (pu[a] == kFALSE)
+                { // no entry is flaged with the pile-up bit
+                    fh1_atmap_mult_wo_pu->Fill(a + 1);
+                    fh2_atmap_mult_wo_pu->Fill(a + 1, mult[a]);
+                }
+            }
+            if (mult[a] == 1 && pu[a] == kFALSE && ov[a] == kFALSE)
+            {
+                fh1_atmap_E_mult1_wo_pu_ov[a]->Fill(E[a]);
+            }
+        }
+    } // end of if(MappedData)
 
     fNEvents += 1;
 }
@@ -186,10 +316,10 @@ void R3BSofAtOnlineSpectra::FinishEvent()
 
 void R3BSofAtOnlineSpectra::FinishTask()
 {
-
     if (fMappedItemsAt)
     {
-        cAtMap->Write();
+        cAtMap_mult->Write();
+        cAtMap_E->Write();
     }
 }
 

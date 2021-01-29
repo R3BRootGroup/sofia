@@ -19,7 +19,7 @@
 
 // to be fixed
 #define NbDets 28
-#define NbChs   2
+#define NbChs 2
 
 class TClonesArray;
 class R3BEventHeader;
@@ -89,7 +89,7 @@ class R3BSofTofWOnlineSpectra : public FairTask
         fTwimTofRangeMin = min;
         fTwimTofRangeMax = max;
     }
-    inline void Set_IdSofSciCaveC(Int_t id){fIdSofSciCaveC=id;}
+    inline void Set_IdSofSciCaveC(Int_t id) { fIdSofSciCaveC = id; }
 
   private:
     TClonesArray* fMappedItemsTofW;     /**< Array with mapped items. */
@@ -100,7 +100,7 @@ class R3BSofTofWOnlineSpectra : public FairTask
     TClonesArray* fCalItemsMwpc;        /**< Array with cal items of mwpc3. */
     Float_t fTwimTofRangeMax;           // Range for Twim vs ToF histograms
     Float_t fTwimTofRangeMin;
-    Int_t   fIdSofSciCaveC;
+    Int_t fIdSofSciCaveC;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */

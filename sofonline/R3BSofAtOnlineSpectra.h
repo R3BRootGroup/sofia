@@ -81,7 +81,11 @@ class R3BSofAtOnlineSpectra : public FairTask
      */
     virtual void Reset_Histo();
 
+    void SetNumAnodes(Int_t num) { fNumAnodes = num; }
+
   private:
+    Int_t fNumAnodes;
+
     TClonesArray* fMappedItemsAt; /**< Array with mapped items. */
 
     // check for trigger should be done globablly (somewhere else)
@@ -90,14 +94,16 @@ class R3BSofAtOnlineSpectra : public FairTask
     Int_t fReset;
 
     // Canvas
-    TCanvas* cAtMap;
+    TCanvas* cAtMap_mult;
+    TCanvas* cAtMap_E;
 
     // Histograms for Mapped data
-    TH2F* fh2_atmap[3];
-    TH1F* fh1_atmapevt;
-
-    // Histograms for cal data
-    // TH2F* fh2_atcal[3];
+    TH1F* fh1_atmap_mult;
+    TH1F* fh1_atmap_mult_wo_pu;
+    TH2F* fh2_atmap_mult;
+    TH2F* fh2_atmap_mult_wo_pu;
+    TH1F** fh1_atmap_E;
+    TH1F** fh1_atmap_E_mult1_wo_pu_ov;
 
   public:
     ClassDef(R3BSofAtOnlineSpectra, 0)

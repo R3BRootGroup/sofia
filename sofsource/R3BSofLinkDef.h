@@ -11,6 +11,7 @@
 #pragma link C++ class R3BSofMwpcReader + ;
 #pragma link C++ class R3BSofScalersReader + ;
 #pragma link C++ class R3BSofWhiterabbitReader + ;
+#pragma link C++ class R3BSofAtReader + ;
 
 #pragma link C++ class EXT_STR_h101_SOFSCI_onion_t;
 #pragma link C++ class EXT_STR_h101_SOFTOFW_onion_t;
@@ -19,5 +20,6 @@
 #pragma link C++ class EXT_STR_h101_SOFMWPC_onion_t;
 #pragma link C++ class EXT_STR_h101_SOFSCALERS_onion_t;
 #pragma link C++ class EXT_STR_h101_WRSOFIA_onion_t;
+#pragma link C++ class EXT_STR_h101_SOFAT_onion_t;
 
 #endif

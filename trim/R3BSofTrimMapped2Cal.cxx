@@ -16,9 +16,9 @@
 #include <iomanip>
 
 // Trim headers
+#include "R3BSofTrimCalPar.h"
 #include "R3BSofTrimMapped2Cal.h"
 #include "R3BSofTrimMappedData.h"
-#include "R3BSofTrimCalPar.h"
 
 // R3BSofTrimMapped2Cal: Default Constructor --------------------------
 R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal()
@@ -59,21 +59,26 @@ R3BSofTrimMapped2Cal::~R3BSofTrimMapped2Cal()
 void R3BSofTrimMapped2Cal::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         LOG(ERROR) << "FairRuntimeDb not opened!";
     }
 
     fCal_Par = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
-    if (!fCal_Par) {
+    if (!fCal_Par)
+    {
         LOG(ERROR) << "R3BSofTrimMapped2CalPar::Init() Couldn't get handle on trimCalPar container";
         return;
     }
-    else {
-      if (fNumSections != fCal_Par->GetNumSections())
-          LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumSections=" << fNumSections << " different from parameter " << fCal_Par->GetNumSections();
-      if (fNumAnodes != fCal_Par->GetNumAnodes())
-            LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumAnodes=" << fNumAnodes << " different from parameter " << fCal_Par->GetNumAnodes();
-      LOG(INFO) << "R3BSofTrimMapped2CalPar:: trimCalPar container open";
+    else
+    {
+        if (fNumSections != fCal_Par->GetNumSections())
+            LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumSections=" << fNumSections << " different from parameter "
+                      << fCal_Par->GetNumSections();
+        if (fNumAnodes != fCal_Par->GetNumAnodes())
+            LOG(INFO) << "R3BSofTrimMapped2CalPar::Init() fNumAnodes=" << fNumAnodes << " different from parameter "
+                      << fCal_Par->GetNumAnodes();
+        LOG(INFO) << "R3BSofTrimMapped2CalPar:: trimCalPar container open";
     }
 }
 
@@ -83,16 +88,18 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     LOG(INFO) << "R3BSofTrimMapped2Cal: Init";
 
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager){
-      return kFATAL;
+    if (!rootManager)
+    {
+        return kFATAL;
     }
 
     // --- ----------------- --- //
     // --- INPUT MAPPED DATA --- //
     // --- ----------------- --- //
     fTrimMappedData = (TClonesArray*)rootManager->GetObject("TrimMappedData");
-    if (!fTrimMappedData){
-      return kFATAL;
+    if (!fTrimMappedData)
+    {
+        return kFATAL;
     }
 
     // --- --------------- --- //
@@ -100,13 +107,15 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     // --- --------------- --- //
     fTrimCalData = new TClonesArray("R3BSofTrimCalData", MAX_MULT_TRIM_CAL * 8);
 
-    if (!fOnline){
-      rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kTRUE);
+    if (!fOnline)
+    {
+        rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kTRUE);
     }
-    else{
-      rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kFALSE);
+    else
+    {
+        rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kFALSE);
     }
- 
+
     return kSUCCESS;
 }
 
@@ -130,8 +139,8 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
     }
 
     // Reading input mapped data per anode
-    //   --> number of channels = number of anodes (6: id=1..6) 
-    //                             + number of Tref (1: id=fNumAnodes+1) 
+    //   --> number of channels = number of anodes (6: id=1..6)
+    //                             + number of Tref (1: id=fNumAnodes+1)
     //                             + number of Ttrig (1: id=fNumAnodes+2)
     Int_t nHits = fTrimMappedData->GetEntries();
     if (!nHits)

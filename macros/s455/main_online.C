@@ -23,6 +23,7 @@ typedef struct EXT_STR_h101_t
     
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
     EXT_STR_h101_SOFTRIM_onion_t trim;
+    EXT_STR_h101_SOFAT_onion_t at;
     EXT_STR_h101_SOFSCI_onion_t sci;
     EXT_STR_h101_SOFTWIM_onion_t twim;
     EXT_STR_h101_SOFTOFW_onion_t tofw;
@@ -145,6 +146,7 @@ void main_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
+    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -182,6 +184,7 @@ void main_online()
     
     R3BSofTrimReader* unpacktrim;
     R3BSofSciReader* unpacksci;
+    R3BSofAtReader* unpackat;
     R3BSofMwpcReader* unpackmwpc;
     R3BSofTwimReader* unpacktwim;
     R3BSofTofWReader* unpacktofw;
@@ -231,6 +234,9 @@ void main_online()
 
     if (fTrim)
         unpacktrim = new R3BSofTrimReader((EXT_STR_h101_SOFTRIM_t*)&ucesb_struct.trim, offsetof(EXT_STR_h101, trim));
+    
+    if (fAt)
+        unpackat = new R3BSofAtReader((EXT_STR_h101_SOFAT_t*)&ucesb_struct.at, offsetof(EXT_STR_h101, at));
 
     if (fTwim)
         unpacktwim = new R3BSofTwimReader((EXT_STR_h101_SOFTWIM_t*)&ucesb_struct.twim, offsetof(EXT_STR_h101, twim));
@@ -280,6 +286,11 @@ void main_online()
         source->AddReader(unpackWRS2);
         unpackWRS8->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRS8);
+    }
+
+    if(fAt){
+      unpackat->SetOnline(NOTstoremappeddata);
+      source->AddReader(unpackat);
     }
 
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
@@ -587,6 +598,12 @@ void main_online()
         run->AddTask(scionline);
     }
 
+    if (fAt)
+    {
+        R3BSofAtOnlineSpectra* atonline = new R3BSofAtOnlineSpectra();
+        run->AddTask(atonline);
+    }
+    
     if (fAms)
     {
         R3BAmsOnlineSpectra* AmsOnline = new R3BAmsOnlineSpectra();

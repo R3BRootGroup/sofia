@@ -16,9 +16,9 @@ class R3BSofScalersMappedData : public TObject
     virtual ~R3BSofScalersMappedData() {}
 
     // Getters
-    inline const UShort_t& GetScaler()  const {return fScaler;}
-    inline const UShort_t& GetChannel() const {return fChannel;}
-    inline const UInt_t&   GetValue()   const {return fValue;}
+    inline const UShort_t& GetScaler() const { return fScaler; }
+    inline const UShort_t& GetChannel() const { return fChannel; }
+    inline const UInt_t& GetValue() const { return fValue; }
 
   private:
     UShort_t fScaler;
