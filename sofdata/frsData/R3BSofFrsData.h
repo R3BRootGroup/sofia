@@ -26,7 +26,14 @@ class R3BSofFrsData : public TObject
      *@param cs2     Position at S2
      *@param xc      Position at Cave
      **/
-    R3BSofFrsData(Int_t StaId, Int_t StoId, Double_t z, Double_t aq, Double_t beta, Double_t brho, Double_t xs2 = 0., Double_t xc = 0.);
+    R3BSofFrsData(Int_t StaId,
+                  Int_t StoId,
+                  Double_t z,
+                  Double_t aq,
+                  Double_t beta,
+                  Double_t brho,
+                  Double_t xs2 = 0.,
+                  Double_t xc = 0.);
 
     // Destructor
     virtual ~R3BSofFrsData() {}

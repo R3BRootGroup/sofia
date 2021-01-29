@@ -46,39 +46,38 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     void SetOutputFile(const char* outFile);
 
     /** Accessor functions **/
-    const Int_t GetNumSections()     { return fNumSections; }
-    const Int_t GetNumAnodes()       { return fNumAnodes; }
-    const Int_t GetMinStatistics()   { return fMinStatistics; }
+    const Int_t GetNumSections() { return fNumSections; }
+    const Int_t GetNumAnodes() { return fNumAnodes; }
+    const Int_t GetMinStatistics() { return fMinStatistics; }
 
-    const Float_t GetMwpc0OffsetX() { return fMwpc0OffsetX;}
-    const Float_t GetMwpc1OffsetX() { return fMwpc1OffsetX;}
+    const Float_t GetMwpc0OffsetX() { return fMwpc0OffsetX; }
+    const Float_t GetMwpc1OffsetX() { return fMwpc1OffsetX; }
 
     const Float_t GetDistMwpc0Anode1() { return fDistMwpc0Anode1; }
-    const Float_t GetDistMwpc0Mwpc1()  { return fDistMwpc0Mwpc1; }
+    const Float_t GetDistMwpc0Mwpc1() { return fDistMwpc0Mwpc1; }
 
-    const Float_t GetWidthAnode()       { return fWidthAnode;}
-    const Float_t GetDistInterSection() { return fDistInterSection;}
-    const Float_t GetDriftVelocity()    { return fDriftVelocity; }
-
+    const Float_t GetWidthAnode() { return fWidthAnode; }
+    const Float_t GetDistInterSection() { return fDistInterSection; }
+    const Float_t GetDriftVelocity() { return fDriftVelocity; }
 
     void SetNumSections(Int_t n) { fNumSections = n; }
-    void SetNumAnodes(Int_t n)   { fNumAnodes  = n; }
+    void SetNumAnodes(Int_t n) { fNumAnodes = n; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
-    void SetMwpc0OffsetX (Float_t offset) { fMwpc0OffsetX = offset; }
-    void SetMwpc1OffsetX (Float_t offset) { fMwpc1OffsetX = offset; }
+    void SetMwpc0OffsetX(Float_t offset) { fMwpc0OffsetX = offset; }
+    void SetMwpc1OffsetX(Float_t offset) { fMwpc1OffsetX = offset; }
 
     void SetDistMwpc0Anode1(Float_t d) { fDistMwpc0Anode1 = d; }
-    void SetDistMwpc0Mwpc1(Float_t d)  { fDistMwpc0Mwpc1 = d; }
+    void SetDistMwpc0Mwpc1(Float_t d) { fDistMwpc0Mwpc1 = d; }
 
-    void SetWidthAnode(Float_t w)       { fWidthAnode = w; }
+    void SetWidthAnode(Float_t w) { fWidthAnode = w; }
     void SetDistInterSection(Float_t d) { fDistInterSection = d; }
-    void SetDriftVelocity (Float_t v)   { fDriftVelocity = v; }
+    void SetDriftVelocity(Float_t v) { fDriftVelocity = v; }
 
   protected:
-    Int_t fNumSections;    
-    Int_t fNumAnodes;      
-    Int_t fMinStatistics;    // minimum statistics to proceed to the calibration
+    Int_t fNumSections;
+    Int_t fNumAnodes;
+    Int_t fMinStatistics; // minimum statistics to proceed to the calibration
 
     Float_t fMwpc0OffsetX;
     Float_t fMwpc1OffsetX;
@@ -98,8 +97,7 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     TClonesArray* fMwpc1HitData;
 
     // histograms
-    TH1D ** fh1_DeltaDT;
-
+    TH1D** fh1_DeltaDT;
 
     char* fOutputFile;
 

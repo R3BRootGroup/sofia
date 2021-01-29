@@ -34,6 +34,7 @@ R3BSofTwimReader.cxx
 R3BSofTrimReader.cxx
 R3BSofMwpcReader.cxx
 R3BSofScalersReader.cxx
+R3BSofAtReader.cxx
 )
 
 Set(STRUCT_HEADERS
@@ -44,6 +45,7 @@ ext_h101_softwim.h
 ext_h101_softrim.h
 ext_h101_sofmwpc.h
 ext_h101_sofscalers.h
+ext_h101_sofat.h
 )
 
 # fill list of header files from list of source files

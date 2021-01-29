@@ -27,10 +27,7 @@ R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID)
 {
 }
 
-
-R3BSofTrimHitData::R3BSofTrimHitData(Int_t   secID,  Float_t Eraw, 
-				     Float_t Ebeta,  Float_t Edt,
-				     Float_t Etheta, Float_t Z)
+R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID, Float_t Eraw, Float_t Ebeta, Float_t Edt, Float_t Etheta, Float_t Z)
     : fSecID(secID)
     , fEnergyRaw(Eraw)
     , fEnergyBeta(Ebeta)

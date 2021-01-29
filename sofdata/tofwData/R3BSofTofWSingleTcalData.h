@@ -22,16 +22,17 @@ class R3BSofTofWSingleTcalData : public TObject
     inline const Double_t& GetRawPosNs() const { return fRawPosNs; }
 
     // Modifiers
-    void SetDetector(Int_t det)   {fDetector=det;}
-    void SetRawTimeNs(Double_t time) {fRawTimeNs = time;}
-    void SetRawPosNs(Double_t pos)   {fRawPosNs = pos;}
-    void SetRawTofNs(Double_t tof)   {fRawTofNs = tof;}
-      
+    void SetDetector(Int_t det) { fDetector = det; }
+    void SetRawTimeNs(Double_t time) { fRawTimeNs = time; }
+    void SetRawPosNs(Double_t pos) { fRawPosNs = pos; }
+    void SetRawTofNs(Double_t tof) { fRawTofNs = tof; }
+
   private:
     Int_t fDetector; // 1..28
     Double_t fRawTofNs;
     Double_t fRawPosNs; // RawTimeDOWN - RawTimeUP
     Double_t fRawTimeNs;
+
   public:
     ClassDef(R3BSofTofWSingleTcalData, 2)
 };

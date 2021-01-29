@@ -4,9 +4,9 @@
 
 #include "R3BSofTrimOnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BSofTrimMappedData.h"
 #include "R3BSofTrimCalData.h"
 #include "R3BSofTrimHitData.h"
+#include "R3BSofTrimMappedData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -65,9 +65,12 @@ R3BSofTrimOnlineSpectra::R3BSofTrimOnlineSpectra(const TString& name, Int_t iVer
 R3BSofTrimOnlineSpectra::~R3BSofTrimOnlineSpectra()
 {
     LOG(INFO) << "R3BSofTrimOnlineSpectra::Delete instance";
-    if (fMappedItemsTrim)     delete fMappedItemsTrim;
-    if (fCalItemsTrim)        delete fCalItemsTrim;
-    if (fHitItemsTrim)        delete fHitItemsTrim;
+    if (fMappedItemsTrim)
+        delete fMappedItemsTrim;
+    if (fCalItemsTrim)
+        delete fCalItemsTrim;
+    if (fHitItemsTrim)
+        delete fHitItemsTrim;
 }
 
 InitStatus R3BSofTrimOnlineSpectra::Init()
@@ -88,25 +91,28 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     // === get access to mapped data of the Triple-MUSIC
     fMappedItemsTrim = (TClonesArray*)mgr->GetObject("TrimMappedData");
-    if (!fMappedItemsTrim){
+    if (!fMappedItemsTrim)
+    {
         LOG(FATAL) << " R3BSofTrimOnlineSpectra::Init(), TrimMappedData not found";
         return kFATAL;
     }
 
     // === get access to cal data of the Triple-MUSIC === //
     fCalItemsTrim = (TClonesArray*)mgr->GetObject("TrimCalData");
-    if (!fCalItemsTrim){
+    if (!fCalItemsTrim)
+    {
         LOG(FATAL) << " R3BSofTrimOnlineSpectra::Init(), TrimCalData not found";
         return kFATAL;
     }
 
     // === get access to hit data of the Triple-MUSIC === //
     fHitItemsTrim = (TClonesArray*)mgr->GetObject("TrimHitData");
-    if (!fHitItemsTrim){
+    if (!fHitItemsTrim)
+    {
         LOG(FATAL) << " R3BSofTrimOnlineSpectra::Init(), TrimHitData not found";
         return kFATAL;
     }
-    
+
     // === Create histograms for detectors
     char Name1[255];
     char Name2[255];
@@ -197,12 +203,13 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     cTrimMap_DeltaTrefTtrig->Divide(fNumSections, 1);
     fh1_trimmap_DeltaTrefTtrig = new TH1F*[fNumSections];
 
-    for (Int_t i = 0; i < fNumSections; i++) {
-      sprintf(Name1, "fh1_trim_Sec%d_DeltaTrefTtrig", i + 1);
-      sprintf(Name2, "Delta T (Tref-Trig) in section %d [channels, 100ps TDC resolution] 1ns/bin", i + 1);
-      fh1_trimmap_DeltaTrefTtrig[i] = new TH1F(Name1, Name2, 8000, -40000, 40000);
-      cTrimMap_DeltaTrefTtrig->cd(i + 1);
-      fh1_trimmap_DeltaTrefTtrig[i]->Draw("");
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
+        sprintf(Name1, "fh1_trim_Sec%d_DeltaTrefTtrig", i + 1);
+        sprintf(Name2, "Delta T (Tref-Trig) in section %d [channels, 100ps TDC resolution] 1ns/bin", i + 1);
+        fh1_trimmap_DeltaTrefTtrig[i] = new TH1F(Name1, Name2, 8000, -40000, 40000);
+        cTrimMap_DeltaTrefTtrig->cd(i + 1);
+        fh1_trimmap_DeltaTrefTtrig[i]->Draw("");
     }
 
     // --- TRIM: 2-D MAPPED data for ENERGY vs DRIFT-TIME and DRIFT-TIME vs DRIFT-TIME
@@ -363,98 +370,99 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     // === ======== === //
 
     cTrimHit_E = new TCanvas("TrimHit_E", "Energy at Hit level", 10, 10, 800, 700);
-    cTrimHit_E->Divide(4,3);
+    cTrimHit_E->Divide(4, 3);
     cTrimHit_Z = new TCanvas("TrimHit_Z", "Atomic Number at Hit level", 10, 10, 800, 700);
-    cTrimHit_Z->Divide(2,3);
+    cTrimHit_Z->Divide(2, 3);
 
-    fh1_trimhit_Eraw   = new TH1F*[fNumSections];
-    fh1_trimhit_Ebeta  = new TH1F*[fNumSections];
-    fh1_trimhit_Edt    = new TH1F*[fNumSections];
+    fh1_trimhit_Eraw = new TH1F*[fNumSections];
+    fh1_trimhit_Ebeta = new TH1F*[fNumSections];
+    fh1_trimhit_Edt = new TH1F*[fNumSections];
     fh1_trimhit_Etheta = new TH1F*[fNumSections];
-    fh1_trimhit_Z      = new TH1F*[fNumSections+2];
+    fh1_trimhit_Z = new TH1F*[fNumSections + 2];
 
-    for (Int_t i = 0; i < fNumSections; i++)  {
-      sprintf(Name1, "fh1_trimhit_Eraw_sec%d", i + 1);
-      sprintf(Name2, "Ene raw Sec %d", i + 1);
-      fh1_trimhit_Eraw[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
-      fh1_trimhit_Eraw[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
-      fh1_trimhit_Eraw[i]->GetYaxis()->SetTitle("Counts");
-      fh1_trimhit_Eraw[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh1_trimhit_Eraw[i]->GetXaxis()->CenterTitle(true);
-      fh1_trimhit_Eraw[i]->GetYaxis()->CenterTitle(true);
-      fh1_trimhit_Eraw[i]->GetXaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Eraw[i]->GetXaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Eraw[i]->GetYaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Eraw[i]->GetYaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Eraw[i]->SetLineColor(kBlue);
-      cTrimHit_E->cd(4*i + 1);
-      fh1_trimhit_Eraw[i]->Draw("");
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
+        sprintf(Name1, "fh1_trimhit_Eraw_sec%d", i + 1);
+        sprintf(Name2, "Ene raw Sec %d", i + 1);
+        fh1_trimhit_Eraw[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
+        fh1_trimhit_Eraw[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
+        fh1_trimhit_Eraw[i]->GetYaxis()->SetTitle("Counts");
+        fh1_trimhit_Eraw[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_trimhit_Eraw[i]->GetXaxis()->CenterTitle(true);
+        fh1_trimhit_Eraw[i]->GetYaxis()->CenterTitle(true);
+        fh1_trimhit_Eraw[i]->GetXaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Eraw[i]->GetXaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Eraw[i]->GetYaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Eraw[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Eraw[i]->SetLineColor(kBlue);
+        cTrimHit_E->cd(4 * i + 1);
+        fh1_trimhit_Eraw[i]->Draw("");
 
-      sprintf(Name1, "fh1_trimhit_Ebeta_sec%d", i + 1);
-      sprintf(Name2, "Ene corrected from beta Sec %d", i + 1);
-      fh1_trimhit_Ebeta[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
-      fh1_trimhit_Ebeta[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
-      fh1_trimhit_Ebeta[i]->GetYaxis()->SetTitle("Counts");
-      fh1_trimhit_Ebeta[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh1_trimhit_Ebeta[i]->GetXaxis()->CenterTitle(true);
-      fh1_trimhit_Ebeta[i]->GetYaxis()->CenterTitle(true);
-      fh1_trimhit_Ebeta[i]->GetXaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Ebeta[i]->GetXaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Ebeta[i]->GetYaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Ebeta[i]->GetYaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Ebeta[i]->SetLineColor(kOrange+10);
-      cTrimHit_E->cd(4*i + 2);
-      fh1_trimhit_Ebeta[i]->Draw("sames");
+        sprintf(Name1, "fh1_trimhit_Ebeta_sec%d", i + 1);
+        sprintf(Name2, "Ene corrected from beta Sec %d", i + 1);
+        fh1_trimhit_Ebeta[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
+        fh1_trimhit_Ebeta[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
+        fh1_trimhit_Ebeta[i]->GetYaxis()->SetTitle("Counts");
+        fh1_trimhit_Ebeta[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_trimhit_Ebeta[i]->GetXaxis()->CenterTitle(true);
+        fh1_trimhit_Ebeta[i]->GetYaxis()->CenterTitle(true);
+        fh1_trimhit_Ebeta[i]->GetXaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Ebeta[i]->GetXaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Ebeta[i]->GetYaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Ebeta[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Ebeta[i]->SetLineColor(kOrange + 10);
+        cTrimHit_E->cd(4 * i + 2);
+        fh1_trimhit_Ebeta[i]->Draw("sames");
 
-      sprintf(Name1, "fh1_trimhit_Edt_sec%d", i + 1);
-      sprintf(Name2, "Ene corrected from DT Sec %d", i + 1);
-      fh1_trimhit_Edt[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
-      fh1_trimhit_Edt[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
-      fh1_trimhit_Edt[i]->GetYaxis()->SetTitle("Counts");
-      fh1_trimhit_Edt[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh1_trimhit_Edt[i]->GetXaxis()->CenterTitle(true);
-      fh1_trimhit_Edt[i]->GetYaxis()->CenterTitle(true);
-      fh1_trimhit_Edt[i]->GetXaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Edt[i]->GetXaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Edt[i]->GetYaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Edt[i]->GetYaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Edt[i]->SetLineColor(8);
-      cTrimHit_E->cd(4*i + 3);
-      fh1_trimhit_Edt[i]->Draw("sames");
+        sprintf(Name1, "fh1_trimhit_Edt_sec%d", i + 1);
+        sprintf(Name2, "Ene corrected from DT Sec %d", i + 1);
+        fh1_trimhit_Edt[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
+        fh1_trimhit_Edt[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
+        fh1_trimhit_Edt[i]->GetYaxis()->SetTitle("Counts");
+        fh1_trimhit_Edt[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_trimhit_Edt[i]->GetXaxis()->CenterTitle(true);
+        fh1_trimhit_Edt[i]->GetYaxis()->CenterTitle(true);
+        fh1_trimhit_Edt[i]->GetXaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Edt[i]->GetXaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Edt[i]->GetYaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Edt[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Edt[i]->SetLineColor(8);
+        cTrimHit_E->cd(4 * i + 3);
+        fh1_trimhit_Edt[i]->Draw("sames");
 
-      sprintf(Name1, "fh1_trimhit_Etheta_sec%d", i + 1);
-      sprintf(Name2, "Ene corrected from theta Sec %d", i + 1);
-      fh1_trimhit_Etheta[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
-      fh1_trimhit_Etheta[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
-      fh1_trimhit_Etheta[i]->GetYaxis()->SetTitle("Counts");
-      fh1_trimhit_Etheta[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh1_trimhit_Etheta[i]->GetXaxis()->CenterTitle(true);
-      fh1_trimhit_Etheta[i]->GetYaxis()->CenterTitle(true);
-      fh1_trimhit_Etheta[i]->GetXaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Etheta[i]->GetXaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Etheta[i]->GetYaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Etheta[i]->GetYaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Etheta[i]->SetLineColor(kRed);
-      cTrimHit_E->cd(4*i + 4);
-      fh1_trimhit_Etheta[i]->Draw("sames");
+        sprintf(Name1, "fh1_trimhit_Etheta_sec%d", i + 1);
+        sprintf(Name2, "Ene corrected from theta Sec %d", i + 1);
+        fh1_trimhit_Etheta[i] = new TH1F(Name1, Name2, 8192, 0, 8192);
+        fh1_trimhit_Etheta[i]->GetXaxis()->SetTitle("Energy [channels], if mult==1");
+        fh1_trimhit_Etheta[i]->GetYaxis()->SetTitle("Counts");
+        fh1_trimhit_Etheta[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_trimhit_Etheta[i]->GetXaxis()->CenterTitle(true);
+        fh1_trimhit_Etheta[i]->GetYaxis()->CenterTitle(true);
+        fh1_trimhit_Etheta[i]->GetXaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Etheta[i]->GetXaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Etheta[i]->GetYaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Etheta[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Etheta[i]->SetLineColor(kRed);
+        cTrimHit_E->cd(4 * i + 4);
+        fh1_trimhit_Etheta[i]->Draw("sames");
 
-      sprintf(Name1, "fh1_trimhit_Z_sec%d", i + 1);
-      sprintf(Name2, "Charge Sec %d", i + 1);
-      fh1_trimhit_Z[i] = new TH1F(Name1, Name2, 1000, 0, 100);
-      fh1_trimhit_Z[i]->GetXaxis()->SetTitle("Charge (Q) if mult==1");
-      fh1_trimhit_Z[i]->GetYaxis()->SetTitle("Counts");
-      fh1_trimhit_Z[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh1_trimhit_Z[i]->GetXaxis()->CenterTitle(true);
-      fh1_trimhit_Z[i]->GetYaxis()->CenterTitle(true);
-      fh1_trimhit_Z[i]->GetXaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Z[i]->GetXaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Z[i]->GetYaxis()->SetLabelSize(0.045);
-      fh1_trimhit_Z[i]->GetYaxis()->SetTitleSize(0.045);
-      fh1_trimhit_Z[i]->SetLineColor(kBlue+i);
-      cTrimHit_Z->cd(i + 1);
-      fh1_trimhit_Z[i]->Draw();
+        sprintf(Name1, "fh1_trimhit_Z_sec%d", i + 1);
+        sprintf(Name2, "Charge Sec %d", i + 1);
+        fh1_trimhit_Z[i] = new TH1F(Name1, Name2, 1000, 0, 100);
+        fh1_trimhit_Z[i]->GetXaxis()->SetTitle("Charge (Q) if mult==1");
+        fh1_trimhit_Z[i]->GetYaxis()->SetTitle("Counts");
+        fh1_trimhit_Z[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh1_trimhit_Z[i]->GetXaxis()->CenterTitle(true);
+        fh1_trimhit_Z[i]->GetYaxis()->CenterTitle(true);
+        fh1_trimhit_Z[i]->GetXaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Z[i]->GetXaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Z[i]->GetYaxis()->SetLabelSize(0.045);
+        fh1_trimhit_Z[i]->GetYaxis()->SetTitleSize(0.045);
+        fh1_trimhit_Z[i]->SetLineColor(kBlue + i);
+        cTrimHit_Z->cd(i + 1);
+        fh1_trimhit_Z[i]->Draw();
     }
-    
+
     sprintf(Name1, "fh1_trimhit_Zmax_sec1_vs_sec2");
     sprintf(Name2, "Zmax - Sec 1 VS Sec 2");
     fh1_trimhit_Z[3] = new TH1F(Name1, Name2, 1000, 0, 100);
@@ -467,10 +475,10 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh1_trimhit_Z[3]->GetXaxis()->SetTitleSize(0.045);
     fh1_trimhit_Z[3]->GetYaxis()->SetLabelSize(0.045);
     fh1_trimhit_Z[3]->GetYaxis()->SetTitleSize(0.045);
-    fh1_trimhit_Z[3]->SetLineColor(kRed+3);
+    fh1_trimhit_Z[3]->SetLineColor(kRed + 3);
     cTrimHit_Z->cd(4);
     fh1_trimhit_Z[3]->Draw();
-    
+
     sprintf(Name1, "fh1_trimhit_Zmax");
     sprintf(Name2, "Zmax");
     fh1_trimhit_Z[4] = new TH1F(Name1, Name2, 1000, 0, 100);
@@ -486,93 +494,92 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh1_trimhit_Z[4]->SetLineColor(kRed);
     cTrimHit_Z->cd(5);
     fh1_trimhit_Z[4]->Draw();
-  
-    
+
     cTrimHit_CorrDep = new TCanvas*[fNumSections];
     fh2_trimhit_Ebeta_vs_DT = new TH2F*[fNumSections];
     fh2_trimhit_Edt_vs_DT = new TH2F*[fNumSections];
     fh2_trimhit_Edt_vs_theta = new TH2F*[fNumSections];
     fh2_trimhit_Etheta_vs_theta = new TH2F*[fNumSections];
 
-    for(Int_t i = 0; i < fNumSections; i++){
-      sprintf(Name1, "TrimHit_Corr_Sec_%d", i + 1);
-      sprintf(Name2, "Section %d", i + 1);
-      cTrimHit_CorrDep[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
-      cTrimHit_CorrDep[i]->Divide(2,2);
-   
-      sprintf(Name1, "Ebeta_vs_DT_Sec_%d", i + 1);
-      sprintf(Name2, "Ebeta VS DT %d", i + 1);
-      fh2_trimhit_Ebeta_vs_DT[i] = new TH2F(Name1, Name2, 800, 0, 40000, 750, 500, 8000);   
-      fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetTitle("Drift Time [channels, 100ps TDC resolution], if mult==1");
-      fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitle("Energy corr beta [channels], if mult==1");
-      fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->CenterTitle(true);
-      fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->CenterTitle(true);
-      fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetTitleSize(0.045);
-      fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitleSize(0.045);
-      cTrimHit_CorrDep[i]->cd(1);
-      fh2_trimhit_Ebeta_vs_DT[i]->Draw("col");
-      
-      sprintf(Name1, "Edt_vs_DT_Sec_%d", i + 1);
-      sprintf(Name2, "Edt VS DT %d", i + 1);
-      fh2_trimhit_Edt_vs_DT[i] = new TH2F(Name1, Name2, 800, 0, 40000, 750, 500, 8000);   
-      fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetTitle("Drift Time [channels, 100ps TDC resolution], if mult==1");
-      fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitle("Energy corr drift time [channels], if mult==1");
-      fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->CenterTitle(true);
-      fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->CenterTitle(true);
-      fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetTitleSize(0.045);
-      fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitleSize(0.045);
-      cTrimHit_CorrDep[i]->cd(2);
-      fh2_trimhit_Edt_vs_DT[i]->Draw("col");
-      
-      sprintf(Name1, "Edt_vs_theta_Sec_%d", i + 1);
-      sprintf(Name2, "Edt VS theta %d", i + 1);
-      fh2_trimhit_Edt_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 750, 500, 8000);   
-      fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetTitle("DTdiff [channels, 100ps TDC resolution], if mult==1");
-      fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitle("Energy corr drift time [channels], if mult==1");
-      fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->CenterTitle(true);
-      fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->CenterTitle(true);
-      fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetTitleSize(0.045);
-      fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitleSize(0.045);
-      cTrimHit_CorrDep[i]->cd(3);
-      fh2_trimhit_Edt_vs_theta[i]->Draw("col");
-      
-      sprintf(Name1, "Etheta_vs_theta_Sec_%d", i + 1);
-      sprintf(Name2, "Etheta VS theta %d", i + 1);
-      fh2_trimhit_Etheta_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 750, 500, 8000);   
-      fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetTitle("DTdiff [channels, 100ps TDC resolution], if mult==1");
-      fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitle("Energy corr theta [channels], if mult==1");
-      fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitleOffset(1.1);
-      fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->CenterTitle(true);
-      fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->CenterTitle(true);
-      fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetTitleSize(0.045);
-      fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetLabelSize(0.045);
-      fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitleSize(0.045);
-      cTrimHit_CorrDep[i]->cd(4);
-      fh2_trimhit_Etheta_vs_theta[i]->Draw("col");
-   
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
+        sprintf(Name1, "TrimHit_Corr_Sec_%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTrimHit_CorrDep[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTrimHit_CorrDep[i]->Divide(2, 2);
+
+        sprintf(Name1, "Ebeta_vs_DT_Sec_%d", i + 1);
+        sprintf(Name2, "Ebeta VS DT %d", i + 1);
+        fh2_trimhit_Ebeta_vs_DT[i] = new TH2F(Name1, Name2, 800, 0, 40000, 750, 500, 8000);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetTitle("Drift Time [channels, 100ps TDC resolution], if mult==1");
+        fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitle("Energy corr beta [channels], if mult==1");
+        fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->CenterTitle(true);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->CenterTitle(true);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitleSize(0.045);
+        cTrimHit_CorrDep[i]->cd(1);
+        fh2_trimhit_Ebeta_vs_DT[i]->Draw("col");
+
+        sprintf(Name1, "Edt_vs_DT_Sec_%d", i + 1);
+        sprintf(Name2, "Edt VS DT %d", i + 1);
+        fh2_trimhit_Edt_vs_DT[i] = new TH2F(Name1, Name2, 800, 0, 40000, 750, 500, 8000);
+        fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetTitle("Drift Time [channels, 100ps TDC resolution], if mult==1");
+        fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitle("Energy corr drift time [channels], if mult==1");
+        fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->CenterTitle(true);
+        fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->CenterTitle(true);
+        fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitleSize(0.045);
+        cTrimHit_CorrDep[i]->cd(2);
+        fh2_trimhit_Edt_vs_DT[i]->Draw("col");
+
+        sprintf(Name1, "Edt_vs_theta_Sec_%d", i + 1);
+        sprintf(Name2, "Edt VS theta %d", i + 1);
+        fh2_trimhit_Edt_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 750, 500, 8000);
+        fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetTitle("DTdiff [channels, 100ps TDC resolution], if mult==1");
+        fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitle("Energy corr drift time [channels], if mult==1");
+        fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->CenterTitle(true);
+        fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->CenterTitle(true);
+        fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitleSize(0.045);
+        cTrimHit_CorrDep[i]->cd(3);
+        fh2_trimhit_Edt_vs_theta[i]->Draw("col");
+
+        sprintf(Name1, "Etheta_vs_theta_Sec_%d", i + 1);
+        sprintf(Name2, "Etheta VS theta %d", i + 1);
+        fh2_trimhit_Etheta_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 750, 500, 8000);
+        fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetTitle("DTdiff [channels, 100ps TDC resolution], if mult==1");
+        fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitle("Energy corr theta [channels], if mult==1");
+        fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitleOffset(1.1);
+        fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->CenterTitle(true);
+        fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->CenterTitle(true);
+        fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetTitleSize(0.045);
+        fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetLabelSize(0.045);
+        fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitleSize(0.045);
+        cTrimHit_CorrDep[i]->cd(4);
+        fh2_trimhit_Etheta_vs_theta[i]->Draw("col");
     }
-    
+
     cTrimHit_EvsE = new TCanvas("TrimHit_EvsE", "EvsE at Hit level", 10, 10, 800, 700);
-    cTrimHit_EvsE->Divide(2,4);
-    
-    fh2_trimhit_EvsE_raw   = new TH2F*[2];
-    fh2_trimhit_EvsE_beta  = new TH2F*[2];
-    fh2_trimhit_EvsE_dt    = new TH2F*[2];
+    cTrimHit_EvsE->Divide(2, 4);
+
+    fh2_trimhit_EvsE_raw = new TH2F*[2];
+    fh2_trimhit_EvsE_beta = new TH2F*[2];
+    fh2_trimhit_EvsE_dt = new TH2F*[2];
     fh2_trimhit_EvsE_theta = new TH2F*[2];
 
     sprintf(Name1, "ErawS2_vs_ErawS1");
     sprintf(Name2, "Eraw[Sec2] vs Eraw [Sec1]");
-    fh2_trimhit_EvsE_raw[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_raw[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_raw[0]->GetXaxis()->SetTitle("Energy raw - Sec1 [channels], if mult==1");
     fh2_trimhit_EvsE_raw[0]->GetYaxis()->SetTitle("Energy raw - Sec2 [channels], if mult==1");
     fh2_trimhit_EvsE_raw[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -587,7 +594,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     sprintf(Name1, "ErawS3_vs_MaxEraw");
     sprintf(Name2, "Eraw[Sec3] vs MaxEraw [Sec1,Sec2]");
-    fh2_trimhit_EvsE_raw[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_raw[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_raw[1]->GetXaxis()->SetTitle("Energy raw - Max (Sec1,Sec2) [channels], if mult==1");
     fh2_trimhit_EvsE_raw[1]->GetYaxis()->SetTitle("Energy raw - Sec3 [channels], if mult==1");
     fh2_trimhit_EvsE_raw[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -600,10 +607,9 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     cTrimHit_EvsE->cd(2);
     fh2_trimhit_EvsE_raw[1]->Draw("col");
 
-
     sprintf(Name1, "EbetaS2_vs_EbetaS1");
     sprintf(Name2, "Ebeta[Sec2] vs Ebeta [Sec1]");
-    fh2_trimhit_EvsE_beta[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_beta[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_beta[0]->GetXaxis()->SetTitle("Energy beta - Sec1 [channels], if mult==1");
     fh2_trimhit_EvsE_beta[0]->GetYaxis()->SetTitle("Energy beta - Sec2 [channels], if mult==1");
     fh2_trimhit_EvsE_beta[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -618,7 +624,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     sprintf(Name1, "EbetaS3_vs_MaxEbeta");
     sprintf(Name2, "Ebeta[Sec3] vs MaxEbeta [Sec1,Sec2]");
-    fh2_trimhit_EvsE_beta[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_beta[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_beta[1]->GetXaxis()->SetTitle("Energy beta - Max (Sec1,Sec2) [channels], if mult==1");
     fh2_trimhit_EvsE_beta[1]->GetYaxis()->SetTitle("Energy beta - Sec3 [channels], if mult==1");
     fh2_trimhit_EvsE_beta[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -633,7 +639,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     sprintf(Name1, "EdtS2_vs_EdtS1");
     sprintf(Name2, "Edt[Sec2] vs Edt [Sec1]");
-    fh2_trimhit_EvsE_dt[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_dt[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_dt[0]->GetXaxis()->SetTitle("Energy dt - Sec1 [channels], if mult==1");
     fh2_trimhit_EvsE_dt[0]->GetYaxis()->SetTitle("Energy dt - Sec2 [channels], if mult==1");
     fh2_trimhit_EvsE_dt[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -648,7 +654,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     sprintf(Name1, "EdtS3_vs_MaxEdt");
     sprintf(Name2, "Edt[Sec3] vs MaxEdt [Sec1,Sec2]");
-    fh2_trimhit_EvsE_dt[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_dt[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_dt[1]->GetXaxis()->SetTitle("Energy dt - Max (Sec1,Sec2) [channels], if mult==1");
     fh2_trimhit_EvsE_dt[1]->GetYaxis()->SetTitle("Energy dt - Sec3 [channels], if mult==1");
     fh2_trimhit_EvsE_dt[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -660,10 +666,10 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh2_trimhit_EvsE_dt[1]->GetYaxis()->SetTitleSize(0.045);
     cTrimHit_EvsE->cd(6);
     fh2_trimhit_EvsE_dt[1]->Draw("col");
-    
+
     sprintf(Name1, "EthetaS2_vs_EthetaS1");
     sprintf(Name2, "Etheta[Sec2] vs Etheta [Sec1]");
-    fh2_trimhit_EvsE_theta[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_theta[0] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_theta[0]->GetXaxis()->SetTitle("Energy theta - Sec1 [channels], if mult==1");
     fh2_trimhit_EvsE_theta[0]->GetYaxis()->SetTitle("Energy theta - Sec2 [channels], if mult==1");
     fh2_trimhit_EvsE_theta[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -678,7 +684,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     sprintf(Name1, "EthetaS3_vs_MaxEtheta");
     sprintf(Name2, "Etheta[Sec3] vs MaxEtheta [Sec1,Sec2]");
-    fh2_trimhit_EvsE_theta[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);   
+    fh2_trimhit_EvsE_theta[1] = new TH2F(Name1, Name2, 750, 500, 8000, 750, 500, 8000);
     fh2_trimhit_EvsE_theta[1]->GetXaxis()->SetTitle("Energy theta - Max (Sec1,Sec2) [channels], if mult==1");
     fh2_trimhit_EvsE_theta[1]->GetYaxis()->SetTitle("Energy theta - Sec3 [channels], if mult==1");
     fh2_trimhit_EvsE_theta[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -690,17 +696,17 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh2_trimhit_EvsE_theta[1]->GetYaxis()->SetTitleSize(0.045);
     cTrimHit_EvsE->cd(8);
     fh2_trimhit_EvsE_theta[1]->Draw("col");
-   
-    sprintf(Name1,"TrimHit_ZvsZ");
-    sprintf(Name2,"Z vs Z in Triple-MUSIC");
+
+    sprintf(Name1, "TrimHit_ZvsZ");
+    sprintf(Name2, "Z vs Z in Triple-MUSIC");
     cTrimHit_ZvsZ = new TCanvas(Name1, Name2, 10, 10, 800, 700);
-    cTrimHit_ZvsZ->Divide(1,2);
+    cTrimHit_ZvsZ->Divide(1, 2);
 
     fh2_trimhit_ZvsZ = new TH2F*[2];
 
     sprintf(Name1, "ZS2_vs_ZS1");
     sprintf(Name2, "Z[Sec2] vs Z[Sec1]");
-    fh2_trimhit_ZvsZ[0] = new TH2F(Name1, Name2, 900, 10, 100, 900, 10, 100);   
+    fh2_trimhit_ZvsZ[0] = new TH2F(Name1, Name2, 900, 10, 100, 900, 10, 100);
     fh2_trimhit_ZvsZ[0]->GetXaxis()->SetTitle("Charge - Sec1, if mult==1");
     fh2_trimhit_ZvsZ[0]->GetYaxis()->SetTitle("Charge - Sec2, if mult==1");
     fh2_trimhit_ZvsZ[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -715,7 +721,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     sprintf(Name1, "ZS3_vs_MaxZ");
     sprintf(Name2, "Z[Sec3] vs MaxZ [Sec1,Sec2]");
-    fh2_trimhit_ZvsZ[1] = new TH2F(Name1, Name2, 900, 10, 100, 900, 10, 100);   
+    fh2_trimhit_ZvsZ[1] = new TH2F(Name1, Name2, 900, 10, 100, 900, 10, 100);
     fh2_trimhit_ZvsZ[1]->GetXaxis()->SetTitle("Charge - Max(Sec1,Sec2), if mult==1");
     fh2_trimhit_ZvsZ[1]->GetYaxis()->SetTitle("Charge - Sec3, if mult==1");
     fh2_trimhit_ZvsZ[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -728,32 +734,41 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     cTrimHit_ZvsZ->cd(2);
     fh2_trimhit_ZvsZ[1]->Draw("col");
 
-
     // === ================ === //
     // === MAIN FOLDER-Trim === //
     // === ================ === //
 
     TFolder* mainfolTrim = new TFolder("Trim", "Trim info");
-    if (fMappedItemsTrim){
-      for (Int_t i = 0; i < fNumSections; i++)     mainfolTrim->Add(cTrimMap_E[i]);
-      for (Int_t i = 0; i < fNumSections; i++)     mainfolTrim->Add(cTrimMap_DT[i]);
-      for (Int_t i = 0; i < fNumSections; i++)     mainfolTrim->Add(cTrimMap_Mult[i]);
-      mainfolTrim->Add(cTrimMap_DeltaTrefTtrig);
-        for (Int_t i = 0; i < fNumSections; i++){
+    if (fMappedItemsTrim)
+    {
+        for (Int_t i = 0; i < fNumSections; i++)
+            mainfolTrim->Add(cTrimMap_E[i]);
+        for (Int_t i = 0; i < fNumSections; i++)
+            mainfolTrim->Add(cTrimMap_DT[i]);
+        for (Int_t i = 0; i < fNumSections; i++)
+            mainfolTrim->Add(cTrimMap_Mult[i]);
+        mainfolTrim->Add(cTrimMap_DeltaTrefTtrig);
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
             mainfolTrim->Add(cTrimMap_EvsDT[i]);
             mainfolTrim->Add(cTrimMap_DTvsDT[i]);
         }
     }
-    if (fCalItemsTrim){
-      for (Int_t i = 0; i < fNumSections; i++)   mainfolTrim->Add(cTrimCal_Ene[i]);
-      for (Int_t i = 0; i < fNumSections; i++)   mainfolTrim->Add(cTrimCal_DT[i]);
+    if (fCalItemsTrim)
+    {
+        for (Int_t i = 0; i < fNumSections; i++)
+            mainfolTrim->Add(cTrimCal_Ene[i]);
+        for (Int_t i = 0; i < fNumSections; i++)
+            mainfolTrim->Add(cTrimCal_DT[i]);
     }
-    if (fHitItemsTrim){
-      mainfolTrim->Add(cTrimHit_E);
-      for (Int_t i = 0; i < fNumSections; i++)   mainfolTrim->Add(cTrimHit_CorrDep[i]);
-      mainfolTrim->Add(cTrimHit_EvsE);
-      mainfolTrim->Add(cTrimHit_ZvsZ);
-      mainfolTrim->Add(cTrimHit_Z);
+    if (fHitItemsTrim)
+    {
+        mainfolTrim->Add(cTrimHit_E);
+        for (Int_t i = 0; i < fNumSections; i++)
+            mainfolTrim->Add(cTrimHit_CorrDep[i]);
+        mainfolTrim->Add(cTrimHit_EvsE);
+        mainfolTrim->Add(cTrimHit_ZvsZ);
+        mainfolTrim->Add(cTrimHit_Z);
     }
     run->AddObject(mainfolTrim);
 
@@ -801,25 +816,28 @@ void R3BSofTrimOnlineSpectra::Reset_Histo()
         }
     }
     // Hit data
-    if (fHitItemsTrim){
-      for (Int_t i=0; i<fNumSections; i++){
-	fh1_trimhit_Eraw[i]->Reset();
-	fh1_trimhit_Ebeta[i]->Reset();
-	fh1_trimhit_Edt[i]->Reset();
-	fh1_trimhit_Etheta[i]->Reset();
-	fh1_trimhit_Z[i]->Reset();
-	fh2_trimhit_Ebeta_vs_DT[i]->Reset();
-	fh2_trimhit_Edt_vs_DT[i]->Reset();
-	fh2_trimhit_Edt_vs_theta[i]->Reset();
-	fh2_trimhit_Etheta_vs_theta[i]->Reset();
-      }
-      for (Int_t i=0; i<2; i++){
-	fh2_trimhit_EvsE_raw[i]->Reset();
-	fh2_trimhit_EvsE_beta[i]->Reset();
-	fh2_trimhit_EvsE_dt[i]->Reset();
-	fh2_trimhit_EvsE_theta[i]->Reset();
-	fh2_trimhit_ZvsZ[i]->Reset();
-      }
+    if (fHitItemsTrim)
+    {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
+            fh1_trimhit_Eraw[i]->Reset();
+            fh1_trimhit_Ebeta[i]->Reset();
+            fh1_trimhit_Edt[i]->Reset();
+            fh1_trimhit_Etheta[i]->Reset();
+            fh1_trimhit_Z[i]->Reset();
+            fh2_trimhit_Ebeta_vs_DT[i]->Reset();
+            fh2_trimhit_Edt_vs_DT[i]->Reset();
+            fh2_trimhit_Edt_vs_theta[i]->Reset();
+            fh2_trimhit_Etheta_vs_theta[i]->Reset();
+        }
+        for (Int_t i = 0; i < 2; i++)
+        {
+            fh2_trimhit_EvsE_raw[i]->Reset();
+            fh2_trimhit_EvsE_beta[i]->Reset();
+            fh2_trimhit_EvsE_dt[i]->Reset();
+            fh2_trimhit_EvsE_theta[i]->Reset();
+            fh2_trimhit_ZvsZ[i]->Reset();
+        }
     }
 }
 
@@ -899,107 +917,123 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
     Float_t DTaligned[fNumSections], DTdiff;
     Float_t Eraw[fNumSections], Ebeta[fNumSections], Edt[fNumSections], Etheta[fNumSections];
     Float_t Z[fNumSections];
-    for(Int_t s=0; s<fNumSections; s++){
-      DTaligned[s]=0.;
-      DTdiff=0.;
-      Eraw[s]=0.;
-      Ebeta[s]=0.;
-      Edt[s]=0.;
-      Etheta[s]=0.;
-      Z[s]=0.;
+    for (Int_t s = 0; s < fNumSections; s++)
+    {
+        DTaligned[s] = 0.;
+        DTdiff = 0.;
+        Eraw[s] = 0.;
+        Ebeta[s] = 0.;
+        Edt[s] = 0.;
+        Etheta[s] = 0.;
+        Z[s] = 0.;
     }
 
     // === CAL data
-    if (fCalItemsTrim && fCalItemsTrim->GetEntriesFast() > 0){
-      nHits = fCalItemsTrim->GetEntriesFast();
-      for (Int_t ihit = 0; ihit < nHits; ihit++){
-        R3BSofTrimCalData* calitem = (R3BSofTrimCalData*)fCalItemsTrim->At(ihit);
-        if (!calitem)  continue;
-        iSec = calitem->GetSecID() - 1;
-        iAnode = calitem->GetAnodeID() - 1;
-        fh1_trimcal_Esub[iAnode + iSec * fNumAnodes]->Fill(calitem->GetEnergySub());
-        fh1_trimcal_Ematch[iAnode + iSec * fNumAnodes]->Fill(calitem->GetEnergyMatch());
-        fh1_trimcal_DTraw[iAnode + iSec * fNumAnodes]->Fill(calitem->GetDriftTimeRaw());
-        fh1_trimcal_DTalign[iAnode + iSec * fNumAnodes]->Fill(calitem->GetDriftTimeAligned());
-        if(iAnode==1) DTaligned[iSec] = (Float_t)calitem->GetDriftTimeAligned();
-      } // end of lopp over the cal data
-      DTdiff = (Float_t)(DTaligned[1]-DTaligned[0]); // to be changed to DTaligned[2]-DTaligned[0]
+    if (fCalItemsTrim && fCalItemsTrim->GetEntriesFast() > 0)
+    {
+        nHits = fCalItemsTrim->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTrimCalData* calitem = (R3BSofTrimCalData*)fCalItemsTrim->At(ihit);
+            if (!calitem)
+                continue;
+            iSec = calitem->GetSecID() - 1;
+            iAnode = calitem->GetAnodeID() - 1;
+            fh1_trimcal_Esub[iAnode + iSec * fNumAnodes]->Fill(calitem->GetEnergySub());
+            fh1_trimcal_Ematch[iAnode + iSec * fNumAnodes]->Fill(calitem->GetEnergyMatch());
+            fh1_trimcal_DTraw[iAnode + iSec * fNumAnodes]->Fill(calitem->GetDriftTimeRaw());
+            fh1_trimcal_DTalign[iAnode + iSec * fNumAnodes]->Fill(calitem->GetDriftTimeAligned());
+            if (iAnode == 1)
+                DTaligned[iSec] = (Float_t)calitem->GetDriftTimeAligned();
+        }                                                // end of lopp over the cal data
+        DTdiff = (Float_t)(DTaligned[1] - DTaligned[0]); // to be changed to DTaligned[2]-DTaligned[0]
     }
 
     // === HIT data
-    
-    if (fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0){
-      nHits = fHitItemsTrim->GetEntriesFast();
-      for (Int_t ihit=0; ihit<nHits; ihit++){
-	R3BSofTrimHitData* hititem = (R3BSofTrimHitData*)fHitItemsTrim->At(ihit); 
-	if (!hititem) continue;
-        iSec = hititem->GetSecID() - 1;
-	Eraw[iSec]   = hititem->GetEnergyRaw();	
-	Ebeta[iSec]  = hititem->GetEnergyBeta();	
-	Edt[iSec]    = hititem->GetEnergyDT();	
-	Etheta[iSec] = hititem->GetEnergyTheta();	
-	Z[iSec]      = hititem->GetZ(); 
-	fh1_trimhit_Eraw[iSec]->Fill(Eraw[iSec]);
-	fh1_trimhit_Ebeta[iSec]->Fill(Ebeta[iSec]);
-	fh1_trimhit_Edt[iSec]->Fill(Edt[iSec]);
-	fh1_trimhit_Etheta[iSec]->Fill(Etheta[iSec]);
-	fh1_trimhit_Z[iSec]->Fill(Z[iSec]);
-	fh2_trimhit_Ebeta_vs_DT[iSec]->Fill(DTaligned[iSec],Ebeta[iSec]);
-	fh2_trimhit_Edt_vs_DT[iSec]->Fill(DTaligned[iSec],Edt[iSec]);
-	fh2_trimhit_Edt_vs_theta[iSec]->Fill(DTdiff,Edt[iSec]);
-	fh2_trimhit_Etheta_vs_theta[iSec]->Fill(DTdiff,Etheta[iSec]);
-      }//end of loop over the HitData TClonesArray
-      fh2_trimhit_EvsE_raw[0]->Fill(Eraw[0],Eraw[1]); 
-      fh2_trimhit_EvsE_raw[1]->Fill(TMath::Max(Eraw[0],Eraw[1]),Eraw[2]); 
-      fh2_trimhit_EvsE_beta[0]->Fill(Ebeta[0],Ebeta[1]); 
-      fh2_trimhit_EvsE_beta[1]->Fill(TMath::Max(Ebeta[0],Ebeta[1]),Ebeta[2]); 
-      fh2_trimhit_EvsE_dt[0]->Fill(Edt[0],Edt[1]); 
-      fh2_trimhit_EvsE_dt[1]->Fill(TMath::Max(Edt[0],Edt[1]),Edt[2]); 
-      fh2_trimhit_EvsE_theta[0]->Fill(Etheta[0],Etheta[1]); 
-      fh2_trimhit_EvsE_theta[1]->Fill(TMath::Max(Etheta[0],Etheta[1]),Etheta[2]); 
-      fh2_trimhit_ZvsZ[0]->Fill(Z[0],Z[1]); 
-      fh2_trimhit_ZvsZ[1]->Fill(TMath::Max(Z[0],Z[1]),Z[2]); 
+
+    if (fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0)
+    {
+        nHits = fHitItemsTrim->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTrimHitData* hititem = (R3BSofTrimHitData*)fHitItemsTrim->At(ihit);
+            if (!hititem)
+                continue;
+            iSec = hititem->GetSecID() - 1;
+            Eraw[iSec] = hititem->GetEnergyRaw();
+            Ebeta[iSec] = hititem->GetEnergyBeta();
+            Edt[iSec] = hititem->GetEnergyDT();
+            Etheta[iSec] = hititem->GetEnergyTheta();
+            Z[iSec] = hititem->GetZ();
+            fh1_trimhit_Eraw[iSec]->Fill(Eraw[iSec]);
+            fh1_trimhit_Ebeta[iSec]->Fill(Ebeta[iSec]);
+            fh1_trimhit_Edt[iSec]->Fill(Edt[iSec]);
+            fh1_trimhit_Etheta[iSec]->Fill(Etheta[iSec]);
+            fh1_trimhit_Z[iSec]->Fill(Z[iSec]);
+            fh2_trimhit_Ebeta_vs_DT[iSec]->Fill(DTaligned[iSec], Ebeta[iSec]);
+            fh2_trimhit_Edt_vs_DT[iSec]->Fill(DTaligned[iSec], Edt[iSec]);
+            fh2_trimhit_Edt_vs_theta[iSec]->Fill(DTdiff, Edt[iSec]);
+            fh2_trimhit_Etheta_vs_theta[iSec]->Fill(DTdiff, Etheta[iSec]);
+        } // end of loop over the HitData TClonesArray
+        fh2_trimhit_EvsE_raw[0]->Fill(Eraw[0], Eraw[1]);
+        fh2_trimhit_EvsE_raw[1]->Fill(TMath::Max(Eraw[0], Eraw[1]), Eraw[2]);
+        fh2_trimhit_EvsE_beta[0]->Fill(Ebeta[0], Ebeta[1]);
+        fh2_trimhit_EvsE_beta[1]->Fill(TMath::Max(Ebeta[0], Ebeta[1]), Ebeta[2]);
+        fh2_trimhit_EvsE_dt[0]->Fill(Edt[0], Edt[1]);
+        fh2_trimhit_EvsE_dt[1]->Fill(TMath::Max(Edt[0], Edt[1]), Edt[2]);
+        fh2_trimhit_EvsE_theta[0]->Fill(Etheta[0], Etheta[1]);
+        fh2_trimhit_EvsE_theta[1]->Fill(TMath::Max(Etheta[0], Etheta[1]), Etheta[2]);
+        fh2_trimhit_ZvsZ[0]->Fill(Z[0], Z[1]);
+        fh2_trimhit_ZvsZ[1]->Fill(TMath::Max(Z[0], Z[1]), Z[2]);
     }
-     
+
     fNEvents += 1;
 }
 
 void R3BSofTrimOnlineSpectra::FinishEvent()
 {
-    if (fMappedItemsTrim)  fMappedItemsTrim->Clear();
-    if (fCalItemsTrim)     fCalItemsTrim->Clear();
-    if (fHitItemsTrim)	   fHitItemsTrim->Clear();
+    if (fMappedItemsTrim)
+        fMappedItemsTrim->Clear();
+    if (fCalItemsTrim)
+        fCalItemsTrim->Clear();
+    if (fHitItemsTrim)
+        fHitItemsTrim->Clear();
 }
 
 void R3BSofTrimOnlineSpectra::FinishTask()
 {
-    if (fMappedItemsTrim){
-     cTrimMap_DeltaTrefTtrig->Write();
-     for (Int_t i = 0; i < fNumSections; i++){
-       cTrimMap_E[i]->Write();
-       cTrimMap_DT[i]->Write();
-       cTrimMap_Mult[i]->Write();
-       cTrimMap_EvsDT[i]->Write();
-       cTrimMap_DTvsDT[i]->Write();
-     }
+    if (fMappedItemsTrim)
+    {
+        cTrimMap_DeltaTrefTtrig->Write();
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
+            cTrimMap_E[i]->Write();
+            cTrimMap_DT[i]->Write();
+            cTrimMap_Mult[i]->Write();
+            cTrimMap_EvsDT[i]->Write();
+            cTrimMap_DTvsDT[i]->Write();
+        }
     }
 
-    if (fCalItemsTrim){
-      for (Int_t s = 0; s < fNumSections; s++){
-        cTrimCal_Ene[s]->Write();
-        cTrimCal_DT[s]->Write();
-      }
+    if (fCalItemsTrim)
+    {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
+            cTrimCal_Ene[s]->Write();
+            cTrimCal_DT[s]->Write();
+        }
     }
-    if (fHitItemsTrim){
-      for(Int_t s=0; s<fNumSections; s++){
-	cTrimHit_CorrDep[s]->Write();
-      }
-      cTrimHit_E->Write();
-      cTrimHit_Z->Write();
-      cTrimHit_EvsE->Write();
-      cTrimHit_ZvsZ->Write();
+    if (fHitItemsTrim)
+    {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
+            cTrimHit_CorrDep[s]->Write();
+        }
+        cTrimHit_E->Write();
+        cTrimHit_Z->Write();
+        cTrimHit_EvsE->Write();
+        cTrimHit_ZvsZ->Write();
     }
-
 }
 
 ClassImp(R3BSofTrimOnlineSpectra)

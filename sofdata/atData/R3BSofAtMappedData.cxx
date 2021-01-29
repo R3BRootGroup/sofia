@@ -6,16 +6,22 @@
 
 // -----   Default constructor   -------------------------------------------
 R3BSofAtMappedData::R3BSofAtMappedData()
-    : fSecID(0)
+    : fAnodeID(0)
     , fEnergy(0)
+    , fTime(0)
+    , fPileup(kFALSE)
+    , fOverflow(kFALSE)
 {
 }
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofAtMappedData::R3BSofAtMappedData(UShort_t secID, UShort_t energy)
-    : fSecID(secID)
-    , fEnergy(energy)
+R3BSofAtMappedData::R3BSofAtMappedData(UShort_t a, UShort_t e, UShort_t t, Bool_t pu, Bool_t ov)
+    : fAnodeID(a)
+    , fEnergy(e)
+    , fTime(t)
+    , fPileup(pu)
+    , fOverflow(ov)
 {
 }
 // -------------------------------------------------------------------------

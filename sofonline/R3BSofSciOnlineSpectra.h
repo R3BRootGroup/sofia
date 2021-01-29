@@ -84,15 +84,14 @@ class R3BSofSciOnlineSpectra : public FairTask
     /** Virtual method Reset **/
     virtual void Reset();
 
-    void SetNbDetectors(Int_t ndets) {fNbDetectors = ndets;}
-    void SetNbChannels(Int_t nchs) {fNbChannels = nchs;}
-    void SetIdS2(Int_t id) {fIdS2 = id;}
-    void SetIdS8(Int_t id) {fIdS8 = id;}
-    Int_t GetNbDetectors() {return fNbDetectors;}
-    Int_t GetNbChannels() {return fNbChannels;}
-    Int_t GetIdS2() {return fIdS2;}
-    Int_t GetIdS8() {return fIdS8;}
-
+    void SetNbDetectors(Int_t ndets) { fNbDetectors = ndets; }
+    void SetNbChannels(Int_t nchs) { fNbChannels = nchs; }
+    void SetIdS2(Int_t id) { fIdS2 = id; }
+    void SetIdS8(Int_t id) { fIdS8 = id; }
+    Int_t GetNbDetectors() { return fNbDetectors; }
+    Int_t GetNbChannels() { return fNbChannels; }
+    Int_t GetIdS2() { return fIdS2; }
+    Int_t GetIdS8() { return fIdS8; }
 
   private:
     TClonesArray* fMappedItemsSci;     /**< Array with mapped items. */
@@ -102,7 +101,7 @@ class R3BSofSciOnlineSpectra : public FairTask
     TClonesArray* fMusCalItems;        /**< Array with MUSIC Cal items. */
     TClonesArray* fCalItemsMwpc0;      /**< Array with cal items of mwpc0. */
     TClonesArray* fTofwHitData;
-    
+
     Int_t fNbDetectors;
     Int_t fNbChannels;
     Int_t fIdS2;
@@ -113,20 +112,20 @@ class R3BSofSciOnlineSpectra : public FairTask
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
-    TCanvas** cSciMult;                // [fNbDetectors];
-    TCanvas** cSciRawPos;              // [fNbDetectors];
-    TCanvas** cMusicZvsRawPos;         // [fNbDetectors];
-    TCanvas*  cMwpc0vsRawPos;
-    TCanvas*  cMusicDTvsRawPos;
-    TCanvas** cSciRawTof_FromS2;       // [fNbDetectors];
-    TCanvas** cMusicZvsRawTof_FromS2;  // [fNbDetectors];
-    TCanvas** cSciRawTof_FromS8;       // [fNbDetectors];
-    TCanvas** cMusicZvsRawTof_FromS8;  // [fNbDetectors];
-    TCanvas*  cAqvsq;
+    TCanvas** cSciMult;        // [fNbDetectors];
+    TCanvas** cSciRawPos;      // [fNbDetectors];
+    TCanvas** cMusicZvsRawPos; // [fNbDetectors];
+    TCanvas* cMwpc0vsRawPos;
+    TCanvas* cMusicDTvsRawPos;
+    TCanvas** cSciRawTof_FromS2;      // [fNbDetectors];
+    TCanvas** cMusicZvsRawTof_FromS2; // [fNbDetectors];
+    TCanvas** cSciRawTof_FromS8;      // [fNbDetectors];
+    TCanvas** cMusicZvsRawTof_FromS8; // [fNbDetectors];
+    TCanvas* cAqvsq;
 
     // Histograms for Mapped data : Fine Time and Mult
-    TH1I** fh1_finetime;   // [fNbDetectors * NbChannels];
-    TH2I** fh2_mult;       // [fNbDetectors];
+    TH1I** fh1_finetime; // [fNbDetectors * NbChannels];
+    TH2I** fh2_mult;     // [fNbDetectors];
 
     // Histograms for PosRaw Data at Tcal and SingleTcal
     TH1F** fh1_RawPos_AtTcalMult1;  // [fNbDetectors];
@@ -141,14 +140,14 @@ class R3BSofSciOnlineSpectra : public FairTask
     TH1D** fh1_RawTof_FromS8_AtSingleTcal_wTref; // [fNbDetectors];
 
     // Histogram for correlation with R3B-Music
-    TH2F** fh2_MusZvsRawPos;          //[fNbDetectors];
-    TH2F*  fh2_MusDTvsRawPos;
-    TH2F** fh2_MusZvsRawTof_FromS2;   //[fNbDetectors];
-    TH2F** fh2_MusZvsRawTof_FromS8;   //[fNbDetectors];
-    TH2F*  fh2_Aqvsq;
+    TH2F** fh2_MusZvsRawPos; //[fNbDetectors];
+    TH2F* fh2_MusDTvsRawPos;
+    TH2F** fh2_MusZvsRawTof_FromS2; //[fNbDetectors];
+    TH2F** fh2_MusZvsRawTof_FromS8; //[fNbDetectors];
+    TH2F* fh2_Aqvsq;
 
     // Histogram for correlation with Mwpc0
-    TH2F*  fh2_Mwpc0vsRawPos;
+    TH2F* fh2_Mwpc0vsRawPos;
 
     // check how many raw pos found
 
