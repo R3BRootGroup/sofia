@@ -4,7 +4,6 @@
 // --- Default Constructor
 R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
     : FairTask("R3BSofSciMapped2Tcal", 1)
-    , fNumTcal(0)
     , fNevent(0)
     , fTcal(NULL)
     , fMapped(NULL)
@@ -16,7 +15,6 @@ R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
 // --- Standard Constructor
 R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fNumTcal(0)
     , fNevent(0)
     , fTcal(NULL)
     , fMapped(NULL)
@@ -125,46 +123,52 @@ InitStatus R3BSofSciMapped2Tcal::ReInit()
 
 void R3BSofSciMapped2Tcal::Exec(Option_t* option)
 {
-    // Reset entries in output arrays, local arrays
-    Reset();
-    UInt_t iDet;
-    UInt_t iCh;
-    UInt_t iTf;
-    UInt_t iTc;
+    UInt_t det;
+    UInt_t ch;
+    UInt_t tf;
+    UInt_t tc;
     Double_t tns;
 
+    // Reset entries in output arrays, local arrays
+    Reset();
+
+    // Loop over the entries of the Mapped TClonesArray
     Int_t nHitsPerEvent_SofSci = fMapped->GetEntries();
     for (Int_t ihit = 0; ihit < nHitsPerEvent_SofSci; ihit++)
     {
         R3BSofSciMappedData* hit = (R3BSofSciMappedData*)fMapped->At(ihit);
         if (!hit)
             continue;
-        iDet = hit->GetDetector();
-        iCh = hit->GetPmt();
-        iTf = hit->GetTimeFine();
-        iTc = hit->GetTimeCoarse();
-        if ((iDet < 1) || (iDet > fTcalPar->GetNumDetectors()))
+        det = hit->GetDetector();
+        ch = hit->GetPmt();
+        tf = hit->GetTimeFine();
+        tc = hit->GetTimeCoarse();
+        if ((det < 1) || (det > fTcalPar->GetNumDetectors()))
         {
-            LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << iDet
+            LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << det
                       << "is out of range, item skipped ";
             continue;
         }
-        if ((iCh < 1) || (iCh > fTcalPar->GetNumChannels()))
+        if ((ch < 1) || (ch > fTcalPar->GetNumChannels()))
         {
-            LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << iCh
+            LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << ch
                       << "is out of range, item skipped ";
             continue;
         }
-        tns = CalculateTimeNs(iDet, iCh, iTf, iTc);
-        AddCalData(iDet, iCh, tns);
+        tns = CalculateTimeNs(det, ch, tf, tc);
+        AddTcalData(det, ch, tns);
     }
+
+    if (nHitsPerEvent_SofSci != fTcal->GetEntries())
+        LOG(INFO) << "WARNING : in R3BSofSciMapped2Tcal::Exec() mismatch between TClonesArray entries ";
+
     ++fNevent;
 }
 
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofSciMapped2Tcal::Reset()
 {
-    LOG(DEBUG) << "Clearing TcalCalData Structure";
+    LOG(DEBUG) << "Clearing TcalData Structure";
     if (fTcal)
         fTcal->Clear();
 }
@@ -173,12 +177,12 @@ void R3BSofSciMapped2Tcal::Reset()
 void R3BSofSciMapped2Tcal::Finish() {}
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddCalData(Int_t iDet, Int_t iCh, Double_t tns)
+R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddTcalData(Int_t det, Int_t ch, Double_t tns)
 {
     // It fills the R3BSofSciTcalData
     TClonesArray& clref = *fTcal;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofSciTcalData(iDet, iCh, tns);
+    return new (clref[size]) R3BSofSciTcalData(det, ch, tns);
 }
 
 Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt_t iTf, UInt_t iTc)

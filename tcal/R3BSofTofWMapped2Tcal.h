@@ -30,16 +30,22 @@ class R3BSofTofWMapped2Tcal : public FairTask
     // --- Destructor --- //
     virtual ~R3BSofTofWMapped2Tcal();
 
-    virtual InitStatus Init();
-    virtual void SetParContainers();
-    virtual InitStatus ReInit();
     virtual void Exec(Option_t* option);
-    virtual void FinishEvent();
-    virtual void FinishTask();
 
-    Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
+    virtual void SetParContainers();
+
+    virtual InitStatus Init();
+
+    virtual InitStatus ReInit();
+
+    virtual void Finish();
+
+    /** Virtual method Reset **/
+    virtual void Reset();
 
     void SetOnline(Bool_t option) { fOnline = option; }
+
+    Double_t CalculateTimeNs(UShort_t det, UShort_t pmt, UInt_t tf, UInt_t tc);
 
   private:
     TClonesArray* fMapped;   // input data - SofTofWMappedData

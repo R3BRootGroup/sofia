@@ -8,8 +8,8 @@
 
 #include "FairTask.h"
 #include "R3BSofSciHitData.h"
-#include "R3BSofSciSingleTcalData.h"
 #include "R3BSofSciRawTofPar.h"
+#include "R3BSofSciSingleTcalData.h"
 #include <TRandom.h>
 
 class TClonesArray;
@@ -59,7 +59,7 @@ class R3BSofSciSingleTcal2Hit : public FairTask
     Double_t fOffsetTof;
 
     TClonesArray* fSingleTcalDataCA; /**< Array with SingleTcal input data. >*/
-    TClonesArray* fHitDataCA;  /**< Array with Hit output data. >*/
+    TClonesArray* fHitDataCA;        /**< Array with Hit output data. >*/
     R3BSofSciRawTofPar* fRawTofPar;
 
     /** Private method AddHitData **/

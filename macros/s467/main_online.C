@@ -100,7 +100,7 @@ void main_online()
     
     
     // store data or not ------------------------------------
-    Bool_t fCal_level_califa = true;  // set true if there exists a file with the calibration parameters
+    Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
     Bool_t NOTstoremappeddata = true; // if true, don't store mapped data in the root file
     Bool_t NOTstorecaldata = true;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = true;    // if true, don't store hit data in the root file
@@ -122,7 +122,7 @@ void main_online()
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fSci = true;      // Start: Plastic scintillator for ToF
+    Bool_t fSci = true;      // SofSci scintillators at S2 and Cave C 
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
@@ -259,9 +259,9 @@ void main_online()
     }
     if (fAms)
     {
-        unpackams->SetOnline(NOTstoremappeddata);
-        source->AddReader(unpackams);
-    }
+       //unpackams->SetOnline(NOTstoremappeddata);
+       //source->AddReader(unpackams);
+   }
     if (fCalifa)
     {
         unpackcalifa->SetOnline(NOTstoremappeddata);
@@ -378,7 +378,13 @@ void main_online()
         R3BSofSciTcal2SingleTcal* SofSciTcal2STcal = new R3BSofSciTcal2SingleTcal();
         SofSciTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciTcal2STcal);
-        // --- SingleTcal 2 Hit for SofSci
+        
+	// --- SingleTcal 2 Cal for SofSci
+        R3BSofSciSingleTcal2Cal* SofSciSTcal2Cal = new R3BSofSciSingleTcal2Cal();
+        SofSciSTcal2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(SofSciSTcal2Cal);
+        
+	// --- SingleTcal 2 Hit for SofSci
         R3BSofSciSingleTcal2Hit* SofSciSTcal2Hit = new R3BSofSciSingleTcal2Hit();
         SofSciSTcal2Hit->SetOnline(NOTstorehitdata);
         SofSciSTcal2Hit->SetCalParams(675.,-1922.);//ToF calibration at Cave-C
@@ -528,7 +534,34 @@ void main_online()
 	scionline->SetNbChannels(3);
 	scionline->SetIdS2(IdS2);
 	scionline->SetIdS8(IdS8);
-        run->AddTask(scionline);
+        scionline->SetCalTofS2min(380,0);
+	scionline->SetCalTofS2max(385,0);
+        scionline->SetCalTofS2min(633,1);
+	scionline->SetCalTofS2max(636,1);
+        scionline->SetCalTofS8min(250,0);
+	scionline->SetCalTofS8max(255,0);
+	run->AddTask(scionline);
+	if(fMusic)
+	{
+	  R3BSofSciVsMusicOnlineSpectra* scivsmusonline = new R3BSofSciVsMusicOnlineSpectra();
+	  scivsmusonline->SetNbDetectors(NumSofSci);
+	  scivsmusonline->SetNbChannels(3);
+	  scivsmusonline->SetIdS2(IdS2);
+	  scivsmusonline->SetIdS8(IdS8);
+	  scivsmusonline->SetCalTofS2min(380,0);
+	  scivsmusonline->SetCalTofS2max(385,0);
+	  scivsmusonline->SetCalTofS2min(633,1);
+	  scivsmusonline->SetCalTofS2max(636,1);
+	  scivsmusonline->SetCalTofS8min(250,0);
+	  scivsmusonline->SetCalTofS8max(255,0);
+	  run->AddTask(scivsmusonline);
+	}
+	if(fMwpc0)
+	{
+	  R3BSofSciVsMwpc0OnlineSpectra* scivsmw0online = new R3BSofSciVsMwpc0OnlineSpectra();
+	  scivsmw0online->SetNbDetectors(NumSofSci);
+	  run->AddTask(scivsmw0online);
+	}
     }
 
     if (fAms)

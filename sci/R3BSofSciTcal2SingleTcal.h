@@ -30,30 +30,33 @@ class R3BSofSciTcal2SingleTcal : public FairTask
     // --- Destructor --- //
     virtual ~R3BSofSciTcal2SingleTcal();
 
+    // --- Virtual method Exec --- //
+    virtual void Exec(Option_t* option);
+
+    // --- Virtual method Reset --- //
+    virtual void Reset();
+
     virtual InitStatus Init();
     virtual void SetParContainers();
     virtual InitStatus ReInit();
-    virtual void Exec(Option_t* option);
-    virtual void FinishEvent();
-    virtual void FinishTask();
-
+    virtual void Finish();
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
+    Bool_t fOnline; // Don't store data for online
+    UInt_t fNevent;
+    TRandom rand;
+
     TClonesArray* fTcal;
     TClonesArray* fSingleTcal;
     R3BSofSciRawPosPar* fRawPosPar;
     R3BSofSciRawTofPar* fRawTofPar;
 
-    Bool_t fOnline; // Don't store data for online
-
-    UInt_t fNumSingleTcal;
-
-    UInt_t fNevent;
-
-    TRandom rand;
-
-    R3BSofSciSingleTcalData* AddSingleTcalData(UShort_t iDet, Double_t traw, Double_t posraw, Double_t tofrawS2, Double_t tofrawS8);
+    R3BSofSciSingleTcalData* AddSingleTcalData(UShort_t iDet,
+                                               Double_t traw,
+                                               Double_t posraw,
+                                               Double_t tofrawS2,
+                                               Double_t tofrawS8);
 
   public:
     ClassDef(R3BSofSciTcal2SingleTcal, 1)

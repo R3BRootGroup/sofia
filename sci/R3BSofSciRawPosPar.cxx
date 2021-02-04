@@ -22,16 +22,16 @@ R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, cons
     , fNumSignals(0)
     , fNumParsPerSignal(0)
 {
-    fAllSignalsRawPosParams = new TArrayF(MAX_RAWPOSPAR);
+    fAllRawPosParams = new TArrayF(MAX_RAWPOSPAR);
 }
 
 // ----  Destructor ------------------------------------------------------------
 R3BSofSciRawPosPar::~R3BSofSciRawPosPar()
 {
     clear();
-    if (fAllSignalsRawPosParams)
+    if (fAllRawPosParams)
     {
-        delete fAllSignalsRawPosParams;
+        delete fAllRawPosParams;
     }
 }
 
@@ -54,9 +54,9 @@ void R3BSofSciRawPosPar::putParams(FairParamList* list)
     Int_t array_size = fNumSignals * fNumParsPerSignal;
     LOG(INFO) << "Array Size: " << array_size;
 
-    fAllSignalsRawPosParams->Set(array_size);
+    fAllRawPosParams->Set(array_size);
 
-    list->add("RawPosPar", *fAllSignalsRawPosParams);
+    list->add("RawPosPar", *fAllRawPosParams);
     list->add("nDetectorsRawPosPar", fNumDets);
     list->add("nChannelsRawPosPar", fNumPmts);
     list->add("nSignalsRawPosPar", fNumSignals);
@@ -90,11 +90,11 @@ Bool_t R3BSofSciRawPosPar::getParams(FairParamList* list)
 
     Int_t array_size = fNumSignals * fNumParsPerSignal;
     LOG(INFO) << "Array Size: " << array_size;
-    fAllSignalsRawPosParams->Set(array_size);
+    fAllRawPosParams->Set(array_size);
 
-    if (!(list->fill("RawPosPar", fAllSignalsRawPosParams)))
+    if (!(list->fill("RawPosPar", fAllRawPosParams)))
     {
-        LOG(INFO) << "---Could not initialize fAllSignalsRawPosParams";
+        LOG(INFO) << "---Could not initialize fAllRawPosParams";
         return kFALSE;
     }
 
@@ -112,6 +112,6 @@ void R3BSofSciRawPosPar::printParams()
     cout << "--- --------------------------------------------" << endl;
     for (Int_t param = 0; param < array_size; param++)
     {
-        cout << "LIMIT " << param << " = " << fAllSignalsRawPosParams->GetAt(param) << endl;
+        cout << "LIMIT " << param << " = " << fAllRawPosParams->GetAt(param) << endl;
     }
 }

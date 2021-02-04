@@ -1,10 +1,10 @@
 // ------------------------------------------------------------
-// -----                R3BSofSciOnlineSpectra            -----
+// -----                R3BSofSciVsMusicOnlineSpectra            -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
-#ifndef R3BSofSciOnlineSpectra_H
-#define R3BSofSciOnlineSpectra_H
+#ifndef R3BSofSciVsMusicOnlineSpectra_H
+#define R3BSofSciVsMusicOnlineSpectra_H
 
 #include "FairTask.h"
 #include "TCanvas.h"
@@ -24,7 +24,7 @@ class R3BEventHeader;
 /**
  * This taks reads SCI data and plots online histograms
  */
-class R3BSofSciOnlineSpectra : public FairTask
+class R3BSofSciVsMusicOnlineSpectra : public FairTask
 {
 
   public:
@@ -32,7 +32,7 @@ class R3BSofSciOnlineSpectra : public FairTask
      * Default constructor.
      * Creates an instance of the task with default parameters.
      */
-    R3BSofSciOnlineSpectra();
+    R3BSofSciVsMusicOnlineSpectra();
 
     /**
      * Standard constructor.
@@ -40,13 +40,13 @@ class R3BSofSciOnlineSpectra : public FairTask
      * @param name a name of the task.
      * @param iVerbose a verbosity level.
      */
-    R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose = 1);
+    R3BSofSciVsMusicOnlineSpectra(const char* name, Int_t iVerbose = 1);
 
     /**
      * Destructor.
      * Frees the memory used by the object.
      */
-    virtual ~R3BSofSciOnlineSpectra();
+    virtual ~R3BSofSciVsMusicOnlineSpectra();
 
     /**
      * Method for task initialization.
@@ -92,25 +92,34 @@ class R3BSofSciOnlineSpectra : public FairTask
     void SetCalTofS2max(Float_t tof, Int_t rank) { fCalTofS2max->AddAt(tof, rank); }
     void SetCalTofS8min(Float_t tof, Int_t rank) { fCalTofS8min->AddAt(tof, rank); }
     void SetCalTofS8max(Float_t tof, Int_t rank) { fCalTofS8max->AddAt(tof, rank); }
+    void SetBrho0(Float_t brho0) { fBrho0 = brho0; }
+    void SetDispersionS2(Float_t dispersion_mm) { fDS2 = dispersion_mm; }
+    void SetDispersionCC(Float_t dispersion_mm) { fDCC = dispersion_mm; }
     Int_t GetNbDetectors() { return fNbDetectors; }
     Int_t GetNbChannels() { return fNbChannels; }
     Int_t GetIdS2() { return fIdS2; }
     Int_t GetIdS8() { return fIdS8; }
+    Float_t GetBrho0() { return fBrho0; }
+    Float_t GetDispersionS2() { return fDS2; }
+    Float_t GetDispersionCC() { return fDCC; }
     Float_t GetTofS2min(Int_t rank) { return fCalTofS2min->GetAt(rank); }
     Float_t GetTofS2max(Int_t rank) { return fCalTofS2max->GetAt(rank); }
     Float_t GetTofS8min(Int_t rank) { return fCalTofS8min->GetAt(rank); }
     Float_t GetTofS8max(Int_t rank) { return fCalTofS8max->GetAt(rank); }
 
   private:
-    TClonesArray* fMapped;     /**< Array with R3BSofSciMappedData */
-    TClonesArray* fTcal;       /**< Array with R3BSofSciTcalData */
-    TClonesArray* fSingleTcal; /**< Array with R3BSofSciSingleTcalData */
-    TClonesArray* fCal;        /**< Array with R3BSofSciCalData */
+    TClonesArray* fTcalSci;     /**< Array with SofSci Tcal items. */
+    TClonesArray* fCalSci;      /**< Array with SofSci Cal items. */
+    TClonesArray* fMusHitItems; /**< Array with MUSIC Hit items. */
+    TClonesArray* fMusCalItems; /**< Array with MUSIC Cal items. */
 
-    Int_t fNbDetectors; // fNbDetectors is also equal to fIdCaveC
+    Int_t fNbDetectors;
     Int_t fNbChannels;
     Int_t fIdS2;
     Int_t fIdS8;
+    Float_t fBrho0;
+    Float_t fDS2;
+    Float_t fDCC;
     TArrayF* fCalTofS2min;
     TArrayF* fCalTofS2max;
     TArrayF* fCalTofS8min;
@@ -121,60 +130,25 @@ class R3BSofSciOnlineSpectra : public FairTask
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
-    TCanvas** cMapped;     // [fNbDetectors]
-    TCanvas** cPos;        // [fNbDetectors]
-    TCanvas** cTofFromS2;  // [fNbDetectors - fIdS2]
-    TCanvas** cBetaFromS2; // [fNbDetectors - fIdS2]
-    TCanvas** cTofFromS8;  // [fNbDetectors - fIdS8]
-    TCanvas** cBetaFromS8; // [fNbDetectors - fIdS8]
-    TCanvas* cMultMap;
-    TCanvas* cMultTcal;
-    TCanvas* cMultSingleTcal;
-    TCanvas* cMultCal;
-    TCanvas* cPosVsTofS2;
-    TCanvas* cPosVsTofS8;
-    TCanvas** cRawPosVsCalPos; // [fNbDetectors]
+    TCanvas** cMusicZvsCalPos; // [fNbDetectors];
+    TCanvas* cMusicDTvsCalPos;
+    TCanvas** cMusicZvsCalTofS2; // [fNbDetectors-fIdS2];
+    TCanvas** cMusicZvsCalTofS8; // [fNbDetectors-fIdS8];
+    TCanvas* cAqvsq;
+    TCanvas* cAqvsq_mult1Tref;
 
-    // Histograms - 1D multiplicity
-    TH1I** fh1_multMap;        // [fNbDetectors * fNbChannels];
-    TH1I** fh1_multTcal;       // [fNbDetectors * fNbChannels];
-    TH1I** fh1_multSingleTcal; // [fNbDetectors]
-    TH1I** fh1_multCal;        // [fNbDetectors]
+    // Histogram for correlation with R3B-Music
+    TH2F** fh2_MusZvsCalPos; //[fNbDetectors];
+    TH2F* fh2_MusDTvsCalPos;
+    TH2F** fh2_MusZvsCalTofS2; //[fNbDetectors-fIdS2];
+    TH2F** fh2_MusZvsCalTofS8; //[fNbDetectors-fIdS8];
+    TH2F* fh2_Aqvsq;
+    TH2F* fh2_Aqvsq_mult1Tref;
 
-    // Histograms for Mapped data : Fine Time and Mult
-    TH1I** fh1_finetime; // [fNbDetectors * NbChannels];
-    TH2I** fh2_mult;     // [fNbDetectors];
-
-    // Histograms for X position at Tcal, SingleTcal and Cal levels
-    TH1F** fh1_RawPos_TcalMult1;  // [fNbDetectors];
-    TH1F** fh1_RawPos_SingleTcal; // [fNbDetectors];
-    TH1F** fh1_CalPos;            // [fNbDetectors];
-
-    // Histograms for time of flight from S2
-    TH1D** fh1_RawTofFromS2_TcalMult1;  // [fNbDetectors - fIdS2];
-    TH1D** fh1_RawTofFromS2_SingleTcal; // [fNbDetectors - fIdS2];
-    TH1D** fh1_CalTofFromS2;            // [fNbDetectors - fIdS2];
-
-    // Histograms for beta calculated from time of flight from S2
-    TH1D** fh1_BetaFromS2; // [fNbDetectors - fIdS2];
-
-    // Histograms for time of flight from S8
-    TH1D** fh1_RawTofFromS8_TcalMult1;  // [fNbDetectors - fIdS8];
-    TH1D** fh1_RawTofFromS8_SingleTcal; // [fNbDetectors - fIdS8];
-    TH1D** fh1_CalTofFromS8;            // [fNbDetectors - fIdS8];
-
-    // Histograms for beta calculated from time of flight from S8
-    TH1D** fh1_BetaFromS8; // [fNbDetectors - fIdS8];
-
-    // Histograms PosRaw vs PosCal
-    TH2F** fh2_RawPosVsCalPos;
-
-    // Histograms Pos vs Tof
-    TH2D** fh2_PosVsTofS2; //[2*(fNbDetectors-fIdS2)]
-    TH2D** fh2_PosVsTofS8; //[2*(fNbDetectors-fIdS8)]
+    // check how many raw pos found
 
   public:
-    ClassDef(R3BSofSciOnlineSpectra, 1)
+    ClassDef(R3BSofSciVsMusicOnlineSpectra, 1)
 };
 
 #endif

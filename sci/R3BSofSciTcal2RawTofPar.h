@@ -2,9 +2,9 @@
 #define __R3BSOFSCITCAL2RAWTOFPAR_H__
 
 #include "FairTask.h"
+#include "TF1.h"
 #include "TH1D.h"
 #include "TH1F.h"
-#include "TF1.h"
 
 class TClonesArray;
 class R3BSofSciRawTofPar;
@@ -55,21 +55,21 @@ class R3BSofSciTcal2RawTofPar : public FairTask
     const Int_t GetNumSignals() { return fNumSignals; }
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
-    void SetNumDets(Int_t n) { fNumDets = n ;}
-    void SetNumChannels(Int_t n) { fNumChannels = n ;}
-    void SetDetIdCaveC(Int_t id) { fDetIdCaveC = id ;}
-    void SetDetIdS2(Int_t id) { fDetIdS2 = id ;}
-    void SetDetIdS8(Int_t id) { fDetIdS8 = id ;}
-    void SetNumSignals() { fNumSignals = fNumDets -1 ;}
+    void SetNumDets(Int_t n) { fNumDets = n; }
+    void SetNumChannels(Int_t n) { fNumChannels = n; }
+    void SetDetIdCaveC(Int_t id) { fDetIdCaveC = id; }
+    void SetDetIdS2(Int_t id) { fDetIdS2 = id; }
+    void SetDetIdS8(Int_t id) { fDetIdS8 = id; }
+    void SetNumSignals() { fNumSignals = fNumDets - 1; }
     void SetNumParsPerSignal(Int_t n) { fNumParsPerSignal = n; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
     Int_t fNumDets;
     Int_t fNumChannels;
-    Int_t fDetIdCaveC;           // detector number (1-based) at Cave C versus which ToFraw will be calculated
-    Int_t fDetIdS2;           // detector number (1-based) at Cave C versus which ToFraw will be calculated
-    Int_t fDetIdS8;           // detector number (1-based) at Cave C versus which ToFraw will be calculated
+    Int_t fDetIdCaveC;       // detector number (1-based) at Cave C versus which ToFraw will be calculated
+    Int_t fDetIdS2;          // detector number (1-based) at Cave C versus which ToFraw will be calculated
+    Int_t fDetIdS8;          // detector number (1-based) at Cave C versus which ToFraw will be calculated
     Int_t fNumSignals;       // number of signal = number of detector -1 (Tof selection from Sci to Sci(caveC))
     Int_t fNumParsPerSignal; // =2 for each signal
     Int_t fMinStatistics;    // minimum statistics to proceed to the calibration
@@ -86,7 +86,7 @@ class R3BSofSciTcal2RawTofPar : public FairTask
 
     // fit functions
     TF1** fitRawTof;
-    
+
   public:
     ClassDef(R3BSofSciTcal2RawTofPar, 0);
 };

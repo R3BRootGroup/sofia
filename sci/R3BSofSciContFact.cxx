@@ -5,6 +5,8 @@
 #include "FairParRootFileIo.h"
 #include "FairRuntimeDb.h"
 
+#include "R3BSofSciCalPosPar.h"
+#include "R3BSofSciCalTofPar.h"
 #include "R3BSofSciRawPosPar.h"
 #include "R3BSofSciRawTofPar.h"
 
@@ -26,13 +28,21 @@ void R3BSofSciContFact::setAllContainers()
 {
     /** Creates the Container objects with all accepted contexts and adds them fto
      *  the list of containers for the STS library.*/
-    FairContainer* p1 = new FairContainer("SofSciRawPosPar", "Sof Sci RawPos Parameters", "SofSciPosParContext");
-    p1->addContext("SofSciPosParContext");
+    FairContainer* p1 = new FairContainer("SofSciRawPosPar", "Sof Sci RawPos Parameters", "SofSciRawPosParContext");
+    p1->addContext("SofSciRawPosParContext");
     containers->Add(p1);
 
-    FairContainer* p2 = new FairContainer("SofSciRawTofPar", "Sof Sci RawTof Parameters", "SofSciTofParContext");
-    p2->addContext("SofSciTofParContext");
+    FairContainer* p2 = new FairContainer("SofSciRawTofPar", "Sof Sci RawTof Parameters", "SofSciRawTofParContext");
+    p2->addContext("SofSciRawTofParContext");
     containers->Add(p2);
+
+    FairContainer* p3 = new FairContainer("SofSciCalPosPar", "Sof Sci CalPos Parameters", "SofSciCalPosParContext");
+    p3->addContext("SofSciCalPosParContext");
+    containers->Add(p3);
+
+    FairContainer* p4 = new FairContainer("SofSciCalTofPar", "Sof Sci CalTof Parameters", "SofSciCalTofParContext");
+    p4->addContext("SofSciCalTofParContext");
+    containers->Add(p4);
 }
 
 FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
@@ -53,13 +63,17 @@ FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofSciRawTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+    if (strcmp(name, "SofSciCalPosPar") == 0)
+    {
+        p = new R3BSofSciCalPosPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+    if (strcmp(name, "SofSciCalTofPar") == 0)
+    {
+        p = new R3BSofSciCalTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
     return p;
 }
 
-void R3BSofSciContFact::activateParIo(FairParIo* io)
-{
-    // activates the input/output class for the parameters
-    // needed by the Sts
-}
+void R3BSofSciContFact::activateParIo(FairParIo* io) {}
 
 ClassImp(R3BSofSciContFact)

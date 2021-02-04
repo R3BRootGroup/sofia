@@ -7,7 +7,6 @@
 #include "TObject.h"
 #include <TObjString.h>
 
-
 class FairParamList;
 
 class R3BSofSciRawTofPar : public FairParGenericSet

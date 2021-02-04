@@ -9,9 +9,6 @@
 
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BMusicCalData.h"
-#include "R3BMusicHitData.h"
-#include "R3BSofMwpcCalData.h"
 #include "R3BSofSciCalData.h"
 #include "R3BSofSciMappedData.h"
 #include "R3BSofSciSingleTcalData.h"
@@ -43,55 +40,51 @@
 
 R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra()
     : FairTask("SofSciOnlineSpectra", 1)
-    , fMappedItemsSci(NULL)
-    , fTcalItemsSci(NULL)
-    , fSingleTcalItemsSci(NULL)
-    , fMusHitItems(NULL)
-    , fMusCalItems(NULL)
-    , fCalItemsMwpc0(NULL)
-    , fTofwHitData(NULL)
+    , fMapped(NULL)
+    , fTcal(NULL)
+    , fSingleTcal(NULL)
+    , fCal(NULL)
     , fNEvents(0)
-    , fNbDetectors(1)
+    , fNbDetectors(2)
     , fNbChannels(3)
-    , fIdS2(0)
+    , fIdS2(1)
     , fIdS8(0)
 {
+    fCalTofS2min = new TArrayF(4);
+    fCalTofS2max = new TArrayF(4);
+    fCalTofS8min = new TArrayF(2);
+    fCalTofS8max = new TArrayF(2);
 }
 
 R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fMappedItemsSci(NULL)
-    , fTcalItemsSci(NULL)
-    , fSingleTcalItemsSci(NULL)
-    , fMusHitItems(NULL)
-    , fMusCalItems(NULL)
-    , fCalItemsMwpc0(NULL)
-    , fTofwHitData(NULL)
+    , fMapped(NULL)
+    , fTcal(NULL)
+    , fSingleTcal(NULL)
+    , fCal(NULL)
     , fNEvents(0)
-    , fNbDetectors(1)
+    , fNbDetectors(2)
     , fNbChannels(3)
-    , fIdS2(0)
+    , fIdS2(1)
     , fIdS8(0)
 {
+    fCalTofS2min = new TArrayF(4);
+    fCalTofS2max = new TArrayF(4);
+    fCalTofS8min = new TArrayF(2);
+    fCalTofS8max = new TArrayF(2);
 }
 
 R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
 {
     LOG(INFO) << "R3BSofSciOnlineSpectra::Delete instance";
-    if (fMappedItemsSci)
-        delete fMappedItemsSci;
-    if (fTcalItemsSci)
-        delete fTcalItemsSci;
-    if (fSingleTcalItemsSci)
-        delete fSingleTcalItemsSci;
-    if (fMusHitItems)
-        delete fMusHitItems;
-    if (fMusCalItems)
-        delete fMusCalItems;
-    if (fCalItemsMwpc0)
-        delete fCalItemsMwpc0;
-    if (fTofwHitData)
-        delete fTofwHitData;
+    if (fMapped)
+        delete fMapped;
+    if (fTcal)
+        delete fTcal;
+    if (fSingleTcal)
+        delete fSingleTcal;
+    if (fCal)
+        delete fCal;
 }
 
 InitStatus R3BSofSciOnlineSpectra::Init()
@@ -110,314 +103,547 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
-    // --- ------------------------------------ --- //
-    // --- get access to mapped data of the SCI --- //
-    // --- ------------------------------------ --- //
-    fMappedItemsSci = (TClonesArray*)mgr->GetObject("SofSciMappedData");
-    if (!fMappedItemsSci)
+    // --- ------------------------- --- //
+    // --- get access to mapped data --- //
+    // --- ------------------------- --- //
+    fMapped = (TClonesArray*)mgr->GetObject("SofSciMappedData");
+    if (!fMapped)
     {
         return kFATAL;
     }
 
-    // --- ---------------------------------- --- //
-    // --- get access to tcal data of the SCI --- //
-    // --- ---------------------------------- --- //
-    fTcalItemsSci = (TClonesArray*)mgr->GetObject("SofSciTcalData");
-    if (!fTcalItemsSci)
+    // --- ------------------------ --- //
+    // --- get access to tcal data  --- //
+    // --- ------------------------ --- //
+    fTcal = (TClonesArray*)mgr->GetObject("SofSciTcalData");
+    if (!fTcal)
     {
         return kFATAL;
     }
 
-    // --- ----------------------------------------- --- //
-    // --- get access to single tcal data of the SCI --- //
-    // --- ----------------------------------------- --- //
-    fSingleTcalItemsSci = (TClonesArray*)mgr->GetObject("SofSciSingleTcalData");
-    if (!fSingleTcalItemsSci)
+    // --- ------------------------------ --- //
+    // --- get access to single tcal data --- //
+    // --- ------------------------------ --- //
+    fSingleTcal = (TClonesArray*)mgr->GetObject("SofSciSingleTcalData");
+    if (!fSingleTcal)
     {
         return kFATAL;
     }
 
-    // get access to hit data of the MUSIC
-    fMusHitItems = (TClonesArray*)mgr->GetObject("MusicHitData");
-    if (!fMusHitItems)
-        LOG(WARNING) << "R3BSofSciOnlineSpectra: MusicHitData not found";
+    // --- ---------------------- --- //
+    // --- get access to cal data --- //
+    // --- ---------------------- --- //
+    fCal = (TClonesArray*)mgr->GetObject("SofSciCalData");
+    if (!fSingleTcal)
+    {
+        return kFATAL;
+    }
 
-    // get access to cal data of the MUSIC
-    fMusCalItems = (TClonesArray*)mgr->GetObject("MusicCalData");
-    if (!fMusCalItems)
-        LOG(WARNING) << "R3BSofSciOnlineSpectra: MusicCalData not found";
+    // --- ------------------------------ --- //
+    // --- declare TCanvas and Histograms --- //
+    // --- ------------------------------ --- //
 
-    // get access to cal data of the MWPC0
-    fCalItemsMwpc0 = (TClonesArray*)mgr->GetObject("Mwpc0CalData");
-    if (!fCalItemsMwpc0)
-        LOG(WARNING) << "R3BSofSciOnlineSpectra: Mwpc0CalData not found";
+    // === 1D-MULTIPLICITY === //
+    fh1_multMap = new TH1I*[fNbDetectors * fNbChannels];
+    fh1_multTcal = new TH1I*[fNbDetectors * fNbChannels];
+    fh1_multSingleTcal = new TH1I*[fNbDetectors];
+    fh1_multCal = new TH1I*[fNbDetectors];
 
-    // --- ------------------------------- --- //
-    // --- Create histograms for detectors --- //
-    // --- ------------------------------- --- //
-    char Name1[255];
-    char Name2[255];
-
-    cSciMult = new TCanvas*[fNbDetectors];
+    // === MAPPED LEVEL: FINE TIME AND MULT PER EVENT === //
+    cMapped = new TCanvas*[fNbDetectors];
     fh1_finetime = new TH1I*[fNbDetectors * fNbChannels];
     fh2_mult = new TH2I*[fNbDetectors];
-    cSciRawPos = new TCanvas*[fNbDetectors];
-    fh1_RawPos_AtTcalMult1 = new TH1F*[fNbDetectors];
-    fh1_RawPos_AtSingleTcal = new TH1F*[fNbDetectors];
-    cMusicZvsRawPos = new TCanvas*[fNbDetectors];
-    fh2_MusZvsRawPos = new TH2F*[fNbDetectors];
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
-        // === FINE TIME AND MULT === //
-        sprintf(Name1, "SofSci%i_MultAndFt", i + 1);
-        cSciMult[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
-        cSciMult[i]->Divide(2, 2);
-        for (Int_t j = 0; j < fNbChannels; j++)
-        {
-            sprintf(Name1, "SofSci%i_FineTimeCh%i", i + 1, j + 1);
-            fh1_finetime[i * fNbChannels + j] = new TH1I(Name1, Name1, 1000, 0, 1000);
-            cSciMult[i]->cd(j + 1);
-            fh1_finetime[i * fNbChannels + j]->Draw("");
-        }
-        sprintf(Name1, "SofSci%i_MultPerChannel", i + 1);
-        fh2_mult[i] = new TH2I(Name1, Name1, fNbChannels, 0.5, fNbChannels + 0.5, 20, -0.5, 19.5);
-        fh2_mult[i]->GetXaxis()->SetTitle("channel: 1=PMT R,    2=PMT L,    3=COMMON REF");
-        fh2_mult[i]->GetYaxis()->SetTitle("multiplicity per channel");
-        cSciMult[i]->cd(4);
-        fh2_mult[i]->Draw("COL");
 
-        // === RAW POSITION AT TCAL LEVEL, MULT==1 === //
-        sprintf(Name1, "SofSci%i_RawPos", i + 1);
-        cSciRawPos[i] = new TCanvas(Name1, Name1, 10, 10, 500, 500);
-        cSciRawPos[i]->Divide(1, 2);
-        sprintf(Name1, "SofSci%i_RawPosAtTcal_Mult1", i + 1);
-        fh1_RawPos_AtTcalMult1[i] = new TH1F(Name1, Name1, 20000, -10, 10);
-        fh1_RawPos_AtTcalMult1[i]->GetXaxis()->SetTitle(
-            "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
-        fh1_RawPos_AtTcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
-        fh1_RawPos_AtTcalMult1[i]->GetXaxis()->CenterTitle(true);
-        fh1_RawPos_AtTcalMult1[i]->GetYaxis()->CenterTitle(true);
-        fh1_RawPos_AtTcalMult1[i]->GetXaxis()->SetLabelSize(0.045);
-        fh1_RawPos_AtTcalMult1[i]->GetXaxis()->SetTitleSize(0.045);
-        fh1_RawPos_AtTcalMult1[i]->GetYaxis()->SetLabelSize(0.045);
-        fh1_RawPos_AtTcalMult1[i]->GetYaxis()->SetTitleSize(0.045);
-        cSciRawPos[i]->cd(1);
-        fh1_RawPos_AtTcalMult1[i]->Draw("");
+    // === POSITION AT TCAL, SINGLE TCAL AND CAL LEVELS === //
+    cPos = new TCanvas*[fNbDetectors];
+    cRawPosVsCalPos = new TCanvas*[fNbDetectors];
+    fh1_RawPos_TcalMult1 = new TH1F*[fNbDetectors];
+    fh1_RawPos_SingleTcal = new TH1F*[fNbDetectors];
+    fh1_CalPos = new TH1F*[fNbDetectors];
+    fh2_RawPosVsCalPos = new TH2F*[fNbDetectors];
 
-        // === RAW POSITION AT SINGLE TCAL LEVEL === //
-        sprintf(Name1, "SofSci%i_RawPosAtSingleTcal", i + 1);
-        fh1_RawPos_AtSingleTcal[i] = new TH1F(Name1, Name1, 20000, -10, 10);
-        fh1_RawPos_AtSingleTcal[i]->GetXaxis()->SetTitle(
-            "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
-        fh1_RawPos_AtSingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
-        fh1_RawPos_AtSingleTcal[i]->GetXaxis()->CenterTitle(true);
-        fh1_RawPos_AtSingleTcal[i]->GetYaxis()->CenterTitle(true);
-        fh1_RawPos_AtSingleTcal[i]->GetXaxis()->SetLabelSize(0.045);
-        fh1_RawPos_AtSingleTcal[i]->GetXaxis()->SetTitleSize(0.045);
-        fh1_RawPos_AtSingleTcal[i]->GetYaxis()->SetLabelSize(0.045);
-        fh1_RawPos_AtSingleTcal[i]->GetYaxis()->SetTitleSize(0.045);
-        cSciRawPos[i]->cd(2);
-        fh1_RawPos_AtSingleTcal[i]->Draw("");
-
-        // === R3B MUSIC CHARGE VERSUS RAW POSITION === //
-        sprintf(Name1, "MUSIC_Z_vs_RawPos_Sci%02d", i + 1);
-        cMusicZvsRawPos[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
-        sprintf(Name1, "MusZ_vs_RawPos_Sci%02d", i + 1);
-        fh2_MusZvsRawPos[i] = new TH2F(Name1, Name1, 2000, -10, 10, 1200, 1, 41);
-        fh2_MusZvsRawPos[i]->GetXaxis()->SetTitle(
-            "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
-        fh2_MusZvsRawPos[i]->GetYaxis()->SetTitle("Charge (Z)");
-        fh2_MusZvsRawPos[i]->GetYaxis()->SetTitleOffset(1.1);
-        fh2_MusZvsRawPos[i]->GetXaxis()->CenterTitle(true);
-        fh2_MusZvsRawPos[i]->GetYaxis()->CenterTitle(true);
-        fh2_MusZvsRawPos[i]->GetXaxis()->SetLabelSize(0.045);
-        fh2_MusZvsRawPos[i]->GetXaxis()->SetTitleSize(0.045);
-        fh2_MusZvsRawPos[i]->GetYaxis()->SetLabelSize(0.045);
-        fh2_MusZvsRawPos[i]->GetYaxis()->SetTitleSize(0.045);
-        fh2_MusZvsRawPos[i]->Draw("colz");
-    }
-
-    // === Mwpc0 cal data vs SCI-RawPos === //
-    cMwpc0vsRawPos = new TCanvas("Mwpc0_vs_RawPosAtTcal_Mult1", "Mwpc0-X vs RawPosAtTcal_Mult1", 10, 10, 800, 700);
-    fh2_Mwpc0vsRawPos = new TH2F("fh2_Mwpc_vs_RawPos", "Mwpc0-X vs RawPosAtTcal_Mult1", 1400, -7, 7, 258, 0.5, 64.5);
-    fh2_Mwpc0vsRawPos->GetXaxis()->SetTitle(
-        "(RIGHT,Wix. side) -->  raw position [ns, 10ps/bin] --> (LEFT,Mes. side) -->");
-    fh2_Mwpc0vsRawPos->GetYaxis()->SetTitle("Mwpc0-X [pads]");
-    fh2_Mwpc0vsRawPos->GetYaxis()->SetTitleOffset(1.1);
-    fh2_Mwpc0vsRawPos->GetXaxis()->CenterTitle(true);
-    fh2_Mwpc0vsRawPos->GetYaxis()->CenterTitle(true);
-    fh2_Mwpc0vsRawPos->GetXaxis()->SetLabelSize(0.045);
-    fh2_Mwpc0vsRawPos->GetXaxis()->SetTitleSize(0.045);
-    fh2_Mwpc0vsRawPos->GetYaxis()->SetLabelSize(0.045);
-    fh2_Mwpc0vsRawPos->GetYaxis()->SetTitleSize(0.045);
-    fh2_Mwpc0vsRawPos->Draw("col");
-
-    // === Music Hit data vs SCI-RawPos === //
-    cMusicDTvsRawPos =
-        new TCanvas("MUSIC_DT_vs_RawPosAtTcal_Mult1", "Music FT vs RawPosAtTcal_Mult1", 10, 10, 800, 700);
-    fh2_MusDTvsRawPos =
-        new TH2F("fh2_MusDT_vs_RawPos", "R3B-MUSIC DT vs RawPosAtTcal_Mult1", 1400, -7, 7, 800, -20, 20);
-    fh2_MusDTvsRawPos->GetXaxis()->SetTitle(
-        "(RIGHT,Wix. side) -->  raw position [ns, 10ps/bin] --> (LEFT,Mes. side) -->");
-    fh2_MusDTvsRawPos->GetYaxis()->SetTitle("Drift Time (mm)");
-    fh2_MusDTvsRawPos->GetYaxis()->SetTitleOffset(1.1);
-    fh2_MusDTvsRawPos->GetXaxis()->CenterTitle(true);
-    fh2_MusDTvsRawPos->GetYaxis()->CenterTitle(true);
-    fh2_MusDTvsRawPos->GetXaxis()->SetLabelSize(0.045);
-    fh2_MusDTvsRawPos->GetXaxis()->SetTitleSize(0.045);
-    fh2_MusDTvsRawPos->GetYaxis()->SetLabelSize(0.045);
-    fh2_MusDTvsRawPos->GetYaxis()->SetTitleSize(0.045);
-    fh2_MusDTvsRawPos->Draw("col");
-
-    // === RAW TOF FROM S2 AT TCAL AND SINGLE TCAL LEVELS === //
-    cSciRawTof_FromS2 = new TCanvas*[fNbDetectors];
-    fh1_RawTof_FromS2_AtTcalMult1 = new TH1D*[fNbDetectors];
-    fh1_RawTof_FromS2_AtTcalMult1_wTref = new TH1D*[fNbDetectors];
-    fh1_RawTof_FromS2_AtSingleTcal_wTref = new TH1D*[fNbDetectors];
-    cMusicZvsRawTof_FromS2 = new TCanvas*[fNbDetectors];
-    fh2_MusZvsRawTof_FromS2 = new TH2F*[fNbDetectors];
-    cSciRawTof_FromS8 = new TCanvas*[fNbDetectors];
-    fh1_RawTof_FromS8_AtTcalMult1 = new TH1D*[fNbDetectors];
-    fh1_RawTof_FromS8_AtTcalMult1_wTref = new TH1D*[fNbDetectors];
-    fh1_RawTof_FromS8_AtSingleTcal_wTref = new TH1D*[fNbDetectors];
-    cMusicZvsRawTof_FromS8 = new TCanvas*[fNbDetectors];
-    fh2_MusZvsRawTof_FromS8 = new TH2F*[fNbDetectors];
-    for (Int_t dstop = 0; dstop < fNbDetectors; dstop++)
-    {
-        if (fIdS2 > 0)
-        {
-            sprintf(Name1, "RawTof_Sci%02d_to_Sci%02d", fIdS2, dstop + 1);
-            sprintf(Name2, "Raw time-of-flight from Sci%02d to Sci%02d", fIdS2, dstop + 1);
-            cSciRawTof_FromS2[dstop] = new TCanvas(Name1, Name2, 10, 10, 800, 800);
-            cSciRawTof_FromS2[dstop]->Divide(1, 3);
-            sprintf(Name1, "RawTofNs_m1_Sci%02d_to_Sci%02d", fIdS2, dstop + 1);
-            fh1_RawTof_FromS2_AtTcalMult1[dstop] = new TH1D(Name1, Name1, 100000, -50000, 50000);
-            fh1_RawTof_FromS2_AtTcalMult1[dstop]->GetXaxis()->SetTitle("Raw Tof [ns]");
-            fh1_RawTof_FromS2_AtTcalMult1[dstop]->GetYaxis()->SetTitle("Counts per bin");
-            sprintf(Name1, "RawTofNs_m1_wTref_Sci%02d_to_Sci%02d", fIdS2, dstop + 1);
-            fh1_RawTof_FromS2_AtTcalMult1_wTref[dstop] = new TH1D(Name1, Name1, 400000, -2000, 2000);
-            fh1_RawTof_FromS2_AtTcalMult1_wTref[dstop]->GetXaxis()->SetTitle("Raw Tof [ns]");
-            fh1_RawTof_FromS2_AtTcalMult1_wTref[dstop]->GetYaxis()->SetTitle("Counts per bin");
-            sprintf(Name1, "RawTofNs_wTref_Sci%02d_to_Sci%02d", fIdS2, dstop + 1);
-            fh1_RawTof_FromS2_AtSingleTcal_wTref[dstop] = new TH1D(Name1, Name1, 400000, -2000, 2000);
-            fh1_RawTof_FromS2_AtSingleTcal_wTref[dstop]->GetXaxis()->SetTitle("Raw Tof [ns]");
-            fh1_RawTof_FromS2_AtSingleTcal_wTref[dstop]->GetYaxis()->SetTitle("Counts per bin");
-            cSciRawTof_FromS2[dstop]->cd(1);
-            fh1_RawTof_FromS2_AtTcalMult1[dstop]->Draw("");
-            cSciRawTof_FromS2[dstop]->cd(2);
-            fh1_RawTof_FromS2_AtTcalMult1_wTref[dstop]->Draw("");
-            cSciRawTof_FromS2[dstop]->cd(3);
-            fh1_RawTof_FromS2_AtSingleTcal_wTref[dstop]->Draw("");
-        }
-        if (fIdS8 > 0)
-        {
-            sprintf(Name1, "RawTof_Sci%02d_to_Sci%02d", fIdS8, dstop + 1);
-            sprintf(Name2, "Raw time-of-flight from Sci%02d to Sci%02d", fIdS8, dstop + 1);
-            cSciRawTof_FromS8[dstop] = new TCanvas(Name1, Name2, 10, 10, 800, 800);
-            cSciRawTof_FromS8[dstop]->Divide(1, 3);
-            sprintf(Name1, "RawTofNs_m1_Sci%02d_to_Sci%02d", fIdS8, dstop + 1);
-            fh1_RawTof_FromS8_AtTcalMult1[dstop] = new TH1D(Name1, Name1, 100000, -50000, 50000);
-            fh1_RawTof_FromS8_AtTcalMult1[dstop]->GetXaxis()->SetTitle("Raw Tof [ns]");
-            fh1_RawTof_FromS8_AtTcalMult1[dstop]->GetYaxis()->SetTitle("Counts per bin");
-            sprintf(Name1, "RawTofNs_m1_wTref_Sci%02d_to_Sci%02d", fIdS8, dstop + 1);
-            fh1_RawTof_FromS8_AtTcalMult1_wTref[dstop] = new TH1D(Name1, Name1, 400000, -2000, 2000);
-            fh1_RawTof_FromS8_AtTcalMult1_wTref[dstop]->GetXaxis()->SetTitle("Raw Tof [ns]");
-            fh1_RawTof_FromS8_AtTcalMult1_wTref[dstop]->GetYaxis()->SetTitle("Counts per bin");
-            sprintf(Name1, "RawTofNs_wTref_Sci%02d_to_Sci%02d", fIdS8, dstop + 1);
-            fh1_RawTof_FromS8_AtSingleTcal_wTref[dstop] = new TH1D(Name1, Name1, 400000, -2000, 2000);
-            fh1_RawTof_FromS8_AtSingleTcal_wTref[dstop]->GetXaxis()->SetTitle("Raw Tof [ns]");
-            fh1_RawTof_FromS8_AtSingleTcal_wTref[dstop]->GetYaxis()->SetTitle("Counts per bin");
-            cSciRawTof_FromS8[dstop]->cd(1);
-            fh1_RawTof_FromS8_AtTcalMult1[dstop]->Draw("");
-            cSciRawTof_FromS8[dstop]->cd(2);
-            fh1_RawTof_FromS8_AtTcalMult1_wTref[dstop]->Draw("");
-            cSciRawTof_FromS8[dstop]->cd(3);
-            fh1_RawTof_FromS8_AtSingleTcal_wTref[dstop]->Draw("");
-        }
-
-        // === MUSIC HIT DATA VERSUS SCI-RAW TOF
-        if (fIdS2 > 0)
-        {
-            sprintf(Name1, "MUSIC_Z_vs_RawTof_Sci%02d_to_Sci%02d", fIdS2, dstop + 1);
-            cMusicZvsRawTof_FromS2[dstop] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
-            sprintf(Name1, "MusZ_vs_RawTof_Sci%02d_to_Sci%02d", fIdS2, dstop + 1);
-            fh2_MusZvsRawTof_FromS2[dstop] = new TH2F(Name1, Name1, 1500, 500, 2000, 1200, 1, 41);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetXaxis()->SetTitle("Raw-ToF-Cave-C [ns]");
-            fh2_MusZvsRawTof_FromS2[dstop]->GetYaxis()->SetTitle("Charge (Z)");
-            fh2_MusZvsRawTof_FromS2[dstop]->GetYaxis()->SetTitleOffset(1.1);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetXaxis()->CenterTitle(true);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetYaxis()->CenterTitle(true);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetXaxis()->SetLabelSize(0.045);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetXaxis()->SetTitleSize(0.045);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetYaxis()->SetLabelSize(0.045);
-            fh2_MusZvsRawTof_FromS2[dstop]->GetYaxis()->SetTitleSize(0.045);
-            fh2_MusZvsRawTof_FromS2[dstop]->Draw("colz");
-        }
-        if (fIdS8 > 0)
-        {
-            sprintf(Name1, "MUSIC_Z_vs_RawTof_Sci%02d_to_Sci%02d", fIdS8, dstop + 1);
-            cMusicZvsRawTof_FromS8[dstop] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
-            sprintf(Name1, "MusZ_vs_RawTof_Sci%02d_to_Sci%02d", fIdS8, dstop + 1);
-            fh2_MusZvsRawTof_FromS8[dstop] = new TH2F(Name1, Name1, 1500, 500, 2000, 1200, 1, 41);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetXaxis()->SetTitle("Raw-ToF-Cave-C [ns]");
-            fh2_MusZvsRawTof_FromS8[dstop]->GetYaxis()->SetTitle("Charge (Z)");
-            fh2_MusZvsRawTof_FromS8[dstop]->GetYaxis()->SetTitleOffset(1.1);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetXaxis()->CenterTitle(true);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetYaxis()->CenterTitle(true);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetXaxis()->SetLabelSize(0.045);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetXaxis()->SetTitleSize(0.045);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetYaxis()->SetLabelSize(0.045);
-            fh2_MusZvsRawTof_FromS8[dstop]->GetYaxis()->SetTitleSize(0.045);
-            fh2_MusZvsRawTof_FromS8[dstop]->Draw("colz");
-        }
-    }
-
-    // === HIT DATA AoverQ VERSUS Q === //
     if (fIdS2 > 0)
     {
-        cAqvsq = new TCanvas("FRSv_AoverQ_vs_Q", "A/q versus q 2D", 10, 10, 800, 700);
-        fh2_Aqvsq = new TH2F("fh2v_Aq_vs_q_frs", "FRS: A/q vs q", 3000, 1., 3, 1300, 8, 39.5);
-        fh2_Aqvsq->GetXaxis()->SetTitle("A/q");
-        fh2_Aqvsq->GetYaxis()->SetTitle("Z [Charge units]");
-        fh2_Aqvsq->GetYaxis()->SetTitleOffset(1.1);
-        fh2_Aqvsq->GetXaxis()->CenterTitle(true);
-        fh2_Aqvsq->GetYaxis()->CenterTitle(true);
-        fh2_Aqvsq->GetXaxis()->SetLabelSize(0.045);
-        fh2_Aqvsq->GetXaxis()->SetTitleSize(0.045);
-        fh2_Aqvsq->GetYaxis()->SetLabelSize(0.045);
-        fh2_Aqvsq->GetYaxis()->SetTitleSize(0.045);
-        fh2_Aqvsq->Draw("colz");
+        // === TIME-OF-FLIGHT FROM S2 AT TCAL, SINGLE TCAL AND CAL LEVELS === //
+        cTofFromS2 = new TCanvas*[fNbDetectors - fIdS2];
+        fh1_RawTofFromS2_TcalMult1 = new TH1D*[fNbDetectors - fIdS2];
+        fh1_RawTofFromS2_SingleTcal = new TH1D*[fNbDetectors - fIdS2];
+        fh1_CalTofFromS2 = new TH1D*[fNbDetectors - fIdS2];
+
+        // === BETA CALCULATED FROM ToF S2 CAL DATA === //
+        cBetaFromS2 = new TCanvas*[fNbDetectors - fIdS2];
+        fh1_BetaFromS2 = new TH1D*[fNbDetectors - fIdS2];
+
+        // === POS vs ToF FROM S2 at CAL LEVEL === //
+        fh2_PosVsTofS2 = new TH2D*[2 * (fNbDetectors - fIdS2)];
     }
+
+    if (fIdS8 > 0)
+    {
+        // === TIME-OF-FLIGHT FROM S8 AT TCAL, SINGLE TCAL AND CAL LEVELS === //
+        cTofFromS8 = new TCanvas*[fNbDetectors - fIdS8];
+        fh1_RawTofFromS8_TcalMult1 = new TH1D*[fNbDetectors - fIdS8];
+        fh1_RawTofFromS8_SingleTcal = new TH1D*[fNbDetectors - fIdS8];
+        fh1_CalTofFromS8 = new TH1D*[fNbDetectors - fIdS8];
+
+        // === BETA CALCULATED FROM ToF S8 CAL DATA === //
+        cBetaFromS8 = new TCanvas*[fNbDetectors - fIdS8];
+        fh1_BetaFromS8 = new TH1D*[fNbDetectors - fIdS8];
+
+        // === POS vs ToF FROM S8 at CAL LEVEL === //
+        fh2_PosVsTofS8 = new TH2D*[2 * (fNbDetectors - fIdS8)];
+    }
+
+    // --- ----------------------------- --- //
+    // --- create TCanvas and Histograms --- //
+    // --- ------------------------------ --- //
+    char Name1[255];
+    char Name2[255];
+    
+    // === TCanvas: 1D-MultMap === //
+    sprintf(Name1, "MultMap");
+    cMultMap = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cMultMap->Divide(fNbChannels, fNbDetectors);
+
+    // === TCanvas: 1D-MultTcal === //
+    sprintf(Name1, "MultTcal");
+    cMultTcal = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cMultTcal->Divide(fNbChannels, fNbDetectors);
+
+    // === TCanvas: 1D-MultSingleTcal === //
+    sprintf(Name1, "MultSingleTcal");
+    cMultSingleTcal = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cMultSingleTcal->Divide(1, fNbDetectors);
+
+    // === TCanvas: 1D-MultCal === //
+    sprintf(Name1, "MultCal");
+    cMultCal = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cMultCal->Divide(1, fNbDetectors);
+
+    for (Int_t i = 0; i < fNbDetectors; i++)
+    {
+        // === TH1I: 1D-mult at SingleTcal level === //
+        sprintf(Name1, "Sci%i_MultPerEvent_SingleTal", i + 1);
+        fh1_multSingleTcal[i] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+        fh1_multSingleTcal[i]->GetXaxis()->SetTitle("Multiplicity per event");
+        fh1_multSingleTcal[i]->GetYaxis()->SetTitle("Counts");
+        fh1_multSingleTcal[i]->GetXaxis()->CenterTitle(true);
+        fh1_multSingleTcal[i]->GetYaxis()->CenterTitle(true);
+        fh1_multSingleTcal[i]->GetXaxis()->SetLabelSize(0.05);
+        fh1_multSingleTcal[i]->GetXaxis()->SetTitleSize(0.05);
+        fh1_multSingleTcal[i]->GetYaxis()->SetLabelSize(0.05);
+        fh1_multSingleTcal[i]->GetYaxis()->SetTitleSize(0.05);
+        cMultSingleTcal->cd(i + 1);
+        gPad->SetLogy();
+        fh1_multSingleTcal[i]->Draw("");
+
+        // === TH1I: 1D-mult at cal level === //
+        sprintf(Name1, "Sci%i_MultPerEvent_Cal", i + 1);
+        fh1_multCal[i] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+        fh1_multCal[i]->GetXaxis()->SetTitle("Multiplicity per event");
+        fh1_multCal[i]->GetYaxis()->SetTitle("Counts");
+        fh1_multCal[i]->GetXaxis()->CenterTitle(true);
+        fh1_multCal[i]->GetYaxis()->CenterTitle(true);
+        fh1_multCal[i]->GetXaxis()->SetLabelSize(0.05);
+        fh1_multCal[i]->GetXaxis()->SetTitleSize(0.05);
+        fh1_multCal[i]->GetYaxis()->SetLabelSize(0.05);
+        fh1_multCal[i]->GetYaxis()->SetTitleSize(0.05);
+        cMultCal->cd(i + 1);
+        gPad->SetLogy();
+        fh1_multCal[i]->Draw("");
+
+        // === TCanvas: mapped level === //
+        sprintf(Name1, "Sci%i_MultAndFt", i + 1);
+        cMapped[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+        cMapped[i]->Divide(2, 2);
+
+        // === TCanvas: position === //
+        sprintf(Name1, "Sci%i_Pos", i + 1);
+        cPos[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+        cPos[i]->Divide(1, 3);
+
+        // === TCanvas: PosRaw vs PosCal === //
+        sprintf(Name1, "Sci%i_RawPosVsCalPos", i + 1);
+        cRawPosVsCalPos[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+
+        for (Int_t j = 0; j < fNbChannels; j++)
+        {
+            // === TH1I: 1D-mult at map level === //
+            sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Mapped", i + 1, j + 1);
+            fh1_multMap[i * fNbChannels + j] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+            fh1_multMap[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
+            fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
+            fh1_multMap[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
+            fh1_multMap[i * fNbChannels + j]->GetYaxis()->CenterTitle(true);
+            fh1_multMap[i * fNbChannels + j]->GetXaxis()->SetLabelSize(0.05);
+            fh1_multMap[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
+            fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
+            fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            cMultMap->cd(i * fNbChannels + j + 1);
+            gPad->SetLogy();
+            fh1_multMap[i * fNbChannels + j]->Draw("");
+
+            // === TH1I: 1D-mult at tcal level === //
+            sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Tcal", i + 1, j + 1);
+            fh1_multTcal[i * fNbChannels + j] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+            fh1_multTcal[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
+            fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
+            fh1_multTcal[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
+            fh1_multTcal[i * fNbChannels + j]->GetYaxis()->CenterTitle(true);
+            fh1_multTcal[i * fNbChannels + j]->GetXaxis()->SetLabelSize(0.05);
+            fh1_multTcal[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
+            fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
+            fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            cMultTcal->cd(i * fNbChannels + j + 1);
+            gPad->SetLogy();
+            fh1_multTcal[i * fNbChannels + j]->Draw("");
+
+            // === TH1F: fine time === //
+            sprintf(Name1, "Sci%i_FineTimeCh%i", i + 1, j + 1);
+            fh1_finetime[i * fNbChannels + j] = new TH1I(Name1, Name1, 1000, 0, 1000);
+            fh1_finetime[i * fNbChannels + j]->GetXaxis()->SetTitle("Fine time");
+            fh1_finetime[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_finetime[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
+            fh1_finetime[i * fNbChannels + j]->GetYaxis()->CenterTitle(true);
+            fh1_finetime[i * fNbChannels + j]->GetXaxis()->SetLabelSize(0.05);
+            fh1_finetime[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
+            fh1_finetime[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
+            fh1_finetime[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            cMapped[i]->cd(j + 1);
+            fh1_finetime[i * fNbChannels + j]->Draw("");
+        }
+
+        // === TH1F: multiplicity per event and channel at mapped level === //
+        sprintf(Name1, "Sci%i_MultPerEvent", i + 1);
+        fh2_mult[i] = new TH2I(Name1, Name1, fNbChannels, 0.5, fNbChannels + 0.5, 20, -0.5, 19.5);
+        fh2_mult[i]->GetXaxis()->SetTitle("channel: 1=PMT R,    2=PMT L,    3=COMMON REF");
+        fh2_mult[i]->GetYaxis()->SetTitle("multiplicity per event");
+        fh2_mult[i]->GetXaxis()->CenterTitle(true);
+        fh2_mult[i]->GetYaxis()->CenterTitle(true);
+        fh2_mult[i]->GetXaxis()->SetLabelSize(0.05);
+        fh2_mult[i]->GetXaxis()->SetTitleSize(0.05);
+        fh2_mult[i]->GetYaxis()->SetLabelSize(0.05);
+        fh2_mult[i]->GetYaxis()->SetTitleSize(0.05);
+        cMapped[i]->cd(4);
+        fh2_mult[i]->Draw("COL");
+
+        // === TH1F: raw position at tcal level if mult=1 === //
+        sprintf(Name1, "SofSci%i_RawPos_Tcal_Mult1", i + 1);
+        fh1_RawPos_TcalMult1[i] = new TH1F(Name1, Name1, 20000, -10, 10);
+        fh1_RawPos_TcalMult1[i]->GetXaxis()->SetTitle(
+            "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
+        fh1_RawPos_TcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
+        fh1_RawPos_TcalMult1[i]->GetXaxis()->CenterTitle(true);
+        fh1_RawPos_TcalMult1[i]->GetYaxis()->CenterTitle(true);
+        fh1_RawPos_TcalMult1[i]->GetXaxis()->SetLabelSize(0.05);
+        fh1_RawPos_TcalMult1[i]->GetXaxis()->SetTitleSize(0.05);
+        fh1_RawPos_TcalMult1[i]->GetYaxis()->SetLabelSize(0.05);
+        fh1_RawPos_TcalMult1[i]->GetYaxis()->SetTitleSize(0.05);
+        cPos[i]->cd(1);
+        fh1_RawPos_TcalMult1[i]->Draw("");
+
+        // === TH1F: raw position at single tcal level === //
+        sprintf(Name1, "SofSci%i_RawPos_SingleTcal", i + 1);
+        fh1_RawPos_SingleTcal[i] = new TH1F(Name1, Name1, 20000, -10, 10);
+        fh1_RawPos_SingleTcal[i]->GetXaxis()->SetTitle(
+            "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
+        fh1_RawPos_SingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
+        fh1_RawPos_SingleTcal[i]->GetXaxis()->CenterTitle(true);
+        fh1_RawPos_SingleTcal[i]->GetYaxis()->CenterTitle(true);
+        fh1_RawPos_SingleTcal[i]->GetXaxis()->SetLabelSize(0.05);
+        fh1_RawPos_SingleTcal[i]->GetXaxis()->SetTitleSize(0.05);
+        fh1_RawPos_SingleTcal[i]->GetYaxis()->SetLabelSize(0.05);
+        fh1_RawPos_SingleTcal[i]->GetYaxis()->SetTitleSize(0.05);
+        cPos[i]->cd(2);
+        fh1_RawPos_SingleTcal[i]->Draw("");
+
+        // === TH1F: calibrated position in mm at cal level === //
+        sprintf(Name1, "SofSci%i_CalPos_mm", i + 1);
+        fh1_CalPos[i] = new TH1F(Name1, Name1, 20000, -100, 100);
+        fh1_CalPos[i]->GetXaxis()->SetTitle("(RIGHT, Wix. side) -->  x position [mm] --> (LEFT,Mes. side) -->");
+        fh1_CalPos[i]->GetYaxis()->SetTitle("Counts per bin");
+        fh1_CalPos[i]->GetXaxis()->CenterTitle(true);
+        fh1_CalPos[i]->GetYaxis()->CenterTitle(true);
+        fh1_CalPos[i]->GetXaxis()->SetLabelSize(0.05);
+        fh1_CalPos[i]->GetXaxis()->SetTitleSize(0.05);
+        fh1_CalPos[i]->GetYaxis()->SetLabelSize(0.05);
+        fh1_CalPos[i]->GetYaxis()->SetTitleSize(0.05);
+        cPos[i]->cd(3);
+        fh1_CalPos[i]->Draw("");
+
+        // +++ TH2F: raw position versus calibrated position === //
+        sprintf(Name1, "SofSci%i_RawPosVsCalPos", i + 1);
+        fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 1000, -100, 100, 1000, -10, 10);
+        fh2_RawPosVsCalPos[i]->GetXaxis()->SetTitle("Calculated X position [mm]");
+        fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitle(
+            "(RIGHT, Wixhausen side) --->  Raw X position [ns]  ---> (LEFT, Messel side)");
+        fh2_RawPosVsCalPos[i]->GetXaxis()->CenterTitle(true);
+        fh2_RawPosVsCalPos[i]->GetYaxis()->CenterTitle(true);
+        fh2_RawPosVsCalPos[i]->GetXaxis()->SetLabelSize(0.05);
+        fh2_RawPosVsCalPos[i]->GetYaxis()->SetLabelSize(0.05);
+        fh2_RawPosVsCalPos[i]->GetXaxis()->SetTitleSize(0.05);
+        fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitleSize(0.05);
+        cRawPosVsCalPos[i]->cd();
+        fh2_RawPosVsCalPos[i]->Draw("col");
+    } // end of loop over fNbDetectors
+
+    if (fIdS2)
+    {
+        // === TCanvas: position verus Tof from S2 at cal level ===//
+        cPosVsTofS2 = new TCanvas("PosVsTofS2", "PosVsTofS2", 10, 10, 800, 700);
+        cPosVsTofS2->Divide(2, fNbDetectors - fIdS2);
+        Float_t minS2 = 0, maxS2 = 1;
+
+        for (Int_t i = fIdS2; i < fNbDetectors; i++)
+        {
+            // === TCanvas: time of flight from S2 calculated with Tref signal === //
+            sprintf(Name1, "Tof_S2_Sci%d", i + 1);
+            cTofFromS2[i - fIdS2] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+            cTofFromS2[i - fIdS2]->Divide(1, 3);
+
+            // === TCanvas: beta Calculated from ToF from S2 === //
+            sprintf(Name1, "Beta_S2_Sci%d", i + 1);
+            cBetaFromS2[i - fIdS2] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+
+            // === TH1D: raw ToF from S2 at tcal level if mult==1 for the 4 PMTs + 2 Tref signals === //
+            sprintf(Name1, "RawTofNs_Tcal_m1_wTref_S2_to_Sci%02d", i + 1);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->SetTitle("Raw Tof [ns]");
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->CenterTitle(true);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetYaxis()->CenterTitle(true);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->SetTitleSize(0.05);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetYaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetYaxis()->SetTitleSize(0.05);
+            cTofFromS2[i - fIdS2]->cd(1);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->Draw("");
+
+            // === TH1D: raw ToF from S2 at single tcal level === //
+            sprintf(Name1, "RawTofNs_SingleTcal_wTref_S2_to_Sci%02d", i + 1);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetXaxis()->SetTitle("Raw Tof [ns]");
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetXaxis()->CenterTitle(true);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetYaxis()->CenterTitle(true);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetXaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetXaxis()->SetTitleSize(0.05);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetYaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetYaxis()->SetTitleSize(0.05);
+            cTofFromS2[i - fIdS2]->cd(2);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->Draw("");
+
+            // === TH1D: calibrated ToF from S2 at cal level === //
+            sprintf(Name1, "CalTofNs_S2_to_Sci%02d", i + 1);
+            fh1_CalTofFromS2[i - fIdS2] = new TH1D(Name1, Name1, 1000000, 0, 1000);
+            fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->SetTitle("Calibrated Tof [ns]");
+            fh1_CalTofFromS2[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->CenterTitle(true);
+            fh1_CalTofFromS2[i - fIdS2]->GetYaxis()->CenterTitle(true);
+            fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->SetLabelSize(0.05);
+            fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->SetTitleSize(0.05);
+            fh1_CalTofFromS2[i - fIdS2]->GetYaxis()->SetLabelSize(0.05);
+            fh1_CalTofFromS2[i - fIdS2]->GetYaxis()->SetTitleSize(0.05);
+            cTofFromS2[i - fIdS2]->cd(3);
+            fh1_CalTofFromS2[i - fIdS2]->Draw("");
+
+            // === TH1D: beta at cal level calculated from ToF from S2 === //
+            sprintf(Name1, "CalBeta_S2_to_Sci%02d", i + 1);
+            fh1_BetaFromS2[i - fIdS2] = new TH1D(Name1, Name1, 30000, 0.6, 0.9);
+            fh1_BetaFromS2[i - fIdS2]->GetXaxis()->SetTitle("beta = v/c");
+            fh1_BetaFromS2[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_BetaFromS2[i - fIdS2]->GetXaxis()->CenterTitle(true);
+            fh1_BetaFromS2[i - fIdS2]->GetYaxis()->CenterTitle(true);
+            fh1_BetaFromS2[i - fIdS2]->GetXaxis()->SetLabelSize(0.05);
+            fh1_BetaFromS2[i - fIdS2]->GetXaxis()->SetTitleSize(0.05);
+            fh1_BetaFromS2[i - fIdS2]->GetYaxis()->SetLabelSize(0.05);
+            fh1_BetaFromS2[i - fIdS2]->GetYaxis()->SetTitleSize(0.05);
+            cBetaFromS2[i - fIdS2]->cd();
+            fh1_BetaFromS2[i - fIdS2]->Draw("");
+
+            // === TH2D: posS2 vs tof from S2  === //
+            sprintf(Name1, "PosS2_vs_Tof_S2_Sci%02d", i + 1);
+            minS2 = GetTofS2min(i - fIdS2);
+            maxS2 = GetTofS2max(i - fIdS2);
+            fh2_PosVsTofS2[(i - fIdS2) * 2] =
+                new TH2D(Name1, Name1, 100. * (maxS2 - minS2), minS2, maxS2, 1000, -10, 10);
+            sprintf(Name1, "Tof S2 - Sci%02d [ns]", i + 1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetXaxis()->SetTitle(Name1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetYaxis()->SetTitle("Pos at S2 [mm]");
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetXaxis()->CenterTitle(true);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetYaxis()->CenterTitle(true);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetXaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetXaxis()->SetTitleSize(0.05);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetYaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->GetYaxis()->SetTitleSize(0.05);
+            cPosVsTofS2->cd((i - fIdS2) * 2 + 1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->Draw("col");
+
+            // === TH2D: pos SofSci stop vs tof from S2  === //
+            sprintf(Name1, "PosSci%02d_vs_Tof_S2_Sci%02d", i + 1, i + 1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1] =
+                new TH2D(Name1, Name1, 100 * (maxS2 - minS2), minS2, maxS2, 1000, -25, 25);
+            sprintf(Name1, "Tof S2 - Sci%02d [ns]", i + 1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetXaxis()->SetTitle(Name1);
+            sprintf(Name1, "Pos at Sci%02d [mm]", i + 1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetYaxis()->SetTitle(Name1);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetXaxis()->CenterTitle(true);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetYaxis()->CenterTitle(true);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetXaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetXaxis()->SetTitleSize(0.05);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetYaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetYaxis()->SetTitleSize(0.05);
+            cPosVsTofS2->cd((i - fIdS2) * 2 + 2);
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->Draw("col");
+        }
+    } // end of if SofSci at S2
+
+    if (fIdS8)
+    {
+        // === TCanvas: position verus Tof from S8 at cal level ===//
+        cPosVsTofS8 = new TCanvas("PosVsTofS8", "PosVsTofS28", 10, 10, 800, 700);
+        cPosVsTofS8->Divide(2, fNbDetectors - fIdS8);
+        Int_t minS8 = 0, maxS8 = 1;
+
+        for (Int_t i = fIdS8; i < fNbDetectors; i++)
+        {
+            // === TCanvas: time of flight from S8 calculated with Tref signal === //
+            sprintf(Name1, "Tof_S8_Sci%d", i + 1);
+            cTofFromS8[i - fIdS8] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+            cTofFromS8[i - fIdS8]->Divide(1, 3);
+            minS8 = GetTofS8min(i - fIdS8);
+            maxS8 = GetTofS8max(i - fIdS8);
+
+            // === TCanvas: beta Calculated from ToF from S8 === //
+            sprintf(Name1, "Beta_S8_Sci%d", i + 1);
+            cBetaFromS8[i - fIdS8] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+
+            // === TH1D: raw ToF from S8 at tcal level if mult==1 for the 4 PMTs + 2 Tref signals === //
+            sprintf(Name1, "RawTofNs_Tcal_m1_wTref_S8_to_Sci%02d", i + 1);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetXaxis()->SetTitle("Raw Tof [ns]");
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetXaxis()->CenterTitle(true);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetYaxis()->CenterTitle(true);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetXaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetXaxis()->SetTitleSize(0.05);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetYaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetYaxis()->SetTitleSize(0.05);
+            cTofFromS8[i - fIdS8]->cd(1);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->Draw("");
+
+            // === TH1D: raw ToF from S8 at single tcal level === //
+            sprintf(Name1, "RawTofNs_SingleTcal_wTref_S8_to_Sci%02d", i + 1);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetXaxis()->SetTitle("Raw Tof [ns]");
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetXaxis()->CenterTitle(true);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetYaxis()->CenterTitle(true);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetXaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetXaxis()->SetTitleSize(0.05);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetYaxis()->SetLabelSize(0.05);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetYaxis()->SetTitleSize(0.05);
+            cTofFromS8[i - fIdS8]->cd(2);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->Draw("");
+
+            // === TH1D: calibrated ToF from S8 at cal level === //
+            sprintf(Name1, "CalTofNs_S8_to_Sci%02d", i + 1);
+            fh1_CalTofFromS8[i - fIdS8] = new TH1D(Name1, Name1, 100000, 0, 1000);
+            fh1_CalTofFromS8[i - fIdS8]->GetXaxis()->SetTitle("Calibrated Tof [ns]");
+            fh1_CalTofFromS8[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_CalTofFromS8[i - fIdS8]->GetXaxis()->CenterTitle(true);
+            fh1_CalTofFromS8[i - fIdS8]->GetYaxis()->CenterTitle(true);
+            fh1_CalTofFromS8[i - fIdS8]->GetXaxis()->SetLabelSize(0.05);
+            fh1_CalTofFromS8[i - fIdS8]->GetXaxis()->SetTitleSize(0.05);
+            fh1_CalTofFromS8[i - fIdS8]->GetYaxis()->SetLabelSize(0.05);
+            fh1_CalTofFromS8[i - fIdS8]->GetYaxis()->SetTitleSize(0.05);
+            cTofFromS8[i - fIdS8]->cd(3);
+            fh1_CalTofFromS8[i - fIdS8]->Draw("");
+
+            // === TH1D: beta at cal level calculated from ToF from S8 === //
+            sprintf(Name1, "CalBeta_S8_to_Sci%02d", i + 1);
+            fh1_BetaFromS8[i - fIdS8] = new TH1D(Name1, Name1, 30000, 0.6, 0.9);
+            fh1_BetaFromS8[i - fIdS8]->GetXaxis()->SetTitle("beta = v/c");
+            fh1_BetaFromS8[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
+            fh1_BetaFromS8[i - fIdS8]->GetXaxis()->CenterTitle(true);
+            fh1_BetaFromS8[i - fIdS8]->GetYaxis()->CenterTitle(true);
+            fh1_BetaFromS8[i - fIdS8]->GetXaxis()->SetLabelSize(0.05);
+            fh1_BetaFromS8[i - fIdS8]->GetXaxis()->SetTitleSize(0.05);
+            fh1_BetaFromS8[i - fIdS8]->GetYaxis()->SetLabelSize(0.05);
+            fh1_BetaFromS8[i - fIdS8]->GetYaxis()->SetTitleSize(0.05);
+            cBetaFromS8[i - fIdS8]->cd();
+            fh1_BetaFromS8[i - fIdS8]->Draw("");
+
+            // === TH2D: posS8 vs tof from S8  === //
+            sprintf(Name1, "PosS8_vs_Tof_S8-Sci%02d", i + 1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2] = new TH2D(Name1, Name1, 100 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
+            sprintf(Name1, "Tof S8 - Sci%02d [ns]", i + 1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetXaxis()->SetTitle(Name1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetYaxis()->SetTitle("Pos at S8 [mm]");
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetXaxis()->CenterTitle(true);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetYaxis()->CenterTitle(true);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetXaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetXaxis()->SetTitleSize(0.05);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetYaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->GetYaxis()->SetTitleSize(0.05);
+            cPosVsTofS8->cd((i - fIdS8) * 2 + 1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->Draw("col");
+
+            // === TH2D: pos SofSci stop vs tof from S8  === //
+            sprintf(Name1, "PosSci%02d_vs_Tof_S8-Sci%02d", i + 1, i + 1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1] =
+                new TH2D(Name1, Name1, 100 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
+            sprintf(Name1, "Tof S8 - Sci%02d [ns]", i + 1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetXaxis()->SetTitle(Name1);
+            sprintf(Name1, "Pos at Sci%02d [mm]", i + 1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetYaxis()->SetTitle(Name1);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetXaxis()->CenterTitle(true);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetYaxis()->CenterTitle(true);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetXaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetXaxis()->SetTitleSize(0.05);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetYaxis()->SetLabelSize(0.05);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetYaxis()->SetTitleSize(0.05);
+            cPosVsTofS8->cd((i - fIdS8) * 2 + 2);
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->Draw("col");
+        }
+    } // end of if SofSci at S8
 
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
     // --- --------------- --- //
+    TFolder* mainfolSciMult1D = new TFolder("SofSciMult", "SofSci Mult info");
+    mainfolSciMult1D->Add(cMultMap);
+    mainfolSciMult1D->Add(cMultTcal);
+    mainfolSciMult1D->Add(cMultSingleTcal);
+    mainfolSciMult1D->Add(cMultCal);
+
     TFolder* mainfolSci = new TFolder("SofSci", "SofSci info");
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
-        mainfolSci->Add(cSciMult[i]);
-        mainfolSci->Add(cSciRawPos[i]);
-        if (fIdS2 > 0)
-            mainfolSci->Add(cSciRawTof_FromS2[i]);
-        if (fIdS8 > 0)
-            mainfolSci->Add(cSciRawTof_FromS8[i]);
-    }
-    mainfolSci->Add(cMusicDTvsRawPos);
-    mainfolSci->Add(cMwpc0vsRawPos);
-    run->AddObject(mainfolSci);
-
-    TFolder* mainfolID = new TFolder("SofSCI-Music", "SofSCI-Music Incoming info");
-    for (UShort_t d = 0; d < fNbDetectors; d++)
-    {
-        mainfolID->Add(cMusicZvsRawPos[d]);
-        if (fIdS2 > 0)
-            mainfolID->Add(cMusicZvsRawTof_FromS2[d]);
-        if (fIdS8 > 0)
-            mainfolID->Add(cMusicZvsRawTof_FromS8[d]);
+        mainfolSci->Add(cMapped[i]);
+        mainfolSci->Add(cPos[i]);
+        mainfolSci->Add(cRawPosVsCalPos[i]);
     }
     if (fIdS2 > 0)
-        mainfolID->Add(cAqvsq);
-    run->AddObject(mainfolID);
+    {
+        for (Int_t i = fIdS2; i < fNbDetectors; i++)
+        {
+            mainfolSci->Add(cTofFromS2[i - fIdS2]);
+            mainfolSci->Add(cBetaFromS2[i - fIdS2]);
+        }
+        mainfolSci->Add(cPosVsTofS2);
+    }
+    if (fIdS8 > 0)
+    {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++)
+        {
+            mainfolSci->Add(cTofFromS8[i - fIdS8]);
+            mainfolSci->Add(cBetaFromS8[i - fIdS8]);
+        }
+        mainfolSci->Add(cPosVsTofS8);
+    }
+    run->AddObject(mainfolSciMult1D);
+    run->AddObject(mainfolSci);
 
     // Register command to reset histograms
     run->GetHttpServer()->RegisterCommand("Reset_SOFSCI_HIST", Form("/Objects/%s/->Reset_Histo()", GetName()));
@@ -430,40 +656,48 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
     LOG(INFO) << "R3BSofSciOnlineSpectra::Reset_Histo";
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
-        // === MULT AND FINE TIME === //
+        // === MULTIPLICITY === //
+        fh1_multMap[i]->Reset();
+        fh1_multTcal[i]->Reset();
+        fh1_multSingleTcal[i]->Reset();
+        fh1_multCal[i]->Reset();
         fh2_mult[i]->Reset();
-        for (Int_t j = 0; j < fNbChannels; j++)
-        {
-            fh1_finetime[i * fNbChannels + j]->Reset();
-        }
-        // === RAW POSITION === //
-        fh1_RawPos_AtTcalMult1[i]->Reset();
-        fh1_RawPos_AtSingleTcal[i]->Reset();
-        // === R3BMUSIC === //
-        fh2_MusZvsRawPos[i]->Reset();
 
-        if (fIdS2 > 0)
+        // === FINE TIME === //
+        for (Int_t j = 0; j < fNbChannels; j++)
+            fh1_finetime[i * fNbChannels + j]->Reset();
+
+        // === POSITION === //
+        fh1_RawPos_TcalMult1[i]->Reset();
+        fh1_RawPos_SingleTcal[i]->Reset();
+        fh1_CalPos[i]->Reset();
+        fh2_RawPosVsCalPos[i]->Reset();
+    }
+    // === TIME OF FLIGHT AND BETA === //
+    if (fIdS2 > 0)
+    {
+        for (Int_t i = fIdS2; i < fNbDetectors; i++)
         {
-            // === RAW TIME_OF_FLIGHT === //
-            fh1_RawTof_FromS2_AtTcalMult1[i]->Reset();
-            fh1_RawTof_FromS2_AtTcalMult1_wTref[i]->Reset();
-            fh1_RawTof_FromS2_AtSingleTcal_wTref[i]->Reset();
-            // === R3BMUSIC === //
-            fh2_MusZvsRawTof_FromS2[i]->Reset();
-        }
-        if (fIdS8 > 0)
-        {
-            // === RAW TIME_OF_FLIGHT === //
-            fh1_RawTof_FromS8_AtTcalMult1[i]->Reset();
-            fh1_RawTof_FromS8_AtTcalMult1_wTref[i]->Reset();
-            fh1_RawTof_FromS8_AtSingleTcal_wTref[i]->Reset();
-            // === R3BMUSIC === //
-            fh2_MusZvsRawTof_FromS8[i]->Reset();
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2]->Reset();
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2]->Reset();
+            fh1_CalTofFromS2[i - fIdS2]->Reset();
+            fh1_BetaFromS2[i - fIdS2]->Reset();
+            fh2_PosVsTofS2[(i - fIdS2) * 2]->Reset();
+            fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->Reset();
         }
     }
-
-    fh2_MusDTvsRawPos->Reset();
-    fh2_Mwpc0vsRawPos->Reset();
+    if (fIdS8 > 0)
+    {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++)
+        {
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8]->Reset();
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8]->Reset();
+            fh1_CalTofFromS8[i - fIdS8]->Reset();
+            fh1_BetaFromS8[i - fIdS8]->Reset();
+            fh2_PosVsTofS8[(i - fIdS8) * 2]->Reset();
+            fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->Reset();
+        }
+    }
 }
 
 void R3BSofSciOnlineSpectra::Exec(Option_t* option)
@@ -472,320 +706,320 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofSciOnlineSpectra::Exec FairRootManager not found";
 
-    Int_t nHits;
-    UShort_t iDet; // 0-bsed
-    UShort_t iCh;  // 0-based
+    // --- --------------- --- //
+    // --- local variables --- //
+    // --- --------------- --- //
 
-    // --- ------------------------------------ --- //
-    // --- variables while looping over the data --- //
-    // --- ------------------------------------ --- //
-    // SofSci Mapped data
-    UShort_t multMapSci[fNbDetectors * fNbChannels];
-    // SofSci Tcal data
+    Int_t nHits;
+    Int_t iDet; // 0-based
+    Int_t iCh;  // 0-based
+    Float_t iRawPos;
+    Double_t iRawTof;
+    Double_t TofS2[fNbDetectors - fIdS2];
+    Double_t TofS8[fNbDetectors - fIdS8];
+    Float_t RawPos[fNbDetectors];
+    Float_t CalPos[fNbDetectors];
+
+    Int_t multMap[fNbDetectors * fNbChannels];
+    Int_t multTcal[fNbDetectors * fNbChannels];
+    Int_t multSTcal[fNbDetectors];
+    Int_t multCal[fNbDetectors];
     Double_t iRawTimeNs[fNbDetectors * fNbChannels];
 
-    // --- -------------- --- //
-    // --- initialisation --- //
-    // --- -------------- --- //
-    for (UShort_t i = 0; i < fNbDetectors; i++)
+    for (Int_t i = 0; i < fNbDetectors; i++)
     {
-        for (UShort_t j = 0; j < fNbChannels; j++)
+        for (Int_t j = 0; j < fNbChannels; j++)
         {
-            multMapSci[i * fNbChannels + j] = 0;
+            multMap[i * fNbChannels + j] = 0;
+            multTcal[i * fNbChannels + j] = 0;
         }
-    }
-    // --- -------------- --- //
-    // --- MUSIC Hit data --- //
-    // --- -------------- --- //
-    Double_t MusicZ = 0.;
-    Double_t MusicDT = -1000000.;
-    if (fMusHitItems && fMusHitItems->GetEntriesFast() > 0)
-    {
-        nHits = fMusHitItems->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
-            R3BMusicHitData* hit = (R3BMusicHitData*)fMusHitItems->At(ihit);
-            if (!hit)
-                continue;
-            MusicZ = hit->GetZcharge();
-        }
+        multSTcal[i] = 0;
+        multCal[i] = 0;
+        RawPos[i] = -100000.;
+        CalPos[i] = -100000.;
     }
 
-    // --- -------------- --- //
-    // --- MUSIC Cal data --- //
-    // --- -------------- --- //
-    if (fMusCalItems && fMusCalItems->GetEntriesFast() > 0)
+    if (fMapped && fMapped->GetEntriesFast() && fTcal && fTcal->GetEntriesFast())
     {
-        nHits = fMusCalItems->GetEntriesFast();
+        // --- ---------------- --- //
+        // --- read mapped data --- //
+        // --- ---------------- --- //
+        nHits = fMapped->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BMusicCalData* hit = (R3BMusicCalData*)fMusCalItems->At(ihit);
-            if (!hit)
-                continue;
-            if (hit->GetAnodeID() == 5)
-                MusicDT = hit->GetDTime();
-        }
-    }
-
-    if (fMappedItemsSci && fMappedItemsSci->GetEntriesFast() && fTcalItemsSci && fTcalItemsSci->GetEntriesFast())
-    {
-
-        // --- ------------------------- --- //
-        // --- loop over sci mapped data --- //
-        // --- ------------------------- --- //
-        nHits = fMappedItemsSci->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
-            R3BSofSciMappedData* hitmapped = (R3BSofSciMappedData*)fMappedItemsSci->At(ihit);
+            R3BSofSciMappedData* hitmapped = (R3BSofSciMappedData*)fMapped->At(ihit);
             if (!hitmapped)
                 continue;
             iDet = hitmapped->GetDetector() - 1;
             iCh = hitmapped->GetPmt() - 1;
-            multMapSci[iDet * fNbChannels + iCh]++;
+            multMap[iDet * fNbChannels + iCh]++;
             fh1_finetime[iDet * fNbChannels + iCh]->Fill(hitmapped->GetTimeFine());
         }
+        // --- end of read mapped data --- //
 
-        // --- ----------------------- --- //
-        // --- loop over sci tcal data --- //
-        // --- ----------------------- --- //
-        if (fTcalItemsSci)
+        // if data in SofSci at Cave C
+        if ((multMap[(fNbDetectors - 1) * 3] != 0) && (multMap[(fNbDetectors - 1) * 3 + 1] != 0))
         {
-            nHits = fTcalItemsSci->GetEntriesFast();
+            // --- -------------- --- //
+            // --- read tcal data --- //
+            // --- -------------- --- //
+            nHits = fTcal->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofSciTcalData* hittcal = (R3BSofSciTcalData*)fTcalItemsSci->At(ihit);
+                R3BSofSciTcalData* hittcal = (R3BSofSciTcalData*)fTcal->At(ihit);
                 if (!hittcal)
                     continue;
                 iDet = hittcal->GetDetector() - 1;
                 iCh = hittcal->GetPmt() - 1;
+                multTcal[iDet * fNbChannels + iCh]++;
                 iRawTimeNs[iDet * fNbChannels + iCh] = hittcal->GetRawTimeNs();
             }
-        }
+            // --- end of read Tcal data --- //
 
-        // --- ------------------------------ --- //
-        // --- loop over sci single tcal data --- //
-        // --- ------------------------------ --- //
-        Double_t xs2 = -10000.;
-        Double_t toff = -10000.;
-        double Beta_S2_Cave, Gamma_S2_Cave, Brho_S2_Cave;
-        double slope_calib = -5.8; // only for the s467, for S2 SofSci
-        Int_t d, t;
-        if (fSingleTcalItemsSci)
-        {
-            nHits = fSingleTcalItemsSci->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            // --- --------------------- --- //
+            // --- read single tcal data --- //
+            // --- --------------------- --- //
+            if (fSingleTcal && fSingleTcal->GetEntries())
             {
-                R3BSofSciSingleTcalData* hitsingletcal = (R3BSofSciSingleTcalData*)fSingleTcalItemsSci->At(ihit);
-                if (!hitsingletcal)
-                    continue;
-                d = hitsingletcal->GetDetector() - 1;
-                fh1_RawPos_AtSingleTcal[d]->Fill(hitsingletcal->GetRawPosNs());
-                if (fIdS2 > 0)
-                    fh1_RawTof_FromS2_AtSingleTcal_wTref[d]->Fill(hitsingletcal->GetRawTofNs_FromS2());
-                if (fIdS8 > 0)
-                    fh1_RawTof_FromS8_AtSingleTcal_wTref[d]->Fill(hitsingletcal->GetRawTofNs_FromS8());
-                if (d == fIdS2 - 1)
-                    xs2 = hitsingletcal->GetRawPosNs() * slope_calib;
-                if ((d == fNbDetectors - 1) && (fIdS2 > 0))
-                    toff = hitsingletcal->GetRawTofNs_FromS2();
-                if (MusicZ > 0)
+                nHits = fSingleTcal->GetEntriesFast();
+                for (Int_t ihit = 0; ihit < nHits; ihit++)
                 {
-                    fh2_MusZvsRawPos[d]->Fill(hitsingletcal->GetRawPosNs(), MusicZ);
-                    if (fIdS2 > 0)
-                        fh2_MusZvsRawTof_FromS2[d]->Fill(hitsingletcal->GetRawTofNs_FromS2(), MusicZ);
-                    if (fIdS8 > 0)
-                        fh2_MusZvsRawTof_FromS8[d]->Fill(hitsingletcal->GetRawTofNs_FromS8(), MusicZ);
-                }
-                if (d == fNbDetectors - 1)
-                {
-                    fh2_MusDTvsRawPos->Fill(hitsingletcal->GetRawPosNs(), MusicDT); // at Cave C
-                }
-            } // end of loop over the SingleTcalItems
-
-            if (MusicZ > 0 && xs2 != -10000. && toff != -10000.)
-            {
-                Beta_S2_Cave = 15424.3 / (toff + 675. - 1922.) / 29.9999; // After run 336
-                Gamma_S2_Cave = 1. / (TMath::Sqrt(1. - (Beta_S2_Cave) * (Beta_S2_Cave)));
-                Brho_S2_Cave = 9.048 * (1 + xs2 / 726.); //+mwpc0x/10./2000);
-                fh2_Aqvsq->Fill(Brho_S2_Cave / (3.10716 * Gamma_S2_Cave * Beta_S2_Cave), MusicZ);
-            }
-        }
-        // Get cal data MWPC0
-        Double_t mwpc0padx = -1., qmax = -100.;
-        if (fCalItemsMwpc0 && fCalItemsMwpc0->GetEntriesFast() > 0)
-        {
-            nHits = fCalItemsMwpc0->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
-                R3BSofMwpcCalData* hit = (R3BSofMwpcCalData*)fCalItemsMwpc0->At(ihit);
-                if (!hit)
-                    continue;
-                if (hit->GetQ() > qmax && hit->GetPlane() == 1)
-                {
-                    mwpc0padx = hit->GetPad();
-                    qmax = hit->GetQ();
+                    R3BSofSciSingleTcalData* hitstcal = (R3BSofSciSingleTcalData*)fSingleTcal->At(ihit);
+                    if (!hitstcal)
+                        continue;
+                    iDet = hitstcal->GetDetector() - 1;
+                    multSTcal[iDet]++;
+                    RawPos[iDet] = hitstcal->GetRawPosNs();
+                    fh1_RawPos_SingleTcal[iDet]->Fill(hitstcal->GetRawPosNs());
+                    if (fIdS2 > 0 && hitstcal->GetDetector() > fIdS2)
+                        fh1_RawTofFromS2_SingleTcal[iDet - fIdS2]->Fill(hitstcal->GetRawTofNs_FromS2());
+                    if (fIdS8 > 0 && hitstcal->GetDetector() > fIdS8)
+                        fh1_RawTofFromS8_SingleTcal[iDet - fIdS8]->Fill(hitstcal->GetRawTofNs_FromS8());
                 }
             }
-        }
+            // --- end of read single tcal data --- //
 
-        // --- ----------------------------------------- --- //
-        // --- filling some histogramms outside the loop --- //
-        // --- ----------------------------------------- --- //
-        Double_t possci = 0.;
-        xs2 = -10000.;
-        for (UShort_t i = 0; i < fNbDetectors; i++)
-        {
-            for (UShort_t j = 0; j < fNbChannels; j++)
+            // --- ------------- --- //
+            // --- read cal data --- //
+            // --- ------------- --- //
+            if (fCal && fCal->GetEntries())
             {
-                fh2_mult[i]->Fill(j + 1, multMapSci[i * fNbChannels + j]);
-            }
-            if ((multMapSci[i * fNbChannels] == 1) && (multMapSci[i * fNbChannels + 1] == 1))
-            {
-                // TrawRIGHT-TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
-                possci = iRawTimeNs[i * fNbChannels] - iRawTimeNs[i * fNbChannels + 1];
-                fh1_RawPos_AtTcalMult1[i]->Fill(possci);
-                if (i == 1)
-                    xs2 = possci;
-
-                if (mwpc0padx > 0 && possci > -10. && possci < 10. && i == 3)
+                for (Int_t i = fIdS2; i < fNbDetectors; i++)
+                    TofS2[i - fIdS2] = 0;
+                for (Int_t i = fIdS8; i < fNbDetectors; i++)
+                    TofS8[i - fIdS8] = 0;
+                nHits = fCal->GetEntriesFast();
+                for (Int_t ihit = 0; ihit < nHits; ihit++)
                 {
-                    fh2_Mwpc0vsRawPos->Fill(possci, mwpc0padx);
+                    R3BSofSciCalData* hitcal = (R3BSofSciCalData*)fCal->At(ihit);
+                    if (!hitcal)
+                        continue;
+                    iDet = hitcal->GetDetector() - 1;
+                    multCal[iDet]++;
+                    fh1_CalPos[iDet]->Fill(hitcal->GetPosMm());
+                    CalPos[iDet] = hitcal->GetPosMm();
+                    if (fIdS2 > 0 && hitcal->GetDetector() > fIdS2)
+                    {
+                        fh1_CalTofFromS2[iDet - fIdS2]->Fill(hitcal->GetTofNs_S2());
+                        fh1_BetaFromS2[iDet - fIdS2]->Fill(hitcal->GetBeta_S2());
+                        TofS2[iDet - fIdS2] = hitcal->GetTofNs_S2();
+                        fh2_PosVsTofS2[2 * (iDet - fIdS2) + 1]->Fill(hitcal->GetTofNs_S2(), hitcal->GetPosMm());
+                    }
+                    if (fIdS8 > 0 && hitcal->GetDetector() > fIdS8)
+                    {
+                        fh1_CalTofFromS8[iDet - fIdS8]->Fill(hitcal->GetTofNs_S8());
+                        fh1_BetaFromS8[iDet - fIdS8]->Fill(hitcal->GetBeta_S8());
+                        TofS8[iDet - fIdS8] = hitcal->GetTofNs_S8();
+                        fh2_PosVsTofS8[2 * (iDet - fIdS8) + 1]->Fill(TofS8[iDet - fIdS8], hitcal->GetPosMm());
+                    }
                 }
             }
-        }
+            // --- end of read cal data --- //
 
-        Double_t iRawTof_wTref;
-        Double_t iRawTof;
-        for (UShort_t dstop = 0; dstop < fNbDetectors; dstop++)
-        {
+            // --- ----------------------------------------- --- //
+            // --- filling some histogramms outside the loop --- //
+            // --- ----------------------------------------- --- //
+            for (Int_t i = 0; i < fNbDetectors; i++)
+            {
+                for (Int_t j = 0; j < fNbChannels; j++)
+                {
+                    fh2_mult[i]->Fill(j + 1, multMap[i * fNbChannels + j]);
+                    fh1_multMap[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
+                    fh1_multTcal[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
+                }
+                fh1_multSingleTcal[i]->Fill(multSTcal[i]);
+                fh1_multCal[i]->Fill(multCal[i]);
+
+                if ((multTcal[i * fNbChannels] == 1) && (multTcal[i * fNbChannels + 1] == 1))
+                {
+                    // TrawRIGHT-TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
+                    iRawPos = iRawTimeNs[i * fNbChannels] - iRawTimeNs[i * fNbChannels + 1];
+                    fh1_RawPos_TcalMult1[i]->Fill(iRawPos);
+                }
+
+                fh2_RawPosVsCalPos[i]->Fill(CalPos[i], RawPos[i]);
+            }
+
             if (fIdS2 > 0)
             {
-                if ((multMapSci[(fIdS2 - 1) * fNbChannels] == 1) && (multMapSci[(fIdS2 - 1) * fNbChannels + 1] == 1) &&
-                    (multMapSci[dstop * fNbChannels] == 1) && (multMapSci[dstop * fNbChannels + 1] == 1))
-                {
-                    iRawTof = 0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
-                              0.5 * (iRawTimeNs[(fIdS2 - 1) * fNbChannels] + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 1]);
-                    fh1_RawTof_FromS2_AtTcalMult1[dstop]->Fill(iRawTof);
 
-                    if (multMapSci[(fIdS2 - 1) * fNbChannels + 2] == 1 && multMapSci[dstop * fNbChannels + 2] == 1)
+                for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
+                {
+                    if ((multTcal[(fIdS2 - 1) * fNbChannels] == 1) &&     // SofSci at S2: PMT RIGHT
+                        (multTcal[(fIdS2 - 1) * fNbChannels + 1] == 1) && // SofSci at S2: PMT LEFT
+                        (multTcal[(fIdS2 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S2
+                        (multTcal[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
+                        (multTcal[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
+                        (multTcal[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
                     {
-                        iRawTof_wTref =
-                            iRawTof + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
-                        fh1_RawTof_FromS2_AtTcalMult1_wTref[dstop]->Fill(iRawTof_wTref);
-                    } // end of if mult==1 also for the Tref
-                }     // end of if mult==1 in the left and right pmts
-            }         // end of if(SofSci at S2)
+                        iRawTof =
+                            0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
+                            0.5 * (iRawTimeNs[(fIdS2 - 1) * fNbChannels] + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 1]) +
+                            iRawTimeNs[(fIdS2 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
+                        fh1_RawTofFromS2_TcalMult1[dstop - fIdS2]->Fill(iRawTof);
+                    }
+                    fh2_PosVsTofS2[2 * (dstop - fIdS2)]->Fill(TofS2[dstop - fIdS2], CalPos[fIdS2 - 1]);
+                }
+            } // end of if SofSci at S2
 
             if (fIdS8 > 0)
             {
-                if ((multMapSci[(fIdS8 - 1) * fNbChannels] == 1) && (multMapSci[(fIdS8 - 1) * fNbChannels + 1] == 1) &&
-                    (multMapSci[dstop * fNbChannels] == 1) && (multMapSci[dstop * fNbChannels + 1] == 1))
+                for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++)
                 {
-                    iRawTof = 0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
-                              0.5 * (iRawTimeNs[(fIdS8 - 1) * fNbChannels] + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 1]);
-                    fh1_RawTof_FromS8_AtTcalMult1[dstop]->Fill(iRawTof);
-
-                    if (multMapSci[(fIdS8 - 1) * fNbChannels + 2] == 1 && multMapSci[dstop * fNbChannels + 2] == 1)
+                    if ((multMap[(fIdS8 - 1) * fNbChannels] == 1) &&     // SofSci at S8: PMT RIGHT
+                        (multMap[(fIdS8 - 1) * fNbChannels + 1] == 1) && // SofSci at S8: PMT LEFT
+                        (multMap[(fIdS8 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S8
+                        (multMap[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
+                        (multMap[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
+                        (multMap[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
                     {
-                        iRawTof_wTref =
-                            iRawTof + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
-                        fh1_RawTof_FromS8_AtTcalMult1_wTref[dstop]->Fill(iRawTof_wTref);
-                    } // end of if mult==1 also for the Tref
-                }     // end of if mult==1 in the left and right pmts
-            }         // end of if(SofSci at S8)
+                        iRawTof =
+                            0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
+                            0.5 * (iRawTimeNs[(fIdS8 - 1) * fNbChannels] + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 1]) +
+                            iRawTimeNs[(fIdS8 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
+                        fh1_RawTofFromS8_TcalMult1[dstop - fIdS8]->Fill(iRawTof);
+                    }
+                    fh2_PosVsTofS8[2 * (dstop - fIdS8)]->Fill(TofS8[dstop - fIdS8], CalPos[fIdS8 - 1]);
+                }
+            } // end of if SofSci at S8
+        }     // end of if data in SofSci at cave C
+    }         // end of if (fMapped && fTcal)
 
-        } // end of for (dstop)
-    }
-    fNEvents += 1;
+    fNEvents++;
 }
 
 // -----   Public method Reset   ------------------------------------------------
-void R3BSofSciOnlineSpectra::Reset()
-{
-    LOG(DEBUG) << "Clearing TofWHitData Structure";
-    if (fTofwHitData)
-        fTofwHitData->Clear();
-}
+void R3BSofSciOnlineSpectra::Reset() {}
 
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciOnlineSpectra::FinishEvent()
 {
-    if (fMappedItemsSci)
+    if (fMapped)
     {
-        fMappedItemsSci->Clear();
+        fMapped->Clear();
     }
-    if (fTcalItemsSci)
+    if (fTcal)
     {
-        fTcalItemsSci->Clear();
+        fTcal->Clear();
     }
-    if (fMusHitItems)
+    if (fSingleTcal)
     {
-        fMusHitItems->Clear();
+        fSingleTcal->Clear();
     }
-    if (fMusCalItems)
+    if (fCal)
     {
-        fMusCalItems->Clear();
-    }
-    if (fCalItemsMwpc0)
-    {
-        fCalItemsMwpc0->Clear();
+        fCal->Clear();
     }
 }
 
 void R3BSofSciOnlineSpectra::FinishTask()
 {
 
-    if (fMappedItemsSci)
+    for (Int_t i = 0; i < fNbDetectors; i++)
     {
-        for (UShort_t i = 0; i < fNbDetectors; i++)
+        if (fMapped)
         {
+            cMapped[i]->Write();
             fh2_mult[i]->Write();
-            cSciMult[i]->Write();
-            for (UShort_t j = 0; j < fNbChannels; j++)
+        }
+
+        if (fTcal)
+        {
+            cPos[i]->Write();
+            fh1_RawPos_TcalMult1[i]->Write();
+        }
+
+        if (fSingleTcal)
+        {
+            fh1_RawPos_SingleTcal[i]->Write();
+            fh1_multSingleTcal[i]->Write();
+        }
+
+        if (fCal)
+        {
+            fh1_CalPos[i]->Write();
+            fh1_multCal[i]->Write();
+            cRawPosVsCalPos[i]->Write();
+            fh2_RawPosVsCalPos[i]->Write();
+        }
+
+        for (Int_t j = 0; j < fNbChannels; j++)
+        {
+            if (fMapped)
             {
                 fh1_finetime[i * fNbChannels + j]->Write();
+                fh1_multMap[i * fNbChannels + j]->Write();
+            }
+            if (fTcal)
+            {
+                fh1_multTcal[i * fNbChannels + j]->Write();
             }
         }
-    }
+    } // end of loop over fNbDetectors
 
-    if (fTcalItemsSci)
+    if (fIdS2 > 0)
     {
-        for (UShort_t i = 0; i < fNbDetectors; i++)
+        for (Int_t i = fIdS2; i < fNbDetectors; i++)
         {
-            fh1_RawPos_AtTcalMult1[i]->Write();
-            cSciRawPos[i]->Write();
-            if (fIdS2 > 0)
+            cTofFromS2[i - fIdS2]->Write();
+            if (fTcal)
             {
-                fh1_RawTof_FromS2_AtTcalMult1[i]->Write();
-                fh1_RawTof_FromS2_AtTcalMult1_wTref[i]->Write();
-                cSciRawTof_FromS2[i]->Write();
+                fh1_RawTofFromS2_TcalMult1[i - fIdS2]->Write();
             }
-            if (fIdS8 > 0)
+            if (fSingleTcal)
             {
-                fh1_RawTof_FromS8_AtTcalMult1[i]->Write();
-                fh1_RawTof_FromS8_AtTcalMult1_wTref[i]->Write();
-                cSciRawTof_FromS8[i]->Write();
+                fh1_RawTofFromS2_SingleTcal[i - fIdS2]->Write();
+            }
+            if (fCal)
+            {
+                fh1_CalTofFromS2[i - fIdS2]->Write();
+                fh2_PosVsTofS2[2 * (i - fIdS2)]->Write();
+                fh2_PosVsTofS2[2 * (i - fIdS2) + 1]->Write();
             }
         }
-        if (fMusHitItems)
-        {
-            for (UShort_t d = 0; d < fNbDetectors; d++)
-                fh2_MusZvsRawPos[d]->Write();
-        }
-        if (fMusCalItems)
-        {
-            for (UShort_t d = 0; d < fNbDetectors; d++)
-            {
-                if (fIdS2 > 0)
-                    fh2_MusZvsRawTof_FromS2[d]->Write();
-                if (fIdS8 > 0)
-                    fh2_MusZvsRawTof_FromS8[d]->Write();
-            }
-            fh2_MusDTvsRawPos->Write();
-        }
-        if (fCalItemsMwpc0)
-            fh2_Mwpc0vsRawPos->Write();
-    }
-}
+        // cPosVsTofS2->Write();
+    } // end of SofSci at S2
 
-ClassImp(R3BSofSciOnlineSpectra)
+    if (fIdS8 > 0)
+    {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++)
+        {
+            cTofFromS8[i - fIdS8]->Write();
+            if (fTcal)
+            {
+                fh1_RawTofFromS8_TcalMult1[i - fIdS8]->Write();
+            }
+            if (fSingleTcal)
+            {
+                fh1_RawTofFromS8_SingleTcal[i - fIdS8]->Write();
+            }
+            if (fCal)
+            {
+                fh1_CalTofFromS8[i - fIdS8]->Write();
+                fh2_PosVsTofS8[2 * (i - fIdS8)]->Write();
+                fh2_PosVsTofS8[2 * (i - fIdS8) + 1]->Write();
+            }
+            // cPosVsTofS8->Write();
+        }
+    } // end of SofSci at S8
+}
