@@ -64,14 +64,13 @@ class R3BSofSciMapped2Tcal : public FairTask
     R3BSofTcalPar* fTcalPar; // tcal parameters container - SofSci
     TClonesArray* fTcal;     // output data
 
-    UInt_t fNumTcal; // number of Tcal items per event
     UInt_t fNevent;
 
     TRandom rand;
 
     /** Private method CalData **/
-    //** Adds a CalData to the detector
-    R3BSofSciTcalData* AddCalData(Int_t iDet, Int_t iCh, Double_t tns);
+    //** Adds a TcalData to the detector
+    R3BSofSciTcalData* AddTcalData(Int_t det, Int_t ch, Double_t tns);
 
   public:
     ClassDef(R3BSofSciMapped2Tcal, 1)

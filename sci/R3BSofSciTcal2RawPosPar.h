@@ -2,9 +2,9 @@
 #define __R3BSOFSCITCAL2RAWPOSPAR_H__
 
 #include "FairTask.h"
+#include "TF1.h"
 #include "TH1D.h"
 #include "TH1F.h"
-#include "TF1.h"
 
 class TClonesArray;
 class R3BSofSciRawPosPar;
@@ -47,10 +47,10 @@ class R3BSofSciTcal2RawPosPar : public FairTask
     void SetOutputFile(const char* outFile);
 
     /** Accessor functions **/
-    const Int_t GetNumDets()     { return fNumDets; }
-    const Int_t GetNumPmts()     { return fNumPmts; }
-    const Int_t GetNumSignals()  { return fNumSignals; }
-    const Int_t GetMinStatistics()  { return fMinStatistics; }
+    const Int_t GetNumDets() { return fNumDets; }
+    const Int_t GetNumPmts() { return fNumPmts; }
+    const Int_t GetNumSignals() { return fNumSignals; }
+    const Int_t GetMinStatistics() { return fMinStatistics; }
 
     void SetNumDets(Int_t n) { fNumDets = n; }
     void SetNumPmts(Int_t n) { fNumPmts = n; }
@@ -63,8 +63,8 @@ class R3BSofSciTcal2RawPosPar : public FairTask
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
-    Int_t fNumDets;     // number of detectors 2 if FRS, 1 if Cave C only
-    Int_t fNumPmts;      // number of channels at the Tcal level
+    Int_t fNumDets;          // number of detectors 2 if FRS, 1 if Cave C only
+    Int_t fNumPmts;          // number of channels at the Tcal level
     Int_t fNumSignals;       // number of signal = fNumDets if RawPos used
     Int_t fNumParsPerSignal; // =2 for each signal
     Int_t fMinStatistics;    // minimum statistics to proceed to the calibration

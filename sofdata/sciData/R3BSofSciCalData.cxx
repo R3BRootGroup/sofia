@@ -1,36 +1,26 @@
 #include "R3BSofSciCalData.h"
 
-// For SofSci Cal level :
-// * from the fine and coarse times calculate the raw time
-// * select hit by checking the raw positions at S2, Cave C and the raw ToF
-
 // Default Constructor
 R3BSofSciCalData::R3BSofSciCalData()
-    : fRawTof(0)
+    : fDetector(1)
+    , fPosMm(-1500)
+    , fBeta_S2(0)
+    , fBeta_S8(0)
+    , fTofNs_S2(-1)
+    , fTofNs_S8(-1)
 {
-    fRawTimeNs = new TArrayD(NUM_SOFSCI * NUM_SOFSCI_PMT);
-    fMeanTimeNs = new TArrayD(NUM_SOFSCI);
-    fRawPos = new TArrayD(NUM_SOFSCI);
+}
+R3BSofSciCalData::R3BSofSciCalData(UShort_t det, Double_t x, Double_t b2, Double_t b8, Double_t t2, Double_t t8)
+    : fDetector(det)
+    , fPosMm(x)
+    , fBeta_S2(b2)
+    , fBeta_S8(b8)
+    , fTofNs_S2(t2)
+    , fTofNs_S8(t8)
+{
 }
 
 // Destructor
-R3BSofSciCalData::~R3BSofSciCalData()
-{
-    if (fRawTimeNs)
-    {
-        delete fRawTimeNs;
-        fRawTimeNs = NULL;
-    }
-    if (fMeanTimeNs)
-    {
-        delete fMeanTimeNs;
-        fMeanTimeNs = NULL;
-    }
-    if (fRawPos)
-    {
-        delete fRawPos;
-        fRawPos = NULL;
-    }
-}
+R3BSofSciCalData::~R3BSofSciCalData() {}
 
 ClassImp(R3BSofSciCalData)

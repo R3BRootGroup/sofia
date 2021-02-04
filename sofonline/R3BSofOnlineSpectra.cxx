@@ -19,6 +19,8 @@
 #include "R3BSofMwpcOnlineSpectra.h"
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
+#include "R3BSofSciVsMusicOnlineSpectra.h"
+#include "R3BSofSciVsMwpc0OnlineSpectra.h"
 #include "R3BSofTofWOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTrimOnlineSpectra.h"
@@ -69,6 +71,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fTrimOnline(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
+    , fSciVsMusOnline(NULL)
+    , fSciVsMw0Online(NULL)
     , fTofWOnline(NULL)
     , fScalersOnline(NULL)
     , fMusicOnline(NULL)
@@ -101,6 +105,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fTrimOnline(NULL)
     , fTwimOnline(NULL)
     , fSciOnline(NULL)
+    , fSciVsMusOnline(NULL)
+    , fSciVsMw0Online(NULL)
     , fTofWOnline(NULL)
     , fScalersOnline(NULL)
     , fMusicOnline(NULL)
@@ -263,6 +269,16 @@ InitStatus R3BSofOnlineSpectra::Init()
     fSciOnline = (R3BSofSciOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciOnlineSpectra");
     if (!fSciOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofSciOnlineSpectra not found";
+
+    // Looking for Sci Vs R3B_MUSIC online
+    fSciVsMusOnline = (R3BSofSciVsMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciVsMusicOnlineSpectra");
+    if (!fSciVsMusOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofSciVsMusicOnlineSpectra not found";
+
+    // Looking for Sci Vs MWPC0 online
+    fSciVsMw0Online = (R3BSofSciVsMwpc0OnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciVsMwpc0OnlineSpectra");
+    if (!fSciVsMw0Online)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofSciVsMwpc0OnlineSpectra not found";
 
     // Looking for TofW online
     fTofWOnline = (R3BSofTofWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTofWOnlineSpectra");
@@ -477,6 +493,12 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Sci histograms if they exist somewhere
     if (fSciOnline)
         fSciOnline->Reset_Histo();
+    // Reset Sci vs R3B_MUSIC histograms if they exist somewhere
+    if (fSciVsMusOnline)
+        fSciVsMusOnline->Reset_Histo();
+    // Reset Sci vs MWPC0 histograms if they exist somewhere
+    if (fSciVsMw0Online)
+        fSciVsMw0Online->Reset_Histo();
     // Reset Scalers histograms if they exist somewhere
     if (fScalersOnline)
         fScalersOnline->Reset_Histo();

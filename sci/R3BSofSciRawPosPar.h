@@ -39,22 +39,22 @@ class R3BSofSciRawPosPar : public FairParGenericSet
     const Int_t GetNumPmts() { return fNumPmts; }
     const Int_t GetNumSignals() { return fNumSignals; }
     const Int_t GetNumParsPerSignal() { return fNumParsPerSignal; }
-    TArrayF* GetAllSignalsTcalParams() { return fAllSignalsRawPosParams; }
-    Double_t GetSignalTcalParams(UInt_t rank) { return (Double_t)fAllSignalsRawPosParams->GetAt(rank); }
+    TArrayF* GetAllSignalsAllParams() { return fAllRawPosParams; }
+    Double_t GetParam(UInt_t rank) { return (Double_t)fAllRawPosParams->GetAt(rank); }
 
     void SetNumDets(Int_t ndets) { fNumDets = ndets; }
     void SetNumPmts(Int_t nchs) { fNumPmts = nchs; }
     void SetNumSignals(Int_t ndets) { fNumSignals = ndets; }
     void SetNumParsPerSignal(Int_t npars) { fNumParsPerSignal = npars; }
-    void SetSignalParams(Double_t parval, UInt_t rank) { fAllSignalsRawPosParams->AddAt(parval, rank); }
+    void SetParam(Double_t parval, UInt_t rank) { fAllRawPosParams->AddAt(parval, rank); }
 
     /** Create more Methods if you need them! **/
 
   private:
-    TArrayF* fAllSignalsRawPosParams; // Calibration Parameters for all signals of one detector
-    Int_t fNumDets;              // number of detectors
-    Int_t fNumPmts;         // number of channels of SofSciTcal data = 3 (need for Tcal2SingleTcal)
-    Int_t fNumSignals;          // =fNumDets if RawPos
+    TArrayF* fAllRawPosParams; // Calibration Parameters for all signals of one detector
+    Int_t fNumDets;            // number of detectors
+    Int_t fNumPmts;            // number of channels of SofSciTcal data = 3 (need for Tcal2SingleTcal)
+    Int_t fNumSignals;         // =fNumDets if RawPos
     Int_t fNumParsPerSignal;
     const R3BSofSciRawPosPar& operator=(const R3BSofSciRawPosPar&); /*< an assignment operator>*/
 

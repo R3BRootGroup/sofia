@@ -44,6 +44,8 @@ R3BSofAtOnlineSpectra.cxx
 R3BSofTrimOnlineSpectra.cxx
 R3BSofTwimOnlineSpectra.cxx
 R3BSofSciOnlineSpectra.cxx
+R3BSofSciVsMusicOnlineSpectra.cxx
+R3BSofSciVsMwpc0OnlineSpectra.cxx
 R3BSofTofWOnlineSpectra.cxx
 R3BSofFrsOnlineSpectra.cxx
 R3BSofTwimvsMusicOnlineSpectra.cxx

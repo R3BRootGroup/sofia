@@ -223,10 +223,8 @@ void R3BSofSciTcal2RawPosPar::CalculateRawPosRawPosParams()
             fitRawPos[sig]->SetParLimits(2, .1, 5.);
             fh_RawPosMult1[sig]->Fit(fitRawPos[sig], "L", "", maxx - 5., maxx + 5.);
             //
-            fRawPosPar->SetSignalParams(fitRawPos[sig]->GetParameter(1) - 5. * fitRawPos[sig]->GetParameter(2),
-                                        sig * 2);
-            fRawPosPar->SetSignalParams(fitRawPos[sig]->GetParameter(1) + 5. * fitRawPos[sig]->GetParameter(2),
-                                        sig * 2 + 1);
+            fRawPosPar->SetParam(fitRawPos[sig]->GetParameter(1) - 5. * fitRawPos[sig]->GetParameter(2), sig * 2);
+            fRawPosPar->SetParam(fitRawPos[sig]->GetParameter(1) + 5. * fitRawPos[sig]->GetParameter(2), sig * 2 + 1);
         }
         fh_RawPosMult1[sig]->Write();
     }

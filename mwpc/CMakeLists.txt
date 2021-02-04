@@ -61,6 +61,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofMWPCLinkDef.h)
 set(LIBRARY_NAME R3BSofMwpc)
 set(DEPENDENCIES
-    R3Bbase R3BData R3BSofData)
+  R3Bbase R3BData R3BSofData R3BTracking)
 
 GENERATE_LIBRARY()

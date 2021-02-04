@@ -107,6 +107,9 @@ InitStatus R3BSofTofWMapped2Tcal::ReInit()
 
 void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
 {
+
+    Reset();
+
     UShort_t iDet;
     UShort_t iCh;
     UInt_t iTf;
@@ -141,14 +144,16 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
 
     ++fNevent;
 }
-
-void R3BSofTofWMapped2Tcal::FinishEvent()
+// -----   Public method Reset   ------------------------------------------------
+void R3BSofTofWMapped2Tcal::Reset()
 {
-    fTcal->Clear();
-    fNumTcal = 0;
+    LOG(DEBUG) << "Clearing TcalData Structure";
+    if (fTcal)
+        fTcal->Clear();
 }
 
-void R3BSofTofWMapped2Tcal::FinishTask() {}
+// -----   Public method Finish   -----------------------------------------------
+void R3BSofTofWMapped2Tcal::Finish() {}
 
 Double_t R3BSofTofWMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt_t iTf, UInt_t iTc)
 {

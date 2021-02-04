@@ -96,14 +96,13 @@ void main_online()
       sofiacaldir = dir + "/sofia/macros/s467/parameters/";
     }
     else if (expId==455){
-      NumSofSci = 1; // s455: SECONDARY BEAM EXP, 1 SofSci at S2, 1 SofSci at CAVE C
-      IdS2 = 0; // should be changed to 1
+      NumSofSci = 2; 
+      IdS2 = 1; 
       IdS8 = 0; 
       sofiaWR = 0xe00;
       
       //filename = "--stream=lxir123:7803";
-      //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
-      filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_s467/*.lmd"; 
+      filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
       outputFilename = "data_s455_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
@@ -300,8 +299,8 @@ void main_online()
     }
     if (fAms)
     {
-        unpackams->SetOnline(NOTstoremappeddata);
-        source->AddReader(unpackams);
+        //unpackams->SetOnline(NOTstoremappeddata);
+        //source->AddReader(unpackams);
     }
     if (fCalifa)
     {
@@ -440,6 +439,11 @@ void main_online()
         SofSciTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciTcal2STcal);
         
+	// --- SingleTcal 2 Cal for SofSci
+        R3BSofSciSingleTcal2Cal* SofSciSTcal2Cal = new R3BSofSciSingleTcal2Cal();
+        SofSciSTcal2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(SofSciSTcal2Cal);
+	
 	// --- SingleTcal 2 Hit for SofSci
         R3BSofSciSingleTcal2Hit* SofSciSTcal2Hit = new R3BSofSciSingleTcal2Hit();
         SofSciSTcal2Hit->SetOnline(NOTstorehitdata);
@@ -544,7 +548,7 @@ void main_online()
 
         // --- SingleTcal 2 Hit for SofTofW
         R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
-        SofTofWTcal2Hit->SetOnline(NOTstorehitdata);
+        SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
         SofTofWSingleTcal2Hit->SetExpId(455);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
@@ -596,7 +600,42 @@ void main_online()
 	scionline->SetNbChannels(3);
 	scionline->SetIdS2(IdS2);
 	scionline->SetIdS8(IdS8);
+	// for run 238
+        scionline->SetCalTofS2min(355,0);
+	scionline->SetCalTofS2max(358,0);
+        scionline->SetCalTofS2min(591,1);
+	scionline->SetCalTofS2max(593,1);
+        scionline->SetCalTofS8min(234,0);
+	scionline->SetCalTofS8max(237,0);
+	// for run 242
+        //scionline->SetCalTofS2min(380,0);
+	//scionline->SetCalTofS2max(385,0);
+        //scionline->SetCalTofS2min(633,1);
+	//scionline->SetCalTofS2max(636,1);
+        //scionline->SetCalTofS8min(250,0);
+	//scionline->SetCalTofS8max(255,0);
         run->AddTask(scionline);
+	if(fMusic)
+	{
+	  R3BSofSciVsMusicOnlineSpectra* scivsmusonline = new R3BSofSciVsMusicOnlineSpectra();
+	  scivsmusonline->SetNbDetectors(NumSofSci);
+	  scivsmusonline->SetNbChannels(3);
+	  scivsmusonline->SetIdS2(IdS2);
+	  scivsmusonline->SetIdS8(IdS8);
+	  scivsmusonline->SetCalTofS2min(355.8,0);
+	  scivsmusonline->SetCalTofS2max(358,0);
+	  scivsmusonline->SetCalTofS2min(591,1);
+	  scivsmusonline->SetCalTofS2max(593,1);
+	  scivsmusonline->SetCalTofS8min(234,0);
+	  scivsmusonline->SetCalTofS8max(237,0);
+	  run->AddTask(scivsmusonline);
+	}
+	if(fMwpc0)
+	{
+	  R3BSofSciVsMwpc0OnlineSpectra* scivsmw0online = new R3BSofSciVsMwpc0OnlineSpectra();
+	  scivsmw0online->SetNbDetectors(NumSofSci);
+	  run->AddTask(scivsmw0online);
+	}
     }
 
     if (fAt)

@@ -10,11 +10,16 @@
 
 #pragma link C++ class R3BSofSciRawPosPar+;
 #pragma link C++ class R3BSofSciTcal2RawPosPar+;
-
 #pragma link C++ class R3BSofSciRawTofPar+;
 #pragma link C++ class R3BSofSciTcal2RawTofPar+;
-#pragma link C++ class R3BSofSciSingleTcal2Hit+;
 #pragma link C++ class R3BSofSciTcal2SingleTcal+;
+
+#pragma link C++ class R3BSofSciCalPosPar+;
+#pragma link C++ class R3BSofSciCalTofPar+;
+#pragma link C++ class R3BSofSciSingleTcal2CalPosCaveCPar+;
+#pragma link C++ class R3BSofSciSingleTcal2Cal+;
+
+#pragma link C++ class R3BSofSciSingleTcal2Hit+;
 
 
 #endif

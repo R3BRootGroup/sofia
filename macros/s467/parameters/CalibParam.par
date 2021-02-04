@@ -5,7 +5,8 @@
 [FairBaseParSet]
 //----------------------------------------------------------------------------
 Beam Momentum Gev/c:  Double_t  1 
-Random Seed:  UInt_t  ##############################################################################
+Random Seed:  UInt_t  
+##############################################################################
 ##############################################################################
 # Class:   FairGeoParSet
 # Context: DefaultContext
@@ -7202,25 +7203,47 @@ nSignalsTcalPar:  Int_t  56
 nTcalParsPerSignal:  Int_t  1000 
 ##############################################################################
 # Class:   SofSciRawPosPar
-# Context: SofSciParContext
+# Context: SofSciRawPosParContext
 ##############################################################################
 [SofSciRawPosPar]
 //----------------------------------------------------------------------------
+// Primary 86Kr beam for Tof Cave C - S2 calibration
 RawPosPar:  Float_t \
-  0 0 -2.42404 2.55108 -5.95738 -3.51855 0.44285 2.08567 
+  0 0 -0.40 -0.15 -5.05 -4.1   0.45 1.30 
+//RawPosPar:  Float_t \
+//  0 0 -2.42404 2.55108 -5.95738 -3.51855 0.44285 2.08567 
 nDetectorsRawPosPar:  Int_t  4 
 nChannelsRawPosPar:  Int_t  3 
 nSignalsRawPosPar:  Int_t  4 
 nRawPosParsPerSignal:  Int_t  2
 ##############################################################################
+# Class:   SofSciCalPosPar
+# Context: SofSciCalPosParContext
+##############################################################################
+[SofSciCalPosPar]
+//----------------------------------------------------------------------------
+nDets: Int_t 4
+nCalPosParsPerDet: 2
+CalPosPar: Float_t \
+0.0  1.0    0.0  1.0    0.0  1.0    0.0  1.0
+##############################################################################
 ##############################################################################
 # Class:   SofSciRawTofPar
-# Context: SofSciParContext
+# Context: SofSciRawTofParContext
 ##############################################################################
-[SofSciRawTofPar]
+[SofSciRawRawTofPar]
 //----------------------------------------------------------------------------
+// Run 237-238 : first Tof S2-Cave C calibration point
 RawTofPar:  Float_t \
-  0 0 1899.67 1944.58 854.106 872.051
+  0 0 1910.2 1911.1 858.0 860.
+// Run 239 : second Tof S2-Cave C calibration point
+//    RawTofPar:  Float_t \
+//      0 0 1935. 1936.5 867.8 870.
+// Run 242 : third Tof S2-Cave C calibration point
+//     RawTofPar:  Float_t \
+//       0 0 1953. 1953.9 875.0 876.8
+//RawTofPar:  Float_t \
+//  0 0 1899.67 1944.58 854.106 872.051
 nDetsRawTofPar:  Int_t  4 
 nChannelsRawTofPar:  Int_t  3 
 idDetS2:  Int_t  2 
@@ -7228,6 +7251,73 @@ idDetS8:  Int_t  3
 idDetCaveC:  Int_t  4 
 nSignalsRawTofPar:  Int_t  3 
 nRawTofParsPerSignal:  Int_t  2 
+##############################################################################
+# Class:   SofSciCalPosPar
+# Context: SofSciCalPosParContext
+##############################################################################
+[SofSciCalPosPar]
+//----------------------------------------------------------------------------
+nDets: Int_t 4
+nCalPosParsPerDet: Int_t 2
+CalPosPar: Float_t \
+0.0  1.0    0.0  58    0.0  1.0   0.0  1.0  
+##############################################################################
+##############################################################################
+# Class:   SofSciCalTofPar
+# Context: SofSciCalTofParContext
+##############################################################################
+[SofSciCalTofPar]
+//----------------------------------------------------------------------------
+Tof2InvV_FromS2:  Float_t \
+-8.302 0.01195     -9.5088  0.00721
+Tof2InvV_FromS8:  Float_t \
+-11.3028  0.01813
+LS2:  Float_t \
+83.65  138.67
+LS8:  Float_t \
+55.16
+nDets:  Int_t  4 
+idDetS2:  Int_t  2 
+idDetS8:  Int_t  3 
+idDetCaveC:  Int_t  4 
+##############################################################################
+##############################################################################
+# Class:   SofSciCalTofPar
+# Context: SofSciCalTofParContext
+##############################################################################
+[SofSciCalTofPar]
+//----------------------------------------------------------------------------
+Tof2InvV_FromS2:  Float_t \
+0.0  1.0     0.0  1.0
+Tof2InvV_FromS8:  Float_t \
+0.0  1.0
+LS2:  Float_t \
+0.0  0.0
+LS8:  Float_t \
+0.0
+nDets:  Int_t  4 
+idDetS2:  Int_t  2 
+idDetS8:  Int_t  3 
+idDetCaveC:  Int_t  4 
+##############################################################################
+##############################################################################
+# Class:   SofSciCalTofPar
+# Context: SofSciCalTofParContext
+##############################################################################
+[SofSciCalTofPar]
+//----------------------------------------------------------------------------
+Tof2InvV_FromS2:  Float_t \
+0.0  1.0     0.0  1.0
+Tof2InvV_FromS8:  Float_t \
+0.0  1.0
+LS2:  Float_t \
+0.0  0.0
+LS8:  Float_t \
+0.0
+nDets:  Int_t  4 
+idDetS2:  Int_t  2 
+idDetS8:  Int_t  3 
+idDetCaveC:  Int_t  4 
 ##############################################################################
 ##############################################################################
 # Class:   tofwHitPar
@@ -7264,6 +7354,90 @@ tofwEffectiveLength:  Float_t  \
  30.62 30.4765 30.6699 30.5859 30.8251 30.6124 30.8609 30.6486 30.8577 32.5892 \
  30.9662 31.4054 31.2349 30.7753 30.6776 33.0136 33.8547 33.8244 32.5291 34.0519 \
  29.6837 29.6015 29.6015 29.6015 29.6015 29.6015 29.6015 0
+##############################################################################
+##############################################################################
+# Class:   tofwGeoPar
+# Context: GeometryParameterContext
+##############################################################################
+[tofwGeoPar]
+PositionX: Double_t -3300.
+PositionY: Double_t 0.
+PositionZ: Double_t 8170.
+RotationX: Double_t 0.
+RotationY: Double_t -28.
+RotationZ: Double_t 0.
+DimensionX: Double_t 840.
+DimensionY: Double_t 600.
+DimensionZ: Double_t 5.
+SigmaX: Double_t 15.
+SigmaY: Double_t 1.
+Z: Double_t 5.57354
+A: Double_t 11.0723
+Density: Double_t 1.032
+IonisationEnergy: Double_t 57.4e-6
+###############################################################################
+#############################################################################
+#############################################################################
+# Class:   mwpc0GeoPar
+# Context: GeometryParameterContext
+#############################################################################
+[mwpc0GeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -190.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 0.5
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+##############################################################################
+##############################################################################
+# Class:   tofwGeoPar
+# Context: GeometryParameterContext
+##############################################################################
+[tofwGeoPar]
+PositionX: Double_t -3300.
+PositionY: Double_t 0.
+PositionZ: Double_t 8170.
+RotationX: Double_t 0.
+RotationY: Double_t -28.
+RotationZ: Double_t 0.
+DimensionX: Double_t 840.
+DimensionY: Double_t 600.
+DimensionZ: Double_t 5.
+SigmaX: Double_t 15.
+SigmaY: Double_t 1.
+Z: Double_t 5.57354
+A: Double_t 11.0723
+Density: Double_t 1.032
+IonisationEnergy: Double_t 57.4e-6
+##############################################################################
+#############################################################################
+# Class:   mwpc0GeoPar
+# Context: GeometryParameterContext
+#############################################################################
+[mwpc0GeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -190.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 0.5
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#############################################################################
 ##############################################################################
 ##############################################################################
 # Class:   tofwGeoPar

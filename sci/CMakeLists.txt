@@ -11,8 +11,10 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
+${R3BROOT_SOURCE_DIR}/tracking
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
+${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/sci
 ${R3BSOF_SOURCE_DIR}/input
@@ -37,6 +39,10 @@ R3BSofSciTcal2RawPosPar.cxx
 R3BSofSciTcal2RawTofPar.cxx
 R3BSofSciTcal2SingleTcal.cxx
 R3BSofSciSingleTcal2Hit.cxx
+R3BSofSciCalPosPar.cxx
+R3BSofSciCalTofPar.cxx
+R3BSofSciSingleTcal2CalPosCaveCPar.cxx
+R3BSofSciSingleTcal2Cal.cxx
 )
 
 # fill list of header files from list of source files
@@ -46,7 +52,7 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofSciLinkDef.h)
 set(LIBRARY_NAME R3BSofSci)
 set(DEPENDENCIES
-    R3Bbase R3BSofData R3BSofTcal)
+  R3Bbase R3BSofData R3BSofTcal R3BTracking)
 
 if(FAIRDB_FOUND)
 set(DEPENDENCIES
