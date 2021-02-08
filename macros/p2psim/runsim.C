@@ -18,7 +18,7 @@ void runsim(Int_t nEvents = 0)
     TString OutFile = "sim.root"; // Output file for data
     TString ParFile = "par.root"; // Output file for params
 
-    Bool_t fVis = true;             // Store tracks for visualization
+    Bool_t fVis = false;             // Store tracks for visualization
     Bool_t fUserPList = false;      // Use of R3B special physics list
     Bool_t fR3BMagnet = false;      // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
@@ -34,6 +34,7 @@ void runsim(Int_t nEvents = 0)
     TString fGenerator = generator2;
 
     // Input event file in the case of ascii generator
+    //TString fEventFile = "p2p_238U.txt";
     TString fEventFile = "p2p_U238_500.txt";
 
     Int_t fFieldMap = -1;          // Magentic field map selector
@@ -120,6 +121,7 @@ void runsim(Int_t nEvents = 0)
     rtdb->print();
     // ----- Containers
     R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
+    R3BTGeoPar* targetPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
     R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("mwpc1GeoPar");
     R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("twimGeoPar");
     R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("mwpc2GeoPar");
@@ -171,9 +173,24 @@ void runsim(Int_t nEvents = 0)
     // Tracker, vacuum chamber and LH2 target definitions
     if (fTracker)
     {
-        R3BTra* tra = new R3BTra(fTrackerGeo, { 0., 0., -0.75 - 65. });
-        tra->SetEnergyCut(1e-6); // 1 keV
-        run->AddModule(tra);
+        if (targetPar)
+        {
+            targetPar->printParams();
+            TGeoRotation* rtarget = new TGeoRotation("Targetrot");
+            rtarget->RotateX(targetPar->GetRotX());
+            rtarget->RotateY(targetPar->GetRotY());
+            rtarget->RotateZ(targetPar->GetRotZ());
+            R3BTra* tra =
+                new R3BTra(fTrackerGeo, { targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ(), rtarget });
+            tra->SetEnergyCut(1e-6); // 1 keV
+            run->AddModule(tra);
+        }
+        else
+        {
+            R3BTra* tra = new R3BTra(fTrackerGeo, { 0., 0., -0.75 - 65. });
+            tra->SetEnergyCut(1e-6); // 1 keV
+            run->AddModule(tra);
+        }
     }
 
     // CALIFA Calorimeter
@@ -355,7 +372,7 @@ void runsim(Int_t nEvents = 0)
         // boxGen->SetPhiRange(88, 88);
         // boxGen->SetXYZ(0.0, 0.0, 4.);
         primGen->AddGenerator(boxGen);
-
+/*
         // 128-Sn fragment
         R3BIonGenerator* ionGen = new R3BIonGenerator(50, 129, 50, 1, 0., 0., 0.9);
         ionGen->SetSpotRadius(0.0, -65.5, 0.0);
@@ -369,12 +386,13 @@ void runsim(Int_t nEvents = 0)
         boxGen_n->SetPhiRange(0, 360);
         boxGen_n->SetXYZ(0.0, 0.0, -1.5);
         // primGen->AddGenerator(boxGen_n);
+        */
     }
 
     if (fGenerator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + fEventFile).Data());
-        gen->SetXYZ(0.0, 0.0, 0.0);
+        gen->SetXYZ(targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ());
         gen->SetDxDyDz(0., 0., 0.0);
         primGen->AddGenerator(gen);
     }

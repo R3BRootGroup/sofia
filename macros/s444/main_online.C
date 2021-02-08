@@ -18,7 +18,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
     EXT_STR_h101_MUSIC_onion_t music;
     EXT_STR_h101_SOFSCI_onion_t sci;
-    EXT_STR_h101_AMS_t ams;
+    EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_WRMASTER_t wrmaster;
     EXT_STR_h101_WRSOFIA_t wrsofia;
     EXT_STR_h101_WRS2_t wrs2;
@@ -185,7 +185,7 @@ void main_online()
     }
 
     if (fAms)
-        unpackams = new R3BAmsReader((EXT_STR_h101_AMS*)&ucesb_struct.ams, offsetof(EXT_STR_h101, ams));
+        unpackams = new R3BAmsReader((EXT_STR_h101_AMS_onion*)&ucesb_struct.ams, offsetof(EXT_STR_h101, ams));
 
     if (fCalifa)
     {

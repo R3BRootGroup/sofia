@@ -21,9 +21,9 @@ PositionZ: Double_t -65.5
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
-DimensionX: Double_t 0.5
-DimensionY: Double_t 0.5
-DimensionZ: Double_t 1.0
+DimensionX: Double_t 3.0
+DimensionY: Double_t 3.0
+DimensionZ: Double_t 1.5
 Z: Double_t 1.
 A: Double_t 1.
 Density: Double_t 0.07
