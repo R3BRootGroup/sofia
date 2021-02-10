@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------
-// -----         R3BSofTofWTCal2Hit source file                -----
+// -----         R3BSofTofWSingleTCal2Hit source file          -----
 // -----    Created 15/02/20  by J.L. Rodriguez-Sanchez        -----
 // -----------------------------------------------------------------
 
-#ifndef R3BSofTofWTCal2Hit_H
-#define R3BSofTofWTCal2Hit_H
+#ifndef R3BSofTofWSingleTCal2Hit_H
+#define R3BSofTofWSingleTCal2Hit_H
 
 // ROOT headers
 #include "TClonesArray.h"
@@ -28,22 +28,29 @@
 #include "R3BSofTofWTcalData.h"
 
 class TClonesArray;
+class R3BTGeoPar;
 
-class R3BSofTofWTCal2Hit : public FairTask
+class R3BSofTofWSingleTCal2Hit : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofTofWTCal2Hit();
+    R3BSofTofWSingleTCal2Hit();
 
     /** Standard constructor **/
-    R3BSofTofWTCal2Hit(const char* name, Int_t iVerbose = 1);
+    R3BSofTofWSingleTCal2Hit(const char* name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofTofWTCal2Hit();
+    virtual ~R3BSofTofWSingleTCal2Hit();
 
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
+
+    /** Public method Experiment s455 **/
+    virtual void S455();
+
+    /** Public method Experiment s467 **/
+    virtual void S467();
 
     /** Virtual method Reset **/
     virtual void Reset();
@@ -62,19 +69,21 @@ class R3BSofTofWTCal2Hit : public FairTask
     virtual void FinishEvent();
 
     void SetOnline(Bool_t option) { fOnline = option; }
-    void SetTofLISE(Double_t tof) { Tof_lise = tof; }
-    void SetTofWPos(Double_t pos) { TofWPosition = pos; }
-    Double_t GetTofLISE() { return Tof_lise; }
-    Double_t GetTofWPos() { return TofWPosition; }
+    void SetExpId(Int_t exp) { fExpId = exp; }
+    void SetTofLISE(Double_t tof) { fTof_lise = tof; }
+
+    Double_t GetTofLISE() { return fTof_lise; }
 
   private:
     Bool_t fOnline; // Don't store data for online
+    Int_t fExpId;
 
     TClonesArray* fTCalDataCA; /**< Array with Cal input data. >*/
     TClonesArray* fHitDataCA;  /**< Array with Hit output data. >*/
-    Double_t Tof_lise;         // = 43.;
-    Double_t TofWPosition;     // = 560.
+    Double_t fTof_lise;
     R3BSofTofWSingleTcalData** calDat;
+
+    R3BTGeoPar* fTofWGeoPar;
     R3BSofTofWHitPar* fTofWHitPar;
 
     /** Private method AddHitData **/
@@ -83,7 +92,7 @@ class R3BSofTofWTCal2Hit : public FairTask
 
   public:
     // Class definition
-    ClassDef(R3BSofTofWTCal2Hit, 1)
+    ClassDef(R3BSofTofWSingleTCal2Hit, 1)
 };
 
 #endif

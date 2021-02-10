@@ -31,7 +31,7 @@ void runsim(Int_t nEvents = 0)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString fGenerator = generator2;
+    TString fGenerator = generator1;
 
     // Input event file in the case of ascii generator
     //TString fEventFile = "p2p_238U.txt";
@@ -122,6 +122,7 @@ void runsim(Int_t nEvents = 0)
     // ----- Containers
     R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
     R3BTGeoPar* targetPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
+    R3BTGeoPar* califaPar = (R3BTGeoPar*)rtdb->getContainer("CalifaGeoPar");
     R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("mwpc1GeoPar");
     R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("twimGeoPar");
     R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("mwpc2GeoPar");
@@ -196,9 +197,23 @@ void runsim(Int_t nEvents = 0)
     // CALIFA Calorimeter
     if (fCalifa)
     {
+        if (califaPar)
+        {
+            califaPar->printParams();
+            TGeoRotation* rcalifa = new TGeoRotation("Califarot");
+            rcalifa->RotateX(mwpc0Par->GetRotX());
+            rcalifa->RotateY(mwpc0Par->GetRotY());
+            rcalifa->RotateZ(mwpc0Par->GetRotZ());
+            R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { califaPar->GetPosX(), califaPar->GetPosY(), califaPar->GetPosZ(), rcalifa });
+            califa->SelectGeometryVersion(fCalifaGeoVer);
+            run->AddModule(califa);
+        }
+        else{
+    
         R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -65. });
         califa->SelectGeometryVersion(fCalifaGeoVer);
         run->AddModule(califa);
+        }
     }
 
     // MWPC1 definition
@@ -371,6 +386,8 @@ void runsim(Int_t nEvents = 0)
         boxGen->SetPRange(momentum, momentum);
         // boxGen->SetPhiRange(88, 88);
         // boxGen->SetXYZ(0.0, 0.0, 4.);
+        boxGen->SetPhiRange(0., 360.);
+        boxGen->SetXYZ(0.0, 0.0, -65.0);
         primGen->AddGenerator(boxGen);
 /*
         // 128-Sn fragment

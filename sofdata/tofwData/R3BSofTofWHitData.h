@@ -13,9 +13,9 @@ class R3BSofTofWHitData : public TObject
      *@param fPaddleId  Paddle number
      *@param fX         Position X in [mm]
      *@param fY         Position Y in [mm]
-     *@param fTime      Time [ns]
+     *@param fTof      Tof [ns]
      **/
-    R3BSofTofWHitData(Int_t paddle, Double_t X, Double_t Y, Double_t time);
+    R3BSofTofWHitData(Int_t paddle, Double_t X, Double_t Y, Double_t tof);
 
     /** Destructor **/
     virtual ~R3BSofTofWHitData() {}
@@ -24,17 +24,17 @@ class R3BSofTofWHitData : public TObject
     inline const Int_t& GetPaddle() const { return fPaddleId; }
     inline const Double_t& GetX() const { return fX; }
     inline const Double_t& GetY() const { return fY; }
-    inline const Double_t& GetTime() const { return fTime; }
+    inline const Double_t& GetTof() const { return fTof; }
 
     /** Modifiers **/
     void SetPaddle(Int_t p) { fPaddleId = p; };
     void SetX(Double_t x) { fX = x; };
     void SetY(Double_t y) { fY = y; };
-    void SetTime(Double_t t) { fTime = t; };
+    void SetTof(Double_t t) { fTof = t; };
 
   protected:
     Int_t fPaddleId;
-    Double_t fX, fY, fTime;
+    Double_t fX, fY, fTof;
 
   public:
     ClassDef(R3BSofTofWHitData, 1)
