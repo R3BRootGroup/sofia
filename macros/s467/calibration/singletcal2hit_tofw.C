@@ -1,9 +1,9 @@
 /*
  *  Macro to run the online for all the detectors simultaneously
  *
- *  One needs to set up the Phase0 experiments: s444, s467, or s455
+ *  One needs to set up the 2020 experiments: s444 or s467, the unpackers are:
  *
- *  at $UCESB_DIR/../upexps/yyyymm_s4xx
+ *  at $UCESB_DIR/../upexps/202002_s444 and $UCESB_DIR/../upexps/202002_s467
  *
  *
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
@@ -15,31 +15,25 @@ typedef struct EXT_STR_h101_t
 {
     EXT_STR_h101_unpack_t unpack;
     EXT_STR_h101_TPAT_t unpacktpat;
-   
-    EXT_STR_h101_MUSIC_onion_t music;
-    EXT_STR_h101_AMS_onion_t ams;
-    EXT_STR_h101_CALIFA_t califa;
-    EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
-    
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
-    EXT_STR_h101_SOFTRIM_onion_t trim;
-    EXT_STR_h101_SOFAT_onion_t at;
+    EXT_STR_h101_MUSIC_onion_t music;
     EXT_STR_h101_SOFSCI_onion_t sci;
-    EXT_STR_h101_SOFTWIM_onion_t twim;
-    EXT_STR_h101_SOFTOFW_onion_t tofw;
-    EXT_STR_h101_SOFSCALERS_onion_t scalers;
-
-    EXT_STR_h101_FRS_t frs;
-    
+    EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_WRMASTER_t wrmaster;
-    EXT_STR_h101_WRCALIFA_t wrcalifa;
-    EXT_STR_h101_WRNEULAND_t wrneuland;
     EXT_STR_h101_WRSOFIA_t wrsofia;
     EXT_STR_h101_WRS2_t wrs2;
     EXT_STR_h101_WRS8_t wrs8;
+    EXT_STR_h101_CALIFA_t califa;
+    EXT_STR_h101_WRCALIFA_t wrcalifa;
+    EXT_STR_h101_SOFTWIM_onion_t twim;
+    EXT_STR_h101_SOFTOFW_onion_t tofw;
+    EXT_STR_h101_SOFSCALERS_onion_t scalers;
+    EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
+    EXT_STR_h101_WRNEULAND_t wrneuland;
+    EXT_STR_h101_FRS_t frs;
 } EXT_STR_h101;
 
-void main_online()
+void singletcal2hit_tofw()
 {
     TStopwatch timer;
     timer.Start();
@@ -51,7 +45,7 @@ void main_online()
     // *********************************** //
     // PLEASE CHANGE THE EXPERIMENT NUMBER //
     // *********************************** //
-    const Int_t expId = 455;               // select experiment: 444 or 467
+    const Int_t expId = 467;               // select experiment: 444 or 467
     // *********************************** //
     
     // NumSofSci, file names and paths -----------------------------
@@ -85,7 +79,7 @@ void main_online()
       sofiaWR = 0xe00;
       
       //filename = "--stream=lxir123:7803";
-      //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
+      filename = "~/lmd/s467/main0238_0001.lmd";
       outputFilename = "data_s467_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
@@ -94,24 +88,6 @@ void main_online()
       ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
       
       sofiacaldir = dir + "/sofia/macros/s467/parameters/";
-    }
-    else if (expId==455){
-      NumSofSci = 1; // s455: SECONDARY BEAM EXP, 1 SofSci at S2, 1 SofSci at CAVE C
-      IdS2 = 0; // should be changed to 1
-      IdS8 = 0; 
-      sofiaWR = 0xe00;
-      
-      //filename = "--stream=lxir123:7803";
-      //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
-      filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_s467/*.lmd"; 
-      outputFilename = "data_s455_online.root";
-      
-      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
-      // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202005_s455/202005_s455 --allow-errors --input-buffer=100Mi";
-      
-      sofiacaldir = dir + "/sofia/macros/s455/parameters/";
     }
     else{
       std::cout << "Experiment was not selected" << std::endl;
@@ -125,7 +101,7 @@ void main_online()
     // store data or not ------------------------------------
     Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
     Bool_t NOTstoremappeddata = true; // if true, don't store mapped data in the root file
-    Bool_t NOTstorecaldata = true;    // if true, don't store cal data in the root file
+    Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = true;    // if true, don't store hit data in the root file
 
     // Online server configuration --------------------------
@@ -144,16 +120,14 @@ void main_online()
     Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMusic = false;    // R3B-Music: Ionization chamber for charge-Z
     // --- Sofia ------------------------------------------------------------------------
-    Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
+    Bool_t fMwpc0 = false;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
-    Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
-    Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
-    Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fMwpc1 = false;    // MWPC1 for tracking of fragments in front of target
+    Bool_t fMwpc2 = false;    // MWPC2 for tracking of fragments before GLAD
+    Bool_t fTwim = false;     // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc3 = false;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
-    Bool_t fScalers = true;  // SIS3820 scalers at Cave C
+    Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD
 
@@ -176,25 +150,20 @@ void main_online()
 
     // Definition of reader ---------------------------------
     R3BFrsReaderNov19* unpackfrs;
-
     R3BMusicReader* unpackmusic;
+    R3BSofSciReader* unpacksci;
+    R3BWhiterabbitS2Reader* unpackWRS2;
+    R3BWhiterabbitS8Reader* unpackWRS8;
+    R3BWhiterabbitMasterReader* unpackWRMaster;
+    R3BSofWhiterabbitReader* unpackWRSofia;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
-    R3BNeulandTamexReader* unpackneuland;
-    
-    R3BSofTrimReader* unpacktrim;
-    R3BSofSciReader* unpacksci;
-    R3BSofAtReader* unpackat;
+    R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofMwpcReader* unpackmwpc;
     R3BSofTwimReader* unpacktwim;
     R3BSofTofWReader* unpacktofw;
     R3BSofScalersReader* unpackscalers;
-    
-    R3BWhiterabbitS2Reader* unpackWRS2;
-    R3BWhiterabbitS8Reader* unpackWRS8;
-    R3BWhiterabbitMasterReader* unpackWRMaster;
-    R3BWhiterabbitCalifaReader* unpackWRCalifa;
-    R3BSofWhiterabbitReader* unpackWRSofia;
+    R3BNeulandTamexReader* unpackneuland;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
 
 
@@ -231,12 +200,6 @@ void main_online()
     }
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
         unpackmwpc = new R3BSofMwpcReader((EXT_STR_h101_SOFMWPC_t*)&ucesb_struct.mwpc, offsetof(EXT_STR_h101, mwpc));
-
-    if (fTrim)
-        unpacktrim = new R3BSofTrimReader((EXT_STR_h101_SOFTRIM_t*)&ucesb_struct.trim, offsetof(EXT_STR_h101, trim));
-    
-    if (fAt)
-        unpackat = new R3BSofAtReader((EXT_STR_h101_SOFAT_t*)&ucesb_struct.at, offsetof(EXT_STR_h101, at));
 
     if (fTwim)
         unpacktwim = new R3BSofTwimReader((EXT_STR_h101_SOFTWIM_t*)&ucesb_struct.twim, offsetof(EXT_STR_h101, twim));
@@ -288,11 +251,6 @@ void main_online()
         source->AddReader(unpackWRS8);
     }
 
-    if(fAt){
-      unpackat->SetOnline(NOTstoremappeddata);
-      source->AddReader(unpackat);
-    }
-
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
     {
         unpackmwpc->SetOnline(NOTstoremappeddata);
@@ -309,11 +267,6 @@ void main_online()
         source->AddReader(unpackcalifa);
         unpackWRCalifa->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRCalifa);
-    }
-    if (fTrim)
-    {
-        unpacktrim->SetOnline(NOTstoremappeddata);
-        source->AddReader(unpacktrim);
     }
     if (fTwim)
     {
@@ -340,7 +293,7 @@ void main_online()
     FairRunOnline* run = new FairRunOnline(source);
     run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
-    run->ActivateHttpServer(refresh, port);
+    //run->ActivateHttpServer(refresh, port);
 
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
@@ -400,7 +353,7 @@ void main_online()
         run->AddTask(MW0Cal2Hit);
     }
 
-    // R3B-MUSIC
+    // MUSIC
     if (fMusic)
     {
         R3BMusicMapped2Cal* MusMap2Cal = new R3BMusicMapped2Cal();
@@ -410,21 +363,6 @@ void main_online()
         R3BMusicCal2Hit* MusCal2Hit = new R3BMusicCal2Hit();
         MusCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MusCal2Hit);
-    }
-
-    // Triple-MUSIC
-    if(fTrim)
-    {   
-        // --- Mapped 2 Cal
-        R3BSofTrimMapped2Cal* SofTrimMap2Cal = new R3BSofTrimMapped2Cal();
-        SofTrimMap2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(SofTrimMap2Cal);
-   
-	// --- Cal 2 Hit
-	R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
-	SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
-	SofTrimCal2Hit->SetTriShape(kTRUE);
-	run->AddTask(SofTrimCal2Hit);
     }
 
     // SCI
@@ -439,8 +377,7 @@ void main_online()
         R3BSofSciTcal2SingleTcal* SofSciTcal2STcal = new R3BSofSciTcal2SingleTcal();
         SofSciTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciTcal2STcal);
-        
-	// --- SingleTcal 2 Hit for SofSci
+        // --- SingleTcal 2 Hit for SofSci
         R3BSofSciSingleTcal2Hit* SofSciSTcal2Hit = new R3BSofSciSingleTcal2Hit();
         SofSciSTcal2Hit->SetOnline(NOTstorehitdata);
         SofSciSTcal2Hit->SetCalParams(675.,-1922.);//ToF calibration at Cave-C
@@ -474,7 +411,7 @@ void main_online()
         CalifaMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
-        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit(false);
+        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
         CalifaCal2Hit->SetCrystalThreshold(100.); // 100keV
         CalifaCal2Hit->SetDRThreshold(10000.);    // 10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);
@@ -543,179 +480,24 @@ void main_online()
         run->AddTask(SofTofWTcal2STcal);
 
         // --- SingleTcal 2 Hit for SofTofW
-        R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
-        SofTofWTcal2Hit->SetOnline(NOTstorehitdata);
-        SofTofWSingleTcal2Hit->SetExpId(455);
-        run->AddTask(SofTofWSingleTcal2Hit);
+        R3BSofTofWSingleTCal2HitPar* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2HitPar();
+        run->AddTask(SofTofWSingleTcal2Hit);    
     }
-
-    // Add online task ------------------------------------
-    if (fFrsTpcs)
-    {
-       FrsTpcOnlineSpectra* tpconline= new FrsTpcOnlineSpectra();
-       run->AddTask(tpconline);
-    }
-
-    if (fScalers)
-    {
-        R3BSofScalersOnlineSpectra* scalersonline = new R3BSofScalersOnlineSpectra();
-        run->AddTask(scalersonline);
-    }
-    if (fFrs && fMusic && fSci)
-    {
-        R3BSofFrsOnlineSpectra* frsonline = new R3BSofFrsOnlineSpectra();
-        run->AddTask(frsonline);
-    }
-    if (fMwpc0)
-    {
-        R3BSofMwpcOnlineSpectra* mw0online = new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra", 1, "Mwpc0");
-        run->AddTask(mw0online);
-    }
-
-    if (fMusic)
-    {
-        R3BMusicOnlineSpectra* musonline = new R3BMusicOnlineSpectra();
-        run->AddTask(musonline);
-        if (fMwpc0)
-        {
-          R3BSofMwpcvsMusicOnlineSpectra* mw0vsmusiconline= new R3BSofMwpcvsMusicOnlineSpectra("SofMwpc0vsMusicOnlineSpectra", 1, "Mwpc0");
-          run->AddTask(mw0vsmusiconline);
-        }
-    }
-
-    if (fTrim)
-    {
-        R3BSofTrimOnlineSpectra* trimonline = new R3BSofTrimOnlineSpectra();
-        run->AddTask(trimonline);
-    }
-
-    if (fSci)
-    {
-        R3BSofSciOnlineSpectra* scionline = new R3BSofSciOnlineSpectra();
-	scionline->SetNbDetectors(NumSofSci);
-	scionline->SetNbChannels(3);
-	scionline->SetIdS2(IdS2);
-	scionline->SetIdS8(IdS8);
-        run->AddTask(scionline);
-    }
-
-    if (fAt)
-    {
-        R3BSofAtOnlineSpectra* atonline = new R3BSofAtOnlineSpectra();
-        run->AddTask(atonline);
-    }
-    
-    if (fAms)
-    {
-        R3BAmsOnlineSpectra* AmsOnline = new R3BAmsOnlineSpectra();
-        run->AddTask(AmsOnline);
-    }
-
-    if (fCalifa)
-    {
-        R3BCalifaOnlineSpectra* CalifaOnline = new R3BCalifaOnlineSpectra();
-        CalifaOnline->SetRange_max(30000); // 30000 -> 30MeV
-        CalifaOnline->SetBinChannelFebex(500);
-        CalifaOnline->SetMaxBinFebex(10000); // 10000 -> 10MeV
-        run->AddTask(CalifaOnline);
-    }
-
-    if (fMusic && fCalifa && fTwim)
-    {
-        R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
-        CalifaAmsOnline->SetZproj(36.0); // Projectile atomic number
-        CalifaAmsOnline->SetCalifa_bins_maxrange(500, 300000); // 300000 -> 300MeV
-        run->AddTask(CalifaAmsOnline);
-    }
-
-    if (fTwim)
-    {
-        R3BSofTwimOnlineSpectra* twonline = new R3BSofTwimOnlineSpectra();
-        run->AddTask(twonline);
-        // Twim-Music correlations
-        if (fMusic)
-        {
-            R3BSofTwimvsMusicOnlineSpectra* twmusonline = new R3BSofTwimvsMusicOnlineSpectra();
-            run->AddTask(twmusonline);
-        }
-    }
-
-    if (fMwpc1)
-    {
-        R3BSofMwpcOnlineSpectra* mw1online = new R3BSofMwpcOnlineSpectra("SofMwpc1OnlineSpectra", 1, "Mwpc1");
-        run->AddTask(mw1online);
-    }
-
-    if (fMwpc0 && fMwpc1)
-    {
-        R3BSofMwpcCorrelationOnlineSpectra* mw0mw1online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_1CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc1");
-        run->AddTask(mw0mw1online);
-    }
-
-    if (fMwpc1 && fMwpc2)
-    {
-        R3BSofMwpcCorrelationOnlineSpectra* mw1mw2online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc1_2CorrelationOnlineSpectra", 1, "Mwpc1", "Mwpc2");
-        run->AddTask(mw1mw2online);
-    }
-
-    if (fMwpc2)
-    {
-        R3BSofMwpcOnlineSpectra* mw2online = new R3BSofMwpcOnlineSpectra("SofMwpc2OnlineSpectra", 1, "Mwpc2");
-        run->AddTask(mw2online);
-    }
-
-    if (fMwpc0 && fMwpc2)
-    {
-        R3BSofMwpcCorrelationOnlineSpectra* mw0mw2online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_2CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc2");
-        run->AddTask(mw0mw2online);
-    }
-
-    if (fMwpc2 && fMwpc3)
-    {
-        R3BSofMwpcCorrelationOnlineSpectra* mw2mw3online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc2_3CorrelationOnlineSpectra", 1, "Mwpc2", "Mwpc3");
-        run->AddTask(mw2mw3online);
-    }
-
-    if (fMwpc3)
-    {
-        R3BSofMwpcOnlineSpectra* mw3online = new R3BSofMwpcOnlineSpectra("SofMwpc3OnlineSpectra", 1, "Mwpc3");
-        run->AddTask(mw3online);
-    }
-
-    if (fTofW)
-    {
-      R3BSofTofWOnlineSpectra* tofwonline = new R3BSofTofWOnlineSpectra();
-      tofwonline->Set_TwimvsTof_range(-87.,-65.);
-      tofwonline->Set_IdSofSciCaveC(NumSofSci);
-      run->AddTask(tofwonline);
-    }
-
-    if (fMwpc2 && fTwim && fSci && fTracking)
-    {
-        if(fTofW && fMwpc3){
-         R3BSofFragmentAnalysis* TrackingAna = new R3BSofFragmentAnalysis();
-         TrackingAna->SetOnline(NOTstorehitdata);
-         run->AddTask(TrackingAna); 
-        }
-
-        R3BSofTrackingOnlineSpectra* Trackingonline = new R3BSofTrackingOnlineSpectra();
-        Trackingonline->Set_Charge_range(10.,38.);
-        run->AddTask(Trackingonline); 
-    }
-
-    R3BSofOnlineSpectra* sofonline = new R3BSofOnlineSpectra();
-    run->AddTask(sofonline);
 
     // Initialize -------------------------------------------
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    
+    
+    FairParAsciiFileIo* parOut = new FairParAsciiFileIo();
+    TString outputFileNamePar = "singletcal2hit_softofw.par";
+    parOut->open(outputFileNamePar,"out");
+    rtdb->setOutput(parOut);
+    rtdb->print();
 
     // Run --------------------------------------------------
     run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);
+    rtdb->saveOutput();
 
     // Finish -----------------------------------------------
     timer.Stop();
@@ -725,6 +507,6 @@ void main_online()
     std::cout << "Macro finished succesfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
-    // gApplication->Terminate();
+    gApplication->Terminate();
 }
 

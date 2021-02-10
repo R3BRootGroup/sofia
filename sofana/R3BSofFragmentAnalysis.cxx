@@ -282,7 +282,7 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
         Paddle = HitTofW[i]->GetPaddle();
         if (fFragPar->GetInUse(Paddle) != 1)
             continue;
-        ToF_Cave = HitTofW[i]->GetTime() - fFragPar->GetTofWOffset(Paddle);
+        ToF_Cave = HitTofW[i]->GetTof() - fFragPar->GetTofWOffset(Paddle);
         Beta = fFragPar->GetEffectivLength(Paddle) / ToF_Cave;
         Length = fFragPar->GetEffectivLength(Paddle) * 2.998e2; // in mm. 0th order approx. To be modified later.
         // std::cout <<" init: "<< HitTofW[i]->GetPaddle() << " "<< ToF_Cave << std::endl;

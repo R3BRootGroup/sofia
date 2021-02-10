@@ -407,7 +407,7 @@ void main_online()
         CalifaMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
-        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
+        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit(false);
         CalifaCal2Hit->SetCrystalThreshold(100.); // 100keV
         CalifaCal2Hit->SetDRThreshold(10000.);    // 10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);
@@ -475,10 +475,11 @@ void main_online()
         SofTofWTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofTofWTcal2STcal);
 
-        // --- Tcal 2 Hit for SofTofW : TO CHECK why not SingleTcal2Hit ?
-        R3BSofTofWTCal2Hit* SofTofWTcal2Hit = new R3BSofTofWTCal2Hit();
-        SofTofWTcal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(SofTofWTcal2Hit);
+        // --- SingleTcal 2 Hit for SofTofW
+        R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
+        SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
+        SofTofWSingleTcal2Hit->SetExpId(444);
+        run->AddTask(SofTofWSingleTcal2Hit);
     }
 
     // Add online task ------------------------------------

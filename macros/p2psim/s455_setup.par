@@ -9,6 +9,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 0.5
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -24,9 +26,28 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 3.0
 DimensionY: Double_t 3.0
 DimensionZ: Double_t 1.5
+SigmaX: Double_t 0.
+SigmaY: Double_t 0.
 Z: Double_t 1.
 A: Double_t 1.
 Density: Double_t 0.07
+IonisationEnergy: Double_t 55.9e-6
+#################################################
+[CalifaGeoPar]
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -65.5
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 100.0
+DimensionY: Double_t 100.0
+DimensionZ: Double_t 100.0
+SigmaX: Double_t 1.
+SigmaY: Double_t 1.
+Z: Double_t 1.
+A: Double_t 1.
+Density: Double_t 1.
 IonisationEnergy: Double_t 55.9e-6
 #################################################
 [mwpc1GeoPar]
@@ -39,6 +60,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 0.5
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -54,6 +77,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 50.
+SigmaX: Double_t 0.02
+SigmaY: Double_t 0.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -69,6 +94,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 3.0
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -84,6 +111,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 90.
 DimensionY: Double_t 60.
 DimensionZ: Double_t 3.0
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -99,6 +128,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 90.
 DimensionY: Double_t 60.
 DimensionZ: Double_t 0.5
+SigmaX: Double_t 15.
+SigmaY: Double_t 1.
 Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032

@@ -35,8 +35,8 @@ void R3BSofMwpc0ContFact::setAllContainers()
 
     containers->Add(p1);
 
-    FairContainer* p2 = new FairContainer("mwpc0GeoPar", "MWPC0 geometry parameters", "TestDefaultContext");
-    p2->addContext("TestNonDefaultContext");
+    FairContainer* p2 = new FairContainer("mwpc0GeoPar", "MWPC0 geometry parameters", "GeometryParameterContext");
+    p2->addContext("GeometryParameterContext");
 
     containers->Add(p2);
 }
