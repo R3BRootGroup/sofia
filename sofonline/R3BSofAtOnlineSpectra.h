@@ -96,6 +96,8 @@ class R3BSofAtOnlineSpectra : public FairTask
     // Canvas
     TCanvas* cAtMap_mult;
     TCanvas* cAtMap_E;
+    TCanvas* cAtMap_EvsE;
+    TCanvas* cAtMap_EvsE_mult1_nopu;
 
     // Histograms for Mapped data
     TH1F* fh1_atmap_mult;
@@ -104,6 +106,8 @@ class R3BSofAtOnlineSpectra : public FairTask
     TH2F* fh2_atmap_mult_wo_pu;
     TH1F** fh1_atmap_E;
     TH1F** fh1_atmap_E_mult1_wo_pu_ov;
+    TH2F** fh2_atmap_EvsE;
+    TH2F** fh2_atmap_EvsE_mult1_nopu;
 
   public:
     ClassDef(R3BSofAtOnlineSpectra, 0)
