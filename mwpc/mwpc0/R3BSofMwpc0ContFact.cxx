@@ -35,7 +35,7 @@ void R3BSofMwpc0ContFact::setAllContainers()
 
     containers->Add(p1);
 
-    FairContainer* p2 = new FairContainer("mwpc0GeoPar", "MWPC0 geometry parameters", "GeometryParameterContext");
+    FairContainer* p2 = new FairContainer("Mwpc0GeoPar", "Mwpc0 geometry parameters", "GeometryParameterContext");
     p2->addContext("GeometryParameterContext");
 
     containers->Add(p2);
@@ -55,7 +55,7 @@ FairParSet* R3BSofMwpc0ContFact::createContainer(FairContainer* c)
         p = new R3BSofMwpc0CalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
-    if (strcmp(name, "mwpc0GeoPar") == 0)
+    if (strcmp(name, "Mwpc0GeoPar") == 0)
     {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }

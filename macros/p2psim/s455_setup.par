@@ -1,5 +1,5 @@
 #################################################
-[mwpc0GeoPar]
+[Mwpc0GeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
 PositionZ: Double_t -190.
@@ -50,7 +50,7 @@ A: Double_t 1.
 Density: Double_t 1.
 IonisationEnergy: Double_t 55.9e-6
 #################################################
-[mwpc1GeoPar]
+[Mwpc1GeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
 PositionZ: Double_t 42.
@@ -67,7 +67,7 @@ A: Double_t 28.0855
 Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
-[twimGeoPar]
+[TwimGeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
 PositionZ: Double_t 69.
@@ -84,7 +84,7 @@ A: Double_t 28.0855
 Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
-[mwpc2GeoPar]
+[Mwpc2GeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
 PositionZ: Double_t 100.
@@ -101,27 +101,27 @@ A: Double_t 28.0855
 Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
-[mwpc3GeoPar]
-PositionX: Double_t -300.
+[Mwpc3GeoPar]
+PositionX: Double_t -270.
 PositionY: Double_t 0.
-PositionZ: Double_t 749.
+PositionZ: Double_t 674.
 RotationX: Double_t 0.
 RotationY: Double_t -28.
 RotationZ: Double_t 0.
 DimensionX: Double_t 90.
 DimensionY: Double_t 60.
 DimensionZ: Double_t 3.0
-SigmaX: Double_t 0.1
-SigmaY: Double_t 1.
+SigmaX: Double_t 0.0112
+SigmaY: Double_t 0.05
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
-[tofwGeoPar]
-PositionX: Double_t -330.
+[TofwGeoPar]
+PositionX: Double_t -297.
 PositionY: Double_t 0.
-PositionZ: Double_t 817.
+PositionZ: Double_t 735.
 RotationX: Double_t 0.
 RotationY: Double_t -28.
 RotationZ: Double_t 0.

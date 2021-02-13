@@ -9,7 +9,7 @@
 #include "TLorentzVector.h"
 
 class TClonesArray;
-class R3BSofMWPCPoint;
+class R3BSofMwpcPoint;
 class FairVolume;
 
 class R3BSofMwpc2 : public R3BDetector
@@ -37,7 +37,7 @@ class R3BSofMwpc2 : public R3BDetector
     /** Virtual method ProcessHits
      **
      ** Defines the action to be taken when a step is inside the
-     ** active volume. Creates a R3BSofMWPCPoint and adds it to the
+     ** active volume. Creates a R3BSofMwpcPoint and adds it to the
      ** collection.
      *@param vol  Pointer to the active volume
      **/
@@ -119,7 +119,7 @@ class R3BSofMwpc2 : public R3BDetector
      **
      ** Adds a TraPoint to the HitCollection
      **/
-    R3BSofMWPCPoint* AddPoint(Int_t trackID,
+    R3BSofMwpcPoint* AddPoint(Int_t trackID,
                               Int_t detID,
                               Int_t detCopyID,
                               TVector3 posIn,

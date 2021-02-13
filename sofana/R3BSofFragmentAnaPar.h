@@ -6,14 +6,14 @@
 #ifndef R3BSofFragmentAnaPar_H
 #define R3BSofFragmentAnaPar_H
 
-#include "TString.h"
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TObject.h"
+#include "TString.h"
 #include <iostream>
 
-#include "FairParGenericSet.h"
 #include "FairLogger.h"
+#include "FairParGenericSet.h"
 #include "FairParamList.h"
 
 class FairParamList;
@@ -23,8 +23,8 @@ class R3BSofFragmentAnaPar : public FairParGenericSet
   public:
     /** Standard constructor **/
     R3BSofFragmentAnaPar(const TString& name = "soffragmentAnaPar",
-                    const TString& title = "Fragment in Cave-C Parameters",
-                    const TString& context = "SofFagmentParContext");
+                         const TString& title = "Fragment in Cave-C Parameters",
+                         const TString& context = "SofFagmentParContext");
 
     /** Destructor **/
     virtual ~R3BSofFragmentAnaPar();
@@ -46,7 +46,7 @@ class R3BSofFragmentAnaPar : public FairParGenericSet
     const Int_t GetInUse(Int_t sci) { return fIn_use->GetAt(sci - 1); }
     const Float_t GetTofWOffset(Int_t sci) { return fTofW_Offset->GetAt(sci - 1); }
     const Float_t GetEffectivLength(Int_t sci) { return fEffective_Length->GetAt(sci - 1); }
-    
+
     void SetNumSci(Int_t nb) { fNumSci = nb; }
     void SetInUse(Int_t value, Int_t sci) { fIn_use->AddAt(value, sci - 1); }
     void SetTofWOffset(Float_t value, Int_t sci) { fTofW_Offset->AddAt(value, sci - 1); }
@@ -56,14 +56,14 @@ class R3BSofFragmentAnaPar : public FairParGenericSet
 
   private:
     Int_t fNumSci;
-    TArrayI* fIn_use;  // 1: in use, 0:otherwise
+    TArrayI* fIn_use; // 1: in use, 0:otherwise
     TArrayF* fTofW_Offset;
     TArrayF* fEffective_Length;
     const R3BSofFragmentAnaPar& operator=(const R3BSofFragmentAnaPar&); /*< an assignment operator>*/
 
     R3BSofFragmentAnaPar(const R3BSofFragmentAnaPar&); /*< a copy constructor >*/
 
-    ClassDef(R3BSofFragmentAnaPar, 1);
+    ClassDef(R3BSofFragmentAnaPar, 1)
 };
 
 #endif

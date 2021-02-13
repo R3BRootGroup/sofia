@@ -8,6 +8,7 @@
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
+#include "R3BTGeoPar.h"
 #include "TClonesArray.h"
 
 // includes for modeling
@@ -31,12 +32,9 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer()
     , fTofHits(NULL)
     , fsigma_y(0.1)   // sigma=1mm
     , fsigma_t(0.017) // sigma=17ps
-    , fPosX(0.)
-    , fPosZ(0.)
-    , fangle(0.)
     , fsigma_ELoss(0.)
 {
-    rand = new TRandom1();
+    rand = new TRandom3();
 }
 
 // R3BSofTofWDigitizer: Standard Constructor --------------------------
@@ -47,12 +45,9 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer(const char* name, Int_t iVerbose)
     , fTofHits(NULL)
     , fsigma_y(0.1)
     , fsigma_t(0.017)
-    , fPosX(0.)
-    , fPosZ(0.)
-    , fangle(0.)
     , fsigma_ELoss(0.)
 {
-    rand = new TRandom1();
+    rand = new TRandom3();
 }
 
 // Virtual R3BSofTofWDigitizer: Destructor ----------------------------
@@ -65,10 +60,35 @@ R3BSofTofWDigitizer::~R3BSofTofWDigitizer()
         delete fTofHits;
 }
 
+void R3BSofTofWDigitizer::SetParContainers()
+{
+    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+
+    fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
+    if (!fTofWGeoPar)
+    {
+        LOG(ERROR) << "R3BSofTofWDigitizer::SetParContainers() : Could not get access to TofwGeoPar container.";
+        return;
+    }
+    else
+        LOG(INFO) << "R3BSofTofWDigitizer::SetParContainers() : Container TofwGeoPar found.";
+}
+
+void R3BSofTofWDigitizer::SetParameter()
+{
+    // fsigma_x = fTofWGeoPar->GetSigmaX();
+    fsigma_y = fTofWGeoPar->GetSigmaY();
+
+    fRot.RotateX(-fTofWGeoPar->GetRotX() * TMath::DegToRad());
+    fRot.RotateY(-fTofWGeoPar->GetRotY() * TMath::DegToRad());
+    fRot.RotateZ(-fTofWGeoPar->GetRotZ() * TMath::DegToRad());
+
+    fTrans.SetXYZ(fTofWGeoPar->GetPosX(), fTofWGeoPar->GetPosY(), fTofWGeoPar->GetPosZ());
+}
+
 // ----   Public method Init  -----------------------------------------
 InitStatus R3BSofTofWDigitizer::Init()
 {
-
     LOG(INFO) << "R3BSofTofWDigitizer: Init";
 
     // Get input array
@@ -81,8 +101,9 @@ InitStatus R3BSofTofWDigitizer::Init()
 
     // Register output array fTofHits
     fTofHits = new TClonesArray("R3BSofTofWHitData", 10);
-    ioman->Register("TofWHit", "Digital response in TofW", fTofHits, kTRUE);
+    ioman->Register("TofWHitData", "Digital response in TofW", fTofHits, kTRUE);
 
+    SetParameter();
     return kSUCCESS;
 }
 
@@ -100,36 +121,38 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
     Int_t paddle = 0;
     Int_t TrackId = 0, PID = 0, mother = -1;
     Double_t x = 0., y = 0., z = 0., time = 0.;
+    TVector3 vpos;
     for (Int_t i = 0; i < nHits; i++)
     {
         pointData[i] = (R3BSofTofWPoint*)(fTofPoints->At(i));
         TrackId = pointData[i]->GetTrackID();
 
-        // R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);
-        // PID = Track->GetPdgCode();
+        R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);
+        PID = Track->GetPdgCode();
         // mother = Track->GetMotherId();
 
-        // if (PID > 1000080160 && mother < 0) // Z=8 and A=16
-        //{
-        Double_t fX_in = pointData[i]->GetXIn();
-        Double_t fY_in = pointData[i]->GetYIn();
-        Double_t fZ_in = pointData[i]->GetZIn();
-        Double_t fX_out = pointData[i]->GetXOut();
-        Double_t fY_out = pointData[i]->GetYOut();
-        Double_t fZ_out = pointData[i]->GetZOut();
-        paddle = pointData[i]->GetDetCopyID();
+        if (PID > 1000080160) // Z=8 and A=16
+        {
+            Double_t fX_in = pointData[i]->GetXIn();
+            Double_t fY_in = pointData[i]->GetYIn();
+            Double_t fZ_in = pointData[i]->GetZIn();
+            Double_t fX_out = pointData[i]->GetXOut();
+            Double_t fY_out = pointData[i]->GetYOut();
+            Double_t fZ_out = pointData[i]->GetZOut();
+            paddle = pointData[i]->GetDetCopyID() + 1;
+            // std::cout<<paddle<<std::endl;
 
-        x = ((fX_in + fX_out) / 2.);
-        y = ((fY_in + fY_out) / 2.) + rand->Gaus(0., fsigma_y);
-        z = ((fZ_in + fZ_out) / 2.);
+            x = ((fX_in + fX_out) / 2.);
+            y = ((fY_in + fY_out) / 2.);
+            z = ((fZ_in + fZ_out) / 2.);
+            vpos.SetXYZ(x, y, z);
 
-        x = (((x - fPosX) * cos(fangle * TMath::DegToRad())) - ((z - fPosZ) * sin(fangle * TMath::DegToRad())));
+            vpos = fRot * (vpos - fTrans);
+            time = pointData[i]->GetTime() + rand->Gaus(0., fsigma_t);
 
-        time = pointData[i]->GetTime() + rand->Gaus(0., fsigma_t);
-
-        if (pointData[i]->GetZFF() > 10)
-            AddHitData(paddle, x, y, time);
-        //}
+            // Add hit data
+            AddHitData(paddle, vpos.X(), vpos.Y() + rand->Gaus(0., fsigma_y), time);
+        }
     }
     if (pointData)
         delete pointData;
@@ -137,7 +160,12 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
 }
 
 // -----   Public method ReInit   ----------------------------------------------
-InitStatus R3BSofTofWDigitizer::ReInit() { return kSUCCESS; }
+InitStatus R3BSofTofWDigitizer::ReInit()
+{
+    SetParContainers();
+    SetParameter();
+    return kSUCCESS;
+}
 
 // -----   Public method Reset   -----------------------------------------------
 void R3BSofTofWDigitizer::Reset()

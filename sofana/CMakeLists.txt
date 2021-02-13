@@ -33,6 +33,7 @@ set(SRCS
 #Put here your sourcefiles
 R3BSofFrsAnalysis.cxx
 R3BSofFragmentAnalysis.cxx
+R3BSofFissionAnalysis.cxx
 R3BSofFrsAnaPar.cxx
 R3BSofFragmentAnaPar.cxx
 R3BSofAnaContFact.cxx

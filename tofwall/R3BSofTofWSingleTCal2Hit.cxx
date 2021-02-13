@@ -51,14 +51,14 @@ void R3BSofTofWSingleTCal2Hit::SetParContainers()
         LOG(INFO) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container tofwHitPar found with "
                   << fTofWHitPar->GetNumSci() << " paddles.";
 
-    fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("tofwGeoPar");
+    fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
     if (!fTofWGeoPar)
     {
-        LOG(ERROR) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Could not get access to tofwGeoPar container.";
+        LOG(ERROR) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Could not get access to TofwGeoPar container.";
         return;
     }
     else
-        LOG(INFO) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container tofwGeoPar found.";
+        LOG(INFO) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container TofwGeoPar found.";
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -96,7 +96,11 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
 }
 
 // -----   Public method ReInit   ----------------------------------------------
-InitStatus R3BSofTofWSingleTCal2Hit::ReInit() { return kSUCCESS; }
+InitStatus R3BSofTofWSingleTCal2Hit::ReInit()
+{
+    SetParContainers();
+    return kSUCCESS;
+}
 
 // -----   Public method Execution   --------------------------------------------
 void R3BSofTofWSingleTCal2Hit::Exec(Option_t* option)

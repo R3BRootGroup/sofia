@@ -8,11 +8,14 @@
 
 #include "FairTask.h"
 #include "R3BSofTofWHitData.h"
-#include "TRandom1.h"
+#include "TRandom3.h"
+#include "TRotation.h"
+#include "TVector3.h"
 #include <map>
 #include <string>
 
 class TClonesArray;
+class R3BTGeoPar;
 
 class R3BSofTofWDigitizer : public FairTask
 {
@@ -36,27 +39,30 @@ class R3BSofTofWDigitizer : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* opt);
 
+    // Fair specific
+    virtual void SetParContainers();
+
     virtual void Finish();
+
     virtual void Reset();
 
     /** Setters for sigmas **/
-    void SetSigma_y(Float_t sigma_y) { fsigma_y = sigma_y; }
     void SetSigma_t(Float_t sigma_t) { fsigma_t = sigma_t; }
-    void SetPosX(Float_t x) { fPosX = x; }
-    void SetPosZ(Float_t z) { fPosZ = z; }
-    void SetAngle(Float_t a) { fangle = a; }
     void SetSigma_ELoss(Float_t sigma_ELoss) { fsigma_ELoss = sigma_ELoss; }
 
   private:
+    void SetParameter();
+
     TClonesArray* fMCTrack;
     TClonesArray* fTofPoints;
     TClonesArray* fTofHits;
-    TRandom1* rand;
+    R3BTGeoPar* fTofWGeoPar;
+    TRandom3* rand;
     Float_t fsigma_y;
     Float_t fsigma_t;
     Float_t fsigma_ELoss;
-    Float_t fangle;
-    Float_t fPosX, fPosZ;
+    TVector3 fTrans;
+    TRotation fRot;
 
     /** Private method AddHitData **/
     // Adds a R3BSofTofWHitData to the TofWHitCollection

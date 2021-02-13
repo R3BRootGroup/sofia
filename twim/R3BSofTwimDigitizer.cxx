@@ -22,7 +22,7 @@
 #include <string>
 
 #include "R3BMCTrack.h"
-#include "R3BSofTWIMPoint.h"
+#include "R3BSofTwimPoint.h"
 
 // R3BSofTwimDigitizer: Default Constructor --------------------------
 R3BSofTwimDigitizer::R3BSofTwimDigitizer()
@@ -101,8 +101,8 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
     if (!nHits)
         return;
     // Data from Point level
-    R3BSofTWIMPoint** pointData;
-    pointData = new R3BSofTWIMPoint*[nHits];
+    R3BSofTwimPoint** pointData;
+    pointData = new R3BSofTwimPoint*[nHits];
     Int_t TrackId = 0, PID = 0, anodeId = 0;
     Double_t x[4], zf[4], y = 0., z = 0.;
     for (Int_t i = 0; i < 4; i++)
@@ -116,7 +116,7 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
 
     for (Int_t i = 0; i < nHits; i++)
     {
-        pointData[i] = (R3BSofTWIMPoint*)(fTwimPoints->At(i));
+        pointData[i] = (R3BSofTwimPoint*)(fTwimPoints->At(i));
         TrackId = pointData[i]->GetTrackID();
 
         R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);

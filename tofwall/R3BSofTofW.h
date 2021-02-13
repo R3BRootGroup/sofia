@@ -7,7 +7,7 @@
 
 class TClonesArray;
 class R3BSofTofWPoint;
-class R3BSofTofWCalData;
+// class R3BSofTofWCalData;
 class FairVolume;
 class TGeoRotation;
 
@@ -120,8 +120,8 @@ class R3BSofTofW : public R3BDetector
     Bool_t kGeoSaved;               //!
     TList* flGeoPar;                //!
 
-    TClonesArray* fSofTofWallCollection;    //  The point collection
-    TClonesArray* fSofTofWallCalCollection; //  The Cal point collection
+    TClonesArray* fSofTofWallCollection; //  The point collection
+    // TClonesArray* fSofTofWallCalCollection; //  The Cal point collection
 
     /** Private method AddHit
      **
@@ -142,7 +142,7 @@ class R3BSofTofW : public R3BDetector
 
     /** Adds a SofTofWCalData to the HitCollection
      **/
-    R3BSofTofWCalData* AddCalHit(UShort_t ident, UShort_t pmt, Double_t time, Float_t eLoss);
+    // R3BSofTofWCalData* AddCalHit(UShort_t ident, UShort_t pmt, Double_t time, Float_t eLoss);
 
     /** Private method ResetParameters
      **

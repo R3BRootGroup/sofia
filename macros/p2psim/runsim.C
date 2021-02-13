@@ -18,11 +18,12 @@ void runsim(Int_t nEvents = 0)
     TString OutFile = "sim.root"; // Output file for data
     TString ParFile = "par.root"; // Output file for params
 
-    Bool_t fVis = false;             // Store tracks for visualization
+    Bool_t fVis = false;            // Store tracks for visualization
     Bool_t fUserPList = false;      // Use of R3B special physics list
     Bool_t fR3BMagnet = false;      // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
     Bool_t fCalifaHitFinder = true; // Apply hit finder task
+    Bool_t fSofiaDigitizer = true; // Apply hit digitizer task
 
     // MonteCarlo engine: TGeant3, TGeant4, TFluka
     TString fMC = "TGeant4";
@@ -31,10 +32,10 @@ void runsim(Int_t nEvents = 0)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString fGenerator = generator1;
+    TString fGenerator = generator2;
 
     // Input event file in the case of ascii generator
-    //TString fEventFile = "p2p_238U.txt";
+    // TString fEventFile = "p2p_238U.txt";
     TString fEventFile = "p2p_U238_500.txt";
 
     Int_t fFieldMap = -1;          // Magentic field map selector
@@ -120,14 +121,14 @@ void runsim(Int_t nEvents = 0)
     rtdb->setFirstInput(parIo1);
     rtdb->print();
     // ----- Containers
-    R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
+    R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
     R3BTGeoPar* targetPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
     R3BTGeoPar* califaPar = (R3BTGeoPar*)rtdb->getContainer("CalifaGeoPar");
-    R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("mwpc1GeoPar");
-    R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("twimGeoPar");
-    R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("mwpc2GeoPar");
-    R3BTGeoPar* mwpc3Par = (R3BTGeoPar*)rtdb->getContainer("mwpc3GeoPar");
-    R3BTGeoPar* tofwPar = (R3BTGeoPar*)rtdb->getContainer("tofwGeoPar");
+    R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
+    R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("TwimGeoPar");
+    R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc2GeoPar");
+    R3BTGeoPar* mwpc3Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc3GeoPar");
+    R3BTGeoPar* tofwPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
     UInt_t runId = 1;
     rtdb->initContainers(runId);
 
@@ -169,6 +170,8 @@ void runsim(Int_t nEvents = 0)
         }
         else
             run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -190. }));
+        R3BSofMwpcDigitizer* mw0_digitizer = new R3BSofMwpcDigitizer("Mwpc0", 1);
+        if(fSofiaDigitizer)run->AddTask(mw0_digitizer);
     }
 
     // Tracker, vacuum chamber and LH2 target definitions
@@ -204,15 +207,17 @@ void runsim(Int_t nEvents = 0)
             rcalifa->RotateX(mwpc0Par->GetRotX());
             rcalifa->RotateY(mwpc0Par->GetRotY());
             rcalifa->RotateZ(mwpc0Par->GetRotZ());
-            R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { califaPar->GetPosX(), califaPar->GetPosY(), califaPar->GetPosZ(), rcalifa });
+            R3BCalifa* califa = new R3BCalifa(
+                fCalifaGeo, { califaPar->GetPosX(), califaPar->GetPosY(), califaPar->GetPosZ(), rcalifa });
             califa->SelectGeometryVersion(fCalifaGeoVer);
             run->AddModule(califa);
         }
-        else{
-    
-        R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -65. });
-        califa->SelectGeometryVersion(fCalifaGeoVer);
-        run->AddModule(califa);
+        else
+        {
+
+            R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -65. });
+            califa->SelectGeometryVersion(fCalifaGeoVer);
+            run->AddModule(califa);
         }
     }
 
@@ -231,6 +236,8 @@ void runsim(Int_t nEvents = 0)
         }
         else
             run->AddModule(new R3BSofMwpc1(fMwpc1Geo, { 0., 0., 42. }));
+        R3BSofMwpcDigitizer* mw1_digitizer = new R3BSofMwpcDigitizer("Mwpc1", 1);
+        if(fSofiaDigitizer)run->AddTask(mw1_digitizer);
     }
 
     // Twim definition
@@ -244,10 +251,10 @@ void runsim(Int_t nEvents = 0)
             rtwim->RotateY(twimPar->GetRotY());
             rtwim->RotateZ(twimPar->GetRotZ());
             run->AddModule(
-                new R3BSofTWIM(fTwimGeo, { twimPar->GetPosX(), twimPar->GetPosY(), twimPar->GetPosZ(), rtwim }));
+                new R3BSofTwim(fTwimGeo, { twimPar->GetPosX(), twimPar->GetPosY(), twimPar->GetPosZ(), rtwim }));
         }
         else
-            run->AddModule(new R3BSofTWIM(fTwimGeo, { 0., 0., 69. }));
+            run->AddModule(new R3BSofTwim(fTwimGeo, { 0., 0., 69. }));
     }
 
     // MWPC2 definition
@@ -265,6 +272,8 @@ void runsim(Int_t nEvents = 0)
         }
         else
             run->AddModule(new R3BSofMwpc2(fMwpc2Geo, { 0., 0., 100. }));
+        R3BSofMwpcDigitizer* mw2_digitizer = new R3BSofMwpcDigitizer("Mwpc2", 1);
+        if(fSofiaDigitizer)run->AddTask(mw2_digitizer);
     }
 
     // Aladin Magnet definition
@@ -301,6 +310,8 @@ void runsim(Int_t nEvents = 0)
             rmwpc3->RotateY(-28.);
             run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -300., 0., 749., rmwpc3 }));
         }
+        R3BSofMwpcDigitizer* mw3_digitizer = new R3BSofMwpcDigitizer("Mwpc3", 1);
+        if(fSofiaDigitizer)run->AddTask(mw3_digitizer);
     }
 
     // Sofia ToF-Wall definition
@@ -321,6 +332,8 @@ void runsim(Int_t nEvents = 0)
             rtof->RotateY(-28.);
             run->AddModule(new R3BSofTofW(fSofTofWallGeo, { -330., 0., 817., rtof }));
         }
+        R3BSofTofWDigitizer* tofw_digitizer = new R3BSofTofWDigitizer();
+        if(fSofiaDigitizer)run->AddTask(tofw_digitizer);
     }
 
     // NeuLand Scintillator Detector
@@ -378,39 +391,37 @@ void runsim(Int_t nEvents = 0)
     {
         // 2- Define the BOX generator
         Int_t pdgId = 2212;      // proton beam
-        Double32_t theta1 = 45.; // polar angle distribution
-        Double32_t theta2 = 49.;
+        Double32_t theta1 = 22.; // polar angle distribution
+        Double32_t theta2 = 90.;
         Double32_t momentum = 0.8;
         FairBoxGenerator* boxGen = new FairBoxGenerator(pdgId, 1);
         boxGen->SetThetaRange(theta1, theta2);
-        boxGen->SetPRange(momentum, momentum);
-        // boxGen->SetPhiRange(88, 88);
-        // boxGen->SetXYZ(0.0, 0.0, 4.);
+        boxGen->SetPRange(momentum, 2.0 * momentum);
         boxGen->SetPhiRange(0., 360.);
         boxGen->SetXYZ(0.0, 0.0, -65.0);
         primGen->AddGenerator(boxGen);
-/*
-        // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 129, 50, 1, 0., 0., 0.9);
-        ionGen->SetSpotRadius(0.0, -65.5, 0.0);
-        ionGen->SetBeamParameter(0.0, 0.0);
-        // primGen->AddGenerator(ionGen);
+        /*
+                // 128-Sn fragment
+                R3BIonGenerator* ionGen = new R3BIonGenerator(50, 129, 50, 1, 0., 0., 0.9);
+                ionGen->SetSpotRadius(0.0, -65.5, 0.0);
+                ionGen->SetBeamParameter(0.0, 0.0);
+                // primGen->AddGenerator(ionGen);
 
-        // neutrons
-        FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
-        boxGen_n->SetThetaRange(theta1, theta2);
-        boxGen_n->SetPRange(momentum, momentum * 1.2);
-        boxGen_n->SetPhiRange(0, 360);
-        boxGen_n->SetXYZ(0.0, 0.0, -1.5);
-        // primGen->AddGenerator(boxGen_n);
-        */
+                // neutrons
+                FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
+                boxGen_n->SetThetaRange(theta1, theta2);
+                boxGen_n->SetPRange(momentum, momentum * 1.2);
+                boxGen_n->SetPhiRange(0, 360);
+                boxGen_n->SetXYZ(0.0, 0.0, -1.5);
+                // primGen->AddGenerator(boxGen_n);
+                */
     }
 
     if (fGenerator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + fEventFile).Data());
         gen->SetXYZ(targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ());
-        gen->SetDxDyDz(0., 0., 0.0);
+        gen->SetDxDyDz(0., 0., 0.);
         primGen->AddGenerator(gen);
     }
 
@@ -493,6 +504,11 @@ void runsim(Int_t nEvents = 0)
         califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
         run->AddTask(califaHF);
     }
+    
+    
+    R3BSofFissionAnalysis* fissiontracking = new R3BSofFissionAnalysis();
+    run->AddTask(fissiontracking);
+    
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();

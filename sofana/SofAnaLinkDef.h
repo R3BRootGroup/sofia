@@ -11,5 +11,6 @@
 #pragma link C++ class R3BSofFrsAnaPar + ;
 #pragma link C++ class R3BSofFragmentAnaPar + ;
 #pragma link C++ class R3BSofAnaContFact + ;
+#pragma link C++ class R3BSofFissionAnalysis + ;
 
 #endif

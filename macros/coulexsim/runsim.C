@@ -74,7 +74,7 @@ void runsim(Int_t nEvents = 0)
     run->AddModule(new R3BSofAT("sof_at_v19a.geo.root", { 0., 0., -65.5 }));
 
     // TWIM
-    run->AddModule(new R3BSofTWIM("twinmusic_v19a.geo.root", { 0., 0., 50. }));
+    run->AddModule(new R3BSofTwim("twinmusic_v19a.geo.root", { 0., 0., 50. }));
 
     // MWPC1
     run->AddModule(new R3BSofMwpc1("mwpc_1.geo.root", { 0., 0., 95. }));
@@ -120,8 +120,8 @@ void runsim(Int_t nEvents = 0)
         primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
-        ionGen->SetSpotRadius(0.1, -300., 0.);
+        //R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
+        //ionGen->SetSpotRadius(0.1, -300., 0.);
         // primGen->AddGenerator(ionGen);
 
         // neutrons

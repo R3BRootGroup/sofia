@@ -32,7 +32,7 @@ void R3BSofTofWContFact::setAllContainers()
     // Creates the Container objects with all accepted contexts and adds them to
     // the list of containers for the TofW library.
 
-    FairContainer* p1 = new FairContainer("tofwGeoPar", "TofW geometry parameters", "GeometryParameterContext");
+    FairContainer* p1 = new FairContainer("TofwGeoPar", "TofW geometry parameters", "GeometryParameterContext");
     p1->addContext("GeometryParameterContext");
 
     containers->Add(p1);
@@ -67,7 +67,7 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
         p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext()); // FIXME
     }
 
-    if (strcmp(name, "tofwGeoPar") == 0)
+    if (strcmp(name, "TofwGeoPar") == 0)
     {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }

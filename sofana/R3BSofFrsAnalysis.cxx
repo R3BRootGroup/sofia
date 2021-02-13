@@ -333,3 +333,5 @@ R3BSofFrsData* R3BSofFrsAnalysis::AddData(Int_t StaId,
     Int_t size = clref.GetEntriesFast();
     return new (clref[size]) R3BSofFrsData(StaId, StoId, z, aq, beta, brho, xs2, xc);
 }
+
+ClassImp(R3BSofFrsAnalysis);

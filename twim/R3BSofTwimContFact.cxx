@@ -47,7 +47,7 @@ void R3BSofTwimContFact::setAllContainers()
 
     containers->Add(p2);
 
-    FairContainer* p3 = new FairContainer("twimGeoPar", "Twim-Music geometry parameters", "GeometryParameterContext");
+    FairContainer* p3 = new FairContainer("TwimGeoPar", "Twim-Music geometry parameters", "GeometryParameterContext");
     p3->addContext("GeometryParameterContext");
 
     containers->Add(p3);
@@ -70,7 +70,7 @@ FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTwimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "twimGeoPar") == 0)
+    if (strcmp(name, "TwimGeoPar") == 0)
     {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }

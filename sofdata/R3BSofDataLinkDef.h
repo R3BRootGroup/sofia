@@ -8,8 +8,8 @@
 
 // Point classes for simulation
 #pragma link C++ class R3BSofATPoint + ;
-#pragma link C++ class R3BSofMWPCPoint + ;
-#pragma link C++ class R3BSofTWIMPoint + ;
+#pragma link C++ class R3BSofMwpcPoint + ;
+#pragma link C++ class R3BSofTwimPoint + ;
 #pragma link C++ class R3BSofTofWPoint + ;
 
 // General

@@ -1,25 +1,25 @@
 // -------------------------------------------------------------------------
-// -----                      R3BSofTWIMPoint header file              -----
+// -----                      R3BSofTwimPoint header file              -----
 // -----                  Created 06/12/17  by JL Rodriguez            -----
 // -------------------------------------------------------------------------
 
-/**  R3BSofTWIMPoint.h
+/**  R3BSofTwimPoint.h
  **/
 
-#ifndef R3BSofTWIMPoint_H
-#define R3BSofTWIMPoint_H
+#ifndef R3BSofTwimPoint_H
+#define R3BSofTwimPoint_H
 
 #include "TObject.h"
 #include "TVector3.h"
 
 #include "FairMCPoint.h"
 
-class R3BSofTWIMPoint : public FairMCPoint
+class R3BSofTwimPoint : public FairMCPoint
 {
 
   public:
     /** Default constructor **/
-    R3BSofTWIMPoint();
+    R3BSofTwimPoint();
 
     /** Constructor with arguments
      *@param trackID  Index of MCTrack
@@ -35,7 +35,7 @@ class R3BSofTWIMPoint : public FairMCPoint
      *@param length   Track length since creation [cm]
      *@param eLoss    Energy deposit [GeV]
      **/
-    R3BSofTWIMPoint(Int_t trackID,
+    R3BSofTwimPoint(Int_t trackID,
                     Int_t detID,
                     Int_t detCopyID,
                     Double_t Z,
@@ -49,10 +49,10 @@ class R3BSofTWIMPoint : public FairMCPoint
                     Double_t eLoss);
 
     /** Copy constructor **/
-    R3BSofTWIMPoint(const R3BSofTWIMPoint& point) { *this = point; };
+    R3BSofTwimPoint(const R3BSofTwimPoint& point) { *this = point; };
 
     /** Destructor **/
-    virtual ~R3BSofTWIMPoint();
+    virtual ~R3BSofTwimPoint();
 
     /** Accessors **/
     Int_t GetDetCopyID() const { return fDetCopyID; }
@@ -93,17 +93,17 @@ class R3BSofTWIMPoint : public FairMCPoint
     Int_t fDetCopyID;
     Double32_t fZFF, fAFF;
 
-    ClassDef(R3BSofTWIMPoint, 1)
+    ClassDef(R3BSofTwimPoint, 1)
 };
 
-inline void R3BSofTWIMPoint::SetPositionOut(TVector3 pos)
+inline void R3BSofTwimPoint::SetPositionOut(TVector3 pos)
 {
     fX_out = pos.X();
     fY_out = pos.Y();
     fZ_out = pos.Z();
 }
 
-inline void R3BSofTWIMPoint::SetMomentumOut(TVector3 mom)
+inline void R3BSofTwimPoint::SetMomentumOut(TVector3 mom)
 {
     fPx_out = mom.Px();
     fPy_out = mom.Py();

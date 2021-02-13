@@ -25,7 +25,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-R3BSofTWIM.cxx
+R3BSofTwim.cxx
 R3BSofTwimContFact.cxx
 R3BSofTwimCalPar.cxx
 R3BSofTwimHitPar.cxx
