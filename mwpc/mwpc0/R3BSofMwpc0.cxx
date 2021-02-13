@@ -7,7 +7,7 @@
 #include "FairGeoLoader.h"
 #include "FairVolume.h"
 #include "R3BMCStack.h"
-#include "R3BSofMWPCPoint.h"
+#include "R3BSofMwpcPoint.h"
 #include "TClonesArray.h"
 #include "TGeoManager.h"
 #include "TObjArray.h"
@@ -27,7 +27,7 @@ R3BSofMwpc0::R3BSofMwpc0(const TString& geoFile, const TGeoTranslation& trans, c
 
 R3BSofMwpc0::R3BSofMwpc0(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofMwpc0", kSOFMWPC0, geoFile, combi)
-    , fSofMWPCCollection(new TClonesArray("R3BSofMWPCPoint"))
+    , fSofMWPCCollection(new TClonesArray("R3BSofMwpcPoint"))
     , fPosIndex(0)
     , kGeoSaved(kFALSE)
     , flGeoPar(new TList())
@@ -57,7 +57,7 @@ void R3BSofMwpc0::Initialize()
     LOG(DEBUG) << "R3BSofMwpc0: Sens. Vol. (McId) " << gMC->VolId("MWPC0");
 }
 
-void R3BSofMwpc0::SetSpecialPhysicsCuts() { LOG(INFO) << "-I- R3BSofMwpc0: Adding customized Physics cut ... "; }
+void R3BSofMwpc0::SetSpecialPhysicsCuts() { LOG(INFO) << "R3BSofMwpc0: Adding customized Physics cut ... "; }
 
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofMwpc0::ProcessHits(FairVolume* vol)
@@ -74,7 +74,7 @@ Bool_t R3BSofMwpc0::ProcessHits(FairVolume* vol)
     // Sum energy loss for all steps in the active volume
     fELoss += gMC->Edep();
 
-    // Set additional parameters at exit of active volume. Create R3BSofMWPCPoint.
+    // Set additional parameters at exit of active volume. Create R3BSofMwpcPoint.
     if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
     {
         fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
@@ -192,20 +192,20 @@ void R3BSofMwpc0::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
     Int_t nEntries = cl1->GetEntriesFast();
     LOG(INFO) << "R3BSofMwpc0: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
-    R3BSofMWPCPoint* oldpoint = NULL;
+    R3BSofMwpcPoint* oldpoint = NULL;
     for (Int_t i = 0; i < nEntries; i++)
     {
-        oldpoint = (R3BSofMWPCPoint*)cl1->At(i);
+        oldpoint = (R3BSofMwpcPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
-        new (clref[fPosIndex]) R3BSofMWPCPoint(*oldpoint);
+        new (clref[fPosIndex]) R3BSofMwpcPoint(*oldpoint);
         fPosIndex++;
     }
     LOG(INFO) << "R3BSofMwpc0: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
-R3BSofMWPCPoint* R3BSofMwpc0::AddPoint(Int_t trackID,
+R3BSofMwpcPoint* R3BSofMwpc0::AddPoint(Int_t trackID,
                                        Int_t detID,
                                        Int_t detCopyID,
                                        TVector3 posIn,
@@ -222,7 +222,7 @@ R3BSofMWPCPoint* R3BSofMwpc0::AddPoint(Int_t trackID,
         LOG(INFO) << "R3BSofMwpc0: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size])
-        R3BSofMWPCPoint(trackID, detID, detCopyID, posIn, posOut, momIn, momOut, time, length, eLoss);
+        R3BSofMwpcPoint(trackID, detID, detCopyID, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
 Bool_t R3BSofMwpc0::CheckIfSensitive(std::string name)

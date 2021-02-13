@@ -8,10 +8,13 @@
 
 #include "FairTask.h"
 #include "R3BSofMwpcHitData.h"
+#include "TRotation.h"
+#include "TVector3.h"
 #include <map>
 #include <string>
 
 class TClonesArray;
+class R3BTGeoPar;
 
 class R3BSofMwpcDigitizer : public FairTask
 {
@@ -35,25 +38,29 @@ class R3BSofMwpcDigitizer : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* opt);
 
+    // Fair specific
+    virtual void SetParContainers();
+
     virtual void Finish();
+
     virtual void Reset();
 
     /** Setters for sigmas **/
     void SetSigma_x(Float_t sigma_x) { fsigma_x = sigma_x; }
     void SetSigma_y(Float_t sigma_y) { fsigma_y = sigma_y; }
-    void SetPosX(Float_t x) { fPosX = x; }
-    void SetPosZ(Float_t z) { fPosZ = z; }
-    void SetAngle(Float_t a) { fangle = a; }
 
   private:
+    void SetParameter();
+
     TClonesArray* fMCTrack;
     TClonesArray* fMwpcPoints;
     TClonesArray* fMwpcHits;
+    R3BTGeoPar* fMwpcGeoPar;
+    TString fName;
     Float_t fsigma_x;
     Float_t fsigma_y;
-    Float_t fangle;
-    Float_t fPosX, fPosZ;
-    TString fName;
+    TVector3 fTrans;
+    TRotation fRot;
 
     /** Private method AddHitData **/
     // Adds a R3BSofMwpcHitData to the MwpcHitCollection

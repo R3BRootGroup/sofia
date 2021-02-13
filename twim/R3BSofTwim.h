@@ -1,41 +1,41 @@
-#ifndef R3BSOFTWIM_H
-#define R3BSOFTWIM_H
+#ifndef R3BSofTwim_H
+#define R3BSofTwim_H
 
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
 #include <map>
 
 class TClonesArray;
-class R3BSofTWIMPoint;
+class R3BSofTwimPoint;
 class FairVolume;
 class TGeoRotation;
 
-class R3BSofTWIM : public R3BDetector
+class R3BSofTwim : public R3BDetector
 {
   public:
     /** Default constructor */
-    R3BSofTWIM();
+    R3BSofTwim();
 
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param trans   position
      *@param rot     rotation
      */
-    R3BSofTWIM(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot = TGeoRotation());
+    R3BSofTwim(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot = TGeoRotation());
 
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param combi   position + rotation
      */
-    R3BSofTWIM(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
+    R3BSofTwim(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
 
     /** Destructor **/
-    ~R3BSofTWIM();
+    ~R3BSofTwim();
 
     /** Virtual method ProcessHits
      **
      ** Defines the action to be taken when a step is inside the
-     ** active volume. Creates a R3BSofTWIMPoint and adds it
+     ** active volume. Creates a R3BSofTwimPoint and adds it
      ** to the collection.
      *@param vol  Pointer to the active volume
      **/
@@ -125,7 +125,7 @@ class R3BSofTWIM : public R3BDetector
      **
      ** Adds a SofTWIMPoint to the HitCollection
      **/
-    R3BSofTWIMPoint* AddPoint(Int_t trackID,
+    R3BSofTwimPoint* AddPoint(Int_t trackID,
                               Int_t detID,
                               Int_t volid,
                               Double_t Z,
@@ -146,10 +146,10 @@ class R3BSofTWIM : public R3BDetector
 
     TGeoRotation* createMatrix(Double_t phi, Double_t theta, Double_t psi);
 
-    ClassDef(R3BSofTWIM, 1);
+    ClassDef(R3BSofTwim, 1);
 };
 
-inline void R3BSofTWIM::ResetParameters()
+inline void R3BSofTwim::ResetParameters()
 {
     fTrackID = fVolumeID = fParentTrackID = fTrackPID = fUniqueID = 0;
     fDetCopyID = 0;

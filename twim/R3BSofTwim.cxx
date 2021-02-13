@@ -1,8 +1,8 @@
 // -------------------------------------------------------------------------
-// -----                        R3BSofTWIM source file                 -----
+// -----                        R3BSofTwim source file                 -----
 // -----                  Created 06/12/17  by JL Rodriguez            -----
 // -------------------------------------------------------------------------
-#include "R3BSofTWIM.h"
+#include "R3BSofTwim.h"
 #include "FairGeoInterface.h"
 #include "FairGeoLoader.h"
 #include "FairGeoNode.h"
@@ -12,7 +12,7 @@
 #include "FairRuntimeDb.h"
 #include "FairVolume.h"
 #include "R3BMCStack.h"
-#include "R3BSofTWIMPoint.h"
+#include "R3BSofTwimPoint.h"
 #include "TClonesArray.h"
 #include "TGeoCompositeShape.h"
 #include "TGeoMCGeometry.h"
@@ -31,21 +31,21 @@
 #define U_MEV 931.4940954
 
 // -----   Default constructor
-R3BSofTWIM::R3BSofTWIM()
-    : R3BSofTWIM("")
+R3BSofTwim::R3BSofTwim()
+    : R3BSofTwim("")
 {
 }
 
-R3BSofTWIM::R3BSofTWIM(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofTWIM(geoFile, { trans, rot })
+R3BSofTwim::R3BSofTwim(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
+    : R3BSofTwim(geoFile, { trans, rot })
 {
     ResetParameters();
 }
 
 // -----   Standard constructor
-R3BSofTWIM::R3BSofTWIM(const TString& geoFile, const TGeoCombiTrans& combi)
-    : R3BDetector("R3BSofTWIM", kSOFTWIM, geoFile, combi)
-    , fSofTWIMCollection(new TClonesArray("R3BSofTWIMPoint"))
+R3BSofTwim::R3BSofTwim(const TString& geoFile, const TGeoCombiTrans& combi)
+    : R3BDetector("R3BSofTwim", kSOFTWIM, geoFile, combi)
+    , fSofTWIMCollection(new TClonesArray("R3BSofTwimPoint"))
     , fPosIndex(0)
     , kGeoSaved(kFALSE)
     , flGeoPar(new TList())
@@ -54,7 +54,7 @@ R3BSofTWIM::R3BSofTWIM(const TString& geoFile, const TGeoCombiTrans& combi)
     ResetParameters();
 }
 
-R3BSofTWIM::~R3BSofTWIM()
+R3BSofTwim::~R3BSofTwim()
 {
     if (flGeoPar)
     {
@@ -67,19 +67,19 @@ R3BSofTWIM::~R3BSofTWIM()
     }
 }
 
-void R3BSofTWIM::Initialize()
+void R3BSofTwim::Initialize()
 {
     FairDetector::Initialize();
 
-    LOG(INFO) << "R3BSofTWIM: initialisation";
-    LOG(DEBUG) << "-I- R3BSofTWIM: Vol (McId) def" << gMC->VolId("TwinLog");
+    LOG(INFO) << "R3BSofTwim: initialisation";
+    LOG(DEBUG) << "-I- R3BSofTwim: Vol (McId) def" << gMC->VolId("TwinLog");
 
     // TGeoVolume* vol = gGeoManager->GetVolume("SofTRIMWorld");
     // vol->SetVisibility(kFALSE);
 }
 
 // -----   Public method ProcessHits  --------------------------------------
-Bool_t R3BSofTWIM::ProcessHits(FairVolume* vol)
+Bool_t R3BSofTwim::ProcessHits(FairVolume* vol)
 {
 
     if (gMC->IsTrackEntering())
@@ -114,7 +114,7 @@ Bool_t R3BSofTWIM::ProcessHits(FairVolume* vol)
 
         fNSteps++;
 
-        // Set additional parameters at exit of active volume. Create R3BSofTWIMPoint.
+        // Set additional parameters at exit of active volume. Create R3BSofTwimPoint.
         if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
         {
 
@@ -156,10 +156,10 @@ Bool_t R3BSofTWIM::ProcessHits(FairVolume* vol)
 }
 
 // -----   Public method EndOfEvent   -----------------------------------------
-void R3BSofTWIM::BeginEvent() {}
+void R3BSofTwim::BeginEvent() {}
 
 // -----   Public method EndOfEvent   -----------------------------------------
-void R3BSofTWIM::EndOfEvent()
+void R3BSofTwim::EndOfEvent()
 {
     if (fVerboseLevel)
         Print();
@@ -170,13 +170,13 @@ void R3BSofTWIM::EndOfEvent()
 }
 
 // -----   Public method Register   -------------------------------------------
-void R3BSofTWIM::Register()
+void R3BSofTwim::Register()
 {
     FairRootManager::Instance()->Register("SofTWIMPoint", GetName(), fSofTWIMCollection, kTRUE);
 }
 
 // -----   Public method GetCollection   --------------------------------------
-TClonesArray* R3BSofTWIM::GetCollection(Int_t iColl) const
+TClonesArray* R3BSofTwim::GetCollection(Int_t iColl) const
 {
     if (iColl == 0)
         return fSofTWIMCollection;
@@ -185,39 +185,39 @@ TClonesArray* R3BSofTWIM::GetCollection(Int_t iColl) const
 }
 
 // -----   Public method Print   ----------------------------------------------
-void R3BSofTWIM::Print(Option_t* option) const
+void R3BSofTwim::Print(Option_t* option) const
 {
     Int_t nHits = fSofTWIMCollection->GetEntriesFast();
-    LOG(INFO) << "R3BSofTWIM: " << nHits << " points registered in this event";
+    LOG(INFO) << "R3BSofTwim: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
-void R3BSofTWIM::Reset()
+void R3BSofTwim::Reset()
 {
     fSofTWIMCollection->Clear();
     ResetParameters();
 }
 
 // -----   Public method CopyClones   -----------------------------------------
-void R3BSofTWIM::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
+void R3BSofTwim::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 {
     Int_t nEntries = cl1->GetEntriesFast();
-    LOG(INFO) << "R3BSofTWIM: " << nEntries << " entries to add";
+    LOG(INFO) << "R3BSofTwim: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
-    R3BSofTWIMPoint* oldpoint = NULL;
+    R3BSofTwimPoint* oldpoint = NULL;
     for (Int_t i = 0; i < nEntries; i++)
     {
-        oldpoint = (R3BSofTWIMPoint*)cl1->At(i);
+        oldpoint = (R3BSofTwimPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
-        new (clref[fPosIndex]) R3BSofTWIMPoint(*oldpoint);
+        new (clref[fPosIndex]) R3BSofTwimPoint(*oldpoint);
         fPosIndex++;
     }
-    LOG(INFO) << "R3BSofTWIM: " << cl2->GetEntriesFast() << " merged entries";
+    LOG(INFO) << "R3BSofTwim: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
-R3BSofTWIMPoint* R3BSofTWIM::AddPoint(Int_t trackID,
+R3BSofTwimPoint* R3BSofTwim::AddPoint(Int_t trackID,
                                       Int_t detID,
                                       Int_t volid,
                                       Double_t Z,
@@ -233,14 +233,14 @@ R3BSofTWIMPoint* R3BSofTWIM::AddPoint(Int_t trackID,
     TClonesArray& clref = *fSofTWIMCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
-        LOG(INFO) << "R3BSofTWIM: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
+        LOG(INFO) << "R3BSofTwim: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size])
-        R3BSofTWIMPoint(trackID, detID, volid, Z, A, posIn, posOut, momIn, momOut, time, length, eLoss);
+        R3BSofTwimPoint(trackID, detID, volid, Z, A, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
 // -----  Public method CheckIfSensitive  ----------------------------------
-Bool_t R3BSofTWIM::CheckIfSensitive(std::string name)
+Bool_t R3BSofTwim::CheckIfSensitive(std::string name)
 {
     if (TString(name).Contains("TwinLog"))
     {
@@ -250,4 +250,4 @@ Bool_t R3BSofTWIM::CheckIfSensitive(std::string name)
     return kFALSE;
 }
 
-ClassImp(R3BSofTWIM)
+ClassImp(R3BSofTwim)

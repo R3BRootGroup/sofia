@@ -128,3 +128,5 @@ void R3BSofFrsAnaPar::printParams()
     LOG(INFO) << "S2PosCoef: " << fS2PosCoef;
     LOG(INFO) << "S2PosOffset: " << fS2PosOffset;
 }
+
+ClassImp(R3BSofFrsAnaPar);

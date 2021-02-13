@@ -407,7 +407,7 @@ void main_online()
         CalifaMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
-        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit(false);
+        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
         CalifaCal2Hit->SetCrystalThreshold(100.); // 100keV
         CalifaCal2Hit->SetDRThreshold(10000.);    // 10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);

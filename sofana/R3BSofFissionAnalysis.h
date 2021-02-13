@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------
 // -----                                                            -----
-// -----                     R3BSofFragmentAnalysis                 -----
-// -----             Created 09/02/20  by J.L. Rodriguez-Sanchez    -----
+// -----                     R3BSofFissionAnalysis                  -----
+// -----             Created 14/02/21  by J.L. Rodriguez-Sanchez    -----
 // ----------------------------------------------------------------------
 
-#ifndef R3BSofFragmentAnalysis_H
-#define R3BSofFragmentAnalysis_H
+#ifndef R3BSofFissionAnalysis_H
+#define R3BSofFissionAnalysis_H
 
 // ROOT headers
 #include "TArrayF.h"
@@ -27,26 +27,23 @@
 
 // SOFIA headers
 #include "R3BSofFragmentAnaPar.h"
-#include "R3BSofMwpcHitData.h"
-#include "R3BSofTofWHitData.h"
 #include "R3BSofTrackingData.h"
-#include "R3BSofTwimHitData.h"
 #include "R3BSofTwimHitPar.h"
 
 class TClonesArray;
 
-class R3BSofFragmentAnalysis : public FairTask
+class R3BSofFissionAnalysis : public FairTask
 {
 
   public:
     /** Default constructor **/
-    R3BSofFragmentAnalysis();
+    R3BSofFissionAnalysis();
 
     /** Standard constructor **/
-    R3BSofFragmentAnalysis(const TString& name, Int_t iVerbose = 1);
+    R3BSofFissionAnalysis(const TString& name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofFragmentAnalysis();
+    virtual ~R3BSofFissionAnalysis();
 
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
@@ -59,7 +56,7 @@ class R3BSofFragmentAnalysis : public FairTask
      * Is called by the framework for each event after executing
      * the tasks.
      */
-    virtual void FinishEvent() { Reset(); }
+    virtual void FinishEvent();
 
     virtual void SetParContainers();
 
@@ -82,18 +79,19 @@ class R3BSofFragmentAnalysis : public FairTask
 
   private:
     void SetParameter();
+    Double_t GetLength(Double_t mw1, Double_t mw2, Double_t mw3);
+    Double_t GetBrho(Double_t mw1, Double_t mw2, Double_t mw3);
+    Double_t GetVelocity(Double_t len, Double_t tof);
+    Double_t GetAoverq(Double_t brho, Double_t vel);
 
-    // Parameters set with accessor functions
-    Double_t frho_Cave, fBfield_Glad, fTimeOffset, fTofWPos;
     Bool_t fOnline; // Don't store data for online
+    // Parameters set with accessor functions
+    Double_t frho_Cave, fBfield_Glad, fTimeOffset;
     R3BSofFragmentAnaPar* fFragPar;
     R3BSofTwimHitPar* fTwimPar;
 
     // Parameters from par file
-    Float_t fTwimZ0 = 0., fTwimZ1 = 0., fTwimZ2 = 0.; // CalibPar for Twim
-    Double_t fOffsetAq, fOffsetZ;                     // Offsets in A/q and Z
-    // Double_t fDist_mw3_tof;
-    // Double_t fDist_start_glad;
+    Double_t fOffsetAq, fOffsetZ; // Offsets in A/q and Z
 
     TClonesArray* fMwpc0HitDataCA; /**< Array with Mwpc Hit-input data. >*/
     TClonesArray* fMwpc1HitDataCA; /**< Array with Mwpc Hit-input data. >*/
@@ -103,20 +101,13 @@ class R3BSofFragmentAnalysis : public FairTask
     TClonesArray* fTofWHitDataCA;  /**< Array with ToF Hit-input data. >*/
     TClonesArray* fTrackingDataCA; /**< Array with Tracking-output data. >*/
 
-    R3BSofTofWHitData** HitTofW;
-    R3BSofTwimHitData** HitTwim;
-    R3BSofMwpcHitData** HitMwpc0;
-    R3BSofMwpcHitData** HitMwpc1;
-    R3BSofMwpcHitData** HitMwpc2;
-    R3BSofMwpcHitData** HitMwpc3;
-
     /** Private method TrackingData **/
     //** Adds a TrackingData to the analysis
     R3BSofTrackingData* AddData(Double_t z, Double_t aq, Double_t beta, Double_t length, Double_t brho, Int_t paddle);
 
   public:
     // Class definition
-    ClassDef(R3BSofFragmentAnalysis, 1)
+    ClassDef(R3BSofFissionAnalysis, 1)
 };
 
 #endif

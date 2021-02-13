@@ -7,14 +7,14 @@
 #ifndef R3BSofFrsAnaPar_H
 #define R3BSofFrsAnaPar_H
 
-#include "TString.h"
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TObject.h"
+#include "TString.h"
 #include <iostream>
 
-#include "FairParGenericSet.h"
 #include "FairLogger.h"
+#include "FairParGenericSet.h"
 #include "FairParamList.h"
 
 class FairParamList;
@@ -56,8 +56,8 @@ class R3BSofFrsAnaPar : public FairParGenericSet
     void SetBrho(Float_t brho) { fBrho0 = brho; }
     void SetNumTof(Int_t num) { fNumTof = num; }
     void SetStaSciId(Int_t i, Int_t val) { fStaSciId->AddAt(val, i); }
-    void SetStoSciId(Int_t i, Int_t val) {  fStoSciId->AddAt(val, i); }
-    void SetPathLength(Int_t i, Float_t val) {  fPathLength->AddAt(val, i); }
+    void SetStoSciId(Int_t i, Int_t val) { fStoSciId->AddAt(val, i); }
+    void SetPathLength(Int_t i, Float_t val) { fPathLength->AddAt(val, i); }
     void SetTofOffset(Int_t i, Float_t val) { fTofOffset->AddAt(val, i); }
     void SetUseS2x(Int_t i, Int_t val) { fUseS2x->AddAt(val, i); }
     void SetS2PosCoef(Float_t val) { fS2PosCoef = val; }

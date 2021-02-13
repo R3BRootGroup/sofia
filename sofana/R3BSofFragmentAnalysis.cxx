@@ -356,3 +356,5 @@ R3BSofTrackingData* R3BSofFragmentAnalysis::AddData(Double_t z,
     Int_t size = clref.GetEntriesFast();
     return new (clref[size]) R3BSofTrackingData(z, aq, beta, length, brho, paddle);
 }
+
+ClassImp(R3BSofFragmentAnalysis);

@@ -1,8 +1,8 @@
 // -------------------------------------------------------------------------
-// -----                      R3BSofMWPCPoint source file                  -----
+// -----                      R3BSofMwpcPoint source file              -----
 // -------------------------------------------------------------------------
 
-#include "R3BSofMWPCPoint.h"
+#include "R3BSofMwpcPoint.h"
 
 #include <iostream>
 
@@ -11,7 +11,7 @@ using std::endl;
 using std::flush;
 
 // -----   Default constructor   -------------------------------------------
-R3BSofMWPCPoint::R3BSofMWPCPoint()
+R3BSofMwpcPoint::R3BSofMwpcPoint()
     : FairMCPoint()
 {
     fX_out = fY_out = fZ_out = 0.;
@@ -20,7 +20,7 @@ R3BSofMWPCPoint::R3BSofMWPCPoint()
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
-R3BSofMWPCPoint::R3BSofMWPCPoint(Int_t trackID,
+R3BSofMwpcPoint::R3BSofMwpcPoint(Int_t trackID,
                                  Int_t detID,
                                  Int_t detCopyID,
                                  TVector3 posIn,
@@ -43,13 +43,13 @@ R3BSofMWPCPoint::R3BSofMWPCPoint(Int_t trackID,
 // -------------------------------------------------------------------------
 
 // -----   Destructor   ----------------------------------------------------
-R3BSofMWPCPoint::~R3BSofMWPCPoint() {}
+R3BSofMwpcPoint::~R3BSofMwpcPoint() {}
 // -------------------------------------------------------------------------
 
 // -----   Public method Print   -------------------------------------------
-void R3BSofMWPCPoint::Print(const Option_t* opt) const
+void R3BSofMwpcPoint::Print(const Option_t* opt) const
 {
-    cout << "-I- R3BSofMWPCPoint: STS Point for track " << fTrackID << " in detector " << fDetectorID << endl;
+    cout << "-I- R3BSofMwpcPoint: STS Point for track " << fTrackID << " in detector " << fDetectorID << endl;
     cout << "    Position (" << fX << ", " << fY << ", " << fZ << ") cm" << endl;
     cout << "    Momentum (" << fPx << ", " << fPy << ", " << fPz << ") GeV" << endl;
     cout << "    Time " << fTime << " ns,  Length " << fLength << " cm,  Energy loss " << fELoss * 1.0e06 << " keV"
@@ -58,7 +58,7 @@ void R3BSofMWPCPoint::Print(const Option_t* opt) const
 // -------------------------------------------------------------------------
 
 // -----   Point x coordinate from linear extrapolation   ------------------
-Double_t R3BSofMWPCPoint::GetX(Double_t z) const
+Double_t R3BSofMwpcPoint::GetX(Double_t z) const
 {
     //  cout << fZ << " " << z << " " << fZ_out << endl;
     if ((fZ_out - z) * (fZ - z) >= 0.)
@@ -69,7 +69,7 @@ Double_t R3BSofMWPCPoint::GetX(Double_t z) const
 // -------------------------------------------------------------------------
 
 // -----   Point y coordinate from linear extrapolation   ------------------
-Double_t R3BSofMWPCPoint::GetY(Double_t z) const
+Double_t R3BSofMwpcPoint::GetY(Double_t z) const
 {
     if ((fZ_out - z) * (fZ - z) >= 0.)
         return (fY_out + fY) / 2.;
@@ -80,7 +80,7 @@ Double_t R3BSofMWPCPoint::GetY(Double_t z) const
 // -------------------------------------------------------------------------
 
 // -----   Public method IsUsable   ----------------------------------------
-Bool_t R3BSofMWPCPoint::IsUsable() const
+Bool_t R3BSofMwpcPoint::IsUsable() const
 {
     Double_t dz = fZ_out - fZ;
     if (TMath::Abs(dz) < 1.e-4)
@@ -89,4 +89,4 @@ Bool_t R3BSofMWPCPoint::IsUsable() const
 }
 // -------------------------------------------------------------------------
 
-ClassImp(R3BSofMWPCPoint)
+ClassImp(R3BSofMwpcPoint)

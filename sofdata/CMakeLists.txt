@@ -29,11 +29,11 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 atData/R3BSofATPoint.cxx
 atData/R3BSofAtMappedData.cxx
-mwpcData/R3BSofMWPCPoint.cxx
+mwpcData/R3BSofMwpcPoint.cxx
 mwpcData/R3BSofMwpcMappedData.cxx
 mwpcData/R3BSofMwpcCalData.cxx
 mwpcData/R3BSofMwpcHitData.cxx
-twimData/R3BSofTWIMPoint.cxx
+twimData/R3BSofTwimPoint.cxx
 tofwData/R3BSofTofWPoint.cxx
 sciData/R3BSofSciMappedData.cxx
 sciData/R3BSofSciTcalData.cxx

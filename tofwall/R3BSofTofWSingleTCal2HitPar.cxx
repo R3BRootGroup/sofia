@@ -106,8 +106,8 @@ InitStatus R3BSofTofWSingleTCal2HitPar::Init()
     char Name1[255];
     htof = new TH1F*[fNumSci];
     hpos = new TH1F*[fNumSci];
-    fNbBinsTof = (int)(fLimit_right_tof-fLimit_left_tof)*100.;
-    fNbBinsPos = (int)(fLimit_right_pos-fLimit_left_pos)*100.;
+    fNbBinsTof = (int)(fLimit_right_tof - fLimit_left_tof) * 100.;
+    fNbBinsPos = (int)(fLimit_right_pos - fLimit_left_pos) * 100.;
     for (Int_t i = 0; i < fNumSci; i++)
     {
         sprintf(Name1, "htof_%d", i + 1);
@@ -137,8 +137,8 @@ void R3BSofTofWSingleTCal2HitPar::Exec(Option_t* option)
     {
         calData[i] = (R3BSofTofWSingleTcalData*)(fTofCalDataCA->At(i));
         sciId = calData[i]->GetDetector();
-        htof[sciId-1]->Fill(calData[i]->GetRawTofNs());
-        hpos[sciId-1]->Fill(calData[i]->GetRawPosNs());
+        htof[sciId - 1]->Fill(calData[i]->GetRawTofNs());
+        hpos[sciId - 1]->Fill(calData[i]->GetRawPosNs());
     }
     if (calData)
         delete calData;
@@ -162,30 +162,29 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
     {
         if (htof[s]->GetEntries() > fMinStatistics && htof[s]->GetEntries() > fMinStatistics)
         {
-        
-        //std::cout << s<< " " << htof[s]->GetMaximum() <<std::endl;
-        
-                        // Bins with a number of counts less than 20% of the maximum are set to zero
-                for (Int_t k2 = 0; k2 < fNbBinsPos; k2++)
-                {
-                    
-                    if (hpos[s]->GetBinContent(k2 + 1) < 0.2 * hpos[s]->GetMaximum())
-                        hpos[s]->SetBinContent(k2 + 1, 0);
-                }
-        
-        
+
+            // std::cout << s<< " " << htof[s]->GetMaximum() <<std::endl;
+
+            // Bins with a number of counts less than 20% of the maximum are set to zero
+            for (Int_t k2 = 0; k2 < fNbBinsPos; k2++)
+            {
+
+                if (hpos[s]->GetBinContent(k2 + 1) < 0.2 * hpos[s]->GetMaximum())
+                    hpos[s]->SetBinContent(k2 + 1, 0);
+            }
+
             fHit_Par->SetInUse(1, s + 1);
             hpos[s]->Fit("fit1", "QR0");
             Double_t par1[3];
             fit1->GetParameters(&par1[0]);
             fHit_Par->SetPosPar(par1[1], s + 1);
-            
-                for (Int_t k2 = 0; k2 < fNbBinsTof; k2++)
-                {
-                    
-                    if (htof[s]->GetBinContent(k2 + 1) < 0.2 * htof[s]->GetMaximum())
-                        htof[s]->SetBinContent(k2 + 1, 0);
-                }
+
+            for (Int_t k2 = 0; k2 < fNbBinsTof; k2++)
+            {
+
+                if (htof[s]->GetBinContent(k2 + 1) < 0.2 * htof[s]->GetMaximum())
+                    htof[s]->SetBinContent(k2 + 1, 0);
+            }
 
             htof[s]->Fit("fit2", "QR0");
             Double_t par2[3];
@@ -200,12 +199,12 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
 
     // Set parameters
     fHit_Par->setChanged();
-    
-    for (Int_t s = 0; s < fNumSci; s++){
-    hpos[s]->Write();
-                    htof[s]->Write();
+
+    for (Int_t s = 0; s < fNumSci; s++)
+    {
+        hpos[s]->Write();
+        htof[s]->Write();
     }
-    
 }
 
 ClassImp(R3BSofTofWSingleTCal2HitPar)
