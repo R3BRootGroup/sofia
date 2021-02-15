@@ -1,22 +1,18 @@
 // --------------------------------------------------------------------
-// -----          R3BSofTrimContFact source file                  -----
-// --------------------------------------------------------------------
-//
-//  R3BSofTrimContFact
 //
 //  Factory for the parameter containers in libR3BSofTrim
 //
+// --------------------------------------------------------------------
 
 #include "R3BSofTrimContFact.h"
+#include "R3BSofTrimCalPar.h"
+#include "R3BSofTrimHitPar.h"
+#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
 #include "FairParRootFileIo.h"
 #include "FairRuntimeDb.h"
-
-#include "R3BSofTrimCalPar.h"
-#include "R3BSofTrimHitPar.h"
-
 #include "TClass.h"
 
 static R3BSofTrimContFact gR3BSofTrimContFact;
@@ -44,6 +40,11 @@ void R3BSofTrimContFact::setAllContainers()
     p2->addContext("TrimHitParContext");
 
     containers->Add(p2);
+
+    FairContainer* p3 = new FairContainer("trimGeoPar", "Triple MUSIC geometry parameters", "GeometryParameterContext");
+    p3->addContext("GeometryParameterContext");
+
+    containers->Add(p3);
 }
 
 FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
@@ -62,6 +63,10 @@ FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
     if (strcmp(name, "trimHitPar") == 0)
     {
         p = new R3BSofTrimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+    if (strcmp(name, "trimGeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;
 }

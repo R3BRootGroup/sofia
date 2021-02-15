@@ -5,7 +5,8 @@
 [FairBaseParSet]
 //----------------------------------------------------------------------------
 Beam Momentum Gev/c:  Double_t  1 
-Random Seed:  UInt_t  ##############################################################################
+Random Seed:  UInt_t  
+##############################################################################
 ##############################################################################
 # Class:   FairGeoParSet
 # Context: DefaultContext
@@ -6708,6 +6709,7 @@ tofwEffectiveLength:  Float_t  \
  30.9662 31.4054 31.2349 30.7753 30.6776 33.0136 33.8547 33.8244 32.5291 34.0519 \
  29.6837 29.6015 29.6015 29.6015 29.6015 29.6015 29.6015 0
 #############################################################################
+#############################################################################
 # Class:   mwpc0GeoPar
 # Context: GeometryParameterContext
 #############################################################################
@@ -6722,6 +6724,48 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 0.5
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#############################################################################
+#############################################################################
+# Class:   trimGeoPar
+# Context: GeometryParameterContext
+#############################################################################
+[trimGeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -100.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 65.
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+#############################################################################
+#############################################################################
+# Class:   mwpc1GeoPar
+# Context: GeometryParameterContext
+#############################################################################
+[mwpc1GeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t 42.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 0.5
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
