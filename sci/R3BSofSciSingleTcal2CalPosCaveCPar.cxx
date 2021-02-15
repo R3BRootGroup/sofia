@@ -32,6 +32,7 @@ R3BSofSciSingleTcal2CalPosCaveCPar::R3BSofSciSingleTcal2CalPosCaveCPar()
     , fSTcalSci(NULL)
     , fHitMw0(NULL)
     , fCalPosPar(NULL)
+    , fMwpc0GeoPar(NULL)
     , fOutputFile(NULL)
 {
 }
@@ -42,9 +43,12 @@ R3BSofSciSingleTcal2CalPosCaveCPar::R3BSofSciSingleTcal2CalPosCaveCPar(const cha
     , fNumDets(2)
     , fNumParamsPerDet(2)
     , fMinStatistics(0)
+    , fFitMin(-2)
+    , fFitMax(2)
     , fSTcalSci(NULL)
     , fHitMw0(NULL)
     , fCalPosPar(NULL)
+    , fMwpc0GeoPar(NULL)
     , fOutputFile(NULL)
 
 {
@@ -55,6 +59,9 @@ R3BSofSciSingleTcal2CalPosCaveCPar::~R3BSofSciSingleTcal2CalPosCaveCPar()
 {
     if (fCalPosPar)
         delete fCalPosPar;
+
+    if (fMwpc0GeoPar)
+        delete fMwpc0GeoPar;
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -174,7 +181,9 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::Exec(Option_t* opt)
                     continue;
                 if (hitstcal->GetDetector() == fNumDets && hitMwpc0)
                 {
-                    fh2_X0_vs_RawPosCaveC->Fill(hitstcal->GetRawPosNs(), hitMwpc0->GetX() + fMwpc0GeoPar->GetPosX());
+                    fh2_X0_vs_RawPosCaveC->Fill(
+                        hitstcal->GetRawPosNs(),
+                        hitMwpc0->GetX() + 10. * fMwpc0GeoPar->GetPosX()); // attention GetPosX() in cm !
                 }
             }
         }

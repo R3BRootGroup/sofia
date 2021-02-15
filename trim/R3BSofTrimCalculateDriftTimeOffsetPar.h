@@ -1,12 +1,13 @@
-#ifndef __R3BSOFTRIMDTOFFSETPAR_H__
-#define __R3BSOFTRIMDTOFFSETPAR_H__
+#ifndef __R3BSofTrimDTOffsetPar_H__
+#define __R3BSofTrimDTOffsetPar_H__
 
 #include "FairTask.h"
-
 #include "TH1.h"
 
-class TClonesArray;
-class R3BSofTrimCalPar;
+#include "R3BSofTrimCalPar.h"
+#include "R3BTGeoPar.h"
+#include "TClonesArray.h"
+
 class R3BEventHeader;
 
 class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
@@ -50,13 +51,8 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     const Int_t GetNumAnodes() { return fNumAnodes; }
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
-    const Float_t GetMwpc0OffsetX() { return fMwpc0OffsetX; }
-    const Float_t GetMwpc1OffsetX() { return fMwpc1OffsetX; }
-
-    const Float_t GetDistMwpc0Anode1() { return fDistMwpc0Anode1; }
-    const Float_t GetDistMwpc0Mwpc1() { return fDistMwpc0Mwpc1; }
-
     const Float_t GetWidthAnode() { return fWidthAnode; }
+    const Float_t GetDistWindowAnode() { return fDistWindowAnode; }
     const Float_t GetDistInterSection() { return fDistInterSection; }
     const Float_t GetDriftVelocity() { return fDriftVelocity; }
 
@@ -64,13 +60,8 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     void SetNumAnodes(Int_t n) { fNumAnodes = n; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
-    void SetMwpc0OffsetX(Float_t offset) { fMwpc0OffsetX = offset; }
-    void SetMwpc1OffsetX(Float_t offset) { fMwpc1OffsetX = offset; }
-
-    void SetDistMwpc0Anode1(Float_t d) { fDistMwpc0Anode1 = d; }
-    void SetDistMwpc0Mwpc1(Float_t d) { fDistMwpc0Mwpc1 = d; }
-
     void SetWidthAnode(Float_t w) { fWidthAnode = w; }
+    void SetDistWindowAnode(Float_t d) { fDistWindowAnode = d; }
     void SetDistInterSection(Float_t d) { fDistInterSection = d; }
     void SetDriftVelocity(Float_t v) { fDriftVelocity = v; }
 
@@ -79,12 +70,13 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     Int_t fNumAnodes;
     Int_t fMinStatistics; // minimum statistics to proceed to the calibration
 
-    Float_t fMwpc0OffsetX;
-    Float_t fMwpc1OffsetX;
+    // Geometry for Mwpc0 and Mwpc1
+    R3BTGeoPar* fMwpc0GeoPar;
+    R3BTGeoPar* fMwpc1GeoPar;
+    R3BTGeoPar* fTrimGeoPar;
 
-    Float_t fDistMwpc0Anode1;
-    Float_t fDistMwpc0Mwpc1;
     Float_t fWidthAnode;
+    Float_t fDistWindowAnode;
     Float_t fDistInterSection;
     Float_t fDriftVelocity;
 
@@ -105,4 +97,4 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     ClassDef(R3BSofTrimCalculateDriftTimeOffsetPar, 0);
 };
 
-#endif //__R3BSOFTRIMDTOFFSETPAR_H__
+#endif //__R3BSofTrimDTOffsetPar_H__

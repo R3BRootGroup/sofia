@@ -17,7 +17,6 @@ ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/sci
-${R3BSOF_SOURCE_DIR}/input
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})

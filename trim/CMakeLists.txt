@@ -8,6 +8,7 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
+${R3BROOT_SOURCE_DIR}/tracking
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/trimData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
@@ -41,6 +42,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofTrimLinkDef.h)
 set(LIBRARY_NAME R3BSofTrim)
 set(DEPENDENCIES
-    R3Bbase R3BData R3BSofData R3BSofTcal)
+  R3Bbase R3BData R3BSofData R3BSofTcal R3BTracking)
 
 GENERATE_LIBRARY()

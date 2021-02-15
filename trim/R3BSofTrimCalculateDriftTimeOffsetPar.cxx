@@ -2,7 +2,6 @@
 
 #include "R3BSofMwpcHitData.h"
 #include "R3BSofTrimCalData.h"
-#include "R3BSofTrimCalPar.h"
 
 #include "R3BEventHeader.h"
 
@@ -33,13 +32,13 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar()
     , fMwpc0HitData(NULL)
     , fMwpc1HitData(NULL)
     , fCalPar(NULL)
-    , fMwpc0OffsetX(0)
-    , fMwpc1OffsetX(0)
-    , fDistMwpc0Anode1(0)
-    , fDistMwpc0Mwpc1(0)
+    , fMwpc0GeoPar(NULL)
+    , fMwpc1GeoPar(NULL)
+    , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
+    , fDistWindowAnode(25)  // mm FIX ME: exact value ? (1 edge anode + field cage)
     , fDistInterSection(50) // mm FIX ME: exact value ? (2 edge anodes + stripper + field cage)
-    , fDriftVelocity(45)    // mm/micros
+    , fDriftVelocity(45)    //  mm/micros
     , fOutputFile(NULL)
 {
 }
@@ -54,11 +53,11 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar(con
     , fMwpc0HitData(NULL)
     , fMwpc1HitData(NULL)
     , fCalPar(NULL)
-    , fMwpc0OffsetX(0)
-    , fMwpc1OffsetX(0)
-    , fDistMwpc0Anode1(0)
-    , fDistMwpc0Mwpc1(0)
+    , fMwpc0GeoPar(NULL)
+    , fMwpc1GeoPar(NULL)
+    , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
+    , fDistWindowAnode(25)  // mm FIX ME: exact value ? (1 edge anode + field cage)
     , fDistInterSection(50) // mm FIX ME: exact value ? (2 edge anodes + stripper + field cage)
     , fDriftVelocity(45)    // mm/micros
     , fOutputFile(NULL)
@@ -70,6 +69,15 @@ R3BSofTrimCalculateDriftTimeOffsetPar::~R3BSofTrimCalculateDriftTimeOffsetPar()
 {
     if (fCalPar)
         delete fCalPar;
+
+    if (fMwpc0GeoPar)
+        delete fMwpc0GeoPar;
+
+    if (fMwpc1GeoPar)
+        delete fMwpc1GeoPar;
+
+    if (fTrimGeoPar)
+        delete fTrimGeoPar;
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -117,15 +125,19 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
         return kFATAL;
     }
 
-    // --- ------------------------------------------ --- //
-    // --- SOF TRIM TRIANGLE CAL PARAMETERS CONTAINER --- //
-    // --- ------------------------------------------ --- //
+    // --- ------------------ --- //
+    // --- RUN TIME DATA BASE --- //
+    // --- ------------------ --- //
 
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
         return kFATAL;
     }
+
+    // --- ------------------------------------------ --- //
+    // --- SOF TRIM TRIANGLE CAL PARAMETERS CONTAINER --- //
+    // --- ------------------------------------------ --- //
 
     fCalPar = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
     if (!fCalPar)
@@ -140,6 +152,45 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
         LOG(INFO) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() trimCalPar container found with fNumSections = "
                   << fNumSections;
     }
+
+    // --- ---------------------- --- //
+    // ---  GEOMETRY OF THE MWPC0 --- //
+    // --- ---------------------- --- //
+    fMwpc0GeoPar = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
+    if (!fMwpc0GeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc0GeoPar "
+                      "container.";
+        return kFATAL;
+    }
+    else
+        LOG(INFO) << "R3BSofSciCalculateDriftTimeOffsetPar::SetParContainers() : Container mwpc0GeoPar found.";
+
+    // --- ---------------------- --- //
+    // ---  GEOMETRY OF THE MWPC1 --- //
+    // --- ---------------------- --- //
+    fMwpc1GeoPar = (R3BTGeoPar*)rtdb->getContainer("mwpc1GeoPar");
+    if (!fMwpc1GeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc1GeoPar "
+                      "container.";
+        return kFATAL;
+    }
+    else
+        LOG(INFO) << "R3BSofSciCalculateDriftTimeOffsetPar::SetParContainers() : Container mwpc1GeoPar found.";
+
+    // --- ----------------------------- --- //
+    // ---  GEOMETRY OF THE TRIPLE-MUSIC --- //
+    // --- ----------------------------- --- //
+    fTrimGeoPar = (R3BTGeoPar*)rtdb->getContainer("trimGeoPar");
+    if (!fTrimGeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to trimGeoPar "
+                      "container.";
+        return kFATAL;
+    }
+    else
+        LOG(INFO) << "R3BSofSciCalculateDriftTimeOffsetPar::SetParContainers() : Container trimGeoPar found.";
 
     // --- ---------------------- --- //
     // --- HISTOGRAMS DECLARATION --- //
@@ -180,7 +231,7 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     if (nHits != 1)
         return;
     R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fMwpc0HitData->At(0);
-    X0 = hitMwpc0->GetX() + fMwpc0OffsetX;
+    X0 = hitMwpc0->GetX() + 10. * fMwpc0GeoPar->GetPosX(); // GetX in mm and GetPosX in cm
 
     // --- -------------- --- //
     // --- MWPC1 HIT DATA --- //
@@ -190,7 +241,7 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     if (nHits != 1)
         return;
     R3BSofMwpcHitData* hitMwpc1 = (R3BSofMwpcHitData*)fMwpc1HitData->At(0);
-    X1 = hitMwpc1->GetX() + fMwpc1OffsetX;
+    X1 = hitMwpc1->GetX() + 10. * fMwpc1GeoPar->GetPosX(); // GetX in mm and GetPosX in cm
 
     // --- --------------------------------------- --- //
     // --- LOOP OVER TRIANGLE CAL HITS FOR SofTrim --- //
@@ -204,8 +255,9 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
         iSec = hit->GetSecID() - 1;
         iAnode = hit->GetAnodeID() - 1;
         DTraw = hit->GetDriftTimeRaw();
-        Zanode = fDistMwpc0Anode1 + (iAnode + iSec * fNumAnodes) * fWidthAnode + iSec * fDistInterSection;
-        Xanode = Zanode * (X1 - X0) / fDistMwpc0Mwpc1;
+        Zanode = 10. * (fTrimGeoPar->GetPosZ() - fMwpc0GeoPar->GetPosZ()) + fDistWindowAnode +
+                 (iAnode + iSec * fNumAnodes) * fWidthAnode + iSec * fDistInterSection;
+        Xanode = Zanode * (X1 - X0) / (fMwpc1GeoPar->GetPosZ() - fMwpc0GeoPar->GetPosZ());
         fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity -
                                                       DTraw); // 10000 : mm/micros -> mm/100ps
     }                                                         // end of loop over the mapped data
