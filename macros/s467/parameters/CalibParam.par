@@ -7217,21 +7217,11 @@ nChannelsRawPosPar:  Int_t  3
 nSignalsRawPosPar:  Int_t  4 
 nRawPosParsPerSignal:  Int_t  2
 ##############################################################################
-# Class:   SofSciCalPosPar
-# Context: SofSciCalPosParContext
-##############################################################################
-[SofSciCalPosPar]
-//----------------------------------------------------------------------------
-nDets: Int_t 4
-nCalPosParsPerDet: 2
-CalPosPar: Float_t \
-0.0  1.0    0.0  1.0    0.0  1.0    0.0  1.0
-##############################################################################
 ##############################################################################
 # Class:   SofSciRawTofPar
 # Context: SofSciRawTofParContext
 ##############################################################################
-[SofSciRawRawTofPar]
+[SofSciRawTofPar]
 //----------------------------------------------------------------------------
 // Run 237-238 : first Tof S2-Cave C calibration point
 RawTofPar:  Float_t \
@@ -7276,44 +7266,6 @@ LS2:  Float_t \
 83.65  138.67
 LS8:  Float_t \
 55.16
-nDets:  Int_t  4 
-idDetS2:  Int_t  2 
-idDetS8:  Int_t  3 
-idDetCaveC:  Int_t  4 
-##############################################################################
-##############################################################################
-# Class:   SofSciCalTofPar
-# Context: SofSciCalTofParContext
-##############################################################################
-[SofSciCalTofPar]
-//----------------------------------------------------------------------------
-Tof2InvV_FromS2:  Float_t \
-0.0  1.0     0.0  1.0
-Tof2InvV_FromS8:  Float_t \
-0.0  1.0
-LS2:  Float_t \
-0.0  0.0
-LS8:  Float_t \
-0.0
-nDets:  Int_t  4 
-idDetS2:  Int_t  2 
-idDetS8:  Int_t  3 
-idDetCaveC:  Int_t  4 
-##############################################################################
-##############################################################################
-# Class:   SofSciCalTofPar
-# Context: SofSciCalTofParContext
-##############################################################################
-[SofSciCalTofPar]
-//----------------------------------------------------------------------------
-Tof2InvV_FromS2:  Float_t \
-0.0  1.0     0.0  1.0
-Tof2InvV_FromS8:  Float_t \
-0.0  1.0
-LS2:  Float_t \
-0.0  0.0
-LS8:  Float_t \
-0.0
 nDets:  Int_t  4 
 idDetS2:  Int_t  2 
 idDetS8:  Int_t  3 

@@ -16,6 +16,7 @@ ${R3BSOF_SOURCE_DIR}/mwpc/mwpc2
 ${R3BSOF_SOURCE_DIR}/mwpc/mwpc3
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
+${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
