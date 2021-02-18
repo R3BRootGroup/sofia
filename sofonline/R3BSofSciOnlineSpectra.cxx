@@ -194,12 +194,15 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         fh2_PosVsTofS8 = new TH2D*[2 * (fNbDetectors - fIdS8)];
     }
 
+    // === 2D multiplicity at Mapped level: Tref vs PMT === //
+    fh2_mult_TrefVsPmt = new TH2I*[fNbDetectors * (fNbChannels - 1)];
+
     // --- ----------------------------- --- //
     // --- create TCanvas and Histograms --- //
     // --- ------------------------------ --- //
     char Name1[255];
     char Name2[255];
-    
+
     // === TCanvas: 1D-MultMap === //
     sprintf(Name1, "MultMap");
     cMultMap = new TCanvas(Name1, Name1, 10, 10, 800, 700);
@@ -219,6 +222,11 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     sprintf(Name1, "MultCal");
     cMultCal = new TCanvas(Name1, Name1, 10, 10, 800, 700);
     cMultCal->Divide(1, fNbDetectors);
+
+    // === TCanvas: 2D-MultMap === //
+    sprintf(Name1, "MultMap2D");
+    cMultMap2D = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cMultSingleTcal->Divide(2, fNbDetectors);
 
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
@@ -311,6 +319,22 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_finetime[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
             cMapped[i]->cd(j + 1);
             fh1_finetime[i * fNbChannels + j]->Draw("");
+        }
+
+        for (Int_t pmt = 0; pmt < fNbChannels - 2; pmt++)
+        {
+            sprintf(Name1, "SofSci%i_MultMap_TrefVsPmt%i", i + 1, pmt + 1);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] = new TH2I(Name1, Name1, 30, -0.5, 29.5, 5, -0.5, 4.5);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitle("Mult Pmt");
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitle("Mult Tref");
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->CenterTitle(true);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->CenterTitle(true);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetLabelSize(0.05);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitleSize(0.05);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetLabelSize(0.05);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitleSize(0.05);
+            cMultMap2D->cd(i * (fNbChannels - 1) + pmt + 1);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->Draw("col");
         }
 
         // === TH1F: multiplicity per event and channel at mapped level === //
@@ -611,11 +635,12 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
     // --- --------------- --- //
-    TFolder* mainfolSciMult1D = new TFolder("SofSciMult", "SofSci Mult info");
-    mainfolSciMult1D->Add(cMultMap);
-    mainfolSciMult1D->Add(cMultTcal);
-    mainfolSciMult1D->Add(cMultSingleTcal);
-    mainfolSciMult1D->Add(cMultCal);
+    TFolder* mainfolSciMult = new TFolder("SofSciMult", "SofSci Mult info");
+    mainfolSciMult->Add(cMultMap);
+    mainfolSciMult->Add(cMultTcal);
+    mainfolSciMult->Add(cMultSingleTcal);
+    mainfolSciMult->Add(cMultCal);
+    mainfolSciMult->Add(cMultMap2D);
 
     TFolder* mainfolSci = new TFolder("SofSci", "SofSci info");
     for (Int_t i = 0; i < fNbDetectors; i++)
@@ -642,7 +667,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         }
         mainfolSci->Add(cPosVsTofS8);
     }
-    run->AddObject(mainfolSciMult1D);
+    run->AddObject(mainfolSciMult);
     run->AddObject(mainfolSci);
 
     // Register command to reset histograms
@@ -662,6 +687,8 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh1_multSingleTcal[i]->Reset();
         fh1_multCal[i]->Reset();
         fh2_mult[i]->Reset();
+        for (Int_t j = 0; j < fNbChannels - 1; j++)
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Reset();
 
         // === FINE TIME === //
         for (Int_t j = 0; j < fNbChannels; j++)
@@ -847,6 +874,11 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                     fh1_multMap[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
                     fh1_multTcal[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
                 }
+                for (Int_t j = 0; j < (fNbChannels - 1); j++)
+                {
+                    fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
+                                                                        multMap[i * fNbChannels + 2]);
+                }
                 fh1_multSingleTcal[i]->Fill(multSTcal[i]);
                 fh1_multCal[i]->Fill(multCal[i]);
 
@@ -941,6 +973,10 @@ void R3BSofSciOnlineSpectra::FinishTask()
         {
             cMapped[i]->Write();
             fh2_mult[i]->Write();
+            for (Int_t j = 0; j < (fNbChannels - 1); j++)
+            {
+                fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Write();
+            }
         }
 
         if (fTcal)

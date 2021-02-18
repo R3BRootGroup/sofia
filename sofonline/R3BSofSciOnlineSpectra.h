@@ -131,6 +131,7 @@ class R3BSofSciOnlineSpectra : public FairTask
     TCanvas* cMultTcal;
     TCanvas* cMultSingleTcal;
     TCanvas* cMultCal;
+    TCanvas* cMultMap2D;
     TCanvas* cPosVsTofS2;
     TCanvas* cPosVsTofS8;
     TCanvas** cRawPosVsCalPos; // [fNbDetectors]
@@ -142,8 +143,9 @@ class R3BSofSciOnlineSpectra : public FairTask
     TH1I** fh1_multCal;        // [fNbDetectors]
 
     // Histograms for Mapped data : Fine Time and Mult
-    TH1I** fh1_finetime; // [fNbDetectors * NbChannels];
-    TH2I** fh2_mult;     // [fNbDetectors];
+    TH1I** fh1_finetime;       // [fNbDetectors * NbChannels];
+    TH2I** fh2_mult;           // [fNbDetectors];
+    TH2I** fh2_mult_TrefVsPmt; //[fNbDetectors * (NbChannels-1)]
 
     // Histograms for X position at Tcal, SingleTcal and Cal levels
     TH1F** fh1_RawPos_TcalMult1;  // [fNbDetectors];
