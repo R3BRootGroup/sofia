@@ -7224,16 +7224,16 @@ nRawPosParsPerSignal:  Int_t  2
 [SofSciRawTofPar]
 //----------------------------------------------------------------------------
 // Run 237-238 : first Tof S2-Cave C calibration point
-RawTofPar:  Float_t \
-  0 0 1910.2 1911.1 858.0 860.
+// RawTofPar:  Float_t \
+//  0 0 1910.2 1911.1 858.0 860.
 // Run 239 : second Tof S2-Cave C calibration point
 //    RawTofPar:  Float_t \
 //      0 0 1935. 1936.5 867.8 870.
 // Run 242 : third Tof S2-Cave C calibration point
 //     RawTofPar:  Float_t \
 //       0 0 1953. 1953.9 875.0 876.8
-//RawTofPar:  Float_t \
-//  0 0 1899.67 1944.58 854.106 872.051
+RawTofPar:  Float_t \
+  0 0 1899.67 1944.58 854.106 872.051
 nDetsRawTofPar:  Int_t  4 
 nChannelsRawTofPar:  Int_t  3 
 idDetS2:  Int_t  2 
