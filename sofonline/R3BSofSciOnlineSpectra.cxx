@@ -226,7 +226,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // === TCanvas: 2D-MultMap === //
     sprintf(Name1, "MultMap2D");
     cMultMap2D = new TCanvas(Name1, Name1, 10, 10, 800, 700);
-    cMultSingleTcal->Divide(2, fNbDetectors);
+    cMultMap2D->Divide(2, fNbDetectors);
 
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
@@ -383,7 +383,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: calibrated position in mm at cal level === //
         sprintf(Name1, "SofSci%i_CalPos_mm", i + 1);
-        fh1_CalPos[i] = new TH1F(Name1, Name1, 20000, -100, 100);
+        fh1_CalPos[i] = new TH1F(Name1, Name1, 2200, -110, 110);
         fh1_CalPos[i]->GetXaxis()->SetTitle("(RIGHT, Wix. side) -->  x position [mm] --> (LEFT,Mes. side) -->");
         fh1_CalPos[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_CalPos[i]->GetXaxis()->CenterTitle(true);
@@ -459,7 +459,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: calibrated ToF from S2 at cal level === //
             sprintf(Name1, "CalTofNs_S2_to_Sci%02d", i + 1);
-            fh1_CalTofFromS2[i - fIdS2] = new TH1D(Name1, Name1, 1000000, 0, 1000);
+            fh1_CalTofFromS2[i - fIdS2] = new TH1D(Name1, Name1, 100000, 0, 1000);
             fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->SetTitle("Calibrated Tof [ns]");
             fh1_CalTofFromS2[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
             fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->CenterTitle(true);
@@ -490,7 +490,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             minS2 = GetTofS2min(i - fIdS2);
             maxS2 = GetTofS2max(i - fIdS2);
             fh2_PosVsTofS2[(i - fIdS2) * 2] =
-                new TH2D(Name1, Name1, 100. * (maxS2 - minS2), minS2, maxS2, 1000, -10, 10);
+                new TH2D(Name1, Name1, 50. * (maxS2 - minS2), minS2, maxS2, 1000, -100, 100);
             sprintf(Name1, "Tof S2 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS2[(i - fIdS2) * 2]->GetXaxis()->SetTitle(Name1);
             fh2_PosVsTofS2[(i - fIdS2) * 2]->GetYaxis()->SetTitle("Pos at S2 [mm]");
@@ -506,7 +506,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             // === TH2D: pos SofSci stop vs tof from S2  === //
             sprintf(Name1, "PosSci%02d_vs_Tof_S2_Sci%02d", i + 1, i + 1);
             fh2_PosVsTofS2[(i - fIdS2) * 2 + 1] =
-                new TH2D(Name1, Name1, 100 * (maxS2 - minS2), minS2, maxS2, 1000, -25, 25);
+                new TH2D(Name1, Name1, 50 * (maxS2 - minS2), minS2, maxS2, 1000, -25, 25);
             sprintf(Name1, "Tof S2 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetXaxis()->SetTitle(Name1);
             sprintf(Name1, "Pos at Sci%02d [mm]", i + 1);
@@ -600,7 +600,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH2D: posS8 vs tof from S8  === //
             sprintf(Name1, "PosS8_vs_Tof_S8-Sci%02d", i + 1);
-            fh2_PosVsTofS8[(i - fIdS8) * 2] = new TH2D(Name1, Name1, 100 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
+            fh2_PosVsTofS8[(i - fIdS8) * 2] = new TH2D(Name1, Name1, 50 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
             sprintf(Name1, "Tof S8 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS8[(i - fIdS8) * 2]->GetXaxis()->SetTitle(Name1);
             fh2_PosVsTofS8[(i - fIdS8) * 2]->GetYaxis()->SetTitle("Pos at S8 [mm]");
@@ -616,7 +616,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             // === TH2D: pos SofSci stop vs tof from S8  === //
             sprintf(Name1, "PosSci%02d_vs_Tof_S8-Sci%02d", i + 1, i + 1);
             fh2_PosVsTofS8[(i - fIdS8) * 2 + 1] =
-                new TH2D(Name1, Name1, 100 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
+                new TH2D(Name1, Name1, 50 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
             sprintf(Name1, "Tof S8 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetXaxis()->SetTitle(Name1);
             sprintf(Name1, "Pos at Sci%02d [mm]", i + 1);

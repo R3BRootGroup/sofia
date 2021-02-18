@@ -80,7 +80,6 @@ void main_online()
       
       //filename = "--stream=lxir123:7803";
       filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
-      //filename = "~/lmd/s467/main0238_0001.lmd";
       outputFilename = "data_s467_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
@@ -534,12 +533,12 @@ void main_online()
 	scionline->SetNbChannels(3);
 	scionline->SetIdS2(IdS2);
 	scionline->SetIdS8(IdS8);
-        scionline->SetCalTofS2min(380,0);
-	scionline->SetCalTofS2max(385,0);
-        scionline->SetCalTofS2min(633,1);
-	scionline->SetCalTofS2max(636,1);
-        scionline->SetCalTofS8min(250,0);
-	scionline->SetCalTofS8max(255,0);
+        scionline->SetCalTofS2min(355,0);
+	scionline->SetCalTofS2max(375,0);
+        scionline->SetCalTofS2min(585,1);
+	scionline->SetCalTofS2max(620,1);
+        scionline->SetCalTofS8min(234,0);
+	scionline->SetCalTofS8max(246,0);
 	run->AddTask(scionline);
 	if(fMusic)
 	{
@@ -548,12 +547,14 @@ void main_online()
 	  scivsmusonline->SetNbChannels(3);
 	  scivsmusonline->SetIdS2(IdS2);
 	  scivsmusonline->SetIdS8(IdS8);
-	  scivsmusonline->SetCalTofS2min(380,0);
-	  scivsmusonline->SetCalTofS2max(385,0);
-	  scivsmusonline->SetCalTofS2min(633,1);
-	  scivsmusonline->SetCalTofS2max(636,1);
-	  scivsmusonline->SetCalTofS8min(250,0);
-	  scivsmusonline->SetCalTofS8max(255,0);
+	  scivsmusonline->SetCalTofS2min(355,0);
+	  scivsmusonline->SetCalTofS2max(375,0);
+	  scivsmusonline->SetCalTofS2min(585,1);
+	  scivsmusonline->SetCalTofS2max(620,1);
+	  scivsmusonline->SetCalTofS8min(234,0);
+	  scivsmusonline->SetCalTofS8max(246,0);
+	  scivsmusonline->SetBrho0(9.032);
+	  scivsmusonline->SetDispersionS2(5375.);
 	  run->AddTask(scivsmusonline);
 	}
 	if(fMwpc0)
