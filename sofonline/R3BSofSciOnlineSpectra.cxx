@@ -321,7 +321,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_finetime[i * fNbChannels + j]->Draw("");
         }
 
-        for (Int_t pmt = 0; pmt < fNbChannels - 2; pmt++)
+        for (Int_t pmt = 0; pmt < fNbChannels - 1; pmt++)
         {
             sprintf(Name1, "SofSci%i_MultMap_TrefVsPmt%i", i + 1, pmt + 1);
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] = new TH2I(Name1, Name1, 30, -0.5, 29.5, 5, -0.5, 4.5);
