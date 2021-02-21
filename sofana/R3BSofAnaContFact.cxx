@@ -10,6 +10,10 @@
 
 #include "R3BSofAnaContFact.h"
 
+#include "R3BSofGladFieldPar.h"
+#include "R3BSofFragmentAnaPar.h"
+#include "R3BSofFrsAnaPar.h"
+
 static R3BSofAnaContFact gR3BSofAnaContFact;
 
 R3BSofAnaContFact::R3BSofAnaContFact()
@@ -28,14 +32,17 @@ void R3BSofAnaContFact::setAllContainers()
 
     FairContainer* p1 = new FairContainer("soffrsAnaPar", "FRS-S2-Cave-C Parameters", "SofFRSParContext");
     p1->addContext("SofFRSParContext");
-
     containers->Add(p1);
 
     FairContainer* p2 =
         new FairContainer("soffragmentAnaPar", "Fragment in Cave-C Parameters", "SofFragmentParContext");
     p2->addContext("SofFragmentParContext");
-
     containers->Add(p2);
+    
+    FairContainer* p3 =
+        new FairContainer("GladFieldPar", "Glad Field Parameters", "GladFieldParContext");
+    p3->addContext("GladFieldParContext");
+    containers->Add(p3);
 }
 
 FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
@@ -51,10 +58,13 @@ FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofFrsAnaPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-
     if (strcmp(name, "soffragmentAnaPar") == 0)
     {
         p = new R3BSofFragmentAnaPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+    if (strcmp(name, "GladFieldPar") == 0)
+    {
+        p = new R3BSofGladFieldPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
     return p;

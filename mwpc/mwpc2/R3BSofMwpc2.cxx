@@ -82,8 +82,8 @@ Bool_t R3BSofMwpc2::ProcessHits(FairVolume* vol)
         fDetCopyID = 1; // vol->getCopyNo();
         gMC->TrackPosition(fPosOut);
         gMC->TrackMomentum(fMomOut);
-        //        if (fELoss == 0.)
-        //            return kFALSE;
+        if (fELoss == 0.)
+            return kFALSE;
 
         if (gMC->IsTrackExiting())
         {
@@ -229,7 +229,7 @@ Bool_t R3BSofMwpc2::CheckIfSensitive(std::string name)
 {
     if (TString(name).Contains("MWPC2"))
     {
-        LOG(INFO) << "Found MWPC2 geometry from ROOT file: " << name;
+        LOG(DEBUG) << "Found MWPC2 geometry from ROOT file: " << name;
         return kTRUE;
     }
     return kFALSE;

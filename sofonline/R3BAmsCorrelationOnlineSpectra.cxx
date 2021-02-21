@@ -13,6 +13,7 @@
 #include "R3BCalifaHitData.h"
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
+#include "R3BSofTrimHitData.h"
 #include "R3BSofTwimHitData.h"
 #include "THttpServer.h"
 
@@ -44,6 +45,7 @@ R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra()
     : FairTask("AmsCorrelationOnlineSpectra", 1)
     , fHitItemsAms(NULL)
     , fHitItemsMus(NULL)
+    , fHitItemsTrim(NULL)
     , fHitItemsTwim(NULL)
     , fHitItemsCalifa(NULL)
     , fZproj(20.)
@@ -60,6 +62,7 @@ R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra(const TString& na
     : FairTask(name, iVerbose)
     , fHitItemsAms(NULL)
     , fHitItemsMus(NULL)
+    , fHitItemsTrim(NULL)
     , fHitItemsTwim(NULL)
     , fHitItemsCalifa(NULL)
     , fZproj(20.)
@@ -79,6 +82,8 @@ R3BAmsCorrelationOnlineSpectra::~R3BAmsCorrelationOnlineSpectra()
         delete fHitItemsAms;
     if (fHitItemsMus)
         delete fHitItemsMus;
+    if (fHitItemsTrim)
+        delete fHitItemsTrim;    
     if (fHitItemsTwim)
         delete fHitItemsTwim;
     if (fHitItemsCalifa)
@@ -112,7 +117,15 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     // get access to hit data of the MUSIC
     fHitItemsMus = (TClonesArray*)mgr->GetObject("MusicHitData");
     if (!fHitItemsMus)
-        LOG(ERROR) << "R3BAmsCorrelationOnlineSpectra: MusicHitData not found";
+        LOG(WARNING) << "R3BAmsCorrelationOnlineSpectra: MusicHitData not found";
+
+    // get access to hit data of the Triple-MUSIC    
+    fHitItemsTrim = (TClonesArray*)mgr->GetObject("TrimHitData");
+    if (!fHitItemsTrim)
+        LOG(WARNING) << "R3BAmsCorrelationOnlineSpectra: TrimHitData not found";
+        
+    if (!fHitItemsTrim&&!fHitItemsMus)
+             LOG(ERROR) << "R3BAmsCorrelationOnlineSpectra: MusicHitData and/or TrimHitData not found";
 
     // get access to Hit data
     fHitItemsCalifa = (TClonesArray*)mgr->GetObject("CalifaHitData");
@@ -411,7 +424,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     TFolder* mainfol = new TFolder("CALIFA-MUSICs", "AMS-CALIFA-MUSICs correlation info");
 
     // Folder for hit data
-    if (fHitItemsMus && fHitItemsTwim)
+    if ((fHitItemsMus||fHitItemsTrim) && fHitItemsTwim)
     {
         TFolder* hitfol = new TFolder("Hit", "Hit AMS-CALIFA-MUSICs correlation info");
         for (Int_t i = 0; i < fNbDet; i++)
@@ -514,12 +527,25 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
     Double_t z_music = 0., z_twim = 0.;
 
     // Fill music-hit data
-    if (fHitItemsMus && fHitItemsMus->GetEntriesFast() > 0)
+    if (fHitItemsMus && !fHitItemsTrim && fHitItemsMus->GetEntriesFast() > 0)
     {
         Int_t nHits = fHitItemsMus->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BMusicHitData* hit = (R3BMusicHitData*)fHitItemsMus->At(ihit);
+            if (!hit)
+                continue;
+            z_music = hit->GetZcharge();
+        }
+    }
+    
+    // Fill triple music-hit data
+    if (!fHitItemsMus && fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fHitItemsTrim->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTrimHitData* hit = (R3BSofTrimHitData*)fHitItemsTrim->At(ihit);
             if (!hit)
                 continue;
             z_music = hit->GetZcharge();
@@ -706,6 +732,10 @@ void R3BAmsCorrelationOnlineSpectra::FinishEvent()
     if (fHitItemsMus)
     {
         fHitItemsMus->Clear();
+    }
+    if (fHitItemsTrim)
+    {
+        fHitItemsTrim->Clear();
     }
     if (fHitItemsCalifa)
     {

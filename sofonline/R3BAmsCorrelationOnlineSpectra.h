@@ -99,6 +99,7 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     TClonesArray* fHitItemsTwim;   /**< Array with twim-hit items. */
     TClonesArray* fHitItemsMus;    /**< Array with music-hit items. */
     TClonesArray* fHitItemsCalifa; /**< Array with califa-hit items. */
+    TClonesArray* fHitItemsTrim;   /**< Array with triple music-hit items. */
 
     Int_t fHitCalifaHist_max;
     Int_t fHitCalifaHist_bins;

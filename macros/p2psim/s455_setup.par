@@ -102,11 +102,11 @@ Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
 [Mwpc3GeoPar]
-PositionX: Double_t -270.
+PositionX: Double_t -250.
 PositionY: Double_t 0.
 PositionZ: Double_t 674.
 RotationX: Double_t 0.
-RotationY: Double_t -28.
+RotationY: Double_t -18.
 RotationZ: Double_t 0.
 DimensionX: Double_t 90.
 DimensionY: Double_t 60.
@@ -119,11 +119,11 @@ Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
 [TofwGeoPar]
-PositionX: Double_t -297.
+PositionX: Double_t -280.
 PositionY: Double_t 0.
 PositionZ: Double_t 735.
 RotationX: Double_t 0.
-RotationY: Double_t -28.
+RotationY: Double_t -18.
 RotationZ: Double_t 0.
 DimensionX: Double_t 90.
 DimensionY: Double_t 60.
@@ -135,4 +135,8 @@ A: Double_t 11.0723
 Density: Double_t 1.032
 IonisationEnergy: Double_t 57.4e-6
 #################################################
-
+[GladFieldPar]
+Bz: Float_t 2.155
+EffLength: Float_t 210.
+FieldCentre: Float_t 308.
+#################################################

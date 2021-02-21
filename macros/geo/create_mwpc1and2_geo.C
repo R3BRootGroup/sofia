@@ -65,7 +65,7 @@ void create_mwpc1and2_geo(TString geoTag = "1")
   std::cin  >> geoTag;
 
   TString detName="MWPC"+geoTag;
-  TString WorldName=detName+"World";
+  TString WorldName="MWPCWorld"+geoTag;
 
 
   if(detName!="MWPC1"&&detName!="MWPC2"){
@@ -179,7 +179,7 @@ void create_mwpc1and2_geo(TString geoTag = "1")
 	
 	//Double_t length = 54.;
 	
-	TGeoShape *pCBWorld = new TGeoBBox("MWPC1_box",
+	TGeoShape *pCBWorld = new TGeoBBox("MWPC_box",
 									   30.0/2.0,
 									   30.0/2.0,
 									   6.0/2.0);
@@ -335,7 +335,7 @@ void create_mwpc1and2_geo(TString geoTag = "1")
    // Combi transformation: 
    dx = 0.000;
    dy = 0.000;
-   dz = -1.200;
+   dz = 0.00;
    TGeoCombiTrans* pMatrix6 = new TGeoCombiTrans("", dx,dy,dz,0);
    // Shape: sofia1 type: TGeoTubeSeg
    dx = 39.000;
@@ -422,9 +422,9 @@ void create_mwpc1and2_geo(TString geoTag = "1")
 
 
    // Shape: sofia1 type: TGeoTubeSeg
-   dx = 21.000;
-   dy = 21.000;
-   dz = 1.2000;
+   dx = 20.000;
+   dy = 20.000;
+   dz = 1.000;
 
    TGeoShape *Detector1 = new TGeoBBox("Detector_1", dx/2.,dy/2.,dz/2.);
    // Volume: 

@@ -7,7 +7,7 @@
 #define R3BSofTwimDigitizer_H 1
 
 #include "FairTask.h"
-#include "R3BHit.h"
+#include "R3BSofTwimHitData.h"
 #include <map>
 #include <string>
 
@@ -55,8 +55,8 @@ class R3BSofTwimDigitizer : public FairTask
     TString fName;
 
     /** Private method AddR3BHitData **/
-    // Adds a R3BHit to the HitCollection
-    R3BHit* AddR3BHitData(Int_t detId, Double_t x, Double_t y, Double_t eloss, Double_t time);
+    // Adds a R3BSofTwimHitData to the HitCollection
+    R3BSofTwimHitData* AddR3BHitData(Int_t detId, Double_t theta, Double_t z);
 
   public:
     // Class definition

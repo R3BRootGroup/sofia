@@ -964,7 +964,7 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
             Ebeta[iSec] = hititem->GetEnergyBeta();
             Edt[iSec] = hititem->GetEnergyDT();
             Etheta[iSec] = hititem->GetEnergyTheta();
-            Z[iSec] = hititem->GetZ();
+            Z[iSec] = hititem->GetZcharge();
             fh1_trimhit_Eraw[iSec]->Fill(Eraw[iSec]);
             fh1_trimhit_Ebeta[iSec]->Fill(Ebeta[iSec]);
             fh1_trimhit_Edt[iSec]->Fill(Edt[iSec]);

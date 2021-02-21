@@ -229,7 +229,7 @@ Bool_t R3BSofMwpc3::CheckIfSensitive(std::string name)
 {
     if (TString(name).Contains("MWPC3"))
     {
-        LOG(INFO) << "Found MWPC3 geometry from ROOT file: " << name;
+        LOG(DEBUG) << "Found MWPC3 geometry from ROOT file: " << name;
         return kTRUE;
     }
     return kFALSE;

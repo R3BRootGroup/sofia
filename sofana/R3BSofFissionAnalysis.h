@@ -15,6 +15,7 @@
 #include "TMath.h"
 #include "TRandom.h"
 #include "TVector3.h"
+#include "TRotation.h"
 #include <TRandom.h>
 #include <iomanip>
 
@@ -26,11 +27,12 @@
 #include "FairTask.h"
 
 // SOFIA headers
-#include "R3BSofFragmentAnaPar.h"
 #include "R3BSofTrackingData.h"
 #include "R3BSofTwimHitPar.h"
 
 class TClonesArray;
+class R3BTGeoPar;
+class R3BSofGladFieldPar;
 
 class R3BSofFissionAnalysis : public FairTask
 {
@@ -75,7 +77,6 @@ class R3BSofFissionAnalysis : public FairTask
 
     /** Accessor functions **/
     void SetOffsetAq(Double_t theAq) { fOffsetAq = theAq; }
-    void SetOffsetZ(Double_t theZ) { fOffsetZ = theZ; }
 
   private:
     void SetParameter();
@@ -85,19 +86,27 @@ class R3BSofFissionAnalysis : public FairTask
     Double_t GetAoverq(Double_t brho, Double_t vel);
 
     Bool_t fOnline; // Don't store data for online
-    // Parameters set with accessor functions
-    Double_t frho_Cave, fBfield_Glad, fTimeOffset;
-    R3BSofFragmentAnaPar* fFragPar;
-    R3BSofTwimHitPar* fTwimPar;
-
+    
     // Parameters from par file
-    Double_t fOffsetAq, fOffsetZ; // Offsets in A/q and Z
+    Double_t fOffsetAq; // Offset in A/q
+    
+    // Parameters set with accessor functions
+    Double_t fFieldCentre, fEffLength, fBfield_Glad;
+
+    R3BSofGladFieldPar* fGladPar;
+    R3BSofTwimHitPar* fTwimPar;
+    R3BTGeoPar* fMw0GeoPar;
+    R3BTGeoPar* fTargetGeoPar;
+    R3BTGeoPar* fMw1GeoPar;
+    R3BTGeoPar* fMw2GeoPar;
+    R3BTGeoPar* fMw3GeoPar;
+    R3BTGeoPar* fTofWGeoPar;
 
     TClonesArray* fMwpc0HitDataCA; /**< Array with Mwpc Hit-input data. >*/
+    TClonesArray* fTwimHitDataCA;  /**< Array with Twim Hit-input data. >*/
     TClonesArray* fMwpc1HitDataCA; /**< Array with Mwpc Hit-input data. >*/
     TClonesArray* fMwpc2HitDataCA; /**< Array with Mwpc Hit-input data. >*/
     TClonesArray* fMwpc3HitDataCA; /**< Array with Mwpc Hit-input data. >*/
-    TClonesArray* fTwimHitDataCA;  /**< Array with Twim Hit-input data. >*/
     TClonesArray* fTofWHitDataCA;  /**< Array with ToF Hit-input data. >*/
     TClonesArray* fTrackingDataCA; /**< Array with Tracking-output data. >*/
 

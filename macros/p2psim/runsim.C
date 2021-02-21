@@ -146,7 +146,7 @@ void runsim(Int_t nEvents = 0)
 
     // Cave definition
     FairModule* cave = new R3BCave("CAVE");
-    cave->SetGeometryFileName("r3b_cave_vacuum.geo");
+    cave->SetGeometryFileName("r3b_cave.geo");
     run->AddModule(cave);
 
     // R3B-Music definition
@@ -255,6 +255,8 @@ void runsim(Int_t nEvents = 0)
         }
         else
             run->AddModule(new R3BSofTwim(fTwimGeo, { 0., 0., 69. }));
+        R3BSofTwimDigitizer* twim_digitizer = new R3BSofTwimDigitizer("Twim", 1);
+        if(fSofiaDigitizer)run->AddTask(twim_digitizer);
     }
 
     // MWPC2 definition
@@ -307,7 +309,7 @@ void runsim(Int_t nEvents = 0)
         }
         else
         {
-            rmwpc3->RotateY(-28.);
+            rmwpc3->RotateY(-18.);
             run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -300., 0., 749., rmwpc3 }));
         }
         R3BSofMwpcDigitizer* mw3_digitizer = new R3BSofMwpcDigitizer("Mwpc3", 1);
@@ -329,7 +331,7 @@ void runsim(Int_t nEvents = 0)
         }
         else
         {
-            rtof->RotateY(-28.);
+            rtof->RotateY(-18.);
             run->AddModule(new R3BSofTofW(fSofTofWallGeo, { -330., 0., 817., rtof }));
         }
         R3BSofTofWDigitizer* tofw_digitizer = new R3BSofTofWDigitizer();

@@ -116,11 +116,11 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     char Name2[255];
 
     // === Mwpc0 cal data vs CalPos of SofSci at Cave C === //
-		cMwpc0vsRawPos = new TCanvas("Mwpc0_vs_RawPosSciCaveC", "Mwpc0 vs SofSciCaveC-RawPos", 10, 10, 800, 700);
-    cMwpc0vsRawPos->Divide(2,1);
+    cMwpc0vsRawPos = new TCanvas("Mwpc0_vs_RawPosSciCaveC", "Mwpc0 vs SofSciCaveC-RawPos", 10, 10, 800, 700);
+    cMwpc0vsRawPos->Divide(2, 1);
 
-		cMwpc0vsRawPos->cd(1);    
-		fh2_Mwpc0XvsRawPos =
+    cMwpc0vsRawPos->cd(1);
+    fh2_Mwpc0XvsRawPos =
         new TH2F("fh2_Mwpc0X_vs_RawPosSciCaveC", "Mwpc0-X vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0XvsRawPos->GetXaxis()->SetTitle(
         "(RIGHT,Wix. side) -->  SofSci-RawPos Cave C [ns] --> (LEFT,Mes. side) -->");
@@ -134,9 +134,9 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     fh2_Mwpc0XvsRawPos->GetYaxis()->SetTitleSize(0.045);
     fh2_Mwpc0XvsRawPos->Draw("col");
 
-		cMwpc0vsRawPos->cd(2);    
+    cMwpc0vsRawPos->cd(2);
     fh2_Mwpc0YvsRawPos =
-        new TH2F("fh2_Mwpc0X_vs_RawPosSciCaveC", "Mwpc0-Y vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
+        new TH2F("fh2_Mwpc0Y_vs_RawPosSciCaveC", "Mwpc0-Y vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0YvsRawPos->GetXaxis()->SetTitle(
         "(RIGHT,Wix. side) -->  SofSci-RawPos Cave C [ns] --> (LEFT,Mes. side) -->");
     fh2_Mwpc0YvsRawPos->GetYaxis()->SetTitle("Mwpc0-Y in the det frame [mm]");
@@ -148,10 +148,10 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     fh2_Mwpc0YvsRawPos->GetYaxis()->SetLabelSize(0.045);
     fh2_Mwpc0YvsRawPos->GetYaxis()->SetTitleSize(0.045);
     fh2_Mwpc0YvsRawPos->Draw("col");
-    
-		// === Mwpc0 cal data vs CalPos of SofSci at Cave C === //
+
+    // === Mwpc0 cal data vs CalPos of SofSci at Cave C === //
     cMwpc0vsCalPos = new TCanvas("Mwpc0_vs_CalPosSciCaveC", "Mwpc0 vs SofSciCaveC-X", 10, 10, 800, 700);
-    cMwpc0vsCalPos->Divide(2,1);
+    cMwpc0vsCalPos->Divide(2, 1);
 
     cMwpc0vsCalPos->cd(1);
     fh2_Mwpc0XvsCalPos =
@@ -166,10 +166,10 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     fh2_Mwpc0XvsCalPos->GetYaxis()->SetLabelSize(0.045);
     fh2_Mwpc0XvsCalPos->GetYaxis()->SetTitleSize(0.045);
     fh2_Mwpc0XvsCalPos->Draw("col");
-    
-		cMwpc0vsCalPos->cd(2);
+
+    cMwpc0vsCalPos->cd(2);
     fh2_Mwpc0YvsCalPos =
-        new TH2F("fh2_Mwpc0X_vs_CalPosSciCaveC", "Mwpc0-X vs SciCaveC-CalPos", 1400, -7, 7, 2000, -50, 50);
+        new TH2F("fh2_Mwpc0Y_vs_CalPosSciCaveC", "Mwpc0-Y vs SciCaveC-CalPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0YvsCalPos->GetXaxis()->SetTitle("(RIGHT,Wix. side) -->  SofSci-X Cave C [mm] --> (LEFT,Mes. side) -->");
     fh2_Mwpc0YvsCalPos->GetYaxis()->SetTitle("Mwpc0-Y [mm]");
     fh2_Mwpc0YvsCalPos->GetYaxis()->SetTitleOffset(1.1);
@@ -283,13 +283,13 @@ void R3BSofSciVsMwpc0OnlineSpectra::FinishEvent()
 void R3BSofSciVsMwpc0OnlineSpectra::FinishTask()
 {
     if (fSTcalSci && fHitMwpc0)
-		{
+    {
         fh2_Mwpc0XvsRawPos->Write();
         fh2_Mwpc0YvsRawPos->Write();
-		}
+    }
     if (fCalSci && fHitMwpc0)
-		{
+    {
         fh2_Mwpc0XvsCalPos->Write();
         fh2_Mwpc0YvsCalPos->Write();
-		}
+    }
 }
