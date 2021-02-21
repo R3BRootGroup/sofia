@@ -22,6 +22,7 @@
 #include <string>
 
 #include "R3BMCTrack.h"
+#include "R3BSofTwimHitData.h"
 #include "R3BSofTwimPoint.h"
 
 // R3BSofTwimDigitizer: Default Constructor --------------------------
@@ -78,10 +79,11 @@ InitStatus R3BSofTwimDigitizer::Init()
     fTwimPoints = (TClonesArray*)ioman->GetObject("Sof" + fName + "Point");
 
     // Register output array fTwimHits
-    fTwimHits = new TClonesArray("R3BHit", 10);
-    ioman->Register(fName + "Hit", "Digital response in " + fName, fTwimHits, kTRUE);
+    // fTwimHits = new TClonesArray("R3BHit", 10);
+    fTwimHits = new TClonesArray("R3BSofTwimHitData", 10);
+    ioman->Register(fName + "HitData", "Digital response in " + fName, fTwimHits, kTRUE);
 
-    fDetId = 3;
+    // fDetId = 3;
 
     return kSUCCESS;
 }
@@ -92,8 +94,7 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
     // The idea of this digitizer is to provide the charge of the fragments
     // from the sum of energy loss in the anodes.
     // At the moment, we take the Z from the point level and store it in the
-    // R3BHit class as the time data member. This should be changed in the
-    // future ...
+    // R3BSofTwimHitData class. This should be changed in the future ...
 
     Reset();
     // Reading the Input -- Point Data --
@@ -110,9 +111,9 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
         x[i] = 0.;
         zf[i] = 0.;
     }
-    Double_t eloss[64];
-    for (Int_t i = 0; i < 64; i++)
-        eloss[i] = 0.;
+    // Double_t eloss[64];
+    // for (Int_t i = 0; i < 64; i++)
+    //  eloss[i] = 0.;
 
     for (Int_t i = 0; i < nHits; i++)
     {
@@ -122,7 +123,7 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
         R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);
         PID = Track->GetPdgCode();
         anodeId = pointData[i]->GetDetCopyID();
-        eloss[anodeId] = eloss[anodeId] + pointData[i]->GetEnergyLoss() * 1000.;
+        // eloss[anodeId] = eloss[anodeId] + pointData[i]->GetEnergyLoss() * 1000.;
 
         if (PID > 1000080160 && (anodeId == 0 || anodeId == 16 || anodeId == 32 || anodeId == 48)) // Z=8 and A=16
         {
@@ -136,39 +137,31 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
 
             if (anodeId == 0)
             {
-                x[0] = ((fX_in + fX_out) / 2.) + gRandom->Gaus(0., fsigma_x);
+                x[0] = (fX_out - fX_in) / 5.;
                 zf[0] = pointData[i]->GetZFF();
             }
             else if (anodeId == 16)
             {
-                x[1] = ((fX_in + fX_out) / 2.) + gRandom->Gaus(0., fsigma_x);
+                x[1] = (fX_out - fX_in) / 5.;
                 zf[1] = pointData[i]->GetZFF();
             }
             else if (anodeId == 32)
             {
-                x[2] = ((fX_in + fX_out) / 2.) + gRandom->Gaus(0., fsigma_x);
+                x[2] = (fX_out - fX_in) / 5.;
                 zf[2] = pointData[i]->GetZFF();
             }
             else if (anodeId == 48)
             {
-                x[3] = ((fX_in + fX_out) / 2.) + gRandom->Gaus(0., fsigma_x);
+                x[3] = (fX_out - fX_in) / 5.;
                 zf[3] = pointData[i]->GetZFF();
             }
-
-            // z = ((fZ_in + fZ_out) / 2.);
-
-            // x = (((x - fPosX) * cos(fangle * TMath::DegToRad())) - ((z - fPosZ) * sin(fangle * TMath::DegToRad()))) +
-            //  gRandom->Gaus(0., fsigma_x);
         }
     }
 
     for (Int_t i = 0; i < 4; i++)
     {
-        double el = 0.;
-        for (Int_t j = 16 * i; j < 16 * (1 + i); j++)
-            if (eloss[j] > 0.001)
-                el = el + eloss[j];
-        AddR3BHitData(fDetId, x[i], 0., el, zf[i]);
+        if (zf[i] > 1)
+            AddR3BHitData(i + 1, x[i], zf[i]);
     }
 
     if (pointData)
@@ -188,12 +181,12 @@ void R3BSofTwimDigitizer::Reset()
 }
 
 // -----   Private method AddR3BHitData  -------------------------------------------
-R3BHit* R3BSofTwimDigitizer::AddR3BHitData(Int_t detId, Double_t x, Double_t y, Double_t eloss, Double_t time)
+R3BSofTwimHitData* R3BSofTwimDigitizer::AddR3BHitData(Int_t secId, Double_t theta, Double_t z)
 {
     // It fills the R3BHit
     TClonesArray& clref = *fTwimHits;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BHit(detId, x, y, eloss, time);
+    return new (clref[size]) R3BSofTwimHitData(secId, theta, z);
 }
 
 // -----   Public method Finish  ------------------------------------------------

@@ -172,7 +172,7 @@ void R3BSofTwim::EndOfEvent()
 // -----   Public method Register   -------------------------------------------
 void R3BSofTwim::Register()
 {
-    FairRootManager::Instance()->Register("SofTWIMPoint", GetName(), fSofTWIMCollection, kTRUE);
+    FairRootManager::Instance()->Register("SofTwimPoint", GetName(), fSofTWIMCollection, kTRUE);
 }
 
 // -----   Public method GetCollection   --------------------------------------
@@ -244,7 +244,7 @@ Bool_t R3BSofTwim::CheckIfSensitive(std::string name)
 {
     if (TString(name).Contains("TwinLog"))
     {
-        LOG(INFO) << "Found TWIN MUSIC geometry from ROOT file: " << name;
+        LOG(DEBUG) << "Found TWIN MUSIC geometry from ROOT file: " << name;
         return kTRUE;
     }
     return kFALSE;

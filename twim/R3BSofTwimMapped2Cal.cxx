@@ -163,6 +163,7 @@ InitStatus R3BSofTwimMapped2Cal::Init()
 InitStatus R3BSofTwimMapped2Cal::ReInit()
 {
     SetParContainers();
+    SetParameter();
     return kSUCCESS;
 }
 

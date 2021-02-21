@@ -36,6 +36,7 @@ R3BSofFragmentAnalysis.cxx
 R3BSofFissionAnalysis.cxx
 R3BSofFrsAnaPar.cxx
 R3BSofFragmentAnaPar.cxx
+R3BSofGladFieldPar.cxx
 R3BSofAnaContFact.cxx
 )
 
@@ -46,6 +47,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofAnaLinkDef.h)
 set(LIBRARY_NAME R3BSofAna)
 set(DEPENDENCIES
-    R3Bbase R3BData R3BSofData)
+    R3Bbase R3BData R3BSofData R3BTracking)
 
 GENERATE_LIBRARY()

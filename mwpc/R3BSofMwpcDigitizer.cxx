@@ -32,8 +32,8 @@ R3BSofMwpcDigitizer::R3BSofMwpcDigitizer()
     , fMCTrack(NULL)
     , fMwpcPoints(NULL)
     , fMwpcHits(NULL)
-    , fsigma_x(0.0)
-    , fsigma_y(0.0)
+    , fsigma_x(0.125)
+    , fsigma_y(0.25)
 {
 }
 
@@ -44,8 +44,8 @@ R3BSofMwpcDigitizer::R3BSofMwpcDigitizer(const TString& name, Int_t iVerbose)
     , fMCTrack(NULL)
     , fMwpcPoints(NULL)
     , fMwpcHits(NULL)
-    , fsigma_x(0.0)
-    , fsigma_y(0.0)
+    , fsigma_x(0.125)
+    , fsigma_y(0.25)
 {
 }
 
@@ -145,7 +145,7 @@ void R3BSofMwpcDigitizer::Exec(Option_t* opt)
 
             vpos = fRot * (vpos - fTrans);
 
-            AddHitData(vpos.X() + gRandom->Gaus(0., fsigma_x), vpos.Y() + gRandom->Gaus(0., fsigma_y));
+            AddHitData(vpos.X()*10. + gRandom->Gaus(0., fsigma_x), vpos.Y()*10. + gRandom->Gaus(0., fsigma_y));//mm
         }
     }
     if (pointData)

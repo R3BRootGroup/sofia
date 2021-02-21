@@ -86,7 +86,7 @@ void main_online()
       // 86Kr run242
       //filename = "~/data/main0242*.lmd";
       // 50Ca
-      filename = "~/data/s467/Ca50/main0*.lmd";
+      filename = "~/lmd/s467/main0*.lmd";
       outputFilename = "data_s467_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers

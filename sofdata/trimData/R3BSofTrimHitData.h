@@ -25,7 +25,7 @@ class R3BSofTrimHitData : public TObject
     inline const Float_t& GetEnergyBeta() const { return fEnergyBeta; }
     inline const Float_t& GetEnergyDT() const { return fEnergyDT; }
     inline const Float_t& GetEnergyTheta() const { return fEnergyTheta; }
-    inline const Float_t& GetZ() const { return fZ; }
+    inline const Float_t& GetZcharge() const { return fZ; }
 
     /** Modifiers **/
     void SetSecID(Int_t id) { fSecID = id; };
@@ -33,7 +33,7 @@ class R3BSofTrimHitData : public TObject
     void SetEnergyBeta(Float_t e) { fEnergyBeta = e; };
     void SetEnergyDT(Float_t e) { fEnergyDT = e; };
     void SetEnergyTheta(Float_t e) { fEnergyTheta = e; };
-    void SetZ(Float_t z) { fZ = z; }
+    void SetZcharge(Float_t z) { fZ = z; }
 
   protected:
     Int_t fSecID;

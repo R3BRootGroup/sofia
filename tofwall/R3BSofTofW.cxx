@@ -99,17 +99,19 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
     }
 
     // Sum energy loss for all steps in the active volume
-    Double_t dE = gMC->Edep() * 1000.;                          // in MeV
-    Double_t post_E = (gMC->Etot() - gMC->TrackMass()) * 1000.; // in MeV
-    TString ptype = gMC->GetStack()->GetCurrentTrack()->GetName();
+    // Double_t dE = gMC->Edep() * 1000.;                          // in MeV
+    // Double_t post_E = (gMC->Etot() - gMC->TrackMass()) * 1000.; // in MeV
+    // TString ptype = gMC->GetStack()->GetCurrentTrack()->GetName();
 
     Double_t M_in = gMC->TrackMass() * 1000.;
     Double_t fA_in = M_in / U_MEV;
-    Double_t fZ_in = gMC->TrackCharge();
+    // Charge and mass are now obtained from PDG Code
+    Double_t fZ_in = int(gMC->TrackPid() / 10000) - 100000.; // gMC->TrackCharge();
+    fA_in = 0.1 * (gMC->TrackPid() - (100000 + fZ_in) * 10000.);
 
-    fELoss += dE / 1000.; // back to GeV
+    fELoss += gMC->Edep();
 
-    if (dE > 0)
+    if (fELoss > 0)
     {
 
         fNSteps++;
