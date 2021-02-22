@@ -336,11 +336,29 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 
         fh2_ErawVsBeta = new TH2F("ErawVsBeta", "ErawVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
         cEvsBeta->cd(1);
-        fh2_ErawVsBeta->Draw("col");
-        fh2_EcorrVsBeta = new TH2F("EcorrVsBeta", "EcorrVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
+        fh2_ErawVsBeta->GetYaxis()->SetTitle("Esum - R3B MUSIC");
+        fh2_ErawVsBeta->GetXaxis()->SetTitle("Beta");
+	fh2_ErawVsBeta->Draw("col");
+        
+	fh2_EcorrVsBeta = new TH2F("EcorrVsBeta", "EcorrVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
         cEvsBeta->cd(2);
+        fh2_EcorrVsBeta->GetYaxis()->SetTitle("E corrected from beta - R3B MUSIC");
+        fh2_EcorrVsBeta->GetXaxis()->SetTitle("Beta");
         fh2_EcorrVsBeta->Draw("col");
 
+	cEcorr = new TCanvas("MusEcorrBeta","MusEcorrBeta", 10, 10, 800, 700);
+	cEcorr->Divide(2,1);
+	fh1_Esum = new TH1F("Esum","Esum",1075,2200,6500);
+	fh1_EcorrBeta = new TH1F("EcorrBeta","EcorrBeta",1075,2200,6500);
+	cEcorr->cd(1);
+	fh1_Esum->Draw();
+	fh1_EcorrBeta->SetLineColor(kRed);
+	fh1_EcorrBeta->Draw("same");
+	fh2_EcorrVsDT = new TH2F("EcorrBetaVsDT","EcorrBetaVsDT",800,-20,20,860,2200,6500);
+	fh2_EcorrVsDT->GetXaxis()->SetTitle("Drift Time [mm]");
+	fh2_EcorrVsDT->GetYaxis()->SetTitle("E corrected from beta");
+	cEcorr->cd(2);
+	fh2_EcorrVsDT->Draw("COL");
     } // end of if(fIdS2>0)
 
     // --- --------------- --- //
@@ -367,10 +385,11 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         }
         mainfol->Add(cAqvsq);
         mainfol->Add(cAqvsq_mult1Tref);
-				mainfol->Add(cEvsAoQ);
-				mainfol->Add(cEcorrvsAoQ);
-				mainfol->Add(cEvsBeta);   
- 		}
+	mainfol->Add(cEvsAoQ);
+	mainfol->Add(cEcorrvsAoQ);
+	mainfol->Add(cEvsBeta);   
+	mainfol->Add(cEcorr);
+    }
     run->AddObject(mainfol);
 
     // Register command to reset histograms
@@ -406,6 +425,9 @@ void R3BSofSciVsMusicOnlineSpectra::Reset_Histo()
 	}
 	fh2_ErawVsBeta->Reset();
 	fh2_EcorrVsBeta->Reset();
+	fh1_Esum->Reset();
+	fh1_EcorrBeta->Reset();
+	fh2_EcorrVsDT->Reset();
     }
 
     if (fIdS8)
@@ -469,8 +491,10 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             if (hit->GetAnodeID() == 5)
+	    {
                 MusicDT = hit->GetDTime();
-        }
+	    }
+	}
     }
 
     // --- ---------------- --- //
@@ -539,6 +563,9 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
 		    fh2_Aqvsq->Fill(AoQ, MusicZ);
 		    fh2_ErawVsBeta->Fill(hit->GetBeta_S2(),Esum);
 		    fh2_EcorrVsBeta->Fill(hit->GetBeta_S2(),Ebeta);
+		    fh1_Esum->Fill(Esum);
+		    fh1_EcorrBeta->Fill(Ebeta);
+		    fh2_EcorrVsDT->Fill(MusicDT,Ebeta);
                     if (multTcal[3 * (fNbDetectors - 1) + 2] == 1 && multTcal[3 * (fIdS2 - 1) + 2] == 1)
                     {
                         fh2_Aqvsq_mult1Tref->Fill(AoQ , MusicZ);
@@ -634,6 +661,9 @@ void R3BSofSciVsMusicOnlineSpectra::FinishTask()
 	    }
 	    fh2_ErawVsBeta->Write();
 	    fh2_EcorrVsBeta->Write();       
+	    fh1_Esum->Write();
+	    fh1_EcorrBeta->Write();
+	    fh2_EcorrVsDT->Write();
 	}
         if (fIdS8 > 0)
         {
