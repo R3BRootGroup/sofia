@@ -399,6 +399,13 @@ void R3BSofSciVsMusicOnlineSpectra::Reset_Histo()
         }
         fh2_Aqvsq->Reset();
         fh2_Aqvsq_mult1Tref->Reset();
+	for(Int_t i=0; i<6; i++)
+	{
+	    fh2_EvsAoQ[i]->Reset();
+	    fh2_EcorrvsAoQ[i]->Reset();
+	}
+	fh2_ErawVsBeta->Reset();
+	fh2_EcorrVsBeta->Reset();
     }
 
     if (fIdS8)
@@ -420,7 +427,7 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     Int_t multTcal[fNbDetectors * 3];
     Double_t TofS2[fNbDetectors - fIdS2];
     Double_t TofS8[fNbDetectors - fIdS8];
-    Double_t Gamma, Brho, xS2;
+    Double_t Gamma, Brho, xS2, AoQ;
 
     for (Int_t det = 0; det < fNbDetectors; det++)
     {
@@ -435,6 +442,12 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     // --- -------------- --- //
     Double_t MusicZ = 0.;
     Double_t MusicDT = -1000000.;
+    Double_t Esum_vs_beta_p0 = 36434. ;
+    Double_t Esum_vs_beta_p1 = -64208. ;
+    Double_t Esum_vs_beta_p2 = 32466. ;
+    Double_t Esum = 0.;
+    Double_t Ebeta = 0.;
+
     if (fMusHitItems && fMusHitItems->GetEntriesFast() > 0)
     {
         nHits = fMusHitItems->GetEntriesFast();
@@ -444,7 +457,9 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             MusicZ = hit->GetZcharge();
-        }
+	    Esum = hit->GetEave();
+	    Ebeta = Esum * (Esum_vs_beta_p0 + Esum_vs_beta_p1*4000. + Esum_vs_beta_p2*4000.*4000.)  / (Esum_vs_beta_p0 + Esum_vs_beta_p1*Esum + Esum_vs_beta_p2*Esum*Esum);
+   	}
     }
 
     // --- -------------- --- //
@@ -517,10 +532,49 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
                     // in R3BRoot, X is increasing from right to left
                     //    Bro = fBrho0 * (1 + xMwpc0/fDCC - xS2/fDS2)
                     Brho = fBrho0 * (1. - xS2 / fDS2); // + X_mwpc0/fDCC
-                    fh2_Aqvsq->Fill(Brho / (3.10716 * Gamma * hit->GetBeta_S2()), MusicZ);
+                    AoQ = Brho / (3.10716 * Gamma * hit->GetBeta_S2()) ;  
+		    fh2_Aqvsq->Fill(AoQ, MusicZ);
+		    fh2_ErawVsBeta->Fill(hit->GetBeta_S2(),Esum);
+		    fh2_EcorrVsBeta->Fill(hit->GetBeta_S2(),Ebeta);
                     if (multTcal[3 * (fNbDetectors - 1) + 2] == 1 && multTcal[3 * (fIdS2 - 1) + 2] == 1)
                     {
-                        fh2_Aqvsq_mult1Tref->Fill(Brho / (3.10716 * Gamma * hit->GetBeta_S2()), MusicZ);
+                        fh2_Aqvsq_mult1Tref->Fill(AoQ , MusicZ);
+
+			if( multTcal[3*(fIdS2-1)]   == 1 && 
+			    multTcal[3*(fIdS2-1)+1] == 1){
+			fh2_EvsAoQ[0]->Fill(AoQ,Esum);
+			fh2_EcorrvsAoQ[0]->Fill(AoQ,Ebeta);
+			}
+			else if( ( 2<= multTcal[3*(fIdS2-1)]   && multTcal[3*(fIdS2-1)]   <=5) &&
+			         ( 2<= multTcal[3*(fIdS2-1)+1] && multTcal[3*(fIdS2-1)+1] <=5))
+			{
+			  fh2_EvsAoQ[1]->Fill(AoQ,Esum);
+			  fh2_EcorrvsAoQ[1]->Fill(AoQ,Ebeta);
+			}
+			else if( ( 6<= multTcal[3*(fIdS2-1)]   && multTcal[3*(fIdS2-1)]   <=10) &&
+			         ( 6<= multTcal[3*(fIdS2-1)+1] && multTcal[3*(fIdS2-1)+1] <=10))
+			{
+			  fh2_EvsAoQ[2]->Fill(AoQ,Esum);
+			  fh2_EcorrvsAoQ[2]->Fill(AoQ,Ebeta);
+			}
+			else if( ( 11<= multTcal[3*(fIdS2-1)]   && multTcal[3*(fIdS2-1)]   <=15) &&
+			         ( 11<= multTcal[3*(fIdS2-1)+1] && multTcal[3*(fIdS2-1)+1] <=15))
+			{
+			  fh2_EvsAoQ[3]->Fill(AoQ,Esum);
+			  fh2_EcorrvsAoQ[3]->Fill(AoQ,Ebeta);
+			}
+			else if( ( 16<= multTcal[3*(fIdS2-1)]   && multTcal[3*(fIdS2-1)]   <=20) &&
+			         ( 16<= multTcal[3*(fIdS2-1)+1] && multTcal[3*(fIdS2-1)+1] <=20))
+			{
+			  fh2_EvsAoQ[4]->Fill(AoQ,Esum);
+			  fh2_EcorrvsAoQ[4]->Fill(AoQ,Ebeta);
+			}
+			else if( ( 21<= multTcal[3*(fIdS2-1)]   ) &&
+			         ( 21<= multTcal[3*(fIdS2-1)+1] ))
+			{
+			  fh2_EvsAoQ[5]->Fill(AoQ,Esum);
+			  fh2_EcorrvsAoQ[5]->Fill(AoQ,Ebeta);
+			}
                     }
                 }
             }
@@ -570,7 +624,14 @@ void R3BSofSciVsMusicOnlineSpectra::FinishTask()
             fh2_Aqvsq_mult1Tref->Write();
             for (Int_t d = fIdS2; d < fNbDetectors; d++)
                 fh2_MusZvsCalTofS2[d - fIdS2]->Write();
-        }
+	    for (Int_t i=0; i<6; i++)
+	    {
+		fh2_EvsAoQ[i]->Write();
+		fh2_EcorrvsAoQ[i]->Write();
+	    }
+		fh2_ErawVsBeta->Write();
+		fh2_EcorrVsBeta->Write();       
+	}
         if (fIdS8 > 0)
         {
             for (Int_t d = fIdS8; d < fNbDetectors; d++)
