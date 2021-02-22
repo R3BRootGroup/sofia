@@ -103,8 +103,10 @@ class R3BSofSciVsMwpc0OnlineSpectra : public FairTask
     TCanvas* cMwpc0vsCalPos;
 
     // Histogram for correlation with Mwpc0
-    TH2F* fh2_Mwpc0vsRawPos;
-    TH2F* fh2_Mwpc0vsCalPos;
+    TH2F* fh2_Mwpc0XvsRawPos;
+    TH2F* fh2_Mwpc0YvsRawPos;
+    TH2F* fh2_Mwpc0XvsCalPos;
+    TH2F* fh2_Mwpc0YvsCalPos;
 
     // check how many raw pos found
 
