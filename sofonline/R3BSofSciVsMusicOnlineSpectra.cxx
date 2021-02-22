@@ -246,9 +246,10 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         }
     }
 
-    // === HIT DATA AoverQ VERSUS Q === //
     if (fIdS2 > 0)
     {
+        // === HIT DATA AoverQ VERSUS Q === //
+
         cAqvsq = new TCanvas("FRSv_AoverQ_vs_Q", "A/q versus q 2D", 10, 10, 800, 700);
         cAqvsq->cd();
         fh2_Aqvsq = new TH2F("fh2v_Aq_vs_q_frs", "FRS: A/q vs q", 3000, 1., 3, 1300, 8, 39.5);
@@ -276,7 +277,71 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         fh2_Aqvsq_mult1Tref->GetYaxis()->SetLabelSize(0.045);
         fh2_Aqvsq_mult1Tref->GetYaxis()->SetTitleSize(0.045);
         fh2_Aqvsq_mult1Tref->Draw("colz");
-    }
+
+        // === Music E versus A/Q depending on rate at S2 === //
+        cEvsAoQ = new TCanvas("R3BMusEsum_vs_AoQ", "Music Esum vs Aoq", 10, 10, 800, 700);
+        cEvsAoQ->Divide(3, 2);
+        cEcorrvsAoQ = new TCanvas("R3BMusEcorr_vs_AoQ", "Music Esum corr from beta vs Aoq", 10, 10, 800, 700);
+        cEcorrvsAoQ->Divide(3, 2);
+        fh2_EvsAoQ = new TH2F*[6];
+        fh2_EcorrvsAoQ = new TH2F*[6];
+
+        fh2_EvsAoQ[0] = new TH2F("E_vs_AoQ_mult1", "E_vs_AoQ_mult1", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EvsAoQ[1] = new TH2F("E_vs_AoQ_mult2-5", "E_vs_AoQ_mult2-5", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EvsAoQ[2] = new TH2F("E_vs_AoQ_mult6-10", "E_vs_AoQ_mult6-10", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EvsAoQ[3] = new TH2F("E_vs_AoQ_mult11-15", "E_vs_AoQ_mult11-16", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EvsAoQ[4] = new TH2F("E_vs_AoQ_mult16-20", "E_vs_AoQ_mult16-20", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EvsAoQ[5] = new TH2F("E_vs_AoQ_multup20", "E_vs_AoQ_multup20", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[0] = new TH2F("Ecorr_vs_AoQ_mult1", "Ecorr_vs_AoQ_mult1", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[1] = new TH2F("Ecorr_vs_AoQ_mult2-5", "Ecorr_vs_AoQ_mult2-5", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[2] =
+            new TH2F("Ecorr_vs_AoQ_mult6-10", "Ecorr_vs_AoQ_mult6-10", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[3] =
+            new TH2F("Ecorr_vs_AoQ_mult11-15", "Ecorr_vs_AoQ_mult11-15", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[4] =
+            new TH2F("Ecorr_vs_AoQ_mult16-20", "Ecorr_vs_AoQ_mult16-20", 700, 2.25, 2.60, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[5] =
+            new TH2F("Ecorr_vs_AoQ_multup20", "Ecorr_vs_AoQ_multup20", 700, 2.25, 2.60, 1100, 1000, 6500);
+
+        for (Int_t i = 0; i < 6; i++)
+        {
+            fh2_EvsAoQ[i]->GetXaxis()->SetTitle("A/Q");
+            fh2_EvsAoQ[i]->GetYaxis()->SetTitle("Esum [channels]");
+            fh2_EvsAoQ[i]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_EvsAoQ[i]->GetXaxis()->CenterTitle(true);
+            fh2_EvsAoQ[i]->GetYaxis()->CenterTitle(true);
+            fh2_EvsAoQ[i]->GetXaxis()->SetLabelSize(0.045);
+            fh2_EvsAoQ[i]->GetXaxis()->SetTitleSize(0.045);
+            fh2_EvsAoQ[i]->GetYaxis()->SetLabelSize(0.045);
+            fh2_EvsAoQ[i]->GetYaxis()->SetTitleSize(0.045);
+            cEvsAoQ->cd(i + 1);
+            fh2_EvsAoQ[i]->Draw("colz");
+
+            fh2_EcorrvsAoQ[i]->GetXaxis()->SetTitle("A/Q");
+            fh2_EcorrvsAoQ[i]->GetYaxis()->SetTitle("Esum [channels]");
+            fh2_EcorrvsAoQ[i]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_EcorrvsAoQ[i]->GetXaxis()->CenterTitle(true);
+            fh2_EcorrvsAoQ[i]->GetYaxis()->CenterTitle(true);
+            fh2_EcorrvsAoQ[i]->GetXaxis()->SetLabelSize(0.045);
+            fh2_EcorrvsAoQ[i]->GetXaxis()->SetTitleSize(0.045);
+            fh2_EcorrvsAoQ[i]->GetYaxis()->SetLabelSize(0.045);
+            fh2_EcorrvsAoQ[i]->GetYaxis()->SetTitleSize(0.045);
+            cEcorrvsAoQ->cd(i + 1);
+            fh2_EcorrvsAoQ[i]->Draw("colz");
+        }
+
+        // === MUSIC E vs BETA === //
+        cEvsBeta = new TCanvas("MusE_vs_Beta", "MusE_vs_Beta", 10, 10, 800, 700);
+        cEvsBeta->Divide(2, 1);
+
+        fh2_ErawVsBeta = new TH2F("ErawVsBeta", "ErawVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
+        cEvsBeta->cd(1);
+        fh2_ErawVsBeta->Draw("col");
+        fh2_EcorrVsBeta = new TH2F("EcorrVsBeta", "EcorrVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
+        cEvsBeta->cd(2);
+        fh2_EcorrVsBeta->Draw("col");
+
+    } // end of if(fIdS2>0)
 
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
@@ -302,7 +367,10 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         }
         mainfol->Add(cAqvsq);
         mainfol->Add(cAqvsq_mult1Tref);
-    }
+				mainfol->Add(cEvsAoQ);
+				mainfol->Add(cEcorrvsAoQ);
+				mainfol->Add(cEvsBeta);   
+ 		}
     run->AddObject(mainfol);
 
     // Register command to reset histograms

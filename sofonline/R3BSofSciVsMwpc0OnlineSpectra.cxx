@@ -116,7 +116,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     char Name2[255];
 
     // === Mwpc0 cal data vs CalPos of SofSci at Cave C === //
-		cMwpc0vsRawPos = new TCanvas("Mwpc0X_vs_RawPosSciCaveC", "Mwpc0-X vs SofSciCaveC-RawPos", 10, 10, 800, 700);
+		cMwpc0vsRawPos = new TCanvas("Mwpc0_vs_RawPosSciCaveC", "Mwpc0 vs SofSciCaveC-RawPos", 10, 10, 800, 700);
     cMwpc0vsRawPos->Divide(2,1);
 
 		cMwpc0vsRawPos->cd(1);    
@@ -150,7 +150,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     fh2_Mwpc0YvsRawPos->Draw("col");
     
 		// === Mwpc0 cal data vs CalPos of SofSci at Cave C === //
-    cMwpc0vsCalPos = new TCanvas("Mwpc0X_vs_PosSciCaveC", "Mwpc0-X vs SofSciCaveC-X", 10, 10, 800, 700);
+    cMwpc0vsCalPos = new TCanvas("Mwpc0_vs_CalPosSciCaveC", "Mwpc0 vs SofSciCaveC-X", 10, 10, 800, 700);
     cMwpc0vsCalPos->Divide(2,1);
 
     cMwpc0vsCalPos->cd(1);
