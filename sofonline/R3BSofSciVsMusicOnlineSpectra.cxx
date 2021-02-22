@@ -442,11 +442,7 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     // --- -------------- --- //
     Double_t MusicZ = 0.;
     Double_t MusicDT = -1000000.;
-    Double_t Esum_vs_beta_p0 = 36434. ;
-    Double_t Esum_vs_beta_p1 = -64208. ;
-    Double_t Esum_vs_beta_p2 = 32466. ;
     Double_t Esum = 0.;
-    Double_t Ebeta = 0.;
 
     if (fMusHitItems && fMusHitItems->GetEntriesFast() > 0)
     {
@@ -458,8 +454,7 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
                 continue;
             MusicZ = hit->GetZcharge();
 	    Esum = hit->GetEave();
-	    Ebeta = Esum * (Esum_vs_beta_p0 + Esum_vs_beta_p1*4000. + Esum_vs_beta_p2*4000.*4000.)  / (Esum_vs_beta_p0 + Esum_vs_beta_p1*Esum + Esum_vs_beta_p2*Esum*Esum);
-   	}
+	}
     }
 
     // --- -------------- --- //
@@ -495,6 +490,13 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     // --- --------------- --- //
     // --- SofSci cal data --- //
     // --- --------------- --- //
+    //Double_t Esum_vs_beta_p0 = 9956.9 / 3800. ;
+    //Double_t Esum_vs_beta_p1 = -8204.73 / 3800. ;
+    //Double_t Esum_vs_beta_p2 = 0. ;
+    Double_t Esum_vs_beta_p0 = 6047.07 / 3800. ;
+    Double_t Esum_vs_beta_p1 = 1975.55 / 3800. ;
+    Double_t Esum_vs_beta_p2 = -6626.4 / 3800. ;
+    Double_t Ebeta = 0.;
     if (fCalSci && fCalSci->GetEntriesFast())
     {
         xS2 = 0.;
@@ -526,7 +528,8 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
                 fh2_MusZvsCalTofS2[hit->GetDetector() - 1 - fIdS2]->Fill(hit->GetTofNs_S2(), MusicZ);
                 if (hit->GetDetector() == fNbDetectors)
                 {
-                    Gamma = 1. / (TMath::Sqrt(1. - TMath::Power(hit->GetBeta_S2(), 2)));
+	            Ebeta = Esum  / (Esum_vs_beta_p0 + Esum_vs_beta_p1*hit->GetBeta_S2() + Esum_vs_beta_p2*hit->GetBeta_S2()*hit->GetBeta_S2());
+		    Gamma = 1. / (TMath::Sqrt(1. - TMath::Power(hit->GetBeta_S2(), 2)));
                     // if X is increasing from left to right:
                     //    Brho = fBhro0 * (1 - xMwpc0/fDCC + xS2/fDS2)
                     // in R3BRoot, X is increasing from right to left
@@ -629,8 +632,8 @@ void R3BSofSciVsMusicOnlineSpectra::FinishTask()
 		fh2_EvsAoQ[i]->Write();
 		fh2_EcorrvsAoQ[i]->Write();
 	    }
-		fh2_ErawVsBeta->Write();
-		fh2_EcorrVsBeta->Write();       
+	    fh2_ErawVsBeta->Write();
+	    fh2_EcorrVsBeta->Write();       
 	}
         if (fIdS8 > 0)
         {
