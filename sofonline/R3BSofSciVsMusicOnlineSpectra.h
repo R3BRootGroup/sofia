@@ -140,6 +140,7 @@ class R3BSofSciVsMusicOnlineSpectra : public FairTask
     TCanvas* cEcorrvsAoQ;
     TCanvas* cEvsBeta;
     TCanvas* cEcorr;
+    TCanvas* cEcorrvsAoQall;
 
     // Histogram for correlation with R3B-Music
     TH2F** fh2_MusZvsCalPos; //[fNbDetectors];
@@ -155,6 +156,7 @@ class R3BSofSciVsMusicOnlineSpectra : public FairTask
     TH1F* fh1_Esum;
     TH1F* fh1_EcorrBeta;
     TH2F* fh2_EcorrVsDT;
+    TH2F* fh2_EcorrVsAoQ_all;
 
   public:
     ClassDef(R3BSofSciVsMusicOnlineSpectra, 1)

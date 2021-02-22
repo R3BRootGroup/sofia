@@ -359,6 +359,14 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 	fh2_EcorrVsDT->GetYaxis()->SetTitle("E corrected from beta");
 	cEcorr->cd(2);
 	fh2_EcorrVsDT->Draw("COL");
+        
+	// === Music E corrected versus A/Q === //
+        cEcorrvsAoQall = new TCanvas("R3BMusEcorrVsAoQall", "Music Esum corr from beta vs Aoq all multiplicities", 10, 10, 800, 700);
+        fh2_EcorrVsAoQ_all = new TH2F("EcorrVsAoQ_allMult", "Ecorr_vs_AoQ_allMult", 700, 2.25, 2.60, 900, 2000, 6500);
+	fh2_EcorrVsAoQ_all->GetXaxis()->SetTitle("A/Q");
+	fh2_EcorrVsAoQ_all->GetYaxis()->SetTitle("E corrected from beta");
+	cEcorrvsAoQall->cd();
+	fh2_EcorrVsAoQ_all->Draw("col");
     } // end of if(fIdS2>0)
 
     // --- --------------- --- //
@@ -389,6 +397,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 	mainfol->Add(cEcorrvsAoQ);
 	mainfol->Add(cEvsBeta);   
 	mainfol->Add(cEcorr);
+	mainfol->Add(cEcorrvsAoQall);
     }
     run->AddObject(mainfol);
 
@@ -428,6 +437,7 @@ void R3BSofSciVsMusicOnlineSpectra::Reset_Histo()
 	fh1_Esum->Reset();
 	fh1_EcorrBeta->Reset();
 	fh2_EcorrVsDT->Reset();
+	fh2_EcorrVsAoQ_all->Reset();
     }
 
     if (fIdS8)
@@ -560,6 +570,7 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
                     //    Bro = fBrho0 * (1 + xMwpc0/fDCC - xS2/fDS2)
                     Brho = fBrho0 * (1. - xS2 / fDS2); // + X_mwpc0/fDCC
                     AoQ = Brho / (3.10716 * Gamma * hit->GetBeta_S2()) ;  
+		    fh2_EcorrVsAoQ_all->Fill(AoQ, Ebeta);
 		    fh2_Aqvsq->Fill(AoQ, MusicZ);
 		    fh2_ErawVsBeta->Fill(hit->GetBeta_S2(),Esum);
 		    fh2_EcorrVsBeta->Fill(hit->GetBeta_S2(),Ebeta);
@@ -664,6 +675,7 @@ void R3BSofSciVsMusicOnlineSpectra::FinishTask()
 	    fh1_Esum->Write();
 	    fh1_EcorrBeta->Write();
 	    fh2_EcorrVsDT->Write();
+	    fh2_EcorrVsAoQ_all->Write();
 	}
         if (fIdS8 > 0)
         {
