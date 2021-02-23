@@ -152,10 +152,12 @@ class R3BSofSciVsMusicOnlineSpectra : public FairTask
     TH2F** fh2_EvsAoQ;
     TH2F** fh2_EcorrvsAoQ;
     TH2F* fh2_ErawVsBeta;
-    TH2F* fh2_EcorrVsBeta; 
+    TH2F* fh2_EcorrBetaVsBeta;
     TH1F* fh1_Esum;
     TH1F* fh1_EcorrBeta;
-    TH2F* fh2_EcorrVsDT;
+    TH1F* fh1_EcorrBetaDT;
+    TH2F* fh2_EcorrBetaVsDT;
+    TH2F* fh2_EcorrBetaDTVsDT;
     TH2F* fh2_EcorrVsAoQ_all;
 
   public:
