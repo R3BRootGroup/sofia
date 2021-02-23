@@ -52,7 +52,6 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
     const Float_t GetWidthAnode() { return fWidthAnode; }
-    const Float_t GetDistWindowAnode() { return fDistWindowAnode; }
     const Float_t GetDistInterSection() { return fDistInterSection; }
     const Float_t GetDriftVelocity() { return fDriftVelocity; }
 
@@ -61,7 +60,6 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
     void SetWidthAnode(Float_t w) { fWidthAnode = w; }
-    void SetDistWindowAnode(Float_t d) { fDistWindowAnode = d; }
     void SetDistInterSection(Float_t d) { fDistInterSection = d; }
     void SetDriftVelocity(Float_t v) { fDriftVelocity = v; }
 
@@ -76,7 +74,6 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     R3BTGeoPar* fTrimGeoPar;
 
     Float_t fWidthAnode;
-    Float_t fDistWindowAnode;
     Float_t fDistInterSection;
     Float_t fDriftVelocity;
 

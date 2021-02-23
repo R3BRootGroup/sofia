@@ -19,7 +19,9 @@
 #include "R3BSofTrimCal2Hit.h"
 #include "R3BSofTrimCalData.h"
 #include "R3BSofTrimHitPar.h"
-// todo : #include "R3BSofSciHitData.h"
+
+// Sci headers
+#include "R3BSofSciCalData.h"
 
 // R3BSofTrimCal2Hit: Default Constructor --------------------------
 R3BSofTrimCal2Hit::R3BSofTrimCal2Hit()
@@ -27,11 +29,12 @@ R3BSofTrimCal2Hit::R3BSofTrimCal2Hit()
     , fNumSections(3)
     , fNumAnodes(6)
     , fTriShape(kTRUE)
+    , fIdCaveC(2)
     , fOnline(kFALSE)
     , fTrimHitPar(NULL)
     , fTrimCalData(NULL)
+    , fSciCalData(NULL)
     , fTrimHitData(NULL)
-// to do : , fSciHitData(NULL)
 {
 }
 
@@ -41,11 +44,12 @@ R3BSofTrimCal2Hit::R3BSofTrimCal2Hit(const char* name, Int_t iVerbose)
     , fNumSections(3)
     , fNumAnodes(6)
     , fTriShape(kTRUE)
+    , fIdCaveC(2)
     , fOnline(kFALSE)
     , fTrimHitPar(NULL)
     , fTrimCalData(NULL)
+    , fSciCalData(NULL)
     , fTrimHitData(NULL)
-// to do : , fSciHitData(NULL)
 {
 }
 
@@ -57,7 +61,8 @@ R3BSofTrimCal2Hit::~R3BSofTrimCal2Hit()
         delete fTrimCalData;
     if (fTrimHitData)
         delete fTrimHitData;
-    // to do : if (fSciHitData) delete fSciHitData;
+    if (fSciCalData)
+        delete fSciCalData;
 }
 
 void R3BSofTrimCal2Hit::SetParContainers()
@@ -111,12 +116,13 @@ InitStatus R3BSofTrimCal2Hit::Init()
     }
 
     // --- ---------------------- --- //
-    // --- INPUT HIT DATA FOR SCI --- //
+    // --- INPUT CAL DATA FOR SCI --- //
     // --- ---------------------- --- //
-    // to do : fSciHitData = (TClonesArray*)rootManager->GetObject("SciHitData");
-    // to do : if (!fSciHitData){
-    // to do :   return kFATAL;
-    // to do : }
+    fSciCalData = (TClonesArray*)rootManager->GetObject("SciCalData");
+    if (!fSciCalData)
+    {
+        return kFATAL;
+    }
 
     // --- --------------- --- //
     // --- OUTPUT HIT DATA --- //
@@ -152,7 +158,7 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
     // Get the parameters
     if (!fTrimHitPar)
     {
-        LOG(ERROR) << "R3BSofTrimCal2Hit: NOT Container Parameter!!";
+        LOG(ERROR) << "R3BSofTrimCal2Hit::Exec() --->  no TrimHitPar Container found";
     }
 
     // Local variables at Cal Level
@@ -160,6 +166,7 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
     UInt_t mult[fNumSections * fNumAnodes];
     Float_t e[fNumSections * fNumAnodes];
     Double_t dt[fNumSections * fNumAnodes];
+    Double_t betaFromS2 = 0.;
 
     // Local variables at Hit Level
     Int_t nAligned, nRaw;
@@ -169,6 +176,7 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
         nAligned = fNumAnodes;
     Float_t eal[fNumSections * nAligned];
     Float_t sumRaw, sumBeta, sumDT, sumTheta, zval;
+    Double_t correction;
 
     // Initialization of the local variables
     for (Int_t s = 0; s < fNumSections; s++)
@@ -183,7 +191,20 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
             eal[ch + s * nAligned] = 0;
     }
 
-    // TO DO : Get the number of entries of the SciHitData TClonesArray (to get the beam velocity)
+    // Get the number of entries of the SciCalData TClonesArray and extract the beam velocity 
+    Int_t nHitsCalSci = fSciCalData->GetEntries();
+    if (!nHitsCalSci)
+    {
+        return;
+    }
+    for (Int_t entry = 0; entry < nHitsCalSci; entry++)
+    {
+        R3BSofSciCalData* iSciCalData = (R3BSofSciCalData*)fSciCalData->At(entry);
+        if (iSciCalData->GetDetector() == fIdCaveC)
+        {
+            betaFromS2 = iSciCalData->GetBeta_S2();
+        }
+    }
 
     // Get the number of entries of the TrimCalData TClonesArray and loop over it
     Int_t nHitsCalTrim = fTrimCalData->GetEntries();
@@ -205,7 +226,7 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
     for (Int_t s = 0; s < fNumSections; s++)
     {
 
-        // === fEnergyRaw: sum of Aligned Energy ===
+        // === fEnergyRaw: sum of Aligned Energy === //
         sumRaw = 0.;
         nRaw = 0;
         // if Rectangular shape:
@@ -237,8 +258,20 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
         if (nRaw > 0)
             sumRaw = sumRaw / (Float_t)nRaw;
 
-        // TO DO : === fEnergyBeta: fEnergyRaw corrected from the beam velocity ===
-        sumBeta = sumRaw;
+        // === fEnergyBeta: fEnergyRaw corrected from the beam velocity === //
+        correction = 0;
+        for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrBetaParsPerSection(); deg++)
+        {
+            correction += TMath::Power(betaFromS2, deg) * fTrimHitPar->GetEnergyCorrBetaPar(s + 1, deg);
+        }
+        if (correction != 0)
+        {
+            sumBeta = sumRaw / correction;
+        }
+        else
+        {
+            sumBeta = sumRaw;
+        }
 
         // TO DO : === fEnergyDT: fEnergyBeta corrected from the X position in the Triple-MUSIC ===
         sumDT = sumBeta;
@@ -248,7 +281,9 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
 
         // TO DO : === fZ ===
         zval = sumTheta;
-        AddHitData(s + 1, sumRaw, sumBeta, sumDT, sumTheta, zval);
+        
+	// FILL HIT DATA 
+	AddHitData(s + 1, sumRaw, sumBeta, sumDT, sumTheta, zval);
 
     } // end of loop over the sections
 
