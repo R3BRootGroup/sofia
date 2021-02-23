@@ -60,14 +60,14 @@ class R3BSofMwpc3Cal2Hit : public FairTask
     Double_t fwx;    // Pad width in X
     Double_t fwy;    // Pad width in Y
     Int_t fx[Mw3PadsX], fy[Mw3PadsY];
-    vector<int> fQX;
-    vector<int> fQY;
-    vector<int> fPadX;
-    vector<int> fPadY;
-    vector<pair<int, int>> fPairX;
-    vector<pair<int, int>> fPairY;
-    vector<vector<pair<int, int>>> fClusterX;
-    vector<vector<pair<int, int>>> fClusterY;
+    vector<Int_t> fQX;
+    vector<Int_t> fQY;
+    vector<Int_t> fPadX;
+    vector<Int_t> fPadY;
+    vector<pair<Int_t, Int_t>> fPairX;
+    vector<pair<Int_t, Int_t>> fPairY;
+    vector<vector<pair<Int_t, Int_t>>> fClusterX;
+    vector<vector<pair<Int_t, Int_t>>> fClusterY;
 
     double fThresholdX;
     double fThresholdY;
@@ -88,7 +88,7 @@ class R3BSofMwpc3Cal2Hit : public FairTask
     /** **/
     double GetChargeMax(vector<pair<int, int>> p1);
     /** **/
-    vector<pair<int, int>> FindCluster(vector<pair<int, int>>);
+    vector<pair<int, int>> FindCluster(vector<pair<int, int>>& p1);
     /** **/
     void ReconstructHitWithTofWallMatching();
     /** Private method to obtain the position X **/

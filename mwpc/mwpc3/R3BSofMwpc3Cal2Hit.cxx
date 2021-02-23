@@ -14,6 +14,9 @@
 #include "FairRuntimeDb.h"
 
 #include <iomanip>
+#include <iostream>
+#include <utility>
+#include <vector>
 
 // MWPC headers
 #include "R3BSofMwpc3Cal2Hit.h"
@@ -192,7 +195,10 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
 void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
 {
     // Getting Position information from tof wall
+
     Int_t twHits = fTofWallHitDataCA->GetEntries();
+    if (!twHits)
+        return;
     R3BSofTofWHitData** twHitData;
     twHitData = new R3BSofTofWHitData*[twHits];
     vector<double> twX;
@@ -204,24 +210,23 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
         twX.push_back(twHitData[i]->GetX());
         twY.push_back(twHitData[i]->GetY());
     }
-
     Int_t nHits = fMwpcCalDataCA->GetEntries();
     if (!nHits)
         return;
-
     // Data from cal level
     R3BSofMwpcCalData** calData;
     calData = new R3BSofMwpcCalData*[nHits];
     Int_t planeId;
     Int_t padId;
     Int_t q;
-
     /*fQX.clear();
     fQY.clear();
     fPadX.clear();
     fPadY.clear();*/
     fPairX.clear();
     fPairY.clear();
+    fPairX.reserve(100);
+    fPairY.reserve(100);
     fClusterX.clear();
     fClusterY.clear();
 
@@ -231,37 +236,48 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
         planeId = calData[i]->GetPlane();
         padId = calData[i]->GetPad();
         q = calData[i]->GetQ();
-        pair<int, int> hit_pair;
+        pair<Int_t, Int_t> hit_pair = make_pair(padId, q);
         if (planeId == 1)
         {
-            hit_pair = { padId, q };
             fPairX.push_back(hit_pair);
             // fQX.push_back(q);
             // fPadX.push_back(padId);
         }
-        else
+        if (planeId == 3)
         {
-            hit_pair = { padId, q };
             fPairY.push_back(hit_pair);
             // fQY.push_back(q);
             // fPadY.push_back(padId);
         }
+    }
+    if (fPairX.size() == 0 || fPairY.size() == 0)
+    {
+        if (calData)
+            delete calData;
+        return;
     }
 
     // sorting fPair with increasing pad number;
     sort(fPairX.begin(), fPairX.end());
     sort(fPairY.begin(), fPairY.end());
 
-    fThresholdX = 0.1 * GetChargeMax(fPairX);
-    fThresholdY = 0.1 * GetChargeMax(fPairY);
+    fThresholdX = max(0.2 * GetChargeMax(fPairX), 500.);
+    fThresholdY = max(0.2 * GetChargeMax(fPairY), 500.);
 
-    while (GetChargeMax(fPairX) > fThresholdX)
+    while (GetChargeMax(fPairX) > fThresholdX && fPairX.size() > 3)
     {
         fClusterX.push_back(FindCluster(fPairX));
     }
-    while (GetChargeMax(fPairY) > fThresholdY)
+    while (GetChargeMax(fPairY) > fThresholdY && fPairY.size() > 3)
     {
         fClusterY.push_back(FindCluster(fPairY));
+    }
+
+    if (fClusterX.size() == 0 || fClusterY.size() == 0)
+    {
+        if (calData)
+            delete calData;
+        return;
     }
 
     vector<double> Xpos;
@@ -280,6 +296,7 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
             Xpos.push_back(x);
         }
     }
+
     vector<double> Ypos;
     for (unsigned int i = 0; i < fClusterY.size(); i++)
     {
@@ -292,16 +309,24 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
         int qup = hit[2].second;
         if (padmax > 0 && padmax + 1 < Mw3PadsY && qmax > 0 && qdown > 0 && qup > 0)
         {
-            y = GetPositionX(qmax, padmax, qdown, qup);
+            y = GetPositionY(qmax, padmax, qdown, qup);
             Ypos.push_back(y);
         }
+    }
+
+    if (Xpos.size() == 0 || Ypos.size() == 0)
+    {
+        if (calData)
+            delete calData;
+        return;
     }
 
     if (twX.size() == twY.size())
     {
         TofWallMatching(twX, twY, Xpos, Ypos);
     }
-
+    if (calData)
+        delete calData;
     return;
 }
 
@@ -347,7 +372,7 @@ void R3BSofMwpc3Cal2Hit::TofWallMatching(vector<double> twx,
 
 /* ---- Getting a cluster of three pairs (pad,charge) around the maximum charge found ---- */
 /* ---- The three points are then removed from the original fPair to find the next cluster ---- */
-vector<pair<int, int>> R3BSofMwpc3Cal2Hit::FindCluster(vector<pair<int, int>> p1)
+vector<pair<int, int>> R3BSofMwpc3Cal2Hit::FindCluster(vector<pair<int, int>>& p1)
 {
     vector<pair<int, int>> hit;
     hit.clear();
