@@ -85,7 +85,6 @@ void softrim_dtoffset()
 
   // === Calculate Drift Time Offset Parameters === //
   R3BSofTrimCalculateDriftTimeOffsetPar* calcdtoff = new R3BSofTrimCalculateDriftTimeOffsetPar("R3BSofTrimCalculateDriftTimeOffsetPar");
-  calcdtoff->SetDistWindowAnode(25.);   // mm : to be confirmed by Bernd
   calcdtoff->SetDistInterSection(50.);  // mm : to be confirmed by Bernd
   calcdtoff->SetDriftVelocity(45.);     // mm/cm
   run->AddTask(calcdtoff);

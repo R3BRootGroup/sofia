@@ -48,12 +48,6 @@ void main_online()
     const Int_t nev = -1; // Only nev events to read
     const Int_t fRunId = 1;
 
-    // *********************************** //
-    // PLEASE CHANGE THE EXPERIMENT NUMBER //
-    // *********************************** //
-    const Int_t expId = 455;               // select experiment: 444, 467 or 455
-    // *********************************** //
-    
     // NumSofSci, file names and paths -----------------------------
     Int_t sofiaWR, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -61,48 +55,14 @@ void main_online()
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
     
-    if (expId==444){
-      NumSofSci = 1; // s444: PRIMARY BEAM EXP, 1 SofSci at CAVE C ONLY
-      IdS2 = 0;
-      IdS8 = 0;
-      sofiaWR = 0x500;
-      
-      //filename = "--stream=lxir123:7803";
-      filename = "/lustre/land/202002_s444/stitched/main0040_0001.lmd";
-      outputFilename = "data_s444_online.root";
-      
-      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
-      // upexps_dir = "/u/land/lynx.landexp/202002_s444/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-      
-      sofiacaldir = dir + "/sofia/macros/s444/parameters/";
-    }
-    else if (expId==467){
-      NumSofSci = 4; // s467: SECONDARY BEAM EXP, 2 at S2, 1 at S8, 1 at CAVE C
-      IdS2 = 2;
-      IdS8 = 3;
-      sofiaWR = 0xe00;
-      
-      filename = "--stream=lxir123:7803";
-      //filename = "~/lmd/s467/main0*.lmd";
-      outputFilename = "data_s467_online.root";
-      
-      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
-      // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
-      
-      sofiacaldir = dir + "/sofia/macros/s467/parameters/";
-    }
-    else if (expId==455){
       NumSofSci = 2; 
       IdS2 = 1; 
       IdS8 = 0; 
       sofiaWR = 0xe00;
       
-      filename = "--stream=lxlanddaq01:9000";
+      //filename = "--stream=lxir123:7803";
       //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
+      filename = "~/data/s467/Ca50/main*.lmd";
       outputFilename = "data_s455_online.root";
       
       // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
@@ -111,11 +71,7 @@ void main_online()
       ucesb_path = upexps_dir + "/202104_s455/202104_s455 --allow-errors --input-buffer=100Mi";
       
       sofiacaldir = dir + "/sofia/macros/s455/parameters/";
-    }
-    else{
-      std::cout << "Experiment was not selected" << std::endl;
-      gApplication->Terminate();
-    }
+    
     TString sofiacalfilename = sofiacaldir + "CalibParam.par";
     ucesb_path.ReplaceAll("//", "/");
     sofiacalfilename.ReplaceAll("//", "/");

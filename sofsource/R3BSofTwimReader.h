@@ -39,7 +39,7 @@ class R3BSofTwimReader : public R3BReader
   private:
     Bool_t ReadData(EXT_STR_h101_SOFTWIM_onion*, UShort_t);
 
-    uint32_t multPerAnode[NUM_SOFTWIM_ANODES];
+    uint32_t multPerAnode[NUM_SOFTWIM_ANODES+NUM_SOFTWIM_TREF+NUM_SOFTWIM_TTRIG];
 
     /* Reader specific data structure from ucesb */
     EXT_STR_h101_SOFTWIM* fData;

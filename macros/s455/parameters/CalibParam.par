@@ -6614,10 +6614,10 @@ nTcalParsPerSignal:  Int_t  1000
 [SofSciRawPosPar]
 //----------------------------------------------------------------------------
 // Primary 86Kr beam for Tof Cave C - S2 calibration
-RawPosPar:  Float_t \
-  -0.40 -0.15   0.45 1.30 
 //RawPosPar:  Float_t \
-//  -2.42404 2.55108 0.44285 2.08567 
+//  -0.40 -0.15   0.45 1.30 
+RawPosPar:  Float_t \
+  -2.42404 2.55108 0.44285 2.08567 
 nDetectorsRawPosPar:  Int_t  2 
 nChannelsRawPosPar:  Int_t  3 
 nSignalsRawPosPar:  Int_t  2 
@@ -6630,16 +6630,16 @@ nRawPosParsPerSignal:  Int_t  2
 [SofSciRawTofPar]
 //----------------------------------------------------------------------------
 // Run 237-238 : first Tof S2-Cave C calibration point
-RawTofPar:  Float_t \
- 1910.2 1911.1
+//RawTofPar:  Float_t \
+// 1910.2 1911.1
 // Run 239 : second Tof S2-Cave C calibration point
 //    RawTofPar:  Float_t \
 //      1935. 1936.5 
 // Run 242 : third Tof S2-Cave C calibration point
 //     RawTofPar:  Float_t \
 //       1953. 1953.9
-//RawTofPar:  Float_t \
-//  1899.67 1944.58
+RawTofPar:  Float_t \
+  1899.67 1944.58
 nDetsRawTofPar:  Int_t  2 
 nChannelsRawTofPar:  Int_t  3 
 idDetS2:  Int_t  1 

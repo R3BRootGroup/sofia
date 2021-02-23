@@ -64,7 +64,7 @@ Bool_t R3BSofTwimReader::Init(ext_data_struct_info* a_struct_info)
         data->SOFTWIM_S[s].TREFM = 0;
         data->SOFTWIM_S[s].TTRIGM = 0;
     }
-    for (int mult = 0; mult < NUM_SOFTWIM_ANODES; mult++)
+    for (int mult = 0; mult < NUM_SOFTWIM_ANODES+NUM_SOFTWIM_TREF+NUM_SOFTWIM_TTRIG; mult++)
         multPerAnode[mult] = 0;
 
     return kTRUE;
@@ -155,7 +155,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     for (UShort_t a = 0; a < nAnodesTrig; a++)
     {
         // again TTRIGMI is 1 based
-        idAnodeTrig = data->SOFTWIM_S[section].TTRIGMI[a] + 16 + NUM_SOFTWIM_TREF;
+        idAnodeTrig = data->SOFTWIM_S[section].TTRIGMI[a] + 15 + NUM_SOFTWIM_TREF;
         nextTrig = data->SOFTWIM_S[section].TTRIGME[a];
         multPerAnode[idAnodeTrig] = nextTrig - curTrig;
         // std::cout << "  * idAnodeTrig = " << idAnodeTrig << std::endl;
@@ -204,6 +204,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
             LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
         for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
         {
+	    // Attention, here the numbering is 0-based for section and anodes
             pileupFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(section,
