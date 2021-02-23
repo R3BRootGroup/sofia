@@ -11,7 +11,7 @@ R3BSofTrimHitData::R3BSofTrimHitData()
     , fEnergyBeta(0.)
     , fEnergyDT(0.)
     , fEnergyTheta(0.)
-    , fZ(0.)
+    , fZcharge(0.)
 {
 }
 // -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID)
     , fEnergyBeta(0.)
     , fEnergyDT(0.)
     , fEnergyTheta(0.)
-    , fZ(0.)
+    , fZcharge(0.)
 {
 }
 
@@ -33,7 +33,7 @@ R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID, Float_t Eraw, Float_t Ebeta, F
     , fEnergyBeta(Ebeta)
     , fEnergyDT(Edt)
     , fEnergyTheta(Etheta)
-    , fZ(Z)
+    , fZcharge(Z)
 {
 }
 // -------------------------------------------------------------------------

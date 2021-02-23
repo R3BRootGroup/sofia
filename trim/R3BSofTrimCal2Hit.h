@@ -7,6 +7,7 @@
 
 #include "FairTask.h"
 #include "R3BSofTrimHitData.h"
+#include "R3BSofTrimHitPar.h"
 #include "TH1F.h"
 #include <TRandom.h>
 
@@ -48,17 +49,19 @@ class R3BSofTrimCal2Hit : public FairTask
     void SetNumAnodes(Int_t n) { fNumAnodes = n; }
     void SetOnline(Bool_t option) { fOnline = option; }
     void SetTriShape(Bool_t shape) { fTriShape = shape; }
+    void SetIdCaveC(Int_t id) { fIdCaveC = id; }
 
   private:
     Int_t fNumSections;
     Int_t fNumAnodes;
+    Int_t fIdCaveC;
     Bool_t fTriShape;
     Bool_t fOnline; // Don't store data for online
 
     R3BSofTrimHitPar* fTrimHitPar; // Parameter container
     TClonesArray* fTrimCalData;    // Array with Cal input data for Triple-MUSIC
-    // to do : TClonesArray* fSciHitData;    // Array with Hit input data for incoming beam velocity
-    TClonesArray* fTrimHitData; // Array with Hit output data for Triple-MUSIC
+    TClonesArray* fSciCalData;     // Array with Cal input data for incoming beam velocity
+    TClonesArray* fTrimHitData;    // Array with Hit output data for Triple-MUSIC
 
     // --- Private method --- //
     R3BSofTrimHitData* AddHitData(Int_t secID, Float_t Eraw, Float_t Ebeta, Float_t Edt, Float_t Etheta, Float_t Z);

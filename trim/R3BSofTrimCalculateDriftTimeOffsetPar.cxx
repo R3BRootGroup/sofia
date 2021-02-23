@@ -36,8 +36,8 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar()
     , fMwpc1GeoPar(NULL)
     , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
-    , fDistWindowAnode(25)  // mm FIX ME: exact value ? (1 edge anode + field cage)
-    , fDistInterSection(50) // mm FIX ME: exact value ? (2 edge anodes + stripper + field cage)
+    , fDistWindowAnode(50)  // mm 1*edge of 20 mm + 1* 30 mm gap 
+    , fDistInterSection(50) // mm 2*edge anodes of 20 mm + 1*10 mm gap 
     , fDriftVelocity(45)    //  mm/micros
     , fOutputFile(NULL)
 {
@@ -57,8 +57,8 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar(con
     , fMwpc1GeoPar(NULL)
     , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
-    , fDistWindowAnode(25)  // mm FIX ME: exact value ? (1 edge anode + field cage)
-    , fDistInterSection(50) // mm FIX ME: exact value ? (2 edge anodes + stripper + field cage)
+    , fDistWindowAnod(50)  // mm
+    , fDistInterSection(50) // mm 
     , fDriftVelocity(45)    // mm/micros
     , fOutputFile(NULL)
 {
@@ -220,7 +220,7 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
 {
 
     Int_t iSec, iAnode;
-    Double_t X0, X1, DTraw, Xanode, Zanode;
+    Double_t X0, X1, DTraw, Xanode, ZposAnode;
     UInt_t nHits;
 
     // --- -------------- --- //
@@ -255,9 +255,13 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
         iSec = hit->GetSecID() - 1;
         iAnode = hit->GetAnodeID() - 1;
         DTraw = hit->GetDriftTimeRaw();
-        Zanode = 10. * (fTrimGeoPar->GetPosZ() - fMwpc0GeoPar->GetPosZ()) + fDistWindowAnode +
+	// ZposAnode is the center of the Triple-MUSIC in cm
+	// The active volume of the Triple-MUSIC is 590 mm = 59 cm
+	// The width of the screening anode is 20 mm = 2 cm each
+        // Therefire, the rim of the first anode of the first section is located 275 mm = 27.5 cm downstream
+	ZposAnode = 10. * (fTrimGeoPar->GetPosZ() - 27.5  - fMwpc0GeoPar->GetPosZ()) +
                  (iAnode + iSec * fNumAnodes) * fWidthAnode + iSec * fDistInterSection;
-        Xanode = Zanode * (X1 - X0) / (fMwpc1GeoPar->GetPosZ() - fMwpc0GeoPar->GetPosZ());
+        Xanode = ZposAnode * (X1 - X0) / (fMwpc1GeoPar->GetPosZ() - fMwpc0GeoPar->GetPosZ());
         fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity -
                                                       DTraw); // 10000 : mm/micros -> mm/100ps
     }                                                         // end of loop over the mapped data
