@@ -561,7 +561,7 @@ void main_online()
 	    scivsmusonline->SetCalTofS2max(620,1);
 	    scivsmusonline->SetCalTofS8min(234,0);
 	    scivsmusonline->SetCalTofS8max(246,0);
-	    scivsmusonline->SetBrho0(9.032);
+	    scivsmusonline->SetBrho0(9.0607);
 	    scivsmusonline->SetDispersionS2(5375.);
 	    run->AddTask(scivsmusonline);
       	}
