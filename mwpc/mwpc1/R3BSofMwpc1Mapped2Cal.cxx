@@ -140,6 +140,7 @@ InitStatus R3BSofMwpc1Mapped2Cal::Init()
 InitStatus R3BSofMwpc1Mapped2Cal::ReInit()
 {
     SetParContainers();
+    SetParameter();
     return kSUCCESS;
 }
 

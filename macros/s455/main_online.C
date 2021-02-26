@@ -51,7 +51,7 @@ void main_online()
     // *********************************** //
     // PLEASE CHANGE THE EXPERIMENT NUMBER //
     // *********************************** //
-    const Int_t expId = 455;               // select experiment: 444 or 467
+    const Int_t expId = 455;               // select experiment: 444, 467 or 455
     // *********************************** //
     
     // NumSofSci, file names and paths -----------------------------
@@ -85,7 +85,7 @@ void main_online()
       sofiaWR = 0xe00;
       
       //filename = "--stream=lxir123:7803";
-      //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
+      filename = "~/lmd/s467/main0*.lmd";
       outputFilename = "data_s467_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
@@ -299,8 +299,8 @@ void main_online()
     }
     if (fAms)
     {
-        //unpackams->SetOnline(NOTstoremappeddata);
-        //source->AddReader(unpackams);
+        unpackams->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackams);
     }
     if (fCalifa)
     {
@@ -521,18 +521,6 @@ void main_online()
         run->AddTask(MW2Cal2Hit);
     }
 
-    // MWPC3
-    if (fMwpc3)
-    {
-        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
-        MW3Map2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(MW3Map2Cal);
-
-        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
-        MW3Cal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(MW3Cal2Hit);
-    }
-
     // ToF-Wall
     if (fTofW)
     {
@@ -551,6 +539,18 @@ void main_online()
         SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
         SofTofWSingleTcal2Hit->SetExpId(455);
         run->AddTask(SofTofWSingleTcal2Hit);
+    }
+
+    // MWPC3
+    if (fMwpc3)
+    {
+        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
+        MW3Map2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(MW3Map2Cal);
+
+        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
+        MW3Cal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(MW3Cal2Hit);
     }
 
     // Add online task ------------------------------------
@@ -662,7 +662,7 @@ void main_online()
     if (fMusic && fCalifa && fTwim)
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
-        CalifaAmsOnline->SetZproj(36.0); // Projectile atomic number
+        CalifaAmsOnline->SetZproj(82.0); // Projectile atomic number
         CalifaAmsOnline->SetCalifa_bins_maxrange(500, 300000); // 300000 -> 300MeV
         run->AddTask(CalifaAmsOnline);
     }

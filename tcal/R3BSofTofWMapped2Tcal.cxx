@@ -11,7 +11,7 @@ R3BSofTofWMapped2Tcal::R3BSofTofWMapped2Tcal()
     : FairTask("R3BSofTofWMapped2Tcal", 1)
     , fMapped(NULL)
     , fTcalPar(NULL)
-    , fTcal(new TClonesArray("R3BSofTofWTcalData"))
+    , fTcal(NULL)
     , fNumTcal(0)
     , fOnline(kFALSE)
     , fNevent(0)
@@ -20,15 +20,14 @@ R3BSofTofWMapped2Tcal::R3BSofTofWMapped2Tcal()
 
 R3BSofTofWMapped2Tcal::~R3BSofTofWMapped2Tcal()
 {
+    if (fMapped)
+        delete fMapped;
     if (fTcal)
-    {
         delete fTcal;
-    }
 }
 
 InitStatus R3BSofTofWMapped2Tcal::Init()
 {
-
     LOG(INFO) << "R3BSofTofWMapped2Tcal: Init";
 
     FairRootManager* rm = FairRootManager::Instance();
@@ -50,21 +49,21 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
         return kFATAL;
     }
     else
-        LOG(INFO) << " R3BSofTofWMapped2Tcal::Init() SofTofWMappedData items found";
+        LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() SofTofWMappedData items found";
 
     // --- -------------------------- --- //
     // --- CHECK THE TCALPAR VALIDITY --- //
     // --- -------------------------- --- //
     if (fTcalPar->GetNumSignals() == 0)
     {
-        LOG(ERROR) << " R3BSofTofWMapped2Tcal::Init There are no Tcal parameters for SofTofW";
+        LOG(ERROR) << "R3BSofTofWMapped2Tcal::Init There are no Tcal parameters for SofTofW";
         return kFATAL;
     }
     else
     {
         LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() : fNumSignals=" << fTcalPar->GetNumSignals();
-        LOG(INFO) << " R3BSofTofWMapped2Tcal::Init() : fNumDetectors=" << fTcalPar->GetNumDetectors();
-        LOG(INFO) << "  R3BSofTofWMapped2Tcal::Init() : fNumChannels=" << fTcalPar->GetNumChannels();
+        LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() : fNumDetectors=" << fTcalPar->GetNumDetectors();
+        LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() : fNumChannels=" << fTcalPar->GetNumChannels();
     }
 
     // --- ---------------- --- //
@@ -72,6 +71,7 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
     // --- ---------------- --- //
 
     // Register output array in tree
+    fTcal = new TClonesArray("R3BSofTofWTcalData", 10);
     if (!fOnline)
     {
         rm->Register("SofTofWTcalData", "SofTofW", fTcal, kTRUE);
@@ -107,7 +107,7 @@ InitStatus R3BSofTofWMapped2Tcal::ReInit()
 
 void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
 {
-
+    // Reset entries in output arrays, local arrays
     Reset();
 
     UShort_t iDet;

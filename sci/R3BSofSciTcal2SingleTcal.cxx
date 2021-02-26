@@ -23,14 +23,11 @@ R3BSofSciTcal2SingleTcal::R3BSofSciTcal2SingleTcal()
 
 R3BSofSciTcal2SingleTcal::~R3BSofSciTcal2SingleTcal()
 {
+    LOG(INFO) << "R3BSofSciTcal2SingleTcal: Delete instance";
     if (fTcal)
-    {
         delete fTcal;
-    }
     if (fSingleTcal)
-    {
         delete fSingleTcal;
-    }
 }
 
 void R3BSofSciTcal2SingleTcal::SetParContainers()
@@ -100,17 +97,17 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
     // --- -------------------------- --- //
     if (fRawPosPar->GetNumSignals() == 0)
     {
-        LOG(ERROR) << " There are no RawPosPar Tcal parameters for SofSci";
+        LOG(ERROR) << "R3BSofSciTcal2SingleTcal::There are no RawPosPar Tcal parameters for SofSci";
         return kFATAL;
     }
     else
     {
-        LOG(INFO) << "  R3BSofSciTcal2SingleTcal::Init() : fRawPosPar: fNumSignals=" << fRawPosPar->GetNumSignals();
+        LOG(INFO) << "R3BSofSciTcal2SingleTcal::Init() : fRawPosPar: fNumSignals=" << fRawPosPar->GetNumSignals();
     }
 
     if (fRawTofPar->GetDetIdCaveC() == 0)
     {
-        LOG(ERROR) << "id number of the cave C SofSci should be >0 (1-based)";
+        LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Id number of the cave C SofSci should be >0 (1-based)";
         return kFATAL;
     }
 
@@ -139,7 +136,8 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
 
         if (fRawPosPar->GetNumPmts() != fRawTofPar->GetNumChannels())
         {
-            LOG(ERROR) << "Mismatch between the number of SofSci channels in RawPosPar and RawTofPar";
+            LOG(ERROR) << "R3BSofSciTcal2SingleTcal::Mismatch between the number of SofSci channels in RawPosPar and "
+                          "RawTofPar";
             return kFATAL;
         }
     }
@@ -342,12 +340,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     ++fNevent;
 }
 
-void R3BSofSciTcal2SingleTcal::Finish()
-{
-
-    // if(fTcal)
-    // delete fTcal;
-}
+void R3BSofSciTcal2SingleTcal::Finish() {}
 
 void R3BSofSciTcal2SingleTcal::Reset()
 {

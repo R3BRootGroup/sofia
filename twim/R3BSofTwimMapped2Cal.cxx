@@ -120,7 +120,7 @@ void R3BSofTwimMapped2Cal::SetParameter()
         for (Int_t i = 0; i < fNumAnodes; i++)
             if (CalParams->GetAt(s * fNumAnodes * fNumParams + fNumParams * i + 1) == -1)
                 numdeadanodes++;
-        LOG(INFO) << "Nb of dead anodes : " << numdeadanodes;
+        LOG(INFO) << "R3BSofTwimMapped2Cal::Nb of dead anodes : " << numdeadanodes;
     }
 }
 

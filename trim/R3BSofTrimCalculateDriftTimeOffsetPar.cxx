@@ -156,7 +156,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ---------------------- --- //
     // ---  GEOMETRY OF THE MWPC0 --- //
     // --- ---------------------- --- //
-    fMwpc0GeoPar = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
+    fMwpc0GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
     if (!fMwpc0GeoPar)
     {
         LOG(ERROR) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc0GeoPar "
@@ -169,7 +169,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ---------------------- --- //
     // ---  GEOMETRY OF THE MWPC1 --- //
     // --- ---------------------- --- //
-    fMwpc1GeoPar = (R3BTGeoPar*)rtdb->getContainer("mwpc1GeoPar");
+    fMwpc1GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
     if (!fMwpc1GeoPar)
     {
         LOG(ERROR) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc1GeoPar "
@@ -182,7 +182,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ----------------------------- --- //
     // ---  GEOMETRY OF THE TRIPLE-MUSIC --- //
     // --- ----------------------------- --- //
-    fTrimGeoPar = (R3BTGeoPar*)rtdb->getContainer("trimGeoPar");
+    fTrimGeoPar = (R3BTGeoPar*)rtdb->getContainer("TrimGeoPar");
     if (!fTrimGeoPar)
     {
         LOG(ERROR) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to trimGeoPar "

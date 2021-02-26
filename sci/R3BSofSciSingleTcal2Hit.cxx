@@ -104,21 +104,24 @@ InitStatus R3BSofSciSingleTcal2Hit::Init()
     // --- ---------------------------- --- //
     if (fRawTofPar->GetNumDets() == 0)
     { // DO NOT TEST fRawTofPar->GetNumSignals(), IT CAN BE 0 IN CASE OF PRIMARY BEAM EXPERIMENT
-        LOG(ERROR)
-            << " R3BSofSciSingleTcal2Hit::Init() : There are no SofSci detectors declared, should be at least 1 ";
+        LOG(ERROR) << "R3BSofSciSingleTcal2Hit::Init() : There are no SofSci detectors declared, should be at least 1 ";
         return kFATAL;
     }
     else
     {
-        LOG(INFO) << "  R3BSofSciSingleTcal2Hit::Init() : fRawPosPar: fNumSignals=" << fRawTofPar->GetNumSignals()
-                  << "                                                fNumDets=" << fRawTofPar->GetNumDets();
+        LOG(INFO) << "R3BSofSciSingleTcal2Hit::Init() : fRawPosPar: fNumSignals=" << fRawTofPar->GetNumSignals()
+                  << " 	 fNumDets=" << fRawTofPar->GetNumDets();
     }
 
     return kSUCCESS;
 }
 
 // -----   Public method ReInit   ----------------------------------------------
-InitStatus R3BSofSciSingleTcal2Hit::ReInit() { return kSUCCESS; }
+InitStatus R3BSofSciSingleTcal2Hit::ReInit()
+{
+    SetParContainers();
+    return kSUCCESS;
+}
 
 // -----   Public method Execution   --------------------------------------------
 void R3BSofSciSingleTcal2Hit::Exec(Option_t* option)
