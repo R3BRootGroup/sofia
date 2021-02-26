@@ -467,18 +467,6 @@ void main_online()
         run->AddTask(MW2Cal2Hit);
     }
 
-    // MWPC3
-    if (fMwpc3)
-    {
-        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
-        MW3Map2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(MW3Map2Cal);
-
-        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
-        MW3Cal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(MW3Cal2Hit);
-    }
-
     // ToF-Wall
     if (fTofW)
     {
@@ -497,6 +485,18 @@ void main_online()
         SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
         SofTofWSingleTcal2Hit->SetExpId(467);
         run->AddTask(SofTofWSingleTcal2Hit);
+    }
+
+    // MWPC3
+    if (fMwpc3)
+    {
+        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
+        MW3Map2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(MW3Map2Cal);
+
+        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
+        MW3Cal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(MW3Cal2Hit);
     }
 
     // Add online task ------------------------------------

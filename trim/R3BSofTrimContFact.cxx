@@ -41,7 +41,7 @@ void R3BSofTrimContFact::setAllContainers()
 
     containers->Add(p2);
 
-    FairContainer* p3 = new FairContainer("trimGeoPar", "Triple MUSIC geometry parameters", "GeometryParameterContext");
+    FairContainer* p3 = new FairContainer("TrimGeoPar", "Triple MUSIC geometry parameters", "GeometryParameterContext");
     p3->addContext("GeometryParameterContext");
 
     containers->Add(p3);
@@ -64,7 +64,7 @@ FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTrimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "trimGeoPar") == 0)
+    if (strcmp(name, "TrimGeoPar") == 0)
     {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }

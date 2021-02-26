@@ -195,7 +195,6 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
 void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
 {
     // Getting Position information from tof wall
-
     Int_t twHits = fTofWallHitDataCA->GetEntries();
     if (!twHits)
         return;
@@ -207,9 +206,14 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
     twY.clear();
     for (Int_t i = 0; i < twHits; i++)
     {
+        twHitData[i] = (R3BSofTofWHitData*)(fTofWallHitDataCA->At(i));
         twX.push_back(twHitData[i]->GetX());
         twY.push_back(twHitData[i]->GetY());
     }
+    if(twHitData)
+      delete twHitData;
+
+    // Getting Position information from mwpc3    
     Int_t nHits = fMwpcCalDataCA->GetEntries();
     if (!nHits)
         return;

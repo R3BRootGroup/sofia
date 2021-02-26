@@ -109,8 +109,8 @@ InitStatus R3BSofSciMapped2Tcal::Init()
     else
     {
         LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of Signals =" << fTcalPar->GetNumSignals();
-        LOG(INFO) << " R3BSofSciMapped2Tcal::Init(): Number of SofSci =" << fTcalPar->GetNumDetectors();
-        LOG(INFO) << "  R3BSofSciMapped2Tcal::Init(): Number of Channel per SofSci =" << fTcalPar->GetNumChannels();
+        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of SofSci =" << fTcalPar->GetNumDetectors();
+        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of Channel per SofSci =" << fTcalPar->GetNumChannels();
     }
     return kSUCCESS;
 }
@@ -160,7 +160,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
     }
 
     if (nHitsPerEvent_SofSci != fTcal->GetEntries())
-        LOG(INFO) << "WARNING : in R3BSofSciMapped2Tcal::Exec() mismatch between TClonesArray entries ";
+        LOG(WARNING) << "R3BSofSciMapped2Tcal::Exec() mismatch between TClonesArray entries ";
 
     ++fNevent;
 }
