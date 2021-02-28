@@ -154,7 +154,7 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = true;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = false; // Tracking of fragments inside GLAD
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -733,16 +733,14 @@ void main_online()
       run->AddTask(tofwonline);
     }
 
-    if (fMwpc2 && fTwim && fSci && fTracking)
+    if (fMwpc2 && fMwpc3 && fTofW && fTwim && fSci && fTracking)
     {
-        if(fTofW && fMwpc3){
-         R3BSofFragmentAnalysis* TrackingAna = new R3BSofFragmentAnalysis();
-         TrackingAna->SetOnline(NOTstorehitdata);
-         run->AddTask(TrackingAna); 
-        }
+        R3BSofFissionAnalysis* TrackingAna = new R3BSofFissionAnalysis();
+        TrackingAna->SetOnline(NOTstorehitdata);
+        run->AddTask(TrackingAna); 
 
-        R3BSofTrackingOnlineSpectra* Trackingonline = new R3BSofTrackingOnlineSpectra();
-        Trackingonline->Set_Charge_range(10.,38.);
+        R3BSofTrackingFissionOnlineSpectra* Trackingonline = new R3BSofTrackingFissionOnlineSpectra();
+        Trackingonline->Set_Charge_range(10.,84.);
         run->AddTask(Trackingonline); 
     }
 
@@ -764,6 +762,6 @@ void main_online()
     std::cout << "Macro finished succesfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
-    // gApplication->Terminate();
+    //gApplication->Terminate();    
 }
 

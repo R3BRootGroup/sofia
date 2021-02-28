@@ -6724,6 +6724,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 0.5
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -6744,11 +6746,34 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 65.
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #############################################################################
+#############################################################################
+# Class:   TargetGeoPar
+# Context: GeometryParameterContext
+#############################################################################
+[TargetGeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t -65.5
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 3.0
+DimensionY: Double_t 3.0
+DimensionZ: Double_t 1.5
+SigmaX: Double_t 0.
+SigmaY: Double_t 0.
+Z: Double_t 1.
+A: Double_t 1.
+Density: Double_t 0.07
+IonisationEnergy: Double_t 55.9e-6
 #############################################################################
 # Class:   Mwpc1GeoPar
 # Context: GeometryParameterContext
@@ -6770,12 +6795,67 @@ Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
+#############################################################################
+#############################################################################
+# Class:   Mwpc2GeoPar
+# Context: GeometryParameterContext
+#############################################################################
+[Mwpc2GeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t 0.
+PositionY: Double_t 0.
+PositionZ: Double_t 100.
+RotationX: Double_t 0.
+RotationY: Double_t 0.
+RotationZ: Double_t 0.
+DimensionX: Double_t 20.
+DimensionY: Double_t 20.
+DimensionZ: Double_t 3.0
+SigmaX: Double_t 0.1
+SigmaY: Double_t 1.
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
+##############################################################################
+##############################################################################
+# Class:   GladFieldPar
+# Context: GladFieldParContext
+##############################################################################
+[GladFieldPar]
+//----------------------------------------------------------------------------
+Bz: Float_t 2.155
+EffLength: Float_t 210.
+FieldCentre: Float_t 308.
+##############################################################################
+##############################################################################
+# Class:   Mwpc3GeoPar
+# Context: GeometryParameterContext
+##############################################################################
+[Mwpc3GeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t -250.
+PositionY: Double_t 0.
+PositionZ: Double_t 674.
+RotationX: Double_t 0.
+RotationY: Double_t -18.
+RotationZ: Double_t 0.
+DimensionX: Double_t 90.
+DimensionY: Double_t 60.
+DimensionZ: Double_t 3.0
+SigmaX: Double_t 0.0112
+SigmaY: Double_t 0.05
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
 ##############################################################################
 ##############################################################################
 # Class:   TofwGeoPar
 # Context: GeometryParameterContext
 ##############################################################################
 [TofwGeoPar]
+//----------------------------------------------------------------------------
 PositionX: Double_t -3300.
 PositionY: Double_t 0.
 PositionZ: Double_t 8170.
@@ -6791,13 +6871,4 @@ Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032
 IonisationEnergy: Double_t 57.4e-6
-##############################################################################
-##############################################################################
-# Class:   GladFieldPar
-# Context: GladFieldParContext
-##############################################################################
-[GladFieldPar]
-Bz: Float_t 2.155
-EffLength: Float_t 210.
-FieldCentre: Float_t 308.
 ##############################################################################

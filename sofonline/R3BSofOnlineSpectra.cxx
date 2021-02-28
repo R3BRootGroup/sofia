@@ -23,6 +23,7 @@
 #include "R3BSofSciVsMwpc0OnlineSpectra.h"
 #include "R3BSofTofWOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
+#include "R3BSofTrackingFissionOnlineSpectra.h"
 #include "R3BSofTrimOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
@@ -80,6 +81,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fCalifaOnline(NULL)
     , fFrsOnline(NULL)
     , fTrackOnline(NULL)
+    , fTrackFFOnline(NULL)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
@@ -114,6 +116,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fCalifaOnline(NULL)
     , fFrsOnline(NULL)
     , fTrackOnline(NULL)
+    , fTrackFFOnline(NULL)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
@@ -126,7 +129,6 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
 
 R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
 {
-
     LOG(INFO) << "R3BSofOnlineSpectra::Delete instance";
     if (fWRItemsMaster)
         delete fWRItemsMaster;
@@ -309,6 +311,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     fTrackOnline = (R3BSofTrackingOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrackingOnlineSpectra");
     if (!fTrackOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTrackingOnlineSpectra not found";
+
+    // Looking for Fission Tracking online      
+    fTrackFFOnline = (R3BSofTrackingFissionOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrackingFissionOnlineSpectra");
+    if (!fTrackFFOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTrackingFissionOnlineSpectra not found";
 
     // Create histograms for detectors
     char Name1[255];
@@ -520,6 +527,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Tracking histograms if they exist somewhere
     if (fTrackOnline)
         fTrackOnline->Reset_Histo();
+    // Reset Fission Tracking histograms if they exist somewhere
+    if (fTrackFFOnline)
+        fTrackFFOnline->Reset_Histo();
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option)
