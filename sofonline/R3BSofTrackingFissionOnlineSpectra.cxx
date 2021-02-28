@@ -1,19 +1,20 @@
 // ------------------------------------------------------------
-// -----             R3BSofTrackingOnlineSpectra          -----
-// -----    Created 28/01/20  by J.L. Rodriguez-Sanchez   -----
+// -----        R3BSofTrackingFissionOnlineSpectra        -----
+// -----    Created 28/02/21  by J.L. Rodriguez-Sanchez   -----
 // -----        Fill tracking online histograms           -----
 // ------------------------------------------------------------
 
 /*
- * This task should fill histograms for the tracking of ion with GLAD
+ * This task should fill histograms for the tracking of fission events with GLAD
  */
 
-#include "R3BSofTrackingOnlineSpectra.h"
+#include "R3BSofTrackingFissionOnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BMusicHitData.h"
 #include "R3BSofMwpcHitData.h"
 #include "R3BSofTrackingData.h"
+#include "R3BSofTrimHitData.h"
 #include "R3BSofTwimHitData.h"
+#include "R3BTGeoPar.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -43,14 +44,15 @@
 #include <sstream>
 #include <stdlib.h>
 
-R3BSofTrackingOnlineSpectra::R3BSofTrackingOnlineSpectra()
-    : FairTask("SofTrackingOnlineSpectra", 1)
+// R3BSofTrackingFissionOnlineSpectra: Default Constructor --------------------------
+R3BSofTrackingFissionOnlineSpectra::R3BSofTrackingFissionOnlineSpectra()
+    : FairTask("SofTrackingFissionOnlineSpectra", 1)
     , fNEvents(0)
     , fMwpc0HitDataCA(NULL)
     , fMwpc1HitDataCA(NULL)
     , fMwpc2HitDataCA(NULL)
     , fMwpc3HitDataCA(NULL)
-    , fMusicHitDataCA(NULL)
+    , fTrimHitDataCA(NULL)
     , fTwimHitDataCA(NULL)
     , fTofWHitDataCA(NULL)
     , fTrackingDataCA(NULL)
@@ -62,14 +64,15 @@ R3BSofTrackingOnlineSpectra::R3BSofTrackingOnlineSpectra()
 {
 }
 
-R3BSofTrackingOnlineSpectra::R3BSofTrackingOnlineSpectra(const TString& name, Int_t iVerbose)
+// R3BSofTrackingFissionOnlineSpectra: Standard Constructor ----------------------
+R3BSofTrackingFissionOnlineSpectra::R3BSofTrackingFissionOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNEvents(0)
     , fMwpc0HitDataCA(NULL)
     , fMwpc1HitDataCA(NULL)
     , fMwpc2HitDataCA(NULL)
     , fMwpc3HitDataCA(NULL)
-    , fMusicHitDataCA(NULL)
+    , fTrimHitDataCA(NULL)
     , fTwimHitDataCA(NULL)
     , fTofWHitDataCA(NULL)
     , fTrackingDataCA(NULL)
@@ -81,9 +84,9 @@ R3BSofTrackingOnlineSpectra::R3BSofTrackingOnlineSpectra(const TString& name, In
 {
 }
 
-R3BSofTrackingOnlineSpectra::~R3BSofTrackingOnlineSpectra()
+R3BSofTrackingFissionOnlineSpectra::~R3BSofTrackingFissionOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofTrackingOnlineSpectra::Delete instance";
+    LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::Delete instance";
 
     if (fMwpc0HitDataCA)
     {
@@ -97,9 +100,9 @@ R3BSofTrackingOnlineSpectra::~R3BSofTrackingOnlineSpectra()
     {
         delete fMwpc2HitDataCA;
     }
-    if (fMusicHitDataCA)
+    if (fTrimHitDataCA)
     {
-        delete fMusicHitDataCA;
+        delete fTrimHitDataCA;
     }
     if (fTwimHitDataCA)
     {
@@ -119,17 +122,91 @@ R3BSofTrackingOnlineSpectra::~R3BSofTrackingOnlineSpectra()
     }
 }
 
-InitStatus R3BSofTrackingOnlineSpectra::Init()
+// -----   Public method SetParContainers   --------------------------------
+void R3BSofTrackingFissionOnlineSpectra::SetParContainers()
 {
+    // Parameter Container
+    // Reading softrackingAnaPar from FairRuntimeDb
+    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
 
-    LOG(INFO) << "R3BSofTrackingOnlineSpectra::Init ";
+    fMw0GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
+    if (!fMw0GeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Could not get access to Mwpc0GeoPar "
+                      "container.";
+        // return;
+    }
+    else
+        LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Container Mwpc0GeoPar found.";
+
+    fTargetGeoPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
+    if (!fTargetGeoPar)
+    {
+        LOG(WARNING) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Could not get access to TargetGeoPar "
+                        "container.";
+        // return;
+    }
+    else
+        LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Container TargetGeoPar found.";
+
+    fMw1GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
+    if (!fMw1GeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Could not get access to Mwpc1GeoPar "
+                      "container.";
+        // return;
+    }
+    else
+        LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Container Mwpc1GeoPar found.";
+
+    fMw2GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc2GeoPar");
+    if (!fMw2GeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Could not get access to Mwpc2GeoPar "
+                      "container.";
+        // return;
+    }
+    else
+        LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Container Mwpc2GeoPar found.";
+
+    fMw3GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc3GeoPar");
+    if (!fMw3GeoPar)
+    {
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Could not get access to Mwpc3GeoPar "
+                      "container.";
+        // return;
+    }
+    else
+        LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Container Mwpc3GeoPar found.";
+
+    fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
+    if (!fTofWGeoPar)
+    {
+        LOG(ERROR)
+            << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Could not get access to TofwGeoPar container.";
+        // return;
+    }
+    else
+        LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::SetParContainers() : Container TofwGeoPar found.";
+}
+
+// -----   Public method ReInit   ----------------------------------------------
+InitStatus R3BSofTrackingFissionOnlineSpectra::ReInit()
+{
+    SetParContainers();
+    return kSUCCESS;
+}
+
+InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
+{
+    LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofTrackingOnlineSpectra::Init FairRootManager not found";
+        LOG(FATAL) << "R3BSofTrackingFissionOnlineSpectra::Init FairRootManager not found";
 
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
@@ -137,48 +214,48 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     fMwpc0HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc0HitData");
     if (!fMwpc0HitDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: Mwpc0HitData not found";
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra: Mwpc0HitData not found";
         return kFATAL;
     }
 
-    fMusicHitDataCA = (TClonesArray*)mgr->GetObject("MusicHitData");
-    if (!fMusicHitDataCA)
+    fTrimHitDataCA = (TClonesArray*)mgr->GetObject("TrimHitData");
+    if (!fTrimHitDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: MusicHitData not found";
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra: TrimHitData not found";
         // return kFATAL;
     }
 
     fMwpc1HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc1HitData");
     if (!fMwpc1HitDataCA)
     {
-        LOG(WARNING) << "R3BSofTrackingOnlineSpectra: Mwpc1HitData not found";
+        LOG(WARNING) << "R3BSofTrackingFissionOnlineSpectra: Mwpc1HitData not found";
     }
 
-    fMwpc2HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc1HitData");
+    fMwpc2HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc2HitData");
     if (!fMwpc2HitDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: Mwpc1HitData not found";
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra: Mwpc2HitData not found";
         return kFATAL;
     }
 
     fMwpc3HitDataCA = (TClonesArray*)mgr->GetObject("Mwpc3HitData");
     if (!fMwpc3HitDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: Mwpc3HitData not found";
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra: Mwpc3HitData not found";
         return kFATAL;
     }
 
     fTrackingDataCA = (TClonesArray*)mgr->GetObject("SofTrackingData");
     if (!fTrackingDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: SofTrackingData not found";
-        // return kFATAL;
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra: SofTrackingData not found";
+        return kFATAL;
     }
 
     fTwimHitDataCA = (TClonesArray*)mgr->GetObject("TwimHitData");
     if (!fTwimHitDataCA)
     {
-        LOG(ERROR) << "R3BSofTrackingOnlineSpectra: TwimHitData not found";
+        LOG(ERROR) << "R3BSofTrackingFissionOnlineSpectra: TwimHitData not found";
         // return kFATAL;
     }
 
@@ -187,10 +264,10 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     TString Name2;
 
     // Hit data, tracking plane X-Z
-    cTrackingXZ = new TCanvas("Tracking_before_GLAD_XZ", "Tracking plane XZ info", 10, 10, 800, 700);
+    cTrackingXZ = new TCanvas("Tracking_before_GLAD_XZ", "Tracking (Lab.) plane XZ info", 10, 10, 800, 700);
 
     Name1 = "fh2_tracking_planeXZ";
-    Name2 = "Tracking planeXZ before GLAD";
+    Name2 = "Tracking (Lab.) planeXZ before GLAD";
     Int_t histoYlim = 150;
     fh2_tracking_planeXZ = new TH2F(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
     fh2_tracking_planeXZ->GetXaxis()->SetTitle("Beam direction-Z [mm]");
@@ -233,9 +310,9 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     latex.DrawLatex(fDist_acelerator_glad - 600., -1. * histoYlim + 20., "GLAD wind.");
 
     // Hit data, tracking plane Y-Z
-    cTrackingYZ = new TCanvas("Tracking_before_GLAD_YZ", "Tracking plane YZ info", 10, 10, 800, 700);
+    cTrackingYZ = new TCanvas("Tracking_before_GLAD_YZ", "Tracking (Lab.) plane YZ info", 10, 10, 800, 700);
     Name1 = "fh2_tracking_planeYZ";
-    Name2 = "Tracking planeYZ before GLAD";
+    Name2 = "Tracking (Lab.) planeYZ before GLAD";
     fh2_tracking_planeYZ = new TH2F(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
     fh2_tracking_planeYZ->GetXaxis()->SetTitle("Beam direction-Z [mm]");
     fh2_tracking_planeYZ->GetYaxis()->SetTitle("Y [mm]");
@@ -265,7 +342,7 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     // Hit data, Beam profile X-Y at target position
     cBeamProfileTarget = new TCanvas("Beam_profile_XY_at_target", "Beam profile XY info", 10, 10, 800, 700);
     Name1 = "fh2_beam_profile_XY";
-    Name2 = "Beam profile-XY at target position";
+    Name2 = "Beam profile-XY (Lab.) at target position";
     fh2_target_PosXY = new TH2F(Name1, Name2, 200, -100., 100., 200, -100., 100.);
     fh2_target_PosXY->GetXaxis()->SetTitle("(Wixhausen)<---  X [mm]  ---> (Messel)");
     fh2_target_PosXY->GetYaxis()->SetTitle("Y [mm]");
@@ -384,9 +461,9 @@ InitStatus R3BSofTrackingOnlineSpectra::Init()
     return kSUCCESS;
 }
 
-void R3BSofTrackingOnlineSpectra::Reset_Histo()
+void R3BSofTrackingFissionOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofTrackingOnlineSpectra::Reset_Histo";
+    LOG(INFO) << "R3BSofTrackingFissionOnlineSpectra::Reset_Histo";
 
     fh1_beta->Reset();
     fh1_brho->Reset();
@@ -398,13 +475,13 @@ void R3BSofTrackingOnlineSpectra::Reset_Histo()
     fh2_ZvsBeta->Reset();
 }
 
-void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
+void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofTrackingOnlineSpectra::Exec FairRootManager not found";
+        LOG(FATAL) << "R3BSofTrackingFissionOnlineSpectra::Exec FairRootManager not found";
 
-    Double_t mwpc0x = -300., mwpc0y = -300., mwpc1y = 0., mwpc2y = 0., anglemus = 0., zrand = 0., mwpc3x = -10000.;
+    Double_t mwpc0x = -300., mwpc0y = -300., anglemus = 0., zrand = 0., mwpc3x = -10000.;
     Double_t xtarget = -500., ytarget = -500.;
 
     // Fill mwpc0 Hit data
@@ -416,50 +493,92 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc0HitDataCA->At(ihit);
             if (!hit)
                 continue;
-            mwpc0x = hit->GetX();
-            mwpc0y = hit->GetY() + 11.; // Offset in Y for alignment with the beam line
+            mwpc0x = hit->GetX() + fMw0GeoPar->GetPosX() * 10.; // mm
+            mwpc0y = hit->GetY() + fMw0GeoPar->GetPosY() * 10.; // mm
         }
 
-        // Fill mwpc2 Hit data
-        if (fMwpc2HitDataCA && fMwpc2HitDataCA->GetEntriesFast() > 0 && mwpc0y > -300.)
+        // Fill mwpc1 Hit data for spallation reactions
+        if (fMwpc1HitDataCA && fMwpc1HitDataCA->GetEntriesFast() == 1 && mwpc0y > -100.)
         {
-            nHits = fMwpc2HitDataCA->GetEntriesFast();
+            nHits = fMwpc1HitDataCA->GetEntriesFast();
+            Float_t mwpc1x = -150., mwpc1y = -150.;
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit);
+                R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc1HitDataCA->At(ihit);
                 if (!hit)
                     continue;
-                Double_t angX = (hit->GetX() - mwpc0x) / 2835.;
-                Double_t angY = (hit->GetY() - mwpc0y) / 2835.;
+                mwpc1x = hit->GetX() + fMw1GeoPar->GetPosX() * 10.;
+                mwpc1y = hit->GetY() + fMw1GeoPar->GetPosY() * 10.;
+                Double_t angX = (mwpc1x - mwpc0x) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) / 10.;
+                Double_t angY = (mwpc1y - mwpc0y) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) / 10.;
                 if (TMath::Abs(angX) < 0.075 && TMath::Abs(angY) < 0.075)
                 {
-                    mwpc1y = hit->GetY() - 6.0;
-                    zrand = gRandom->Uniform(0., fDist_acelerator_glad);
-                    fh2_tracking_planeYZ->Fill(zrand, mwpc0y + (mwpc1y - mwpc0y) / 2835. * zrand);
-                    ytarget = mwpc0y + (hit->GetY() - mwpc0y) / 2835. * fPosTarget;
-                    fh2_tracking_planeXZ->Fill(zrand, mwpc0x + (hit->GetX() - mwpc0x) / 2835. * zrand);
-                    xtarget = mwpc0x + (hit->GetX() - mwpc0x) / 2835. * fPosTarget;
+                    zrand = gRandom->Uniform(0., fPosTarget);
+                    fh2_tracking_planeYZ->Fill(zrand, mwpc0y + angY * zrand);
+                    ytarget = mwpc0y + angY * fPosTarget;
+                    fh2_tracking_planeXZ->Fill(zrand, mwpc0x + angX * zrand);
+                    xtarget = mwpc0x + angX * fPosTarget;
                 }
             }
-
-            // Fill music hit data
-            /*        if (fMusicHitDataCA && fMusicHitDataCA->GetEntriesFast() > 0 && mwpc0x > -300.)
-                    {
-                        nHits = fMusicHitDataCA->GetEntriesFast();
-                        for (Int_t ihit = 0; ihit < nHits; ihit++)
-                        {
-                            R3BMusicHitData* hit = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
-                            if (!hit)
-                                continue;
-                            anglemus = hit->GetTheta();
-                        }
-                        zrand = gRandom->Uniform(0., fDist_acelerator_glad);
-                        fh2_tracking_planeXZ->Fill(zrand, mwpc0x + anglemus * zrand);
-                        xtarget = mwpc0x + anglemus * fPosTarget;
-                    }
-            */
-            if (xtarget > -500. && ytarget > -500.)
+            if (xtarget > -200. && ytarget > -200.)
                 fh2_target_PosXY->Fill(xtarget, ytarget);
+
+            // Fill mwpc2 Hit data for spallation reactions
+            if (fMwpc2HitDataCA->GetEntriesFast() == 1)
+            {
+                nHits = fMwpc2HitDataCA->GetEntriesFast();
+                for (Int_t ihit = 0; ihit < nHits; ihit++)
+                {
+                    R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit);
+                    if (!hit)
+                        continue;
+                    Double_t angX = (hit->GetX() + fMw2GeoPar->GetPosX() * 10. - mwpc1x) /
+                                    (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                    Double_t angY = (hit->GetY() + fMw2GeoPar->GetPosY() * 10. - mwpc1y) /
+                                    (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                    if (TMath::Abs(angX) < 0.1 && TMath::Abs(angY) < 0.1)
+                    {
+                        zrand = gRandom->Uniform(fPosTarget, fDist_acelerator_glad);
+                        fh2_tracking_planeYZ->Fill(zrand, ytarget + angY * zrand);
+                        fh2_tracking_planeXZ->Fill(zrand, xtarget + angX * zrand);
+                    }
+                }
+            }
+        }
+
+        // Fill mwpc1 & mwpc2 Hit data for fission events
+        if (fMwpc1HitDataCA && fMwpc2HitDataCA && fMwpc1HitDataCA->GetEntriesFast() > 1 &&
+            fMwpc2HitDataCA->GetEntriesFast() > 1 && mwpc0x > -100.)
+        {
+            Int_t nHits1 = fMwpc1HitDataCA->GetEntriesFast();
+            Int_t nHits2 = fMwpc2HitDataCA->GetEntriesFast();
+            for (Int_t ihit1 = 0; ihit1 < nHits1; ihit1++)
+            {
+                R3BSofMwpcHitData* hit1 = (R3BSofMwpcHitData*)fMwpc1HitDataCA->At(ihit1);
+                if (!hit1)
+                    continue;
+
+                float mw1x = hit1->GetX() + fMw1GeoPar->GetPosX() * 10.;
+                float mw1y = hit1->GetY() + fMw1GeoPar->GetPosY() * 10.;
+
+                for (Int_t ihit2 = 0; ihit2 < nHits2; ihit2++)
+                {
+                    R3BSofMwpcHitData* hit2 = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit2);
+                    if (!hit2)
+                        continue;
+                    float mw2x = hit2->GetX() + fMw2GeoPar->GetPosX() * 10.;
+                    float mw2y = hit2->GetY() + fMw2GeoPar->GetPosY() * 10.;
+
+                    if ((mw1x > 0. && mw2x > 0.) || (mw1x < 0. && mw2x < 0.))
+                    {
+                        zrand = gRandom->Uniform(fPosTarget, fDist_acelerator_glad);
+                        Double_t angX = (mw2x - mw1x) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                        Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                        fh2_tracking_planeXZ->Fill(zrand, mw1x + angX * (zrand - fPosTarget - fMw1GeoPar->GetPosZ()*10.-650.));//650mm is the target position with respect to (0,0,0)
+                        fh2_tracking_planeYZ->Fill(zrand, mw1y + angY * (zrand - fPosTarget - fMw1GeoPar->GetPosZ()*10.-650.));
+                    }
+                }
+            }
         }
     }
 
@@ -467,7 +586,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
     if (fTrackingDataCA && fTrackingDataCA->GetEntriesFast() > 0)
     {
         // Fill mwpc3 Hit data
-        if (fMwpc3HitDataCA && fMwpc3HitDataCA->GetEntriesFast() > 0)
+        /*if (fMwpc3HitDataCA && fMwpc3HitDataCA->GetEntriesFast() > 0)
         {
             Int_t nHits = fMwpc3HitDataCA->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
@@ -477,7 +596,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
                     continue;
                 mwpc3x = hit->GetX();
             }
-        }
+        }*/
 
         Int_t nHits = fTrackingDataCA->GetEntriesFast();
         Int_t nHitsTwim = fTwimHitDataCA->GetEntriesFast();
@@ -492,11 +611,11 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             if (mwpc3x > -10000.)
             {
                 fh2_Mwpc3vsbeta->Fill(mwpc3x, hit->GetBeta());
-                if (nHitsTwim == 1)
+                /*if (nHitsTwim == 1)
                 {
                     R3BSofTwimHitData* hitTwim = (R3BSofTwimHitData*)fTwimHitDataCA->At(0);
                     fh2_ZvsBeta->Fill(hit->GetBeta(), hitTwim->GetZcharge());
-                }
+                }*/
             }
         }
     }
@@ -504,7 +623,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
     fNEvents += 1;
 }
 
-void R3BSofTrackingOnlineSpectra::FinishEvent()
+void R3BSofTrackingFissionOnlineSpectra::FinishEvent()
 {
     if (fMwpc0HitDataCA)
     {
@@ -516,9 +635,9 @@ void R3BSofTrackingOnlineSpectra::FinishEvent()
         fMwpc1HitDataCA->Clear();
     }
 
-    if (fMusicHitDataCA)
+    if (fTrimHitDataCA)
     {
-        fMusicHitDataCA->Clear();
+        fTrimHitDataCA->Clear();
     }
 
     if (fTwimHitDataCA)
@@ -547,7 +666,7 @@ void R3BSofTrackingOnlineSpectra::FinishEvent()
     }
 }
 
-void R3BSofTrackingOnlineSpectra::FinishTask()
+void R3BSofTrackingFissionOnlineSpectra::FinishTask()
 {
     if (fTrackingDataCA)
     {
@@ -566,4 +685,4 @@ void R3BSofTrackingOnlineSpectra::FinishTask()
     }
 }
 
-ClassImp(R3BSofTrackingOnlineSpectra)
+ClassImp(R3BSofTrackingFissionOnlineSpectra)

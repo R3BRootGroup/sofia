@@ -9,12 +9,21 @@ set(INCLUDE_DIRECTORIES
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/music
+${R3BROOT_SOURCE_DIR}/passive
 ${R3BROOT_SOURCE_DIR}/r3bdata/musicData
 ${R3BROOT_SOURCE_DIR}/r3bdata/amsData
 ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/wrData
 ${R3BROOT_SOURCE_DIR}/tracker/unpackams
 ${R3BROOT_SOURCE_DIR}/califa/online
+${R3BROOT_SOURCE_DIR}/trim
+${R3BROOT_SOURCE_DIR}/triw
+${R3BROOT_SOURCE_DIR}/mwpc/mwpc0
+${R3BROOT_SOURCE_DIR}/mwpc/mwpc1
+${R3BROOT_SOURCE_DIR}/mwpc/mwpc2
+${R3BROOT_SOURCE_DIR}/mwpc/mwpc3
+${R3BROOT_SOURCE_DIR}/tofw
+${R3BROOT_SOURCE_DIR}/tracking
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
@@ -51,6 +60,7 @@ R3BSofFrsOnlineSpectra.cxx
 R3BSofTwimvsMusicOnlineSpectra.cxx
 R3BAmsCorrelationOnlineSpectra.cxx
 R3BSofTrackingOnlineSpectra.cxx
+R3BSofTrackingFissionOnlineSpectra.cxx
 R3BSofScalersOnlineSpectra.cxx
 )
 
@@ -61,6 +71,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF R3BSofOnlineLinkDef.h)
 set(LIBRARY_NAME R3BSofOnline)
 set(DEPENDENCIES
-    Spectrum Base FairTools R3Bbase R3BData)
+    Spectrum Base FairTools R3Bbase R3BData R3BTracking)
 
 GENERATE_LIBRARY()
