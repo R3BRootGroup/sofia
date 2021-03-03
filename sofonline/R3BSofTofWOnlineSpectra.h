@@ -92,9 +92,10 @@ class R3BSofTofWOnlineSpectra : public FairTask
     inline void Set_IdSofSciCaveC(Int_t id) { fIdSofSciCaveC = id; }
 
   private:
-    TClonesArray* fMappedItemsTofW;     /**< Array with mapped items. */
-    TClonesArray* fTcalItemsTofW;       /**< Array with tcal items. */
-    TClonesArray* fSingleTcalItemsTofW; /**< Array with single tcal items. */
+    TClonesArray* fMappedItemsTofW;     /**< Array with tofw mapped items. */
+    TClonesArray* fTcalItemsTofW;       /**< Array with tofw tcal items. */
+    TClonesArray* fSingleTcalItemsTofW; /**< Array with tofw single tcal items. */
+    TClonesArray* fHitItemsTofW;        /**< Array with tofw hit items. */
     TClonesArray* fSingleTcalItemsSci;  /**< Array with single tcal items of Sci */
     TClonesArray* fHitItemsTwim;        /**< Array with hit items of twim. */
     TClonesArray* fCalItemsMwpc;        /**< Array with cal items of mwpc3. */
@@ -116,6 +117,8 @@ class R3BSofTofWOnlineSpectra : public FairTask
     TCanvas* cTwimvsTof[NbDets];
     TCanvas* cMwpc3XvsTof;
     TCanvas* cMwpc3YvsPosTof[NbDets];
+    TCanvas* cTofvsplas;
+    TCanvas* cPosvsplas;
 
     // Histograms for Mapped data : Fine Time and Mult
     TH1I* fh1_finetime[NbDets * NbChs];
@@ -131,6 +134,10 @@ class R3BSofTofWOnlineSpectra : public FairTask
 
     // Histograms for EneRaw
     TH1D* fh1_EneRaw[NbDets * NbChs];
+
+    // Histograms for ToF-hit data
+    TH2F* fh2_Tof_hit;
+    TH2F* fh2_Pos_hit;
 
     // Histograms for Twim vs ToFraw
     TH2F* fh2_Twim_Tof[NbDets];

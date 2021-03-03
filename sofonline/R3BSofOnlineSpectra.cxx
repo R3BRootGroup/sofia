@@ -22,10 +22,12 @@
 #include "R3BSofSciVsMusicOnlineSpectra.h"
 #include "R3BSofSciVsMwpc0OnlineSpectra.h"
 #include "R3BSofTofWOnlineSpectra.h"
-#include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTrackingFissionOnlineSpectra.h"
+#include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTrimOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
+#include "R3BSofTwimvsMusicOnlineSpectra.h"
+#include "R3BSofTwimvsTrimOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
 #include "R3BWRMasterData.h"
 #include "THttpServer.h"
@@ -71,6 +73,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fMwpc3Online(NULL)
     , fTrimOnline(NULL)
     , fTwimOnline(NULL)
+    , fTwimVsMusicOnline(NULL)
+    , fTwimVsTrimOnline(NULL)
     , fSciOnline(NULL)
     , fSciVsMusOnline(NULL)
     , fSciVsMw0Online(NULL)
@@ -106,6 +110,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fMwpc3Online(NULL)
     , fTrimOnline(NULL)
     , fTwimOnline(NULL)
+    , fTwimVsMusicOnline(NULL)
+    , fTwimVsTrimOnline(NULL)
     , fSciOnline(NULL)
     , fSciVsMusOnline(NULL)
     , fSciVsMw0Online(NULL)
@@ -267,6 +273,18 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fTwimOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTwimOnlineSpectra not found";
 
+    // Looking for Twim vs Music online
+    fTwimVsMusicOnline =
+        (R3BSofTwimvsMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTwimvsMusicOnlineSpectra");
+    if (!fTwimVsMusicOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTwimvsMusicOnlineSpectra not found";
+
+    // Looking for Twim vs Trim online
+    fTwimVsTrimOnline =
+        (R3BSofTwimvsTrimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTwimvsTrimOnlineSpectra");
+    if (!fTwimVsTrimOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTwimvsTrimOnlineSpectra not found";
+
     // Looking for Sci online
     fSciOnline = (R3BSofSciOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciOnlineSpectra");
     if (!fSciOnline)
@@ -312,8 +330,9 @@ InitStatus R3BSofOnlineSpectra::Init()
     if (!fTrackOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTrackingOnlineSpectra not found";
 
-    // Looking for Fission Tracking online      
-    fTrackFFOnline = (R3BSofTrackingFissionOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrackingFissionOnlineSpectra");
+    // Looking for Fission Tracking online
+    fTrackFFOnline =
+        (R3BSofTrackingFissionOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrackingFissionOnlineSpectra");
     if (!fTrackFFOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTrackingFissionOnlineSpectra not found";
 
@@ -497,6 +516,12 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Twim histograms if they exist somewhere
     if (fTwimOnline)
         fTwimOnline->Reset_Histo();
+    // Reset Twim-Trim histograms if they exist somewhere
+    if (fTwimVsTrimOnline)
+        fTwimVsTrimOnline->Reset_Histo();
+    // Reset Twim-Music histograms if they exist somewhere
+    if (fTwimVsMusicOnline)
+        fTwimVsMusicOnline->Reset_Histo();
     // Reset Sci histograms if they exist somewhere
     if (fSciOnline)
         fSciOnline->Reset_Histo();
