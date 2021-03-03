@@ -11,6 +11,7 @@
 #include "R3BEventHeader.h"
 #include "R3BSofMwpcCalData.h"
 #include "R3BSofSciSingleTcalData.h"
+#include "R3BSofTofWHitData.h"
 #include "R3BSofTofWMappedData.h"
 #include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWTcalData.h"
@@ -45,6 +46,7 @@ R3BSofTofWOnlineSpectra::R3BSofTofWOnlineSpectra()
     , fMappedItemsTofW(NULL)
     , fTcalItemsTofW(NULL)
     , fSingleTcalItemsTofW(NULL)
+    , fHitItemsTofW(NULL)
     , fSingleTcalItemsSci(NULL)
     , fHitItemsTwim(NULL)
     , fCalItemsMwpc(NULL)
@@ -60,6 +62,7 @@ R3BSofTofWOnlineSpectra::R3BSofTofWOnlineSpectra(const char* name, Int_t iVerbos
     , fMappedItemsTofW(NULL)
     , fTcalItemsTofW(NULL)
     , fSingleTcalItemsTofW(NULL)
+    , fHitItemsTofW(NULL)
     , fSingleTcalItemsSci(NULL)
     , fHitItemsTwim(NULL)
     , fCalItemsMwpc(NULL)
@@ -79,6 +82,8 @@ R3BSofTofWOnlineSpectra::~R3BSofTofWOnlineSpectra()
         delete fTcalItemsTofW;
     if (fSingleTcalItemsTofW)
         delete fSingleTcalItemsTofW;
+    if (fHitItemsTofW)
+        delete fHitItemsTofW;
     if (fSingleTcalItemsSci)
         delete fSingleTcalItemsSci;
     if (fHitItemsTwim)
@@ -127,7 +132,16 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     fSingleTcalItemsTofW = (TClonesArray*)mgr->GetObject("SofTofWSingleTcalData");
     if (!fSingleTcalItemsTofW)
     {
-        return kFATAL;
+        LOG(WARNING) << "R3BSofTofWOnlineSpectra: SofTofWSingleTcalData not found";
+    }
+
+    // --- ------------------------------------------ --- //
+    // --- get access to hit data of the TofW         --- //
+    // --- ------------------------------------------ --- //
+    fHitItemsTofW = (TClonesArray*)mgr->GetObject("SofTofWHitData");
+    if (!fHitItemsTofW)
+    {
+        LOG(WARNING) << "R3BSofTofWOnlineSpectra: SofTofWHitData not found";
     }
 
     // --- ----------------------------------------- --- //
@@ -332,6 +346,41 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         fh2_Mwpc3Y_PosTof[i]->Draw("col");
     }
 
+    // Hit ToFW data
+    sprintf(Name1, "Tof-hit_vs_Plastic");
+    sprintf(Name2, "ToF-hit vs Plastic number");
+    cTofvsplas = new TCanvas(Name1, Name2, 10, 10, 1000, 900);
+    sprintf(Name1, "fh2_ToF-hit_vs_Plastic");
+    sprintf(Name2, "ToF-hit vs plastic number");
+    fh2_Tof_hit = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 5000, 0., 50.);
+    fh2_Tof_hit->GetXaxis()->SetTitle("TofW-Plastic number [1-28]");
+    fh2_Tof_hit->GetYaxis()->SetTitle("ToF-hit [ns]");
+    fh2_Tof_hit->GetXaxis()->CenterTitle(true);
+    fh2_Tof_hit->GetYaxis()->CenterTitle(true);
+    fh2_Tof_hit->GetXaxis()->SetLabelSize(0.045);
+    fh2_Tof_hit->GetXaxis()->SetTitleSize(0.045);
+    fh2_Tof_hit->GetYaxis()->SetLabelSize(0.045);
+    fh2_Tof_hit->GetYaxis()->SetTitleSize(0.045);
+    cTofvsplas->cd();
+    fh2_Tof_hit->Draw("col");
+
+    sprintf(Name1, "Pos-hit_vs_Plastic");
+    sprintf(Name2, "Pos-hit vs Plastic number");
+    cPosvsplas = new TCanvas(Name1, Name2, 10, 10, 1000, 900);
+    sprintf(Name1, "fh2_Pos-hit_vs_Plastic");
+    sprintf(Name2, "Pos-hit vs plastic number");
+    fh2_Pos_hit = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 6000, -300., 300.);
+    fh2_Pos_hit->GetXaxis()->SetTitle("TofW-Plastic number [1-28]");
+    fh2_Pos_hit->GetYaxis()->SetTitle("Pos-hit [mm]");
+    fh2_Pos_hit->GetXaxis()->CenterTitle(true);
+    fh2_Pos_hit->GetYaxis()->CenterTitle(true);
+    fh2_Pos_hit->GetXaxis()->SetLabelSize(0.045);
+    fh2_Pos_hit->GetXaxis()->SetTitleSize(0.045);
+    fh2_Pos_hit->GetYaxis()->SetLabelSize(0.045);
+    fh2_Pos_hit->GetYaxis()->SetTitleSize(0.045);
+    cPosvsplas->cd();
+    fh2_Pos_hit->Draw("col");
+
     // --- --------------- --- //
     // --- MAIN FOLDER-TofW --- //
     // --- --------------- --- //
@@ -354,6 +403,15 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         folTofWRawTof->Add(cTofWRawTof[i]);
 
     // --- --------------- ---
+    // --- FOLDER-TofW hit data
+    // --- --------------- ---
+    TFolder* folTofWhit = new TFolder("HitTof", "TOFW Hit info");
+    if (fHitItemsTofW)
+    {
+        folTofWhit->Add(cTofvsplas);
+        folTofWhit->Add(cPosvsplas);
+    }
+    // --- --------------- ---
     // --- FOLDER-Twim vs TofW
     // --- --------------- ---
     TFolder* folTwimvsToF = new TFolder("Twim_vs_TofW", "Twim vs TOFW info");
@@ -368,6 +426,8 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         folMWPC3YvsToFPos->Add(cMwpc3YvsPosTof[i]);
 
     mainfolTofW->Add(folTofWRawTof);
+    if (fHitItemsTofW)
+        mainfolTofW->Add(folTofWhit);
     mainfolTofW->Add(folTwimvsToF);
     mainfolTofW->Add(folMWPC3YvsToFPos);
 
@@ -410,6 +470,12 @@ void R3BSofTofWOnlineSpectra::Reset_Histo()
     }
 
     fh2_Mwpc3X_Tof->Reset();
+
+    if (fHitItemsTofW)
+    {
+        fh2_Tof_hit->Reset();
+        fh2_Pos_hit->Reset();
+    }
 }
 
 void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
@@ -447,6 +513,20 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
             fh1_RawPos_AtSingleTcal[hitST->GetDetector() - 1]->Fill(hitST->GetRawPosNs());
             fh1_RawTof_AtSingleTcal[hitST->GetDetector() - 1]->Fill(hitST->GetRawTofNs());
         } // end of loop over the singletcal data
+    }
+
+    // Get ToFW hit data
+    if (fHitItemsTofW && fHitItemsTofW->GetEntriesFast() > 0)
+    {
+        nHits = fHitItemsTofW->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTofWHitData* hit = (R3BSofTofWHitData*)fHitItemsTofW->At(ihit);
+            if (!hit)
+                continue;
+            fh2_Tof_hit->Fill(hit->GetPaddle(), hit->GetTof());
+            fh2_Pos_hit->Fill(hit->GetPaddle(), hit->GetY());
+        }
     }
 
     if (fMappedItemsTofW && fMappedItemsTofW->GetEntriesFast() && fTcalItemsTofW && fTcalItemsTofW->GetEntriesFast())
@@ -589,6 +669,14 @@ void R3BSofTofWOnlineSpectra::FinishEvent()
     {
         fTcalItemsTofW->Clear();
     }
+    if (fSingleTcalItemsTofW)
+    {
+        fSingleTcalItemsTofW->Clear();
+    }
+    if (fHitItemsTofW)
+    {
+        fHitItemsTofW->Clear();
+    }
     if (fSingleTcalItemsSci)
     {
         fSingleTcalItemsSci->Clear();
@@ -657,6 +745,12 @@ void R3BSofTofWOnlineSpectra::FinishTask()
         cMwpc3XvsTof->Write();
         for (Int_t i = 0; i < NbDets; i++)
             cMwpc3YvsPosTof[i]->Write();
+    }
+
+    if (fHitItemsTofW)
+    {
+        cTofvsplas->Write();
+        cPosvsplas->Write();
     }
 }
 

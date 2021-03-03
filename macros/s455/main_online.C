@@ -677,6 +677,12 @@ void main_online()
             R3BSofTwimvsMusicOnlineSpectra* twmusonline = new R3BSofTwimvsMusicOnlineSpectra();
             run->AddTask(twmusonline);
         }
+        if (fTrim)
+        {
+            R3BSofTwimvsTrimOnlineSpectra* twtronline = new R3BSofTwimvsTrimOnlineSpectra();
+            run->AddTask(twtronline);        
+        }
+        
     }
 
     if (fMwpc1)
