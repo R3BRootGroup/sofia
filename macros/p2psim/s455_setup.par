@@ -19,7 +19,7 @@ IonisationEnergy: Double_t 57.4e-6
 [TargetGeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t -65.5
+PositionZ: Double_t -73.75
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
@@ -36,7 +36,7 @@ IonisationEnergy: Double_t 55.9e-6
 [CalifaGeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t -65.5
+PositionZ: Double_t -74.35
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
@@ -53,7 +53,7 @@ IonisationEnergy: Double_t 55.9e-6
 [Mwpc1GeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t 42.
+PositionZ: Double_t 22.5
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
@@ -70,13 +70,13 @@ IonisationEnergy: Double_t 57.4e-6
 [TwimGeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t 69.
+PositionZ: Double_t 55.4
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
-DimensionZ: Double_t 50.
+DimensionZ: Double_t 55.
 SigmaX: Double_t 0.02
 SigmaY: Double_t 0.
 Z: Double_t 14.
@@ -87,7 +87,7 @@ IonisationEnergy: Double_t 57.4e-6
 [Mwpc2GeoPar]
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t 100.
+PositionZ: Double_t 88.1
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
@@ -102,9 +102,9 @@ Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
 [Mwpc3GeoPar]
-PositionX: Double_t -250.
+PositionX: Double_t -132.2
 PositionY: Double_t 0.
-PositionZ: Double_t 674.
+PositionZ: Double_t 604.
 RotationX: Double_t 0.
 RotationY: Double_t -18.
 RotationZ: Double_t 0.
@@ -119,9 +119,9 @@ Density: Double_t 1.0
 IonisationEnergy: Double_t 57.4e-6
 #################################################
 [TofwGeoPar]
-PositionX: Double_t -280.
+PositionX: Double_t -141.4
 PositionY: Double_t 0.
-PositionZ: Double_t 735.
+PositionZ: Double_t 632.
 RotationX: Double_t 0.
 RotationY: Double_t -18.
 RotationZ: Double_t 0.

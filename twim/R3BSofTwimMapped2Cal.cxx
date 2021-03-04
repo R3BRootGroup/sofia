@@ -25,10 +25,10 @@
 // R3BSofTwimMapped2Cal: Default Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
     : FairTask("R3BSof Twim Cal Calibrator", 1)
-    , fNumSec(MAX_NB_TWIMSEC)
-    , fNumAnodes(MAX_NB_TWIMANODE)   // 16 anodes
-    , fNumAnodesRef(MAX_NB_TWIMTREF) // 1 anode for TREF
-    , fMaxMult(MAX_MULT_TWIM_CAL)
+    , fNumSec(4)
+    , fNumAnodes(16)   // 16 anodes
+    , fNumAnodesRef(2) // 2 anode for TREF
+    , fMaxMult(20)
     , fNumParams(3)
     , fNumPosParams(2)
     , CalParams(NULL)
@@ -36,6 +36,7 @@ R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
     , fCal_Par(NULL)
     , fTwimMappedDataCA(NULL)
     , fTwimCalDataCA(NULL)
+    , fExpId(467)
     , fOnline(kFALSE)
 {
 }
@@ -43,10 +44,10 @@ R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
 // R3BSofTwimMapped2CalPar: Standard Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fNumSec(MAX_NB_TWIMSEC)
-    , fNumAnodes(MAX_NB_TWIMANODE)   // 16 anodes
-    , fNumAnodesRef(MAX_NB_TWIMTREF) // 1 anode for TREF
-    , fMaxMult(MAX_MULT_TWIM_CAL)
+    , fNumSec(4)
+    , fNumAnodes(16)   // 16 anodes
+    , fNumAnodesRef(2) // 2 anode for TREF
+    , fMaxMult(20)
     , fNumParams(3)
     , fNumPosParams(2)
     , CalParams(NULL)
@@ -54,6 +55,7 @@ R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal(const char* name, Int_t iVerbose)
     , fCal_Par(NULL)
     , fTwimMappedDataCA(NULL)
     , fTwimCalDataCA(NULL)
+    , fExpId(467)
     , fOnline(kFALSE)
 {
 }
@@ -101,6 +103,17 @@ void R3BSofTwimMapped2Cal::SetParameter()
     LOG(INFO) << "R3BSofTwimMapped2Cal: Nb anodes: " << fNumAnodes;
     LOG(INFO) << "R3BSofTwimMapped2Cal: Nb parameters from pedestal fit: " << fNumParams;
 
+    if (fExpId == 444 || fExpId == 467)
+    {
+        fNumAnodesRef = 2; // 2 anode for TREF
+        fMaxMult = 10;
+    }
+    else if (fExpId == 455)
+    {
+        fNumAnodesRef = 1; // 1 anode for TREF
+        fMaxMult = 20;
+    }
+
     CalParams = new TArrayF();
     Int_t array_size = (fNumSec * fNumAnodes) * fNumParams;
     CalParams->Set(array_size);
@@ -144,7 +157,7 @@ InitStatus R3BSofTwimMapped2Cal::Init()
 
     // OUTPUT DATA
     // Calibrated data
-    fTwimCalDataCA = new TClonesArray("R3BSofTwimCalData", MAX_MULT_TWIM_CAL * (fNumAnodes + fNumAnodesRef));
+    fTwimCalDataCA = new TClonesArray("R3BSofTwimCalData", fMaxMult * (fNumAnodes + fNumAnodesRef));
 
     if (!fOnline)
     {
@@ -224,9 +237,6 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     }
 
     // Fill data only if there is TREF signal
-    // anodes 1 to 16 : energy and time
-    // anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled
-    // anode 19 and 20 : trigger time   --> will be changed to 18 only when the full Twin-MUSIC will be cabled
     for (Int_t s = 0; s < fNumSec; s++)
         if (mulanode[s][fNumAnodes] == 1)
         {
@@ -238,15 +248,32 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
                 for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
                     for (Int_t k = 0; k < mulanode[s][i]; k++)
                     {
-                        if (i < 8)
+                        if (fExpId == 444 || fExpId == 467)
                         {
+                            // s444 and s467: 2020
+                            // anodes 1 to 16 : energy and time
+                            // anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC
+                            // will be cabled anode 19 and 20 : trigger time   --> will be changed to 18 only when the
+                            // full Twin-MUSIC will be cabled
+                            if (i < 8)
+                            {
+                                if (fE[s][k][i] > 0.)
+                                    AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes]), fE[s][k][i]);
+                            }
+                            else
+                            {
+                                if (fE[s][k][i] > 0.)
+                                    AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes + 1]), fE[s][k][i]);
+                            }
+                        }
+                        else if (fExpId == 455)
+                        {
+                            // s455: 2021
+                            // anodes 1 to 16 : energy and time
+                            // anode 17 : reference time
+                            // anode 18 : trigger time
                             if (fE[s][k][i] > 0.)
                                 AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes]), fE[s][k][i]);
-                        }
-                        else
-                        {
-                            if (fE[s][k][i] > 0.)
-                                AddCalData(s, i, a0 + a1 * (fDT[s][k][i] - fDT[s][j][fNumAnodes + 1]), fE[s][k][i]);
                         }
                     }
             }

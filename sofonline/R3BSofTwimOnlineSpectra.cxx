@@ -11,6 +11,7 @@
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "R3BSofMwpcHitData.h"
+#include "R3BSofTofWHitData.h"
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimHitData.h"
 #include "R3BSofTwimMappedData.h"
@@ -39,15 +40,19 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
-
 R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
     : FairTask("SofTwimOnlineSpectra", 1)
     , fMappedItemsTwim(NULL)
     , fCalItemsTwim(NULL)
     , fHitItemsTwim(NULL)
     , fHitItemsMwpc3(NULL)
+    , fHitItemsTofW(NULL)
     , fNEvents(0)
+    , fExpId(455)
+    , fNbSections(1)
+    , fNbAnodes(1)
+    , fNbTref(1)
+    , fNbTrig(1)
 {
 }
 
@@ -57,7 +62,13 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const TString& name, Int_t iVer
     , fCalItemsTwim(NULL)
     , fHitItemsTwim(NULL)
     , fHitItemsMwpc3(NULL)
+    , fHitItemsTofW(NULL)
     , fNEvents(0)
+    , fExpId(455)
+    , fNbSections(1)
+    , fNbAnodes(1)
+    , fNbTref(1)
+    , fNbTrig(1)
 {
 }
 
@@ -72,6 +83,8 @@ R3BSofTwimOnlineSpectra::~R3BSofTwimOnlineSpectra()
         delete fHitItemsTwim;
     if (fHitItemsMwpc3)
         delete fHitItemsMwpc3;
+    if (fHitItemsTofW)
+        delete fHitItemsTofW;
 }
 
 InitStatus R3BSofTwimOnlineSpectra::Init()
@@ -112,12 +125,33 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     if (!fHitItemsMwpc3)
         LOG(WARNING) << "R3BSofTwimOnlineSpectra: Mwpc3HitData not found";
 
+    // get access to hit data of the Tof-Wall
+    fHitItemsTofW = (TClonesArray*)mgr->GetObject("TofWHitData");
+    if (!fHitItemsTofW)
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra: TofWHitData not found";
+
+    if (fExpId == 444 || fExpId == 467)
+    {
+        fNbSections = 1;
+        fNbAnodes = 16;
+        fNbTref = 2;
+        fNbTrig = 2;
+    }
+    else if (fExpId == 455)
+    {
+        fNbSections = 4;
+        fNbAnodes = 16;
+        fNbTref = 1;
+        fNbTrig = 1;
+    }
+
     // Create histograms for detectors
     char Name1[255];
     char Name2[255];
 
+    cTwimMap_E = new TCanvas*[fNbSections];
     // TWIM: Map data for E
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_Emap_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
@@ -125,30 +159,38 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         cTwimMap_E[i]->Divide(4, 4);
     }
 
-    for (Int_t i = 0; i < NbSections; i++)
+    fh1_twimmap_E = new TH1F*[fNbSections * fNbAnodes];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
-        for (Int_t j = 0; j < NbAnodes; j++)
+        for (Int_t j = 0; j < fNbAnodes; j++)
         {
             sprintf(Name1, "fh1_twim_Emap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh1_twimmap_E[i][j] = new TH1F(Name1, Name2, 8192, 0, 8192);
-            fh1_twimmap_E[i][j]->GetXaxis()->SetTitle("Raw Energy [channels], if mult==1");
-            fh1_twimmap_E[i][j]->GetYaxis()->SetTitle("Counts");
-            fh1_twimmap_E[i][j]->GetYaxis()->SetTitleOffset(1.1);
-            fh1_twimmap_E[i][j]->GetXaxis()->CenterTitle(true);
-            fh1_twimmap_E[i][j]->GetYaxis()->CenterTitle(true);
-            fh1_twimmap_E[i][j]->GetXaxis()->SetLabelSize(0.045);
-            fh1_twimmap_E[i][j]->GetXaxis()->SetTitleSize(0.045);
-            fh1_twimmap_E[i][j]->GetYaxis()->SetLabelSize(0.045);
-            fh1_twimmap_E[i][j]->GetYaxis()->SetTitleSize(0.045);
-            fh1_twimmap_E[i][j]->SetFillColor(31);
+            if (fExpId == 455)
+                fh1_twimmap_E[i * fNbAnodes + j] = new TH1F(Name1, Name2, 64000, 0, 64000);
+            else
+            {
+                fh1_twimmap_E[i * fNbAnodes + j] = new TH1F(Name1, Name2, 8192, 0, 8192);
+            }
+            fh1_twimmap_E[i * fNbAnodes + j]->GetXaxis()->SetTitle("Raw Energy [channels], if mult==1");
+            fh1_twimmap_E[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
+            fh1_twimmap_E[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_twimmap_E[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh1_twimmap_E[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh1_twimmap_E[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_twimmap_E[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_twimmap_E[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_twimmap_E[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_twimmap_E[i * fNbAnodes + j]->SetFillColor(31);
             cTwimMap_E[i]->cd(j + 1);
-            fh1_twimmap_E[i][j]->Draw("");
+            fh1_twimmap_E[i * fNbAnodes + j]->Draw("");
         }
     }
 
     // TWIM: Map data for E vs DT
-    for (Int_t i = 0; i < NbSections; i++)
+    cTwimMap_EvsDT = new TCanvas*[fNbSections];
+    cTwim_DTvsDT = new TCanvas*[fNbSections];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_EvsDT_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
@@ -163,48 +205,52 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     char Name3[255];
     char Name4[255];
     cTwimMap_EsumvsDT = new TCanvas("Twim_EsumvsDT", "Twim_EsumvsDT", 10, 10, 800, 700);
-    if (NbSections > 1)
+    if (fNbSections > 1)
         cTwimMap_EsumvsDT->Divide(2, 2);
 
-    for (Int_t i = 0; i < NbSections; i++)
+    fh2_twim_EneRawVsDriftTime = new TH2F*[fNbSections * fNbAnodes];
+    fh2_twim_DTvsDT = new TH2F*[fNbSections * fNbAnodes];
+    fh2_twim_EneRawSumVsDriftTime = new TH2F*[fNbSections];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
-        for (Int_t j = 0; j < NbAnodes; j++)
+        for (Int_t j = 0; j < fNbAnodes; j++)
         {
             sprintf(Name1, "fh1_twim_EvsDT_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh2_twim_EneRawVsDriftTime[i][j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, 1, 40001);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetTitle("Energy [channels, 8k ADC resolution], if mult==1");
-            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitle(
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, 1, 40001);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetXaxis()->SetTitle(
+                "Energy [channels, 8k ADC resolution], if mult==1");
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetYaxis()->SetTitle(
                 "Drift time [channels, 100ps TDC resolution], if mult==1");
-            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitleOffset(1.1);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->CenterTitle(true);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->CenterTitle(true);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetLabelSize(0.045);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetXaxis()->SetTitleSize(0.045);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetLabelSize(0.045);
-            fh2_twim_EneRawVsDriftTime[i][j]->GetYaxis()->SetTitleSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
             cTwimMap_EvsDT[i]->cd(j + 1);
-            fh2_twim_EneRawVsDriftTime[i][j]->Draw("col");
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->Draw("col");
         }
 
-        for (Int_t j = 0; j < NbAnodes - 1; j++)
+        for (Int_t j = 0; j < fNbAnodes - 1; j++)
         {
             sprintf(Name1, "fh2_twim_DTvsDT_sec%d_a%d", i + 1, j);
             sprintf(Name2, "Sec %d: DT_%d vs DT_%d", i + 1, j + 1, j + 2);
-            fh2_twim_DTvsDT[i][j] = new TH2F(Name1, Name2, 800, 1, 40001, 800, 1, 40001);
+            fh2_twim_DTvsDT[i * fNbAnodes + j] = new TH2F(Name1, Name2, 800, 1, 40001, 800, 1, 40001);
             sprintf(Name1, "Drift time %d [channels, 100ps TDC resolution]", j + 1);
             sprintf(Name2, "Drift time %d [channels, 100ps TDC resolution]", j + 2);
-            fh2_twim_DTvsDT[i][j]->GetXaxis()->SetTitle(Name1);
-            fh2_twim_DTvsDT[i][j]->GetYaxis()->SetTitle(Name2);
-            fh2_twim_DTvsDT[i][j]->GetYaxis()->SetTitleOffset(1.1);
-            fh2_twim_DTvsDT[i][j]->GetXaxis()->CenterTitle(true);
-            fh2_twim_DTvsDT[i][j]->GetYaxis()->CenterTitle(true);
-            fh2_twim_DTvsDT[i][j]->GetXaxis()->SetLabelSize(0.045);
-            fh2_twim_DTvsDT[i][j]->GetXaxis()->SetTitleSize(0.045);
-            fh2_twim_DTvsDT[i][j]->GetYaxis()->SetLabelSize(0.045);
-            fh2_twim_DTvsDT[i][j]->GetYaxis()->SetTitleSize(0.045);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetXaxis()->SetTitle(Name1);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->SetTitle(Name2);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
             cTwim_DTvsDT[i]->cd(j + 1);
-            fh2_twim_DTvsDT[i][j]->Draw("col");
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->Draw("col");
         }
 
         sprintf(Name3, "fh2_Twim_EsumvsDT_sec%d", i + 1);
@@ -219,7 +265,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         fh2_twim_EneRawSumVsDriftTime[i]->GetXaxis()->SetTitleSize(0.045);
         fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetLabelSize(0.045);
         fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetTitleSize(0.045);
-        if (NbSections > 1)
+        if (fNbSections > 1)
             cTwimMap_EsumvsDT->cd(i + 1);
         else
             cTwimMap_EsumvsDT->cd();
@@ -227,7 +273,8 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     }
 
     // TWIM: Map data for DT
-    for (Int_t i = 0; i < NbSections; i++)
+    cTwimMap_DT = new TCanvas*[fNbSections];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_DTmap_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
@@ -235,38 +282,40 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         cTwimMap_DT[i]->Divide(4, 4);
     }
 
-    for (Int_t i = 0; i < NbSections; i++)
+    fh1_twimmap_DT = new TH1F*[fNbSections * fNbAnodes];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
-        for (Int_t j = 0; j < NbAnodes; j++)
+        for (Int_t j = 0; j < fNbAnodes; j++)
         {
             sprintf(Name1, "fh1_twim_DTmap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh1_twimmap_DT[i][j] = new TH1F(Name1, Name2, 6000, 1, 40001);
-            fh1_twimmap_DT[i][j]->GetXaxis()->SetTitle("Drift time [channels, 100ps TDC resolution]");
-            fh1_twimmap_DT[i][j]->GetYaxis()->SetTitle("Counts");
-            fh1_twimmap_DT[i][j]->GetYaxis()->SetTitleOffset(1.1);
-            fh1_twimmap_DT[i][j]->GetXaxis()->CenterTitle(true);
-            fh1_twimmap_DT[i][j]->GetYaxis()->CenterTitle(true);
-            fh1_twimmap_DT[i][j]->GetXaxis()->SetLabelSize(0.045);
-            fh1_twimmap_DT[i][j]->GetXaxis()->SetTitleSize(0.045);
-            fh1_twimmap_DT[i][j]->GetYaxis()->SetLabelSize(0.045);
-            fh1_twimmap_DT[i][j]->GetYaxis()->SetTitleSize(0.045);
-            fh1_twimmap_DT[i][j]->SetFillColor(31);
+            fh1_twimmap_DT[i * fNbAnodes + j] = new TH1F(Name1, Name2, 6000, 1, 40001);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetXaxis()->SetTitle("Drift time [channels, 100ps TDC resolution]");
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_twimmap_DT[i * fNbAnodes + j]->SetFillColor(31);
             cTwimMap_DT[i]->cd(j + 1);
-            fh1_twimmap_DT[i][j]->Draw("");
+            fh1_twimmap_DT[i * fNbAnodes + j]->Draw("");
         }
     }
 
     // TWIM: Map data for multiplicities
-    TCanvas* cTwim_Mult[NbSections];
-    for (Int_t i = 0; i < NbSections; i++)
+    TCanvas* cTwim_Mult[fNbSections];
+    fh1_Twimmap_mult = new TH1F*[fNbSections];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_multiplicity_Sec_%d", i + 1);
         sprintf(Name2, "TWIM: Multiplicity per anode in section %d", i + 1);
         cTwim_Mult[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
         sprintf(Name1, "fh1_Twim_mult_sec_%d", i + 1);
         sprintf(Name2, "Twim: Multiplicity section %d", i + 1);
-        fh1_Twimmap_mult[i] = new TH1F(Name1, Name2, NbAnodes + NbTref + NbTrig, 0, NbAnodes + NbTref + NbTrig);
+        fh1_Twimmap_mult[i] = new TH1F(Name1, Name2, fNbAnodes + fNbTref + fNbTrig, 0, fNbAnodes + fNbTref + fNbTrig);
         fh1_Twimmap_mult[i]->GetXaxis()->SetTitle("Anode");
         fh1_Twimmap_mult[i]->GetYaxis()->SetTitle("Counts");
         fh1_Twimmap_mult[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -341,9 +390,11 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
 
     // TWIM: Esum versus DT16-DT1
     cTwimMap_ESum_vs_diffDT = new TCanvas("twim_ESum_vs_diffDT", "twim_ESum_vs_diffDT", 10, 10, 800, 700);
-    if (NbSections > 1)
+    if (fNbSections > 1)
         cTwimMap_ESum_vs_diffDT->Divide(2, 2);
-    for (Int_t i = 0; i < NbSections; i++)
+
+    fh2_twim_ESum_vs_diffDT = new TH2F*[fNbSections];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "fh2_twim_ESum_vs_diffDT_Sec_%d", i + 1);
         sprintf(Name2, "TWIM: ESum vs diffDT in section %d", i + 1);
@@ -357,7 +408,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         fh2_twim_ESum_vs_diffDT[i]->GetXaxis()->SetTitleSize(0.045);
         fh2_twim_ESum_vs_diffDT[i]->GetYaxis()->SetLabelSize(0.045);
         fh2_twim_ESum_vs_diffDT[i]->GetYaxis()->SetTitleSize(0.045);
-        if (NbSections > 1)
+        if (fNbSections > 1)
             cTwimMap_ESum_vs_diffDT->cd(i + 1);
         else
             cTwimMap_ESum_vs_diffDT->cd();
@@ -365,13 +416,15 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     }
 
     // Twin_MUSIC: Map for delta t between Tref and Trig
-    for (Int_t i = 0; i < NbSections; i++)
+    cTwimMap_DeltaTrefTrig = new TCanvas*[fNbSections];
+    fh1_twimmap_DeltaTrefTrig = new TH1F*[fNbSections * fNbTref];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_TrefTrig_Sec_%d", i + 1);
         sprintf(Name2, "Delta T (Tref-Trig) section %d", i + 1);
         cTwimMap_DeltaTrefTrig[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
-        cTwimMap_DeltaTrefTrig[i]->Divide(1, NbTref);
-        for (Int_t j = 0; j < NbTref; j++)
+        cTwimMap_DeltaTrefTrig[i]->Divide(1, fNbTref);
+        for (Int_t j = 0; j < fNbTref; j++)
         {
             sprintf(Name1, "fh1_Twim_Sec%d_DeltaTrefTrig%d", i + 1, j + 1);
             sprintf(Name2,
@@ -379,44 +432,47 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
                     j + 1,
                     j + 1,
                     i + 1);
-            fh1_twimmap_DeltaTrefTrig[i][j] = new TH1F(Name1, Name2, 8000, -40000, 40000);
+            fh1_twimmap_DeltaTrefTrig[i * fNbTref + j] = new TH1F(Name1, Name2, 8000, -40000, 40000);
             cTwimMap_DeltaTrefTrig[i]->cd(j + 1);
-            fh1_twimmap_DeltaTrefTrig[i][j]->Draw("");
+            fh1_twimmap_DeltaTrefTrig[i * fNbTref + j]->Draw("");
         }
     }
 
     // Cal data, position in mm for each anode
-    for (Int_t i = 0; i < NbSections; i++)
+    cTwimCal_Pos = new TCanvas*[fNbSections];
+    fh1_Twimcal_Pos = new TH1F*[fNbSections * fNbAnodes];
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_Pos-X_Sec_%d", i + 1);
         sprintf(Name2, "Pos-X in mm section %d", i + 1);
         cTwimCal_Pos[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
         cTwimCal_Pos[i]->Divide(4, 4);
-        for (Int_t j = 0; j < NbAnodes; j++)
+        for (Int_t j = 0; j < fNbAnodes; j++)
         {
             sprintf(Name1, "fh1_Twim_Sec%d_Pos_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d, Anode %d", i + 1, j + 1);
             if (i == 0 || i == 3)
-                fh1_Twimcal_Pos[i][j] = new TH1F(Name1, Name2, 500, -50., 90.);
+                fh1_Twimcal_Pos[i * fNbAnodes + j] = new TH1F(Name1, Name2, 500, -50., 100.);
             else
-                fh1_Twimcal_Pos[i][j] = new TH1F(Name1, Name2, 500, -100., 0.);
-            fh1_Twimcal_Pos[i][j]->GetXaxis()->SetTitle("Position-X [mm]");
-            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetTitle("Counts");
-            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetTitleOffset(1.1);
-            fh1_Twimcal_Pos[i][j]->GetXaxis()->CenterTitle(true);
-            fh1_Twimcal_Pos[i][j]->GetYaxis()->CenterTitle(true);
-            fh1_Twimcal_Pos[i][j]->GetXaxis()->SetLabelSize(0.045);
-            fh1_Twimcal_Pos[i][j]->GetXaxis()->SetTitleSize(0.045);
-            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetLabelSize(0.045);
-            fh1_Twimcal_Pos[i][j]->GetYaxis()->SetTitleSize(0.045);
-            fh1_Twimcal_Pos[i][j]->SetFillColor(31);
-            fh1_Twimcal_Pos[i][j]->SetLineColor(1);
+                fh1_Twimcal_Pos[i * fNbAnodes + j] = new TH1F(Name1, Name2, 500, -100., 50.);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->SetTitle("Position-X [mm]");
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->SetFillColor(31);
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->SetLineColor(1);
             cTwimCal_Pos[i]->cd(j + 1);
-            fh1_Twimcal_Pos[i][j]->Draw("");
+            fh1_Twimcal_Pos[i * fNbAnodes + j]->Draw("");
         }
     }
 
     // Hit data
+    // s444 and s467 experiment: init of histograms ------
     TCanvas* cTwim_Z = new TCanvas("Twim_charge_z", "Twim: Charge Z", 10, 10, 800, 700);
     fh1_Twimhit_z = new TH1F("fh1_Twim_charge_z", "Twim: Charge Z", 1200, 6, 38);
     fh1_Twimhit_z->GetXaxis()->SetTitle("Charge (Z)");
@@ -487,33 +543,152 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetLabelSize(0.045);
     fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetTitleSize(0.045);
     fh2_TwimZ_vs_mwpc3x->Draw("colz");
+    // s444 and s467 experiment: end of histograms ------
+
+    //-----------------------------------------------------------
+    // Hit data
+    // s455 experiment: init of histograms ----------------------
+    cTwimZs = new TCanvas("Twim_ZL_vs_ZR", "Twim: Zs", 10, 10, 800, 700);
+    cTwimZs->Divide(2, 1);
+    cTwimZs->cd(1);
+    fh1_Twimhit_Zl = new TH1F("fh1_Twim_zl", "Twim: ZL(blue) vs ZR(red)", 9000, 0, 94);
+    fh1_Twimhit_Zl->GetXaxis()->SetTitle("Z [atomic number]");
+    fh1_Twimhit_Zl->GetYaxis()->SetTitle("Counts");
+    fh1_Twimhit_Zl->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Twimhit_Zl->GetXaxis()->CenterTitle(true);
+    fh1_Twimhit_Zl->GetYaxis()->CenterTitle(true);
+    fh1_Twimhit_Zl->GetXaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_Zl->GetXaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_Zl->GetYaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_Zl->GetYaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_Zl->SetLineColor(4);
+    fh1_Twimhit_Zl->Draw("");
+    fh1_Twimhit_Zr = new TH1F("fh1_Twim_zr", "Twim: ZR", 9000, 0, 94);
+    fh1_Twimhit_Zr->SetLineColor(2);
+    fh1_Twimhit_Zr->Draw("same");
+    cTwimZs->cd(2);
+    fh2_Twimhit_ZrZl = new TH2F("fh2_Twim_zlzr", "Twim: ZL vs ZR", 1500, 0, 94, 1500, 0, 94);
+    fh2_Twimhit_ZrZl->GetXaxis()->SetTitle("Charge ZL");
+    fh2_Twimhit_ZrZl->GetYaxis()->SetTitle("Charge ZR");
+    fh2_Twimhit_ZrZl->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZrZl->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrZl->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrZl->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrZl->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrZl->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrZl->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrZl->Draw("colz");
+
+    cTwimZsvsTof = new TCanvas("Twim_Zs_vs_Tof", "Twim: Zs vs Tof", 10, 10, 800, 700);
+    cTwimZsvsTof->Divide(2, 1);
+    cTwimZsvsTof->cd(1);
+    fh2_Twimhit_ZlvsTof = new TH2F("fh1_Twim_zlvstof", "Twim: ZL vs ToF", 1500, 20., 40., 1500, 0, 94);
+    fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitle("Charge ZL");
+    fh2_Twimhit_ZlvsTof->GetXaxis()->SetTitle("ToF [ns]");
+    fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZlvsTof->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZlvsTof->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZlvsTof->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZlvsTof->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZlvsTof->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZlvsTof->SetLineColor(4);
+    fh2_Twimhit_ZlvsTof->Draw("colz");
+    cTwimZsvsTof->cd(2);
+    fh2_Twimhit_ZrvsTof = new TH2F("fh2_Twim_zrvstof", "Twim: ZR vs ToF", 1500, 20., 40., 1500, 0, 94);
+    fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitle("Charge ZR");
+    fh2_Twimhit_ZrvsTof->GetXaxis()->SetTitle("ToF [ns]");
+    fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZrvsTof->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrvsTof->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrvsTof->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrvsTof->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrvsTof->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrvsTof->Draw("colz");
+
+    for (Int_t i = 0; i < 4; i++)
+    {
+        sprintf(Name1, "ZL_vs_TofL%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTwimZsvsTofL[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimZsvsTofL[i]->Divide(3, 2);
+        for (Int_t j = 0; j < 6; j++)
+        {
+            sprintf(Name1, "fh2_ZL_vs_TofL%d", i * 6 + j + 1);
+            sprintf(Name2, "ZL vs TofL for Sci %d", i * 6 + j + 1);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j] = new TH2F(Name1, Name2, 1500, 20., 40., 1500, 0, 94);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitle("Charge ZL");
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetXaxis()->SetTitle("ToF [ns]");
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetXaxis()->CenterTitle(true);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->CenterTitle(true);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetXaxis()->SetLabelSize(0.045);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetXaxis()->SetTitleSize(0.045);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetLabelSize(0.045);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitleSize(0.045);
+            cTwimZsvsTofL[i]->cd(j + 1);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j]->Draw("colz");
+        }
+
+        sprintf(Name1, "ZR_vs_TofR%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTwimZsvsTofR[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimZsvsTofR[i]->Divide(3, 2);
+        for (Int_t j = 0; j < 6; j++)
+        {
+            sprintf(Name1, "fh2_ZR_vs_TofR%d", i * 6 + j + 5);
+            sprintf(Name2, "ZR vs TofR for Sci %d", i * 6 + j + 5);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j] = new TH2F(Name1, Name2, 1500, 20., 40., 1500, 0, 94);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitle("Charge ZR");
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetXaxis()->SetTitle("ToF [ns]");
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetXaxis()->CenterTitle(true);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->CenterTitle(true);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetXaxis()->SetLabelSize(0.045);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetXaxis()->SetTitleSize(0.045);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetLabelSize(0.045);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitleSize(0.045);
+            cTwimZsvsTofR[i]->cd(j + 1);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j]->Draw("colz");
+        }
+    }
+
+    // s455 experiment: end of histograms -----------------------
 
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwimMap_E[i]);
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwimMap_DT[i]);
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwimMap_DeltaTrefTrig[i]);
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwim_Mult[i]);
-    mainfolTwim->Add(cTwimMap_ESum);
-    mainfolTwim->Add(cTwimMap_ESum1);
-    mainfolTwim->Add(cTwimMap_ESum2);
+    if (fExpId == 444 || fExpId == 467)
+    {
+        mainfolTwim->Add(cTwimMap_ESum);
+        mainfolTwim->Add(cTwimMap_ESum1);
+        mainfolTwim->Add(cTwimMap_ESum2);
+    }
     mainfolTwim->Add(cTwimMap_ESum_vs_diffDT);
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         mainfolTwim->Add(cTwimMap_EvsDT[i]);
         mainfolTwim->Add(cTwim_DTvsDT[i]);
     }
     mainfolTwim->Add(cTwimMap_EsumvsDT);
+
+    // Cal data --------------------------------------------------
     if (fCalItemsTwim)
     {
-        for (Int_t i = 0; i < NbSections; i++)
+        for (Int_t i = 0; i < fNbSections; i++)
             mainfolTwim->Add(cTwimCal_Pos[i]);
     }
-    if (fHitItemsTwim)
+
+    // Hit data --------------------------------------------------
+    if (fHitItemsTwim && (fExpId == 444 || fExpId == 467))
     {
         mainfolTwim->Add(cTwim_Z);
         mainfolTwim->Add(cTwim_theta);
@@ -524,6 +699,17 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
             mainfolTwim->Add(cTwimZ_vs_mwpc3x);
         }
     }
+    else if (fHitItemsTwim && fExpId == 455)
+    {
+        mainfolTwim->Add(cTwimZs);
+        mainfolTwim->Add(cTwimZsvsTof);
+        for (Int_t i = 0; i < 4; i++)
+            mainfolTwim->Add(cTwimZsvsTofL[i]);
+
+        for (Int_t i = 0; i < 4; i++)
+            mainfolTwim->Add(cTwimZsvsTofR[i]);
+    }
+
     run->AddObject(mainfolTwim);
 
     // Register command to reset histograms
@@ -536,24 +722,24 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
 {
     LOG(INFO) << "R3BSofTwimOnlineSpectra::Reset_Histo";
     // Map data
-    for (Int_t i = 0; i < NbSections; i++)
+    for (Int_t i = 0; i < fNbSections; i++)
     {
         fh1_Twimmap_mult[i]->Reset();
         fh2_twim_EneRawSumVsDriftTime[i]->Reset();
         fh2_twim_ESum_vs_diffDT[i]->Reset();
-        for (Int_t j = 0; j < NbAnodes; j++)
+        for (Int_t j = 0; j < fNbAnodes; j++)
         {
-            fh1_twimmap_E[i][j]->Reset();
-            fh1_twimmap_DT[i][j]->Reset();
-            fh2_twim_EneRawVsDriftTime[i][j]->Reset();
+            fh1_twimmap_E[i * fNbAnodes + j]->Reset();
+            fh1_twimmap_DT[i * fNbAnodes + j]->Reset();
+            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->Reset();
         }
-        for (Int_t j = 0; j < NbAnodes - 1; j++)
+        for (Int_t j = 0; j < fNbAnodes - 1; j++)
         {
-            fh2_twim_DTvsDT[i][j]->Reset();
+            fh2_twim_DTvsDT[i * fNbAnodes + j]->Reset();
         }
-        for (Int_t j = 0; j < NbTref; j++)
+        for (Int_t j = 0; j < fNbTref; j++)
         {
-            fh1_twimmap_DeltaTrefTrig[i][j]->Reset();
+            fh1_twimmap_DeltaTrefTrig[i * fNbAnodes + j]->Reset();
         }
     }
     fh1_twim_ESum[0]->Reset();
@@ -564,13 +750,13 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     // Cal data
     if (fCalItemsTwim)
     {
-        for (Int_t i = 0; i < NbSections; i++)
-            for (Int_t j = 0; j < NbAnodes; j++)
-                fh1_Twimcal_Pos[i][j]->Reset();
+        for (Int_t i = 0; i < fNbSections; i++)
+            for (Int_t j = 0; j < fNbAnodes; j++)
+                fh1_Twimcal_Pos[i * fNbAnodes + j]->Reset();
     }
 
     // Hit data
-    if (fHitItemsTwim)
+    if (fHitItemsTwim && (fExpId == 444 || fExpId == 467))
     {
         fh1_Twimhit_z->Reset();
         fh1_Twimhit_theta->Reset();
@@ -581,9 +767,30 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
             fh2_TwimZ_vs_mwpc3x->Reset();
         }
     }
+    else if (fHitItemsTwim && fExpId == 455)
+    {
+        fh1_Twimhit_Zl->Reset();
+        fh1_Twimhit_Zr->Reset();
+        fh2_Twimhit_ZrZl->Reset();
+        fh2_Twimhit_ZrvsTof->Reset();
+        fh2_Twimhit_ZlvsTof->Reset();
+        for (Int_t i = 0; i < 24; i++)
+        {
+            fh2_Twimhit_ZrvsTofr[i]->Reset();
+            fh2_Twimhit_ZlvsTofl[i]->Reset();
+        }
+    }
 }
 
 void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
+{
+    if (fExpId == 444 || fExpId == 467)
+        s444_s467();
+    else if (fExpId == 455)
+        s455();
+}
+
+void R3BSofTwimOnlineSpectra::s455()
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
@@ -592,16 +799,187 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
     // Fill mapped data
     if (fMappedItemsTwim && fMappedItemsTwim->GetEntriesFast() > 0)
     {
-        Double_t Eraw[NbSections][NbAnodes];
+        Double_t Eraw[fNbSections][fNbAnodes];
         Double_t e1 = 0., e2 = 0.;
-        Double_t Traw[NbSections][NbAnodes + NbTref + NbTrig];
+        Double_t Traw[fNbSections][fNbAnodes + fNbTref + fNbTrig];
         Double_t n1 = 0., n2 = 0.;
-        UInt_t mult[NbSections][NbAnodes + NbTref + NbTrig];
-        for (Int_t j = 0; j < NbSections; j++)
-            for (Int_t i = 0; i < NbAnodes; i++)
+        UInt_t mult[fNbSections][fNbAnodes + fNbTref + fNbTrig];
+        for (Int_t j = 0; j < fNbSections; j++)
+            for (Int_t i = 0; i < fNbAnodes; i++)
                 Eraw[j][i] = 0.; // mult=1 !!!
-        for (Int_t j = 0; j < NbSections; j++)
-            for (Int_t i = 0; i < NbAnodes + NbTref + NbTrig; i++)
+        for (Int_t j = 0; j < fNbSections; j++)
+            for (Int_t i = 0; i < fNbAnodes + fNbTref + fNbTrig; i++)
+            {
+                Traw[j][i] = 0.; // mult=1 !!!
+                mult[j][i] = 0;
+            }
+        Int_t nHits = fMappedItemsTwim->GetEntriesFast();
+        // std::cout << "Event:\n";
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTwimMappedData* hit = (R3BSofTwimMappedData*)fMappedItemsTwim->At(ihit);
+            if (!hit)
+                continue;
+            fh1_Twimmap_mult[hit->GetSecID()]->Fill(hit->GetAnodeID());
+            mult[hit->GetSecID()][hit->GetAnodeID()]++;
+            if (Traw[hit->GetSecID()][hit->GetAnodeID()] == 0)
+            {
+                if (hit->GetEnergy() < 8192 && hit->GetEnergy() > 0 && Eraw[hit->GetSecID()][hit->GetAnodeID()] == 0)
+                    Eraw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetEnergy(); // mult=1 !!!
+                Traw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetTime();       // mult=1 !!!
+            }
+        }
+        Int_t idTref = 16; // FIXME
+        for (Int_t j = 0; j < fNbSections; j++)
+        {
+            e1 = 0.;
+            n1 = 0.;
+            for (Int_t i = 0; i < fNbTref; i++)
+            {
+                if (mult[j][16 + i] == 1 && mult[j][17 + i] == 1) // FIXME
+                {
+                    fh1_twimmap_DeltaTrefTrig[j * fNbTref + i]->Fill(Traw[j][16 + i] - Traw[j][17 + i]);
+                }
+            }
+            for (Int_t i = 0; i < fNbAnodes; i++)
+            {
+                // Tref = 16 for ch 0 to 15
+                if ((mult[j][i] == 1) && (mult[j][idTref] == 1))
+                {
+                    fh1_twimmap_E[j * fNbAnodes + i]->Fill(Eraw[j][i]);
+                    fh1_twimmap_DT[j * fNbAnodes + i]->Fill(Traw[j][i] - Traw[j][idTref]);
+                    fh2_twim_EneRawVsDriftTime[j * fNbAnodes + i]->Fill(Eraw[j][i], Traw[j][i] - Traw[j][idTref]);
+
+                    e1 = e1 + Eraw[j][i];
+                    n1++;
+                }
+            }
+            for (Int_t i = 0; i < fNbAnodes - 1; i++)
+            {
+                // Tref = 16 for ch 0 to 15
+                if ((mult[j][i] == 1) && (mult[j][i + 1] == 1) && (mult[j][idTref] == 1))
+                {
+                    fh2_twim_DTvsDT[j * fNbAnodes + i]->Fill(Traw[j][i] - Traw[j][idTref],
+                                                             Traw[j][i + 1] - Traw[j][idTref]);
+                }
+            }
+            if ((mult[j][15] == 1) && (mult[j][0] == 1) && (mult[j][16] == 1))
+            {
+                fh2_twim_ESum_vs_diffDT[j]->Fill(Traw[j][15] - Traw[j][0], e1 / n1);
+            }
+            if ((mult[j][5] == 1) && (mult[j][16] == 1))
+            {
+                fh2_twim_EneRawSumVsDriftTime[j]->Fill(Traw[j][5] - Traw[j][16], e1 / n1);
+            }
+        }
+    }
+
+    // Fill cal data
+    if (fCalItemsTwim && fCalItemsTwim->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fCalItemsTwim->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTwimCalData* hit = (R3BSofTwimCalData*)fCalItemsTwim->At(ihit);
+            if (!hit)
+                continue;
+            fh1_Twimcal_Pos[hit->GetSecID() * fNbAnodes + hit->GetAnodeID()]->Fill(hit->GetDTime());
+        }
+    }
+
+    // Fill TofW Hit data
+    Double_t tof[2] = { 0., 0. };
+    int padid[2] = { 0, 0 };
+    if (fHitItemsTofW && fHitItemsTofW->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fHitItemsTofW->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTofWHitData* hit = (R3BSofTofWHitData*)fHitItemsTofW->At(ihit);
+            if (!hit)
+                continue;
+            if (padid[0] == 0)
+            {
+                padid[0] = hit->GetPaddle();
+                tof[0] = hit->GetTof();
+            }
+            else
+            {
+                if (hit->GetPaddle() > padid[0] && hit->GetPaddle() - padid[0] > 1)
+                {
+                    padid[1] = hit->GetPaddle();
+                    tof[1] = hit->GetTof(); // right
+                }
+                else if (hit->GetPaddle() - padid[0] < -1)
+                {
+                    tof[1] = tof[0]; // right
+                    padid[1] = padid[0];
+                    tof[0] = hit->GetTof(); // new left
+                    padid[0] = hit->GetPaddle();
+                }
+            }
+        }
+    }
+
+    // Fill hit data
+    if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
+    {
+        Int_t nHits = fHitItemsTwim->GetEntriesFast();
+        Float_t zr = 0., zl = 0.;
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+            if (!hit)
+                continue;
+            // FIXME: this is defined only for the experiment 4-march-2021
+            if (hit->GetSecID() == 0)
+                zl = hit->GetZcharge();
+            else if (hit->GetSecID() == 2)
+                zr = hit->GetZcharge();
+        }
+        // FIXME in the future for complex fission events!
+        if (zl > 0. && tof[0] > 0.)
+        {
+            fh2_Twimhit_ZlvsTof->Fill(tof[0], zl);
+            if (padid[0] < 25)
+                fh2_Twimhit_ZlvsTofl[padid[0] - 1]->Fill(tof[0], zl);
+        }
+        if (zr > 0. && tof[1] > 0.)
+        {
+            fh2_Twimhit_ZrvsTof->Fill(tof[1], zr);
+            if (padid[1] > 4)
+                fh2_Twimhit_ZlvsTofl[padid[1] - 5]->Fill(tof[1], zr);
+        }
+
+        if (zl > 0.)
+            fh1_Twimhit_Zl->Fill(zl);
+        if (zr > 0.)
+            fh1_Twimhit_Zr->Fill(zr);
+
+        if (zr > 0. && zl > 0.)
+            fh2_Twimhit_ZrZl->Fill(zl, zr);
+    }
+}
+
+void R3BSofTwimOnlineSpectra::s444_s467()
+{
+    FairRootManager* mgr = FairRootManager::Instance();
+    if (NULL == mgr)
+        LOG(FATAL) << "R3BSofTwimOnlineSpectra::Exec FairRootManager not found";
+
+    // Fill mapped data
+    if (fMappedItemsTwim && fMappedItemsTwim->GetEntriesFast() > 0)
+    {
+        Double_t Eraw[fNbSections][fNbAnodes];
+        Double_t e1 = 0., e2 = 0.;
+        Double_t Traw[fNbSections][fNbAnodes + fNbTref + fNbTrig];
+        Double_t n1 = 0., n2 = 0.;
+        UInt_t mult[fNbSections][fNbAnodes + fNbTref + fNbTrig];
+        for (Int_t j = 0; j < fNbSections; j++)
+            for (Int_t i = 0; i < fNbAnodes; i++)
+                Eraw[j][i] = 0.; // mult=1 !!!
+        for (Int_t j = 0; j < fNbSections; j++)
+            for (Int_t i = 0; i < fNbAnodes + fNbTref + fNbTrig; i++)
             {
                 Traw[j][i] = 0.; // mult=1 !!!
                 mult[j][i] = 0;
@@ -623,43 +1001,44 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             }
         }
         Int_t idTref;
-        for (Int_t j = 0; j < NbSections; j++)
+        for (Int_t j = 0; j < fNbSections; j++)
         {
-            for (Int_t i = 0; i < NbTref; i++)
+            for (Int_t i = 0; i < fNbTref; i++)
             {
                 if (mult[j][16 + i] == 1 && mult[j][18 + i] == 1)
                 {
-                    fh1_twimmap_DeltaTrefTrig[j][i]->Fill(Traw[j][16 + i] - Traw[j][18 + i]);
+                    fh1_twimmap_DeltaTrefTrig[j * fNbTref + i]->Fill(Traw[j][16 + i] - Traw[j][18 + i]);
                 }
             }
-            for (Int_t i = 0; i < NbAnodes; i++)
+            for (Int_t i = 0; i < fNbAnodes; i++)
             {
                 // Tref = 16 for ch 0 to 7 and Tref = 17 for ch 8 to 15
-                idTref = NbAnodes + i / 8;
+                idTref = fNbAnodes + i / 8;
                 if ((mult[j][i] == 1) && (mult[j][idTref] == 1))
                 {
-                    fh1_twimmap_E[j][i]->Fill(Eraw[j][i]);
-                    fh1_twimmap_DT[j][i]->Fill(Traw[j][i] - Traw[j][idTref]);
-                    fh2_twim_EneRawVsDriftTime[j][i]->Fill(Eraw[j][i], Traw[j][i] - Traw[j][idTref]);
+                    fh1_twimmap_E[j * fNbAnodes + i]->Fill(Eraw[j][i]);
+                    fh1_twimmap_DT[j * fNbAnodes + i]->Fill(Traw[j][i] - Traw[j][idTref]);
+                    fh2_twim_EneRawVsDriftTime[j * fNbAnodes + i]->Fill(Eraw[j][i], Traw[j][i] - Traw[j][idTref]);
 
-                    if (i < NbAnodes / 2)
+                    if (i < fNbAnodes / 2)
                     {
                         e1 = e1 + Eraw[j][i];
                         n1++;
                     }
-                    else if (i >= NbAnodes / 2 && i < NbAnodes)
+                    else if (i >= fNbAnodes / 2 && i < fNbAnodes)
                     {
                         e2 = e2 + Eraw[j][i];
                         n2++;
                     }
                 }
             }
-            for (Int_t i = 0; i < NbAnodes - 1; i++)
+            for (Int_t i = 0; i < fNbAnodes - 1; i++)
             {
-                idTref = NbAnodes + i / 8;
+                idTref = fNbAnodes + i / 8;
                 if ((mult[j][i] == 1) && (mult[j][i + 1] == 1) && (mult[j][idTref] == 1))
                 {
-                    fh2_twim_DTvsDT[j][i]->Fill(Traw[j][i] - Traw[j][idTref], Traw[j][i + 1] - Traw[j][idTref]);
+                    fh2_twim_DTvsDT[j * fNbAnodes + i]->Fill(Traw[j][i] - Traw[j][idTref],
+                                                             Traw[j][i + 1] - Traw[j][idTref]);
                 }
             }
             if ((mult[j][15] == 1) && (mult[j][0] == 1) && (mult[j][16] == 1) && (mult[j][17] == 1))
@@ -687,7 +1066,7 @@ void R3BSofTwimOnlineSpectra::Exec(Option_t* option)
             R3BSofTwimCalData* hit = (R3BSofTwimCalData*)fCalItemsTwim->At(ihit);
             if (!hit)
                 continue;
-            fh1_Twimcal_Pos[hit->GetSecID()][hit->GetAnodeID()]->Fill(hit->GetDTime());
+            fh1_Twimcal_Pos[hit->GetSecID() * fNbAnodes + hit->GetAnodeID()]->Fill(hit->GetDTime());
         }
     }
 
@@ -746,13 +1125,17 @@ void R3BSofTwimOnlineSpectra::FinishEvent()
     {
         fHitItemsMwpc3->Clear();
     }
+    if (fHitItemsTofW)
+    {
+        fHitItemsTofW->Clear();
+    }
 }
 
 void R3BSofTwimOnlineSpectra::FinishTask()
 {
     if (fMappedItemsTwim)
     {
-        for (Int_t i = 0; i < NbSections; i++)
+        for (Int_t i = 0; i < fNbSections; i++)
         {
             fh1_Twimmap_mult[i]->Write();
             cTwimMap_E[i]->Write();
@@ -770,18 +1153,31 @@ void R3BSofTwimOnlineSpectra::FinishTask()
     }
     if (fCalItemsTwim)
     {
-        for (Int_t i = 0; i < NbSections; i++)
+        for (Int_t i = 0; i < fNbSections; i++)
             cTwimCal_Pos[i]->Write();
     }
     if (fHitItemsTwim)
     {
-        fh1_Twimhit_z->Write();
-        fh1_Twimhit_theta->Write();
-        fh2_Twimhit_zvstheta->Write();
-        if (fHitItemsMwpc3)
+        if (fExpId == 444 || fExpId == 467)
         {
-            cTwimTheta_vs_mwpc3x->Write();
-            cTwimZ_vs_mwpc3x->Write();
+            fh1_Twimhit_z->Write();
+            fh1_Twimhit_theta->Write();
+            fh2_Twimhit_zvstheta->Write();
+            if (fHitItemsMwpc3)
+            {
+                cTwimTheta_vs_mwpc3x->Write();
+                cTwimZ_vs_mwpc3x->Write();
+            }
+        }
+        else if (fExpId == 455)
+        {
+            cTwimZs->Write();
+            cTwimZsvsTof->Write();
+            for (Int_t i = 0; i < 4; i++)
+            {
+                cTwimZsvsTofL[i]->Write();
+                cTwimZsvsTofR[i]->Write();
+            }
         }
     }
 }

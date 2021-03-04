@@ -65,6 +65,9 @@ class R3BSofTwimMapped2CalPar : public FairTask
         fLimit_right = right;
     }
 
+    /** Method to set up the experiment ID **/
+    void SetExpId(Int_t exp) { fExpId = exp; }
+
   private:
     Int_t fNumSec;
     Int_t fNumAnodes;
@@ -76,6 +79,7 @@ class R3BSofTwimMapped2CalPar : public FairTask
     Int_t fLimit_left;
     Int_t fLimit_right;
     Int_t fMaxSigma;
+    Int_t fExpId;
     TArrayF* CalParams;
     TArrayF* PosParams;
 
@@ -85,9 +89,9 @@ class R3BSofTwimMapped2CalPar : public FairTask
     Float_t fPosMwpcB; // Position in the beam direction in mm
     Float_t fPosTwim;  // Position in the beam direction in mm
 
-    Int_t mulanode[MAX_NB_TWIMSEC][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
-    Double_t fE[MAX_NB_TWIMSEC][MAX_MULT_TWIM_CAL][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
-    Double_t fDT[MAX_NB_TWIMSEC][MAX_MULT_TWIM_CAL][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
+    Int_t mulanode[4][16 + 2];
+    Double_t fE[4][20][16 + 2];
+    Double_t fDT[4][20][16 + 2];
 
     R3BSofTwimCalPar* fCal_Par;      /**< Parameter container. >*/
     TClonesArray* fTwimMappedDataCA; /**< Array with Twim Mapped-input data. >*/

@@ -138,10 +138,10 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     // --- ------------------------------------------ --- //
     // --- get access to hit data of the TofW         --- //
     // --- ------------------------------------------ --- //
-    fHitItemsTofW = (TClonesArray*)mgr->GetObject("SofTofWHitData");
+    fHitItemsTofW = (TClonesArray*)mgr->GetObject("TofWHitData");
     if (!fHitItemsTofW)
     {
-        LOG(WARNING) << "R3BSofTofWOnlineSpectra: SofTofWHitData not found";
+        LOG(WARNING) << "R3BSofTofWOnlineSpectra: TofWHitData not found";
     }
 
     // --- ----------------------------------------- --- //

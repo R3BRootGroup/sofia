@@ -62,7 +62,7 @@ Bool_t R3BSofTwimReader::Init(ext_data_struct_info* a_struct_info)
         data->SOFTWIM_S[s].EM = 0;
         data->SOFTWIM_S[s].TM = 0;
         data->SOFTWIM_S[s].TREFM = 0;
-        data->SOFTWIM_S[s].TRIGM = 0;
+        data->SOFTWIM_S[s].TTRIGM = 0;
     }
     for (int mult = 0; mult < NUM_SOFTWIM_ANODES; mult++)
         multPerAnode[mult] = 0;
@@ -95,11 +95,11 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     Bool_t pileupFLAG;
     Bool_t overflowFLAG;
 
-    // --- ------------------------------------- --- //
-    // --- NUMBER OF CHANNELS TREF, TRIG, ANODES --- //
-    // --- ------------------------------------- --- //
+    // --- -------------------------------------- --- //
+    // --- NUMBER OF CHANNELS TREF, TTRIG, ANODES --- //
+    // --- -------------------------------------- --- //
     UShort_t nAnodesTref = data->SOFTWIM_S[section].TREFM;
-    UShort_t nAnodesTrig = data->SOFTWIM_S[section].TRIGM;
+    UShort_t nAnodesTrig = data->SOFTWIM_S[section].TTRIGM;
     UShort_t nAnodesEnergy = data->SOFTWIM_S[section].EM;
     UShort_t nAnodesTime = data->SOFTWIM_S[section].TM;
     /*
@@ -114,7 +114,6 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
       std::cout << "------------------------------" << std::endl;
     }
     */
-    
 
     // --- ----------------- --- //
     // --- TWIM MAPPED DATA --- //
@@ -125,13 +124,11 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     uint32_t nextTref = 0;
     UShort_t idAnodeTref = 0;
 
-    // TREF id Anode = 16 (ch0-7) and 17 (ch8-15)
+    // s467 : TREF id Anode = 16 (ch0-7) and 17 (ch8-15)
+    // s455 : TREF id Anode = 16
     for (UShort_t a = 0; a < nAnodesTref; a++)
     {
         // TREFMI gives the 1-based Tref number
-        // Tref1 --> should be assigned to index 16
-        // Tref2 --> should be assigned to index 17
-
         idAnodeTref = data->SOFTWIM_S[section].TREFMI[a] + 15;
         nextTref = data->SOFTWIM_S[section].TREFME[a];
         multPerAnode[idAnodeTref] = nextTref - curTref;
@@ -148,29 +145,28 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
         curTref = nextTref;
     }
 
-    // --- TRIG --- //
+    // --- TTRIG --- //
     uint32_t curTrig = 0;
     uint32_t nextTrig = 0;
     UShort_t idAnodeTrig = 0;
 
-    // TRIG id Anode = 18 (ch0-7) and 19 (ch8-15)
+    // s467 : TTRIG id Anode = 18 (ch0-7) and 19 (ch8-15)
+    // s455 : TTRIG id Anode = 17
     for (UShort_t a = 0; a < nAnodesTrig; a++)
     {
-        // again TRIGMI is 1 based
-        // Trig1 --> should be assigned to index 18
-        // Trig2 --> should be assigned to index 19
-        idAnodeTrig = data->SOFTWIM_S[section].TRIGMI[a] + 17;
-        nextTrig = data->SOFTWIM_S[section].TRIGME[a];
+        // again TTRIGMI is 1 based
+        idAnodeTrig = data->SOFTWIM_S[section].TTRIGMI[a] + 16 + NUM_SOFTWIM_TREF;
+        nextTrig = data->SOFTWIM_S[section].TTRIGME[a];
         multPerAnode[idAnodeTrig] = nextTrig - curTrig;
         // std::cout << "  * idAnodeTrig = " << idAnodeTrig << std::endl;
         // std::cout << "    multPerAnode[" << idAnodeTrig << "] = " << multPerAnode[idAnodeTrig] << std::endl;
         for (int hit = curTrig; hit < nextTrig; hit++)
         {
-            pileupFLAG = (data->SOFTWIM_S[section].TRIGv[hit] & 0x00040000) >> 18;
-            overflowFLAG = (data->SOFTWIM_S[section].TRIGv[hit] & 0x00080000) >> 19;
+            pileupFLAG = (data->SOFTWIM_S[section].TTRIGv[hit] & 0x00040000) >> 18;
+            overflowFLAG = (data->SOFTWIM_S[section].TTRIGv[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(
-                section, idAnodeTrig, data->SOFTWIM_S[section].TRIGv[hit], 0, pileupFLAG, overflowFLAG);
-            // std::cout << "valTimeTrig = " << data->SOFTWIM_S[section].TRIGv[hit] << std::endl;
+                section, idAnodeTrig, data->SOFTWIM_S[section].TTRIGv[hit], 0, pileupFLAG, overflowFLAG);
+            // std::cout << "valTimeTrig = " << data->SOFTWIM_S[section].TTRIGv[hit] << std::endl;
         }
         curTrig = nextTrig;
     }
