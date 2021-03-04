@@ -57,7 +57,7 @@ class R3BSofTwimCal2Hit : public FairTask
     Int_t fNumAnodes;
     Int_t fNumAnodesAngleFit;
     Int_t fNumParams;
-    Float_t fZ0, fZ1, fZ2;
+    Float_t fZ0[4], fZ1[4], fZ2[4];
     Int_t StatusAnodes[4][16]; // Sections and anodes
     Double_t fPosAnodes[16];   // Position-Z of each anode
     TArrayF* CalZParams;

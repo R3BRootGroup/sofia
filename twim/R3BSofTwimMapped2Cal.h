@@ -13,11 +13,6 @@
 #include "TH1F.h"
 #include <TRandom.h>
 
-#define MAX_MULT_TWIM_CAL 10
-#define MAX_NB_TWIMSEC 1
-#define MAX_NB_TWIMANODE 16
-#define MAX_NB_TWIMTREF 2
-
 class TClonesArray;
 class R3BSofTwimCalPar;
 
@@ -52,6 +47,9 @@ class R3BSofTwimMapped2Cal : public FairTask
     /** Virtual method Finish **/
     virtual void Finish();
 
+    /** Method to set up the experiment ID **/
+    void SetExpId(Int_t exp) { fExpId = exp; }
+
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
@@ -63,12 +61,13 @@ class R3BSofTwimMapped2Cal : public FairTask
     Int_t fNumPosParams;
     Int_t fNumAnodesRef;
     Int_t fMaxMult;
+    Int_t fExpId;
     TArrayF* CalParams;
     TArrayF* PosParams;
 
-    Int_t mulanode[MAX_NB_TWIMSEC][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
-    Double_t fE[MAX_NB_TWIMSEC][MAX_MULT_TWIM_CAL][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
-    Double_t fDT[MAX_NB_TWIMSEC][MAX_MULT_TWIM_CAL][MAX_NB_TWIMANODE + MAX_NB_TWIMTREF];
+    Int_t mulanode[4][16 + 2];
+    Double_t fE[4][20][16 + 2];
+    Double_t fDT[4][20][16 + 2];
 
     Bool_t fOnline; // Don't store data for online
 

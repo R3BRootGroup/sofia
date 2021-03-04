@@ -18,11 +18,6 @@
 #include <iostream>
 #include <sstream>
 
-#define NbSections 1
-#define NbAnodes 16
-#define NbTref 2
-#define NbTrig 2
-
 class TClonesArray;
 class R3BEventHeader;
 
@@ -86,49 +81,73 @@ class R3BSofTwimOnlineSpectra : public FairTask
      */
     virtual void Reset_Histo();
 
+    void SetExpId(Int_t exp) { fExpId = exp; }
+
   private:
+    void s444_s467();
+    void s455();
+
     TClonesArray* fMappedItemsTwim; /**< Array with mapped items. */
     TClonesArray* fCalItemsTwim;    /**< Array with cal items. */
     TClonesArray* fHitItemsTwim;    /**< Array with hit items. */
     TClonesArray* fHitItemsMwpc3;   /**< Array with mw3-hit items. */
+    TClonesArray* fHitItemsTofW;    /**< Array with tofw-hit items. */
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
+    Int_t fExpId;
+    Int_t fNbSections;
+    Int_t fNbAnodes;
+    Int_t fNbTref;
+    Int_t fNbTrig;
 
     // Canvas
-    TCanvas* cTwimMap_E[NbSections];
-    TCanvas* cTwimMap_EvsDT[NbSections];
+    TCanvas** cTwimMap_E;
+    TCanvas** cTwimMap_EvsDT;
     TCanvas* cTwimMap_EsumvsDT;
-    TCanvas* cTwimMap_DT[NbSections];
-    TCanvas* cTwimCal_Pos[NbSections];
-    TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2, *cTwim_DTvsDT[NbSections];
+    TCanvas** cTwimMap_DT;
+    TCanvas** cTwimCal_Pos;
+    TCanvas *cTwimMap_ESum, *cTwimMap_ESum1, *cTwimMap_ESum2, **cTwim_DTvsDT;
     TCanvas* cTwimMap_ESum_vs_diffDT;
-    TCanvas* cTwimMap_DeltaTrefTrig[NbSections];
+    TCanvas** cTwimMap_DeltaTrefTrig;
     TCanvas* cTwimTheta_vs_mwpc3x;
     TCanvas* cTwimZ_vs_mwpc3x;
+    TCanvas* cTwimZs;
+    TCanvas* cTwimZsvsTofL[4];
+    TCanvas* cTwimZsvsTofR[4];
+    TCanvas* cTwimZsvsTof;
 
     // Histograms for Mapped data
-    TH1F* fh1_twimmap_E[NbSections][NbAnodes];
-    TH1F* fh1_twimmap_DT[NbSections][NbAnodes];
-    TH2F* fh2_twim_DTvsDT[NbSections][NbAnodes - 1];
-    TH1F* fh1_Twimmap_mult[NbSections];
+    TH1F** fh1_twimmap_E;
+    TH1F** fh1_twimmap_DT;
+    TH2F** fh2_twim_DTvsDT;
+    TH1F** fh1_Twimmap_mult;
     TH1F* fh1_twim_ESum[3];
     TH2F* fh2_twim_ESum;
-    TH2F* fh2_twim_ESum_vs_diffDT[NbSections];
-    TH2F* fh2_twim_EneRawVsDriftTime[NbSections][NbAnodes];
-    TH2F* fh2_twim_EneRawSumVsDriftTime[NbSections];
-    TH1F* fh1_twimmap_DeltaTrefTrig[NbSections][NbTref];
+    TH2F** fh2_twim_ESum_vs_diffDT;
+    TH2F** fh2_twim_EneRawVsDriftTime;
+    TH2F** fh2_twim_EneRawSumVsDriftTime;
+    TH1F** fh1_twimmap_DeltaTrefTrig;
 
     // Histograms for Cal data
-    TH1F* fh1_Twimcal_Pos[NbSections][NbAnodes];
+    TH1F** fh1_Twimcal_Pos;
 
     // Histograms for Hit data
+    // s444 and s467
     TH1F* fh1_Twimhit_z;
     TH1F* fh1_Twimhit_theta;
     TH2F* fh2_Twimhit_zvstheta;
     TH2F* fh2_TwimTheta_vs_mwpc3x;
     TH2F* fh2_TwimZ_vs_mwpc3x;
+    // s455
+    TH2F* fh2_Twimhit_ZrZl;
+    TH1F* fh1_Twimhit_Zr;
+    TH1F* fh1_Twimhit_Zl;
+    TH2F* fh2_Twimhit_ZlvsTof;
+    TH2F* fh2_Twimhit_ZrvsTof;
+    TH2F* fh2_Twimhit_ZlvsTofl[24];
+    TH2F* fh2_Twimhit_ZrvsTofr[24];
 
   public:
     ClassDef(R3BSofTwimOnlineSpectra, 1)

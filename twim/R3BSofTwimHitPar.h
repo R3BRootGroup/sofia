@@ -48,6 +48,17 @@ class R3BSofTwimHitPar : public FairParGenericSet
     const Float_t GetAnodePos(Int_t anode) { return fAnode_pos->GetAt(anode - 1); }
     TArrayF* GetZHitPar() { return fDetZHitParams; }
 
+    // 1-based for sectwim and nbscitof
+    TArrayF* GetTofCorrectionPar(Int_t sectwim, Int_t nbscitof)
+    {
+        // sectwim 1 for left and 2 for right
+        TArrayF* fPar = new TArrayF(3);
+        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof - 1), 0);
+        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof), 1);
+        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof + 1), 2);
+        return fPar;
+    }
+
     void SetNumSec(Int_t nbsec) { fNumSec = nbsec; }
     void SetNumAnodes(Int_t nbAnodes) { fNumAnodes = nbAnodes; }
     void SetNumParZFit(Int_t nbParams) { fNumParamsZFit = nbParams; }
@@ -55,10 +66,20 @@ class R3BSofTwimHitPar : public FairParGenericSet
     void SetZHitPar(Double_t cc, Int_t ii) { fDetZHitParams->AddAt(cc, ii); }
     void SetAnodePos(Float_t value, Int_t anode) { fAnode_pos->AddAt(value, anode - 1); }
 
+    // 1-based for sectwim and nbscitof
+    void SetTofCorrectionPar(Float_t value[3], Int_t sectwim, Int_t nbscitof)
+    {
+        // sectwim 1 for left and 2 for right
+        fTofHitParams->AddAt(value[0], (sectwim - 1) * 28 * 3 + nbscitof - 1);
+        fTofHitParams->AddAt(value[1], (sectwim - 1) * 28 * 3 + nbscitof);
+        fTofHitParams->AddAt(value[2], (sectwim - 1) * 28 * 3 + nbscitof + 1);
+    }
+
     // Create more Methods if you need them!
 
   private:
     TArrayF* fDetZHitParams; // Calibration Parameters for charge Z
+    TArrayF* fTofHitParams;  // Tof calibration parameters for charge Z
     TArrayI* fIn_use;        // 1: anode ready, 0:otherwise
     TArrayF* fAnode_pos;     // Position of each anode along the beam direction
     Int_t fNumSec;

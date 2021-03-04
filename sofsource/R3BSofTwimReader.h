@@ -4,13 +4,15 @@
 #include "R3BReader.h"
 #include "TClonesArray.h"
 
-#define NUM_SOFTWIM_SECTIONS 1
-#define NUM_SOFTWIM_ANODES 20
+#define NUM_SOFTWIM_SECTIONS 4
+#define NUM_SOFTWIM_ANODES 16
+#define NUM_SOFTWIM_TREF 1
+#define NUM_SOFTWIM_TTRIG 1
 
-// section 1 : RIGHT DOWN
-// section 2 : RIGHT UP
-// section 3 : LEFT DOWN
-// section 4 : LEFT UP
+// section 1 : LEFT DOWN
+// section 2 : LEFT UP
+// section 3 : RIGHT UP
+// section 4 : RIGHT DOWN
 
 // anodes 1 to 16 : energy and time
 // anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled

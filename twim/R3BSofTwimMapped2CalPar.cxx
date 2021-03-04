@@ -28,10 +28,10 @@
 // R3BSofTwimMapped2CalPar: Default Constructor --------------------------
 R3BSofTwimMapped2CalPar::R3BSofTwimMapped2CalPar()
     : FairTask("R3B Twim Angle Calibrator", 1)
-    , fNumSec(MAX_NB_TWIMSEC)
-    , fNumAnodes(MAX_NB_TWIMANODE)   // 16 anodes
-    , fNumAnodesRef(MAX_NB_TWIMTREF) // 1 anode for TREF
-    , fMaxMult(MAX_MULT_TWIM_CAL)
+    , fNumSec(4)
+    , fNumAnodes(16)   // 16 anodes
+    , fNumAnodesRef(2) // 2 anode for TREF
+    , fMaxMult(20)
     , fMinStadistics(1000)
     , fLimit_left(0)
     , fLimit_right(24000)
@@ -49,6 +49,7 @@ R3BSofTwimMapped2CalPar::R3BSofTwimMapped2CalPar()
     , fTwimMappedDataCA(NULL)
     , fHitItemsMwpcA(NULL)
     , fHitItemsMwpcB(NULL)
+    , fExpId(467)
 {
 }
 
@@ -58,10 +59,10 @@ R3BSofTwimMapped2CalPar::R3BSofTwimMapped2CalPar(const TString& name,
                                                  const TString& namedeta,
                                                  const TString& namedetb)
     : FairTask(name, iVerbose)
-    , fNumSec(MAX_NB_TWIMSEC)
-    , fNumAnodes(MAX_NB_TWIMANODE)   // 16 anodes
-    , fNumAnodesRef(MAX_NB_TWIMTREF) // 1 anode for TREF
-    , fMaxMult(MAX_MULT_TWIM_CAL)
+    , fNumSec(4)
+    , fNumAnodes(16)   // 16 anodes
+    , fNumAnodesRef(2) // 2 anode for TREF
+    , fMaxMult(20)
     , fMinStadistics(1000)
     , fLimit_left(0)
     , fLimit_right(24000)
@@ -79,6 +80,7 @@ R3BSofTwimMapped2CalPar::R3BSofTwimMapped2CalPar(const TString& name,
     , fTwimMappedDataCA(NULL)
     , fHitItemsMwpcA(NULL)
     , fHitItemsMwpcB(NULL)
+    , fExpId(467)
 {
 }
 
@@ -137,8 +139,23 @@ InitStatus R3BSofTwimMapped2CalPar::Init()
     fCal_Par = (R3BSofTwimCalPar*)rtdb->getContainer("twimCalPar");
     if (!fCal_Par)
     {
-        LOG(ERROR) << "R3BSofTwimMapped2CalPar:: Couldn't get handle on twimCalPar container";
+        LOG(ERROR) << "R3BSofTwimMapped2CalPar::Couldn't get handle on twimCalPar container";
         return kFATAL;
+    }
+
+    if (fExpId == 444 || fExpId == 467)
+    {
+        fNumSec = 1;
+        fNumAnodes = 16;   // 16 anodes
+        fNumAnodesRef = 2; // 2 anode for TREF
+        fMaxMult = 10;
+    }
+    else if (fExpId == 455)
+    {
+        fNumSec = 4;
+        fNumAnodes = 16;   // 16 anodes
+        fNumAnodesRef = 1; // 1 anode for TREF
+        fMaxMult = 20;
     }
 
     // Define TGraph for fits
@@ -236,10 +253,12 @@ void R3BSofTwimMapped2CalPar::Exec(Option_t* option)
                 fa->SetParameter(1, (PosMwpcB - PosMwpcA).X() / (fPosMwpcB - fPosMwpcA));
                 for (Int_t i = 0; i < fNumAnodes; i++)
                 {
-                    for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
-                        for (Int_t k = 0; k < mulanode[s][i]; k++)
+                    // for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
+                    for (Int_t j = 0; j < 1; j++) // Mult 1
+                        // for (Int_t k = 0; k < mulanode[s][i]; k++)
+                        for (Int_t k = 0; k < 1; k++) // Mult 1
                         {
-                            if (fE[s][k][i] > 0.)
+                            if (fE[s][k][i] > 0. && (fExpId == 444 || fExpId == 467))
                             { // Anode is 25mm, first anode is at -187.5mm with respect to the center of twim detector
                                 if (i < fNumAnodes / 2)
                                     fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
@@ -249,6 +268,14 @@ void R3BSofTwimMapped2CalPar::Exec(Option_t* option)
                                     fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
                                                                            fDT[s][k][i] - fDT[s][j][fNumAnodes + 1],
                                                                            fa->Eval(fPosTwim - 187.5 + i * 25.0));
+                            }
+
+                            if (fE[s][k][i] > 0. && fExpId == 455)
+                            { // Anode is 25mm, first anode is at -187.5mm with respect to the center of twim detector
+
+                                fg_anode[s * fNumAnodes + i]->SetPoint(fg_anode[s * fNumAnodes + i]->GetN() + 1,
+                                                                       fDT[s][k][i] - fDT[s][j][fNumAnodes],
+                                                                       fa->Eval(fPosTwim - 187.5 + i * 25.0));
                             }
                         }
                 }

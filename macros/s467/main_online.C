@@ -78,7 +78,7 @@ void main_online()
       IdS8 = 3;
       sofiaWR = 0xe00;
       
-      //filename = "--stream=lxir123:7803";
+      filename = "--stream=lxir123:7803";
 			// 86Kr run237 
       //filename = "~/data/s467/main0237*.lmd";
       // 86Kr run239
@@ -86,7 +86,7 @@ void main_online()
       // 86Kr run242
       //filename = "~/data/main0242*.lmd";
       // 50Ca
-      filename = "~/lmd/s467/main0*.lmd";
+      //filename = "~/lmd/s467/main0*.lmd";
       outputFilename = "data_s467_online.root";
       
       upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
@@ -448,6 +448,7 @@ void main_online()
     {
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
         TwimMap2Cal->SetOnline(NOTstorecaldata);
+        TwimMap2Cal->SetExpId(expId);
         run->AddTask(TwimMap2Cal);
 
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
@@ -467,6 +468,18 @@ void main_online()
         run->AddTask(MW2Cal2Hit);
     }
 
+    // MWPC3
+    if (fMwpc3)
+    {
+        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
+        MW3Map2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(MW3Map2Cal);
+
+        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
+        MW3Cal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(MW3Cal2Hit);
+    }
+
     // ToF-Wall
     if (fTofW)
     {
@@ -483,20 +496,8 @@ void main_online()
         // --- SingleTcal 2 Hit for SofTofW
         R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
         SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
-        SofTofWSingleTcal2Hit->SetExpId(467);
+        SofTofWSingleTcal2Hit->SetExpId(expId);
         run->AddTask(SofTofWSingleTcal2Hit);
-    }
-
-    // MWPC3
-    if (fMwpc3)
-    {
-        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
-        MW3Map2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(MW3Map2Cal);
-
-        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
-        MW3Cal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(MW3Cal2Hit);
     }
 
     // Add online task ------------------------------------
@@ -600,6 +601,7 @@ void main_online()
     if (fTwim)
     {
         R3BSofTwimOnlineSpectra* twonline = new R3BSofTwimOnlineSpectra();
+        twonline->SetExpId(expId);
         run->AddTask(twonline);
         // Twim-Music correlations
         if (fMusic)

@@ -24,6 +24,8 @@ R3BSofTwimHitPar::R3BSofTwimHitPar(const char* name, const char* title, const ch
     fDetZHitParams = new TArrayF(fNumSec * fNumParamsZFit); // 2 Parameters for Z (Linear fits)
     fIn_use = new TArrayI(fNumAnodes * fNumSec);
     fAnode_pos = new TArrayF(fNumAnodes * fNumSec);
+    // only left and right --> 2
+    fTofHitParams = new TArrayF(2 * 28 * 3);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -36,6 +38,8 @@ R3BSofTwimHitPar::~R3BSofTwimHitPar()
         delete fAnode_pos;
     if (fDetZHitParams)
         delete fDetZHitParams;
+    if (fTofHitParams)
+        delete fTofHitParams;
 }
 
 // ----  Method clear ----------------------------------------------------------
@@ -69,6 +73,8 @@ void R3BSofTwimHitPar::putParams(FairParamList* list)
     LOG(INFO) << "Number of parameters for charge-Z: " << array_size;
     fDetZHitParams->Set(array_size);
     list->add("twimZHitPar", *fDetZHitParams);
+    fTofHitParams->Set(2 * 28 * 3);
+    list->add("twimvstofHitPar", *fTofHitParams);
 }
 
 // ----  Method getParams ------------------------------------------------------
@@ -95,14 +101,14 @@ Bool_t R3BSofTwimHitPar::getParams(FairParamList* list)
     fIn_use->Set(array_anode);
     if (!(list->fill("twimInUsePar", fIn_use)))
     {
-        LOG(INFO) << "---Could not initialize twimInUsePar";
+        LOG(ERROR) << "---Could not initialize twimInUsePar";
         return kFALSE;
     }
 
     fAnode_pos->Set(array_anode);
     if (!(list->fill("twimAnodePosPar", fAnode_pos)))
     {
-        LOG(INFO) << "---Could not initialize twimAnodePosPar";
+        LOG(ERROR) << "---Could not initialize twimAnodePosPar";
         return kFALSE;
     }
 
@@ -117,8 +123,14 @@ Bool_t R3BSofTwimHitPar::getParams(FairParamList* list)
 
     if (!(list->fill("twimZHitPar", fDetZHitParams)))
     {
-        LOG(INFO) << "---Could not initialize twimZHitPar";
+        LOG(ERROR) << "---Could not initialize twimZHitPar";
         return kFALSE;
+    }
+
+    if (!(list->fill("twimvstofHitPar", fTofHitParams)))
+    {
+        LOG(WARNING) << "---Could not initialize twimvstofHitPar";
+        // return kFALSE;
     }
 
     return kTRUE;
@@ -145,7 +157,19 @@ void R3BSofTwimHitPar::printParams()
         LOG(INFO) << "Section = " << s + 1;
         for (Int_t j = 0; j < fNumParamsZFit; j++)
         {
-            LOG(INFO) << "FitParam(" << j << ") = " << fDetZHitParams->GetAt(j + fNumSec * fNumParamsZFit);
+            LOG(INFO) << "FitParam(" << j << ") = " << fDetZHitParams->GetAt(j + s * fNumParamsZFit);
         }
     }
+
+    if (fTofHitParams)
+        for (Int_t s = 0; s < 2; s++)
+        {
+            LOG(INFO) << "Section = " << s + 1;
+            for (Int_t p = 0; p < 28; p++)
+                for (Int_t j = 0; j < 3; j++)
+                {
+                    LOG(INFO) << "Tof sci nb " << p + 1 << ": FitParam(" << j
+                              << ") = " << fTofHitParams->GetAt(j + p * 3 + s * 3 * 28);
+                }
+        }
 }

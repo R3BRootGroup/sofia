@@ -574,8 +574,12 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                         zrand = gRandom->Uniform(fPosTarget, fDist_acelerator_glad);
                         Double_t angX = (mw2x - mw1x) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
                         Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
-                        fh2_tracking_planeXZ->Fill(zrand, mw1x + angX * (zrand - fPosTarget - fMw1GeoPar->GetPosZ()*10.-650.));//650mm is the target position with respect to (0,0,0)
-                        fh2_tracking_planeYZ->Fill(zrand, mw1y + angY * (zrand - fPosTarget - fMw1GeoPar->GetPosZ()*10.-650.));
+                        fh2_tracking_planeXZ->Fill(
+                            zrand,
+                            mw1x + angX * (zrand - fPosTarget - fMw1GeoPar->GetPosZ() * 10. -
+                                           650.)); // 650mm is the target position with respect to (0,0,0)
+                        fh2_tracking_planeYZ->Fill(
+                            zrand, mw1y + angY * (zrand - fPosTarget - fMw1GeoPar->GetPosZ() * 10. - 650.));
                     }
                 }
             }

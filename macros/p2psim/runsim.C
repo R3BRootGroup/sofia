@@ -40,7 +40,7 @@ void runsim(Int_t nEvents = 0)
 
     Int_t fFieldMap = -1;          // Magentic field map selector
     Double_t fMeasCurrent = 2000.; // Magnetic field current
-    Float_t fFieldScale = -1.;     // Magnetic field scale factor
+    Float_t fFieldScale = -0.7;     // Magnetic field scale factor
 
     // ---------------  Detector selection: true - false ----------------------
     // ---- R3B and SOFIA detectors as well as passive elements
