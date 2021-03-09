@@ -112,7 +112,7 @@ InitStatus R3BSofTrimCal2Hit::Init()
     fTrimCalData = (TClonesArray*)rootManager->GetObject("TrimCalData");
     if (!fTrimCalData)
     {
-        return kFATAL;
+        LOG(WARNING) << "R3BSofTrimCal2Hit::Init() TrimCalData not found";
     }
 
     // --- ---------------------- --- //
@@ -121,7 +121,7 @@ InitStatus R3BSofTrimCal2Hit::Init()
     fSciCalData = (TClonesArray*)rootManager->GetObject("SciCalData");
     if (!fSciCalData)
     {
-        return kFATAL;
+        LOG(WARNING) << "R3BSofTrimCal2Hit::Init() SciCalData not found";
     }
 
     // --- --------------- --- //
@@ -137,7 +137,6 @@ InitStatus R3BSofTrimCal2Hit::Init()
     {
         rootManager->Register("TrimHitData", "Trim Hit", fTrimHitData, kFALSE);
     }
-    fTrimHitPar->printParams();
 
     return kSUCCESS;
 }
@@ -154,6 +153,11 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
 {
     // Reset entries in output arrays, local arrays
     Reset();
+
+    if (!fTrimHitData)
+    {
+        return;
+    }
 
     // Get the parameters
     if (!fTrimHitPar)
@@ -191,18 +195,21 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
             eal[ch + s * nAligned] = 0;
     }
 
-    // Get the number of entries of the SciCalData TClonesArray and extract the beam velocity 
-    Int_t nHitsCalSci = fSciCalData->GetEntries();
-    if (!nHitsCalSci)
+    // Get the number of entries of the SciCalData TClonesArray and extract the beam velocity
+    if (fSciCalData)
     {
-        return;
-    }
-    for (Int_t entry = 0; entry < nHitsCalSci; entry++)
-    {
-        R3BSofSciCalData* iSciCalData = (R3BSofSciCalData*)fSciCalData->At(entry);
-        if (iSciCalData->GetDetector() == fIdCaveC)
+        Int_t nHitsCalSci = fSciCalData->GetEntries();
+        if (!nHitsCalSci)
         {
-            betaFromS2 = iSciCalData->GetBeta_S2();
+            return;
+        }
+        for (Int_t entry = 0; entry < nHitsCalSci; entry++)
+        {
+            R3BSofSciCalData* iSciCalData = (R3BSofSciCalData*)fSciCalData->At(entry);
+            if (iSciCalData->GetDetector() == fIdCaveC)
+            {
+                betaFromS2 = iSciCalData->GetBeta_S2();
+            }
         }
     }
 
@@ -281,9 +288,9 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
 
         // TO DO : === fZ ===
         zval = sumTheta;
-        
-	// FILL HIT DATA 
-	AddHitData(s + 1, sumRaw, sumBeta, sumDT, sumTheta, zval);
+
+        // FILL HIT DATA
+        AddHitData(s + 1, sumRaw, sumBeta, sumDT, sumTheta, zval);
 
     } // end of loop over the sections
 
