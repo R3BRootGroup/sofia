@@ -103,7 +103,7 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     }
 
     // --- --------------- --- //
-    // --- OUTPUT L DATA --- //
+    // --- OUTPUT CAL DATA --- //
     // --- --------------- --- //
     fTrimCalData = new TClonesArray("R3BSofTrimCalData", MAX_MULT_TRIM_CAL * 8);
 

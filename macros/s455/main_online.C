@@ -433,10 +433,10 @@ void main_online()
         run->AddTask(SofTrimMap2Cal);
    
 	// --- Cal 2 Hit
-	//R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
-	//SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
-	//SofTrimCal2Hit->SetTriShape(kTRUE);
-	//run->AddTask(SofTrimCal2Hit);
+	R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
+	SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
+	SofTrimCal2Hit->SetTriShape(kTRUE);
+	run->AddTask(SofTrimCal2Hit);
     }
 
     // SCI
