@@ -43,6 +43,11 @@ void main_online()
 {
     TStopwatch timer;
     timer.Start();
+    
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
 
     // const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
     const Int_t nev = -1; // Only nev events to read
@@ -102,11 +107,14 @@ void main_online()
       sofiaWR = 0xe00;
       
       filename = "--stream=lxlanddaq01:9000";
-      //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
-      outputFilename = "data_s455_online.root";
+      //filename = "~/lmd/main0042_0001.lmd";
+      
+      TString outputpath = "/lustre/land/202104_s455/rootfiles/sofia/";
+      outputFileName = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
+      //outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
       // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-       upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
+      upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
       // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
       ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
       
@@ -508,11 +516,11 @@ void main_online()
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
         TwimMap2Cal->SetOnline(NOTstorecaldata);
         TwimMap2Cal->SetExpId(expId);
-//        run->AddTask(TwimMap2Cal);
+        run->AddTask(TwimMap2Cal);
 
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
         TwimCal2Hit->SetOnline(NOTstorehitdata);
-       // run->AddTask(TwimCal2Hit);
+        run->AddTask(TwimCal2Hit);
     }
 
     // MWPC2

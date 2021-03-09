@@ -105,12 +105,14 @@ void R3BSofTwimMapped2Cal::SetParameter()
 
     if (fExpId == 444 || fExpId == 467)
     {
-        fNumAnodesRef = 2; // 2 anode for TREF
+        fNumAnodesRef = 2;  // 2 anode for TREF
+        fNumAnodesTrig = 2; // 2 anode for Trig
         fMaxMult = 10;
     }
     else if (fExpId == 455)
     {
-        fNumAnodesRef = 1; // 1 anode for TREF
+        fNumAnodesRef = 1;  // 1 anode for TREF
+        fNumAnodesTrig = 1; // 1 anode for Trig
         fMaxMult = 20;
     }
 
@@ -205,7 +207,7 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     Double_t pedestal = 0.;
 
     for (Int_t s = 0; s < fNumSec; s++)
-        for (Int_t i = 0; i < (fNumAnodes + fNumAnodesRef); i++)
+        for (Int_t i = 0; i < (fNumAnodes + fNumAnodesRef + fNumAnodesTrig); i++)
         {
             mulanode[s][i] = 0;
             for (Int_t j = 0; j < fMaxMult; j++)

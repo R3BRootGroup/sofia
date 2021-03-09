@@ -60,14 +60,15 @@ class R3BSofTwimMapped2Cal : public FairTask
     Int_t fNumParams;
     Int_t fNumPosParams;
     Int_t fNumAnodesRef;
+    Int_t fNumAnodesTrig;
     Int_t fMaxMult;
     Int_t fExpId;
     TArrayF* CalParams;
     TArrayF* PosParams;
 
-    Int_t mulanode[4][16 + 2];
-    Double_t fE[4][20][16 + 2];
-    Double_t fDT[4][20][16 + 2];
+    Int_t mulanode[4][16 + 4];
+    Double_t fE[4][20][16 + 4];
+    Double_t fDT[4][20][16 + 4];
 
     Bool_t fOnline; // Don't store data for online
 
