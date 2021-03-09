@@ -48,6 +48,12 @@ void main_online()
     const Int_t nev = -1; // Only nev events to read
     const Int_t fRunId = 1;
 
+    // *********************************** //
+    // PLEASE CHANGE THE EXPERIMENT NUMBER //
+    // *********************************** //
+    const Int_t expId = 455;               // select experiment: 444, 467 or 455
+    // *********************************** //
+    
     // NumSofSci, file names and paths -----------------------------
     Int_t sofiaWR, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -55,23 +61,61 @@ void main_online()
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
     
+    if (expId==444){
+      NumSofSci = 1; // s444: PRIMARY BEAM EXP, 1 SofSci at CAVE C ONLY
+      IdS2 = 0;
+      IdS8 = 0;
+      sofiaWR = 0x500;
+      
+      //filename = "--stream=lxir123:7803";
+      filename = "/lustre/land/202002_s444/stitched/main0040_0001.lmd";
+      outputFilename = "data_s444_online.root";
+      
+      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
+      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
+      // upexps_dir = "/u/land/lynx.landexp/202002_s444/upexps/";  // for lxg computers
+      ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+      
+      sofiacaldir = dir + "/sofia/macros/s444/parameters/";
+    }
+    else if (expId==467){
+      NumSofSci = 4; // s467: SECONDARY BEAM EXP, 2 at S2, 1 at S8, 1 at CAVE C
+      IdS2 = 2;
+      IdS8 = 3;
+      sofiaWR = 0xe00;
+      
+      filename = "--stream=lxir123:7803";
+      //filename = "~/lmd/s467/main0*.lmd";
+      outputFilename = "data_s467_online.root";
+      
+      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
+      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
+      // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
+      ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+      
+      sofiacaldir = dir + "/sofia/macros/s467/parameters/";
+    }
+    else if (expId==455){
       NumSofSci = 2; 
       IdS2 = 1; 
       IdS8 = 0; 
       sofiaWR = 0xe00;
       
-      //filename = "--stream=lxir123:7803";
+      filename = "--stream=lxlanddaq01:9000";
       //filename = "/lustre/land/202002_s467/stitched/main0007_0001.lmd";
-      filename = "~/data/s467/Ca50/main*.lmd";
       outputFilename = "data_s455_online.root";
       
       // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
       // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202104_s455/202104_s455 --allow-errors --input-buffer=100Mi";
+      ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
       
       sofiacaldir = dir + "/sofia/macros/s455/parameters/";
-    
+    }
+    else{
+      std::cout << "Experiment was not selected" << std::endl;
+      gApplication->Terminate();
+    }
     TString sofiacalfilename = sofiacaldir + "CalibParam.par";
     ucesb_path.ReplaceAll("//", "/");
     sofiacalfilename.ReplaceAll("//", "/");
@@ -109,15 +153,15 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = true; // Tracking of fragments inside GLAD
+    Bool_t fTracking = false; // Tracking of fragments inside GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
     TString califadir = dir + "/macros/r3b/unpack/s455/califa/parameters/";
-    TString califamapfilename = califadir + "CALIFA_mapping_March3_MIXED.par";
+    TString califamapfilename = califadir + "Califa_Mapping_3March2021.par";
     califamapfilename.ReplaceAll("//", "/");
     // Parameters for CALIFA calibration in keV
-    TString califacalfilename = califadir + "Califa_CalibParamMarch2021_MIXED_Final.root";
+    TString califacalfilename = califadir + "Califa_CalPar_4March2021.par";
     califacalfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
@@ -318,15 +362,22 @@ void main_online()
         }
         else
         { // SOFIA, CALIFA mapping and CALIFA calibration parameters
-            parIo1->open(sofiacalfilename, "in"); // Ascii file
-            rtdb->setFirstInput(parIo1);
-            rtdb->print();
-            Bool_t kParameterMerged = kFALSE;
-            FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged); // Root file
-            TList* parList2 = new TList();
-            parList2->Add(new TObjString(califacalfilename));
-            parIo2->open(parList2);
-            rtdb->setSecondInput(parIo2);
+           // parIo1->open(sofiacalfilename, "in"); // Ascii file
+           //rtdb->setFirstInput(parIo1);
+           // rtdb->print();
+           // Bool_t kParameterMerged = kFALSE;
+           // FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged); // Root file
+           // TList* parList2 = new TList();
+           // parList2->Add(new TObjString(califacalfilename));
+           // parIo2->open(parList2);
+           // rtdb->setSecondInput(parIo2);
+	   //
+            TList* parList1 = new TList();
+            parList1->Add(new TObjString(sofiacalfilename));
+	    parList1->Add(new TObjString(califacalfilename));
+	    parIo1->open(parList1);
+	    rtdb->setFirstInput(parIo1);
+	    rtdb->print();
         }
     }
 
@@ -374,10 +425,10 @@ void main_online()
         run->AddTask(SofTrimMap2Cal);
    
 	// --- Cal 2 Hit
-	R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
-	SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
-	SofTrimCal2Hit->SetTriShape(kTRUE);
-	run->AddTask(SofTrimCal2Hit);
+	//R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
+	//SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
+	//SofTrimCal2Hit->SetTriShape(kTRUE);
+	//run->AddTask(SofTrimCal2Hit);
     }
 
     // SCI
@@ -457,11 +508,11 @@ void main_online()
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
         TwimMap2Cal->SetOnline(NOTstorecaldata);
         TwimMap2Cal->SetExpId(expId);
-        run->AddTask(TwimMap2Cal);
+//        run->AddTask(TwimMap2Cal);
 
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
         TwimCal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(TwimCal2Hit);
+       // run->AddTask(TwimCal2Hit);
     }
 
     // MWPC2
