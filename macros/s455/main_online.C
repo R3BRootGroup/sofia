@@ -110,7 +110,7 @@ void main_online()
       //filename = "~/lmd/main0042_0001.lmd";
       
       TString outputpath = "/lustre/land/202104_s455/rootfiles/sofia/";
-      outputFileName = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
+      outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
       //outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
       // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
