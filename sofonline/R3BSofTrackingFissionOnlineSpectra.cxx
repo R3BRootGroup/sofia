@@ -56,10 +56,10 @@ R3BSofTrackingFissionOnlineSpectra::R3BSofTrackingFissionOnlineSpectra()
     , fTwimHitDataCA(NULL)
     , fTofWHitDataCA(NULL)
     , fTrackingDataCA(NULL)
-    , fDist_acelerator_glad(3718.0)
-    , fPosTarget(1970.)
+    , fDist_acelerator_glad(3810.0)
+    , fPosTarget(2000.)
     , fWidthTarget(30.)
-    , fZ_max(40.)
+    , fZ_max(94.)
     , fZ_min(0.)
 {
 }
@@ -76,10 +76,10 @@ R3BSofTrackingFissionOnlineSpectra::R3BSofTrackingFissionOnlineSpectra(const TSt
     , fTwimHitDataCA(NULL)
     , fTofWHitDataCA(NULL)
     , fTrackingDataCA(NULL)
-    , fDist_acelerator_glad(3718.0)
-    , fPosTarget(1970.)
+    , fDist_acelerator_glad(3810.0)
+    , fPosTarget(2000.)
     , fWidthTarget(30.)
-    , fZ_max(40.)
+    , fZ_max(94.)
     , fZ_min(0.)
 {
 }
