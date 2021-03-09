@@ -109,7 +109,7 @@ void main_online()
       filename = "--stream=lxlanddaq01:9000";
       //filename = "~/lmd/main0042_0001.lmd";
       
-      TString outputpath = "/lustre/land/202104_s455/rootfiles/sofia/";
+      TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
       outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
       //outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
@@ -161,7 +161,7 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = false; // Tracking of fragments inside GLAD
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
