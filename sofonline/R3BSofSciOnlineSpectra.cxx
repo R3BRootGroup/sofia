@@ -766,7 +766,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
         CalPos[i] = -100000.;
     }
 
-    if (fMapped && fMapped->GetEntriesFast() && fTcal && fTcal->GetEntriesFast())
+    if (fMapped && fMapped->GetEntriesFast())
     {
         // --- ---------------- --- //
         // --- read mapped data --- //
@@ -781,11 +781,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             iCh = hitmapped->GetPmt() - 1;
             multMap[iDet * fNbChannels + iCh]++;
             fh1_finetime[iDet * fNbChannels + iCh]->Fill(hitmapped->GetTimeFine());
-        }
-        // --- end of read mapped data --- //
+        } // end of loop over mapped data
 
-        // if data in SofSci at Cave C
-        if ((multMap[(fNbDetectors - 1) * 3] != 0) && (multMap[(fNbDetectors - 1) * 3 + 1] != 0))
+        if (fTcal && fTcal->GetEntriesFast())
         {
             // --- -------------- --- //
             // --- read tcal data --- //
@@ -800,8 +798,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 iCh = hittcal->GetPmt() - 1;
                 multTcal[iDet * fNbChannels + iCh]++;
                 iRawTimeNs[iDet * fNbChannels + iCh] = hittcal->GetRawTimeNs();
-            }
-            // --- end of read Tcal data --- //
+            } // --- end of loop over Tcal data --- //
 
             // --- --------------------- --- //
             // --- read single tcal data --- //
@@ -822,120 +819,118 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                         fh1_RawTofFromS2_SingleTcal[iDet - fIdS2]->Fill(hitstcal->GetRawTofNs_FromS2());
                     if (fIdS8 > 0 && hitstcal->GetDetector() > fIdS8)
                         fh1_RawTofFromS8_SingleTcal[iDet - fIdS8]->Fill(hitstcal->GetRawTofNs_FromS8());
-                }
-            }
-            // --- end of read single tcal data --- //
+                } // --- end of loop over SingleTcal data --- //
 
-            // --- ------------- --- //
-            // --- read cal data --- //
-            // --- ------------- --- //
-            if (fCal && fCal->GetEntries())
-            {
-                for (Int_t i = fIdS2; i < fNbDetectors; i++)
-                    TofS2[i - fIdS2] = 0;
-                for (Int_t i = fIdS8; i < fNbDetectors; i++)
-                    TofS8[i - fIdS8] = 0;
-                nHits = fCal->GetEntriesFast();
-                for (Int_t ihit = 0; ihit < nHits; ihit++)
+                if (fCal && fCal->GetEntries())
                 {
-                    R3BSofSciCalData* hitcal = (R3BSofSciCalData*)fCal->At(ihit);
-                    if (!hitcal)
-                        continue;
-                    iDet = hitcal->GetDetector() - 1;
-                    multCal[iDet]++;
-                    fh1_CalPos[iDet]->Fill(hitcal->GetPosMm());
-                    CalPos[iDet] = hitcal->GetPosMm();
-                    if (fIdS2 > 0 && hitcal->GetDetector() > fIdS2)
+                    // --- ------------- --- //
+                    // --- read cal data --- //
+                    // --- ------------- --- //
+                    for (Int_t i = fIdS2; i < fNbDetectors; i++)
+                        TofS2[i - fIdS2] = 0;
+                    for (Int_t i = fIdS8; i < fNbDetectors; i++)
+                        TofS8[i - fIdS8] = 0;
+                    nHits = fCal->GetEntriesFast();
+                    for (Int_t ihit = 0; ihit < nHits; ihit++)
                     {
-                        fh1_CalTofFromS2[iDet - fIdS2]->Fill(hitcal->GetTofNs_S2());
-                        fh1_BetaFromS2[iDet - fIdS2]->Fill(hitcal->GetBeta_S2());
-                        TofS2[iDet - fIdS2] = hitcal->GetTofNs_S2();
-                        fh2_PosVsTofS2[2 * (iDet - fIdS2) + 1]->Fill(hitcal->GetTofNs_S2(), hitcal->GetPosMm());
-                    }
-                    if (fIdS8 > 0 && hitcal->GetDetector() > fIdS8)
-                    {
-                        fh1_CalTofFromS8[iDet - fIdS8]->Fill(hitcal->GetTofNs_S8());
-                        fh1_BetaFromS8[iDet - fIdS8]->Fill(hitcal->GetBeta_S8());
-                        TofS8[iDet - fIdS8] = hitcal->GetTofNs_S8();
-                        fh2_PosVsTofS8[2 * (iDet - fIdS8) + 1]->Fill(TofS8[iDet - fIdS8], hitcal->GetPosMm());
-                    }
-                }
-            }
-            // --- end of read cal data --- //
+                        R3BSofSciCalData* hitcal = (R3BSofSciCalData*)fCal->At(ihit);
+                        if (!hitcal)
+                            continue;
+                        iDet = hitcal->GetDetector() - 1;
+                        multCal[iDet]++;
+                        fh1_CalPos[iDet]->Fill(hitcal->GetPosMm());
+                        CalPos[iDet] = hitcal->GetPosMm();
+                        if (fIdS2 > 0 && hitcal->GetDetector() > fIdS2)
+                        {
+                            fh1_CalTofFromS2[iDet - fIdS2]->Fill(hitcal->GetTofNs_S2());
+                            fh1_BetaFromS2[iDet - fIdS2]->Fill(hitcal->GetBeta_S2());
+                            TofS2[iDet - fIdS2] = hitcal->GetTofNs_S2();
+                            fh2_PosVsTofS2[2 * (iDet - fIdS2) + 1]->Fill(hitcal->GetTofNs_S2(), hitcal->GetPosMm());
+                        }
+                        if (fIdS8 > 0 && hitcal->GetDetector() > fIdS8)
+                        {
+                            fh1_CalTofFromS8[iDet - fIdS8]->Fill(hitcal->GetTofNs_S8());
+                            fh1_BetaFromS8[iDet - fIdS8]->Fill(hitcal->GetBeta_S8());
+                            TofS8[iDet - fIdS8] = hitcal->GetTofNs_S8();
+                            fh2_PosVsTofS8[2 * (iDet - fIdS8) + 1]->Fill(TofS8[iDet - fIdS8], hitcal->GetPosMm());
+                        }
+                    } // --- end of loop over Cal data --- //
+                }     // --- end of if Cal data --- //
+            }         // --- end of if SingleTcal data --- //
+        }             //--- end of if Tcal data --- //
 
-            // --- ----------------------------------------- --- //
-            // --- filling some histogramms outside the loop --- //
-            // --- ----------------------------------------- --- //
-            for (Int_t i = 0; i < fNbDetectors; i++)
+        // --- ----------------------------------------- --- //
+        // --- filling some histogramms outside the loop --- //
+        // --- ----------------------------------------- --- //
+        for (Int_t i = 0; i < fNbDetectors; i++)
+        {
+            for (Int_t j = 0; j < fNbChannels; j++)
             {
-                for (Int_t j = 0; j < fNbChannels; j++)
-                {
-                    fh2_mult[i]->Fill(j + 1, multMap[i * fNbChannels + j]);
-                    fh1_multMap[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
-                    fh1_multTcal[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
-                }
-                for (Int_t j = 0; j < (fNbChannels - 1); j++)
-                {
-                    fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
-                                                                        multMap[i * fNbChannels + 2]);
-                }
-                fh1_multSingleTcal[i]->Fill(multSTcal[i]);
-                fh1_multCal[i]->Fill(multCal[i]);
+                fh2_mult[i]->Fill(j + 1, multMap[i * fNbChannels + j]);
+                fh1_multMap[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
+                fh1_multTcal[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
+            }
+            for (Int_t j = 0; j < (fNbChannels - 1); j++)
+            {
+                fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
+                                                                    multMap[i * fNbChannels + 2]);
+            }
+            fh1_multSingleTcal[i]->Fill(multSTcal[i]);
+            fh1_multCal[i]->Fill(multCal[i]);
 
-                if ((multTcal[i * fNbChannels] == 1) && (multTcal[i * fNbChannels + 1] == 1))
-                {
-                    // TrawRIGHT-TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
-                    iRawPos = iRawTimeNs[i * fNbChannels] - iRawTimeNs[i * fNbChannels + 1];
-                    fh1_RawPos_TcalMult1[i]->Fill(iRawPos);
-                }
-
-                fh2_RawPosVsCalPos[i]->Fill(CalPos[i], RawPos[i]);
+            if ((multTcal[i * fNbChannels] == 1) && (multTcal[i * fNbChannels + 1] == 1))
+            {
+                // TrawRIGHT-TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
+                iRawPos = iRawTimeNs[i * fNbChannels] - iRawTimeNs[i * fNbChannels + 1];
+                fh1_RawPos_TcalMult1[i]->Fill(iRawPos);
             }
 
-            if (fIdS2 > 0)
-            {
+            fh2_RawPosVsCalPos[i]->Fill(CalPos[i], RawPos[i]);
+        }
 
-                for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
-                {
-                    if ((multTcal[(fIdS2 - 1) * fNbChannels] == 1) &&     // SofSci at S2: PMT RIGHT
-                        (multTcal[(fIdS2 - 1) * fNbChannels + 1] == 1) && // SofSci at S2: PMT LEFT
-                        (multTcal[(fIdS2 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S2
-                        (multTcal[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
-                        (multTcal[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
-                        (multTcal[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
-                    {
-                        iRawTof =
-                            0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
-                            0.5 * (iRawTimeNs[(fIdS2 - 1) * fNbChannels] + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 1]) +
-                            iRawTimeNs[(fIdS2 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
-                        fh1_RawTofFromS2_TcalMult1[dstop - fIdS2]->Fill(iRawTof);
-                    }
-                    fh2_PosVsTofS2[2 * (dstop - fIdS2)]->Fill(TofS2[dstop - fIdS2], CalPos[fIdS2 - 1]);
-                }
-            } // end of if SofSci at S2
+        if (fIdS2 > 0)
+        {
 
-            if (fIdS8 > 0)
+            for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
             {
-                for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++)
+                if ((multTcal[(fIdS2 - 1) * fNbChannels] == 1) &&     // SofSci at S2: PMT RIGHT
+                    (multTcal[(fIdS2 - 1) * fNbChannels + 1] == 1) && // SofSci at S2: PMT LEFT
+                    (multTcal[(fIdS2 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S2
+                    (multTcal[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
+                    (multTcal[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
+                    (multTcal[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
                 {
-                    if ((multMap[(fIdS8 - 1) * fNbChannels] == 1) &&     // SofSci at S8: PMT RIGHT
-                        (multMap[(fIdS8 - 1) * fNbChannels + 1] == 1) && // SofSci at S8: PMT LEFT
-                        (multMap[(fIdS8 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S8
-                        (multMap[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
-                        (multMap[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
-                        (multMap[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
-                    {
-                        iRawTof =
-                            0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
-                            0.5 * (iRawTimeNs[(fIdS8 - 1) * fNbChannels] + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 1]) +
-                            iRawTimeNs[(fIdS8 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
-                        fh1_RawTofFromS8_TcalMult1[dstop - fIdS8]->Fill(iRawTof);
-                    }
-                    fh2_PosVsTofS8[2 * (dstop - fIdS8)]->Fill(TofS8[dstop - fIdS8], CalPos[fIdS8 - 1]);
+                    iRawTof =
+                        0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
+                        0.5 * (iRawTimeNs[(fIdS2 - 1) * fNbChannels] + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 1]) +
+                        iRawTimeNs[(fIdS2 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
+                    fh1_RawTofFromS2_TcalMult1[dstop - fIdS2]->Fill(iRawTof);
                 }
-            } // end of if SofSci at S8
-        }     // end of if data in SofSci at cave C
-    }         // end of if (fMapped && fTcal)
+                fh2_PosVsTofS2[2 * (dstop - fIdS2)]->Fill(TofS2[dstop - fIdS2], CalPos[fIdS2 - 1]);
+            }
+        } // --- end of if SofSci at S2 --- //
+
+        if (fIdS8 > 0)
+        {
+            for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++)
+            {
+                if ((multMap[(fIdS8 - 1) * fNbChannels] == 1) &&     // SofSci at S8: PMT RIGHT
+                    (multMap[(fIdS8 - 1) * fNbChannels + 1] == 1) && // SofSci at S8: PMT LEFT
+                    (multMap[(fIdS8 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S8
+                    (multMap[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
+                    (multMap[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
+                    (multMap[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
+                {
+                    iRawTof =
+                        0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
+                        0.5 * (iRawTimeNs[(fIdS8 - 1) * fNbChannels] + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 1]) +
+                        iRawTimeNs[(fIdS8 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
+                    fh1_RawTofFromS8_TcalMult1[dstop - fIdS8]->Fill(iRawTof);
+                }
+                fh2_PosVsTofS8[2 * (dstop - fIdS8)]->Fill(TofS8[dstop - fIdS8], CalPos[fIdS8 - 1]);
+            }
+        } // --- end of if SofSci at S8 --- //
+    }     // --- end of if Mapped data --- //
 
     fNEvents++;
 }
