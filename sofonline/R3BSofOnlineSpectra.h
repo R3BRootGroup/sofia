@@ -141,7 +141,7 @@ class R3BSofOnlineSpectra : public FairTask
     TCanvas *cTrigger, *cWr, *cWrs;
 
     // Unpack
-    TH1F *fh1_trigger, *fh1_wr;
+    TH1F *fh1_trigger, *fh1_wr[2];
     TH1F* fh1_wrs[5];
 
   public:

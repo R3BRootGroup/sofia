@@ -60,7 +60,7 @@ void main_online()
     // *********************************** //
     
     // NumSofSci, file names and paths -----------------------------
-    Int_t sofiaWR, NumSofSci, IdS2, IdS8;
+    Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
@@ -70,7 +70,7 @@ void main_online()
       NumSofSci = 1; // s444: PRIMARY BEAM EXP, 1 SofSci at CAVE C ONLY
       IdS2 = 0;
       IdS8 = 0;
-      sofiaWR = 0x500;
+      sofiaWR_SE = 0x500;
       
       //filename = "--stream=lxir123:7803";
       filename = "/lustre/land/202002_s444/stitched/main0040_0001.lmd";
@@ -87,7 +87,7 @@ void main_online()
       NumSofSci = 4; // s467: SECONDARY BEAM EXP, 2 at S2, 1 at S8, 1 at CAVE C
       IdS2 = 2;
       IdS8 = 3;
-      sofiaWR = 0xe00;
+      sofiaWR_SE = 0xe00;
       
       filename = "--stream=lxir123:7803";
       //filename = "~/lmd/s467/main0*.lmd";
@@ -104,10 +104,11 @@ void main_online()
       NumSofSci = 2; 
       IdS2 = 1; 
       IdS8 = 0; 
-      sofiaWR = 0xe00;
+      sofiaWR_SE = 0xe00;
+      sofiaWR_ME = 0xf00;
       
       filename = "--stream=lxlanddaq01:9000";
-      //filename = "~/lmd/main0042_0001.lmd";
+      // filename = "~/lmd/main0042_0001.lmd";
       
       TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
       outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
@@ -221,7 +222,7 @@ void main_online()
     {
       unpacksci = new R3BSofSciReader((EXT_STR_h101_SOFSCI_t*)&ucesb_struct.sci, offsetof(EXT_STR_h101, sci),NumSofSci);
       unpackWRMaster = new R3BWhiterabbitMasterReader((EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x1000);
-      unpackWRSofia = new R3BSofWhiterabbitReader((EXT_STR_h101_WRSOFIA*)&ucesb_struct.wrsofia, offsetof(EXT_STR_h101, wrsofia), sofiaWR);
+      unpackWRSofia = new R3BSofWhiterabbitReader((EXT_STR_h101_WRSOFIA*)&ucesb_struct.wrsofia, offsetof(EXT_STR_h101, wrsofia), sofiaWR_SE, sofiaWR_ME);
     }
 
     if (fAms)
