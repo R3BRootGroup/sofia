@@ -359,16 +359,20 @@ InitStatus R3BSofOnlineSpectra::Init()
 
     // Difference between master and sofia WRs
     cWr = new TCanvas("WR_Master_Sofia", "WR_Master_Sofia", 10, 10, 500, 500);
-    fh1_wr = new TH1F("fh1_WR_Master_Sofia", "WR-Master - WR-Sofia", 1200, -4100, 4100);
-    fh1_wr->GetXaxis()->SetTitle("WRs difference");
-    fh1_wr->GetYaxis()->SetTitle("Counts");
-    fh1_wr->GetYaxis()->SetTitleOffset(1.3);
-    fh1_wr->GetXaxis()->CenterTitle(true);
-    fh1_wr->GetYaxis()->CenterTitle(true);
-    fh1_wr->SetFillColor(29);
-    fh1_wr->SetLineColor(1);
-    fh1_wr->SetLineWidth(2);
-    fh1_wr->Draw("");
+    fh1_wr[0] = new TH1F("fh1_WRSE_Master_Sofia", "WR-Master - WRSE-Sofia(back) , WR-Master - WRME-Sofia(red) ", 1200, -4100, 4100);
+    fh1_wr[0]->GetXaxis()->SetTitle("WRs difference");
+    fh1_wr[0]->GetYaxis()->SetTitle("Counts");
+    fh1_wr[0]->GetYaxis()->SetTitleOffset(1.3);
+    fh1_wr[0]->GetXaxis()->CenterTitle(true);
+    fh1_wr[0]->GetYaxis()->CenterTitle(true);
+    fh1_wr[0]->SetFillColor(29);
+    fh1_wr[0]->SetLineColor(1);
+    fh1_wr[0]->SetLineWidth(2);
+    fh1_wr[0]->Draw("");
+    fh1_wr[1] = new TH1F("fh1_WRME_Master_Sofia", "WR-Master - WRME-Sofia", 1200, -4100, 4100);
+    fh1_wr[1]->SetLineColor(2);
+    fh1_wr[1]->SetLineWidth(2);
+    fh1_wr[1]->Draw("same");
 
     // Difference between Califa-Sofia WRs
     sprintf(Name1, "WRs_Sofia_vs_others");
@@ -471,7 +475,10 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     LOG(INFO) << "R3BSofOnlineSpectra::Reset_General_Histo";
     fh1_trigger->Reset();
     if (fWRItemsMaster && fWRItemsSofia)
-        fh1_wr->Reset();
+    {
+        fh1_wr[0]->Reset();
+        fh1_wr[1]->Reset();
+    }
     if (fWRItemsCalifa && fWRItemsSofia)
     {
         fh1_wrs[0]->Reset();
@@ -590,13 +597,13 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
     {
         // SOFIA
         Int_t nHits = fWRItemsSofia->GetEntriesFast();
-        int64_t wrs = 0.;
+        int64_t wrs[2];
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsSofia->At(ihit);
             if (!hit)
                 continue;
-            wrs = hit->GetTimeStamp();
+            wrs[ihit] = hit->GetTimeStamp();
         }
 
         // Califa
@@ -611,8 +618,8 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
                     continue;
                 wr[ihit] = hit->GetTimeStamp();
             }
-            fh1_wrs[0]->Fill(wrs - wr[0]); // messel
-            fh1_wrs[1]->Fill(wrs - wr[1]); // wixhausen
+            fh1_wrs[0]->Fill(wrs[0] - wr[0]); // messel
+            fh1_wrs[1]->Fill(wrs[0] - wr[1]); // wixhausen
         }
         // Neuland
         if (fWRItemsNeuland && fWRItemsNeuland->GetEntriesFast() > 0)
@@ -623,7 +630,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
                 R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsNeuland->At(ihit);
                 if (!hit)
                     continue;
-                fh1_wrs[2]->Fill(int64_t(wrs - hit->GetTimeStamp()));
+                fh1_wrs[2]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
             }
             // fh1_wrs[4]->GetMaximum();
             fh1_wrs[0]->SetMaximum(5. * fh1_wrs[2]->GetBinContent(fh1_wrs[2]->GetMaximumBin()));
@@ -637,7 +644,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
                 R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsS2->At(ihit);
                 if (!hit)
                     continue;
-                fh1_wrs[3]->Fill(int64_t(wrs - hit->GetTimeStamp()));
+                fh1_wrs[3]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
             }
         }
         // S8
@@ -649,7 +656,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
                 R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsS8->At(ihit);
                 if (!hit)
                     continue;
-                fh1_wrs[4]->Fill(int64_t(wrs - hit->GetTimeStamp()));
+                fh1_wrs[4]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
             }
         }
         // Master
@@ -664,7 +671,8 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
                     continue;
                 wrm = hit->GetTimeStamp();
             }
-            fh1_wr->Fill(wrm - wrs);
+            fh1_wr[0]->Fill(wrm - wrs[0]);
+            fh1_wr[1]->Fill(wrm - wrs[1]);
         }
     }
     fNEvents += 1;

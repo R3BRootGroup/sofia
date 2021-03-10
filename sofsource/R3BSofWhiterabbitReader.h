@@ -14,7 +14,7 @@ class R3BEventHeader;
 class R3BSofWhiterabbitReader : public R3BReader
 {
   public:
-    R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA*, UInt_t, UInt_t);
+    R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA*, UInt_t, UInt_t, UInt_t);
 
     ~R3BSofWhiterabbitReader();
 
@@ -35,7 +35,8 @@ class R3BSofWhiterabbitReader : public R3BReader
     /* FairLogger */
     FairLogger* fLogger;
     /* The whiterabbit subsystem ID */
-    UInt_t fWhiterabbitId;
+    UInt_t fWhiterabbitId1;
+    UInt_t fWhiterabbitId2;
     /* A pointer to the R3BEventHeader structure */
     R3BEventHeader* fEventHeader;
     // Don't store data for online
