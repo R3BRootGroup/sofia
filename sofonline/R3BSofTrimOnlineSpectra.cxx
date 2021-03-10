@@ -883,7 +883,7 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
             // ATTENTION: take into accound only the first hit
             if (mult[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] == 1)
             {
-                if (mapitem->GetEnergy() < 8192 && mapitem->GetEnergy() > 0) // Eraw=0 for Tref and Ttrig
+                if (mapitem->GetEnergy() < 65535 && mapitem->GetEnergy() > 0) // Eraw=0 for Tref and Ttrig
                     Eraw[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] = mapitem->GetEnergy();
                 Traw[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] = mapitem->GetTime();
             }
