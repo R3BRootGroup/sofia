@@ -101,8 +101,8 @@ void main_online()
       sofiacaldir = dir + "/sofia/macros/s467/parameters/";
     }
     else if (expId==455){
-      NumSofSci = 2; 
-      IdS2 = 1; 
+      NumSofSci = 1; 
+      IdS2 = 0; 
       IdS8 = 0; 
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
