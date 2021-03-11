@@ -20,6 +20,7 @@
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofSciVsMusicOnlineSpectra.h"
+#include "R3BSofSciVsTrimOnlineSpectra.h"
 #include "R3BSofSciVsMwpc0OnlineSpectra.h"
 #include "R3BSofTofWOnlineSpectra.h"
 #include "R3BSofTrackingFissionOnlineSpectra.h"
@@ -77,6 +78,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fTwimVsTrimOnline(NULL)
     , fSciOnline(NULL)
     , fSciVsMusOnline(NULL)
+    , fSciVsTrimOnline(NULL)
     , fSciVsMw0Online(NULL)
     , fTofWOnline(NULL)
     , fScalersOnline(NULL)
@@ -114,6 +116,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fTwimVsTrimOnline(NULL)
     , fSciOnline(NULL)
     , fSciVsMusOnline(NULL)
+    , fSciVsTrimOnline(NULL)
     , fSciVsMw0Online(NULL)
     , fTofWOnline(NULL)
     , fScalersOnline(NULL)
@@ -294,6 +297,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     fSciVsMusOnline = (R3BSofSciVsMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciVsMusicOnlineSpectra");
     if (!fSciVsMusOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofSciVsMusicOnlineSpectra not found";
+
+    // Looking for Sci Vs TRIPLE-MUSIC online
+    fSciVsTrimOnline = (R3BSofSciVsTrimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciVsTrimOnlineSpectra");
+    if (!fSciVsTrimOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofSciVsTrimOnlineSpectra not found";
 
     // Looking for Sci Vs MWPC0 online
     fSciVsMw0Online = (R3BSofSciVsMwpc0OnlineSpectra*)FairRunOnline::Instance()->GetTask("SofSciVsMwpc0OnlineSpectra");
@@ -536,6 +544,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Sci vs R3B_MUSIC histograms if they exist somewhere
     if (fSciVsMusOnline)
         fSciVsMusOnline->Reset_Histo();
+    // Reset Sci vs TRIPLE-MUSIC histograms if they exist somewhere
+    if (fSciVsTrimOnline)
+        fSciVsTrimOnline->Reset_Histo();
     // Reset Sci vs MWPC0 histograms if they exist somewhere
     if (fSciVsMw0Online)
         fSciVsMw0Online->Reset_Histo();

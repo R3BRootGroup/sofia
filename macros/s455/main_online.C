@@ -66,41 +66,7 @@ void main_online()
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
     
-    if (expId==444){
-      NumSofSci = 1; // s444: PRIMARY BEAM EXP, 1 SofSci at CAVE C ONLY
-      IdS2 = 0;
-      IdS8 = 0;
-      sofiaWR_SE = 0x500;
-      
-      //filename = "--stream=lxir123:7803";
-      filename = "/lustre/land/202002_s444/stitched/main0040_0001.lmd";
-      outputFilename = "data_s444_online.root";
-      
-      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
-      // upexps_dir = "/u/land/lynx.landexp/202002_s444/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
-      
-      sofiacaldir = dir + "/sofia/macros/s444/parameters/";
-    }
-    else if (expId==467){
-      NumSofSci = 4; // s467: SECONDARY BEAM EXP, 2 at S2, 1 at S8, 1 at CAVE C
-      IdS2 = 2;
-      IdS8 = 3;
-      sofiaWR_SE = 0xe00;
-      
-      filename = "--stream=lxir123:7803";
-      //filename = "~/lmd/s467/main0*.lmd";
-      outputFilename = "data_s467_online.root";
-      
-      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
-      // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
-      
-      sofiacaldir = dir + "/sofia/macros/s467/parameters/";
-    }
-    else if (expId==455){
+    if (expId==455){
       NumSofSci = 2; 
       IdS2 = 1; 
       IdS8 = 0; 
@@ -118,7 +84,7 @@ void main_online()
       // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
       upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
       // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
+      ucesb_path = upexps_dir + "/202103_s455/202103_s455_part2 --allow-errors --input-buffer=100Mi";
       
       sofiacaldir = dir + "/sofia/macros/s455/parameters/";
     }
@@ -617,35 +583,14 @@ void main_online()
 	scionline->SetNbChannels(3);
 	scionline->SetIdS2(IdS2);
 	scionline->SetIdS8(IdS8);
-	// for run 238
-        scionline->SetCalTofS2min(355,0);
-	scionline->SetCalTofS2max(358,0);
-        scionline->SetCalTofS2min(591,1);
-	scionline->SetCalTofS2max(593,1);
-        scionline->SetCalTofS8min(234,0);
-	scionline->SetCalTofS8max(237,0);
-	// for run 242
-        //scionline->SetCalTofS2min(380,0);
-	//scionline->SetCalTofS2max(385,0);
-        //scionline->SetCalTofS2min(633,1);
-	//scionline->SetCalTofS2max(636,1);
-        //scionline->SetCalTofS8min(250,0);
-	//scionline->SetCalTofS8max(255,0);
+        //scionline->SetCalTofS2min(355,0);
+	//scionline->SetCalTofS2max(358,0);
         run->AddTask(scionline);
-	if(fMusic)
+	if(fTrim)
 	{
-	  R3BSofSciVsMusicOnlineSpectra* scivsmusonline = new R3BSofSciVsMusicOnlineSpectra();
-	  scivsmusonline->SetNbDetectors(NumSofSci);
-	  scivsmusonline->SetNbChannels(3);
-	  scivsmusonline->SetIdS2(IdS2);
-	  scivsmusonline->SetIdS8(IdS8);
-	  scivsmusonline->SetCalTofS2min(355.8,0);
-	  scivsmusonline->SetCalTofS2max(358,0);
-	  scivsmusonline->SetCalTofS2min(591,1);
-	  scivsmusonline->SetCalTofS2max(593,1);
-	  scivsmusonline->SetCalTofS8min(234,0);
-	  scivsmusonline->SetCalTofS8max(237,0);
-	  run->AddTask(scivsmusonline);
+	  R3BSofSciVsTrimOnlineSpectra* scivstrimonline = new R3BSofSciVsTrimOnlineSpectra();
+	  scivstrimonline->SetNbDetectors(NumSofSci);
+	  run->AddTask(scivstrimonline);
 	}
 	if(fMwpc0)
 	{

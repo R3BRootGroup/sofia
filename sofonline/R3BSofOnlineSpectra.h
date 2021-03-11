@@ -29,6 +29,7 @@ class R3BSofTwimvsMusicOnlineSpectra;
 class R3BSofTwimvsTrimOnlineSpectra;
 class R3BSofSciOnlineSpectra;
 class R3BSofSciVsMusicOnlineSpectra;
+class R3BSofSciVsTrimOnlineSpectra;
 class R3BSofSciVsMwpc0OnlineSpectra;
 class R3BSofTofWOnlineSpectra;
 class R3BSofScalersOnlineSpectra;
@@ -127,6 +128,7 @@ class R3BSofOnlineSpectra : public FairTask
     R3BSofTwimvsTrimOnlineSpectra* fTwimVsTrimOnline;
     R3BSofSciOnlineSpectra* fSciOnline;
     R3BSofSciVsMusicOnlineSpectra* fSciVsMusOnline;
+    R3BSofSciVsTrimOnlineSpectra* fSciVsTrimOnline;
     R3BSofSciVsMwpc0OnlineSpectra* fSciVsMw0Online;
     R3BSofTofWOnlineSpectra* fTofWOnline;
     R3BSofScalersOnlineSpectra* fScalersOnline;

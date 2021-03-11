@@ -145,7 +145,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
             sprintf(Name1, "fh1_trim_Emap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
             fh1_trimmap_E[j + fNumAnodes * i] = new TH1F(Name1, Name2, 16384, 0, 65536);
-            fh1_trimmap_E[j + fNumAnodes * i]->GetXaxis()->SetTitle("Raw Energy [channels], if mult==1");
+            fh1_trimmap_E[j + fNumAnodes * i]->GetXaxis()->SetTitle("Raw Energy [channels, 4 ch/bin], if mult==1");
             fh1_trimmap_E[j + fNumAnodes * i]->GetYaxis()->SetTitle("Counts");
             fh1_trimmap_E[j + fNumAnodes * i]->GetYaxis()->SetTitleOffset(1.1);
             fh1_trimmap_E[j + fNumAnodes * i]->GetXaxis()->CenterTitle(true);
@@ -160,9 +160,9 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
             sprintf(Name1, "fh1_trim_DTmap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh1_trimmap_DT[j + fNumAnodes * i] = new TH1F(Name1, Name2, 40000, 0, 40000);
+            fh1_trimmap_DT[j + fNumAnodes * i] = new TH1F(Name1, Name2, 3000, 0, 30000);
             fh1_trimmap_DT[j + fNumAnodes * i]->GetXaxis()->SetTitle(
-                "Drift time [channels, 100ps TDC resolution], if mult==1");
+                "Drift time [channels, 100ps TDC resolution, 1ns per bin], if mult==1");
             fh1_trimmap_DT[j + fNumAnodes * i]->GetYaxis()->SetTitle("Counts");
             fh1_trimmap_DT[j + fNumAnodes * i]->GetYaxis()->SetTitleOffset(1.1);
             fh1_trimmap_DT[j + fNumAnodes * i]->GetXaxis()->CenterTitle(true);
@@ -183,7 +183,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         sprintf(Name1, "fh1_trim_mult_sec_%d", i + 1);
         sprintf(Name2, "Trim: Multiplicity section %d", i + 1);
         fh1_trimmap_Mult[i] =
-            new TH1F(Name1, Name2, fNumAnodes + fNumTref + fNumTtrig, 0.5, fNumAnodes + fNumTref + fNumTtrig + 0.5);
+            new TH1F(Name1, Name2, fNumAnodes + fNumTref + fNumTtrig+1, -0.5, fNumAnodes + fNumTref + fNumTtrig + 0.5);
         fh1_trimmap_Mult[i]->GetXaxis()->SetTitle("Anode");
         fh1_trimmap_Mult[i]->GetYaxis()->SetTitle("Counts");
         fh1_trimmap_Mult[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -232,11 +232,11 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh1_trim_EvsDT_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh2_trimmap_EvsDT[j + fNumAnodes * i] = new TH2F(Name1, Name2, 1310, 0, 65500, 800, 0, 40000);
+            fh2_trimmap_EvsDT[j + fNumAnodes * i] = new TH2F(Name1, Name2, 400, 0, 20000, 590, 1000, 60000);
             fh2_trimmap_EvsDT[j + fNumAnodes * i]->GetXaxis()->SetTitle(
-                "Energy [channels, 8k ADC resolution], if mult==1");
-            fh2_trimmap_EvsDT[j + fNumAnodes * i]->GetYaxis()->SetTitle(
                 "Drift time [channels, 100ps TDC resolution], if mult==1");
+            fh2_trimmap_EvsDT[j + fNumAnodes * i]->GetYaxis()->SetTitle(
+                "Energy [channels], if mult==1");
             fh2_trimmap_EvsDT[j + fNumAnodes * i]->GetYaxis()->SetTitleOffset(1.1);
             fh2_trimmap_EvsDT[j + fNumAnodes * i]->GetXaxis()->CenterTitle(true);
             fh2_trimmap_EvsDT[j + fNumAnodes * i]->GetYaxis()->CenterTitle(true);
@@ -252,7 +252,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_trimmap_DTvsDT_sec%d_a%d", i + 1, j);
             sprintf(Name2, "Sec %d: DT_%d vs DT_%d", i + 1, j + 1, j + 2);
-            fh2_trimmap_DTvsDT[j + (fNumAnodes - 1) * i] = new TH2F(Name1, Name2, 800, 0, 40000, 800, 0, 40000);
+            fh2_trimmap_DTvsDT[j + (fNumAnodes - 1) * i] = new TH2F(Name1, Name2, 400, 0, 20000, 400, 0, 20000);
             sprintf(Name1, "Drift time %d [channels, 100ps TDC resolution]", j + 1);
             sprintf(Name2, "Drift time %d [channels, 100ps TDC resolution]", j + 2);
             fh2_trimmap_DTvsDT[j + (fNumAnodes - 1) * i]->GetXaxis()->SetTitle(Name1);
@@ -511,7 +511,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
             sprintf(Name1, "Ebeta_vs_DT_Sec_%d", i + 1);
             sprintf(Name2, "Ebeta VS DT %d", i + 1);
-            fh2_trimhit_Ebeta_vs_DT[i] = new TH2F(Name1, Name2, 800, 0, 40000, 1280, 1000, 65000);
+            fh2_trimhit_Ebeta_vs_DT[i] = new TH2F(Name1, Name2, 600, 0, 30000, 590, 1000, 60000);
             fh2_trimhit_Ebeta_vs_DT[i]->GetXaxis()->SetTitle("Drift Time [channels, 100ps TDC resolution], if mult==1");
             fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitle("Energy corr beta [channels], if mult==1");
             fh2_trimhit_Ebeta_vs_DT[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -526,7 +526,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
             sprintf(Name1, "Edt_vs_DT_Sec_%d", i + 1);
             sprintf(Name2, "Edt VS DT %d", i + 1);
-            fh2_trimhit_Edt_vs_DT[i] = new TH2F(Name1, Name2, 800, 0, 40000, 1280, 1000, 65000);
+            fh2_trimhit_Edt_vs_DT[i] = new TH2F(Name1, Name2, 600, 0, 30000, 590, 1000, 60000);
             fh2_trimhit_Edt_vs_DT[i]->GetXaxis()->SetTitle("Drift Time [channels, 100ps TDC resolution], if mult==1");
             fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitle("Energy corr drift time [channels], if mult==1");
             fh2_trimhit_Edt_vs_DT[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -541,7 +541,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
             sprintf(Name1, "Edt_vs_theta_Sec_%d", i + 1);
             sprintf(Name2, "Edt VS theta %d", i + 1);
-            fh2_trimhit_Edt_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 1280, 1000, 65000);
+            fh2_trimhit_Edt_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 590, 1000, 60000);
             fh2_trimhit_Edt_vs_theta[i]->GetXaxis()->SetTitle("DTdiff [channels, 100ps TDC resolution], if mult==1");
             fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitle("Energy corr drift time [channels], if mult==1");
             fh2_trimhit_Edt_vs_theta[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -556,7 +556,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
             sprintf(Name1, "Etheta_vs_theta_Sec_%d", i + 1);
             sprintf(Name2, "Etheta VS theta %d", i + 1);
-            fh2_trimhit_Etheta_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 1280, 1000, 65000);
+            fh2_trimhit_Etheta_vs_theta[i] = new TH2F(Name1, Name2, 800, -8, 8, 590, 1000, 60000);
             fh2_trimhit_Etheta_vs_theta[i]->GetXaxis()->SetTitle("DTdiff [channels, 100ps TDC resolution], if mult==1");
             fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitle("Energy corr theta [channels], if mult==1");
             fh2_trimhit_Etheta_vs_theta[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -580,7 +580,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "ErawS2_vs_ErawS1");
         sprintf(Name2, "Eraw[Sec2] vs Eraw [Sec1]");
-        fh2_trimhit_EvsE_raw[0] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_raw[0] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_raw[0]->GetXaxis()->SetTitle("Energy raw - Sec1 [channels], if mult==1");
         fh2_trimhit_EvsE_raw[0]->GetYaxis()->SetTitle("Energy raw - Sec2 [channels], if mult==1");
         fh2_trimhit_EvsE_raw[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -595,7 +595,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "ErawS3_vs_MaxEraw");
         sprintf(Name2, "Eraw[Sec3] vs MaxEraw [Sec1,Sec2]");
-        fh2_trimhit_EvsE_raw[1] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_raw[1] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_raw[1]->GetXaxis()->SetTitle("Energy raw - Max (Sec1,Sec2) [channels], if mult==1");
         fh2_trimhit_EvsE_raw[1]->GetYaxis()->SetTitle("Energy raw - Sec3 [channels], if mult==1");
         fh2_trimhit_EvsE_raw[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -610,7 +610,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "EbetaS2_vs_EbetaS1");
         sprintf(Name2, "Ebeta[Sec2] vs Ebeta [Sec1]");
-        fh2_trimhit_EvsE_beta[0] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_beta[0] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_beta[0]->GetXaxis()->SetTitle("Energy beta - Sec1 [channels], if mult==1");
         fh2_trimhit_EvsE_beta[0]->GetYaxis()->SetTitle("Energy beta - Sec2 [channels], if mult==1");
         fh2_trimhit_EvsE_beta[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -625,7 +625,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "EbetaS3_vs_MaxEbeta");
         sprintf(Name2, "Ebeta[Sec3] vs MaxEbeta [Sec1,Sec2]");
-        fh2_trimhit_EvsE_beta[1] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_beta[1] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_beta[1]->GetXaxis()->SetTitle("Energy beta - Max (Sec1,Sec2) [channels], if mult==1");
         fh2_trimhit_EvsE_beta[1]->GetYaxis()->SetTitle("Energy beta - Sec3 [channels], if mult==1");
         fh2_trimhit_EvsE_beta[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -640,7 +640,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "EdtS2_vs_EdtS1");
         sprintf(Name2, "Edt[Sec2] vs Edt [Sec1]");
-        fh2_trimhit_EvsE_dt[0] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_dt[0] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_dt[0]->GetXaxis()->SetTitle("Energy dt - Sec1 [channels], if mult==1");
         fh2_trimhit_EvsE_dt[0]->GetYaxis()->SetTitle("Energy dt - Sec2 [channels], if mult==1");
         fh2_trimhit_EvsE_dt[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -655,7 +655,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "EdtS3_vs_MaxEdt");
         sprintf(Name2, "Edt[Sec3] vs MaxEdt [Sec1,Sec2]");
-        fh2_trimhit_EvsE_dt[1] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_dt[1] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_dt[1]->GetXaxis()->SetTitle("Energy dt - Max (Sec1,Sec2) [channels], if mult==1");
         fh2_trimhit_EvsE_dt[1]->GetYaxis()->SetTitle("Energy dt - Sec3 [channels], if mult==1");
         fh2_trimhit_EvsE_dt[1]->GetYaxis()->SetTitleOffset(1.1);
@@ -670,7 +670,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "EthetaS2_vs_EthetaS1");
         sprintf(Name2, "Etheta[Sec2] vs Etheta [Sec1]");
-        fh2_trimhit_EvsE_theta[0] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_theta[0] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_theta[0]->GetXaxis()->SetTitle("Energy theta - Sec1 [channels], if mult==1");
         fh2_trimhit_EvsE_theta[0]->GetYaxis()->SetTitle("Energy theta - Sec2 [channels], if mult==1");
         fh2_trimhit_EvsE_theta[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -685,7 +685,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
         sprintf(Name1, "EthetaS3_vs_MaxEtheta");
         sprintf(Name2, "Etheta[Sec3] vs MaxEtheta [Sec1,Sec2]");
-        fh2_trimhit_EvsE_theta[1] = new TH2F(Name1, Name2, 1280, 1000, 65000, 1280, 1000, 65000);
+        fh2_trimhit_EvsE_theta[1] = new TH2F(Name1, Name2, 590, 1000, 60000, 590, 1000, 60000);
         fh2_trimhit_EvsE_theta[1]->GetXaxis()->SetTitle("Energy theta - Max (Sec1,Sec2) [channels], if mult==1");
         fh2_trimhit_EvsE_theta[1]->GetYaxis()->SetTitle("Energy theta - Sec3 [channels], if mult==1");
         fh2_trimhit_EvsE_theta[1]->GetYaxis()->SetTitleOffset(1.1);
