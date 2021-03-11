@@ -4,20 +4,6 @@
 #include "R3BReader.h"
 #include "TClonesArray.h"
 
-#define NUM_SOFTWIM_SECTIONS 4
-#define NUM_SOFTWIM_ANODES 16
-#define NUM_SOFTWIM_TREF 1
-#define NUM_SOFTWIM_TTRIG 1
-
-// section 1 : LEFT DOWN
-// section 2 : LEFT UP
-// section 3 : RIGHT UP
-// section 4 : RIGHT DOWN
-
-// anodes 1 to 16 : energy and time
-// anode 17 and 18 : reference time --> will be changed to 17 only when the full Twin-MUSIC will be cabled
-// anode 19 and 20 : trigger time   --> will be changed to 18 only when the full Twin-MUSIC will be cabled
-
 struct EXT_STR_h101_SOFTWIM_t;
 typedef struct EXT_STR_h101_SOFTWIM_t EXT_STR_h101_SOFTWIM;
 typedef struct EXT_STR_h101_SOFTWIM_onion_t EXT_STR_h101_SOFTWIM_onion;
@@ -38,8 +24,10 @@ class R3BSofTwimReader : public R3BReader
 
   private:
     Bool_t ReadData(EXT_STR_h101_SOFTWIM_onion*, UShort_t);
-
-    uint32_t multPerAnode[NUM_SOFTWIM_ANODES+NUM_SOFTWIM_TREF+NUM_SOFTWIM_TTRIG];
+    void SetNumSections(Int_t num) { fSections = num; }
+    void SetNumAnodes(Int_t num) { fAnodes = num; }
+    void SetNumTref(Int_t num) { fTref = num; }
+    void SetNumTtrig(Int_t num) { fTtrig = num; }
 
     /* Reader specific data structure from ucesb */
     EXT_STR_h101_SOFTWIM* fData;
@@ -49,6 +37,11 @@ class R3BSofTwimReader : public R3BReader
     Bool_t fOnline;
     /* the structs of type R3BSofTwimMappedData Item */
     TClonesArray* fArray; /**< Output array. */
+    /* Geometry */
+    Int_t fSections;
+    Int_t fAnodes;
+    Int_t fTref;
+    Int_t fTtrig;
 
   public:
     ClassDef(R3BSofTwimReader, 0);

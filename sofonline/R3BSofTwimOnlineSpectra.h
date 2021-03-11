@@ -104,6 +104,8 @@ class R3BSofTwimOnlineSpectra : public FairTask
 
     // Canvas
     TCanvas** cTwimMap_E;
+    TCanvas** cTwimMap_T;
+    TCanvas** cTwimMult;
     TCanvas** cTwimMap_EvsDT;
     TCanvas* cTwimMap_EsumvsDT;
     TCanvas** cTwimMap_DT;
@@ -120,6 +122,8 @@ class R3BSofTwimOnlineSpectra : public FairTask
 
     // Histograms for Mapped data
     TH1F** fh1_twimmap_E;
+    TH1F** fh1_twimmap_T;
+    TH1F** fh1_twimmult;
     TH1F** fh1_twimmap_DT;
     TH2F** fh2_twim_DTvsDT;
     TH1F** fh1_Twimmap_mult;
