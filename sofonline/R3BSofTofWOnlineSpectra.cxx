@@ -203,7 +203,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     sprintf(Name1, "SofTofW_RawPos_AtTcal_Mult1");
     cTofWRawPos = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
     cTofWRawPos->Divide(7, 4);
-    sprintf(Name1, "SofTofW_RawPos_AtSingleTcal");
+    sprintf(Name1, "SofTofW_Rawaos_AtSingleTcal");
     cTofWRawPosST = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
     cTofWRawPosST->Divide(7, 4);
     for (Int_t i = 0; i < NbDets; i++)
@@ -633,8 +633,16 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
             if ((mult[i * NbChs] == 1) && (mult[i * NbChs + 1] == 1))
             {
                 // Y position is increasing from down to up: PosRaw = TrawDown - TrawUp
-                tofpos = (Double_t)(iRawTimeNs[i * NbChs + 1] - iRawTimeNs[i * NbChs]);
+                tofpos = (Double_t)(iRawTimeNs[i * NbChs] - iRawTimeNs[i * NbChs+1]);
                 fh1_RawPos_AtTcalMult1[i]->Fill(tofpos);
+                if (mwpc3x > 0)
+                {
+                    fh2_Mwpc3X_Tof->Fill(i + gRandom->Uniform(-0.5, 0.5), mwpc3x + gRandom->Uniform(-0.5, 0.5));
+                }
+                if (mwpc3y > 0)
+                {
+                    fh2_Mwpc3Y_PosTof[i]->Fill(tofpos, mwpc3y + gRandom->Uniform(-0.5, 0.5));
+                }
                 if (TrawStart != -1000000.)
                 {
                     tofw = (0.5 * (iRawTimeNs[i * 2 + 1] + iRawTimeNs[i * 2])) - TrawStart;
@@ -642,14 +650,6 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
                     if (twimZ > 0)
                     {
                         fh2_Twim_Tof[i]->Fill(tofw, twimZ);
-                    }
-                    if (mwpc3x > 0)
-                    {
-                        fh2_Mwpc3X_Tof->Fill(i + gRandom->Uniform(-0.5, 0.5), mwpc3x + gRandom->Uniform(-0.5, 0.5));
-                    }
-                    if (mwpc3y > 0)
-                    {
-                        fh2_Mwpc3Y_PosTof[i]->Fill(tofpos, mwpc3y + gRandom->Uniform(-0.5, 0.5));
                     }
                 }
             } // end of if mult=1 in the plastic
