@@ -739,7 +739,7 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
         }
         for (Int_t j = 0; j < fNbTref; j++)
         {
-            fh1_twimmap_DeltaTrefTrig[i * fNbAnodes + j]->Reset();
+            fh1_twimmap_DeltaTrefTrig[i * fNbTref + j]->Reset();
         }
     }
     fh1_twim_ESum[0]->Reset();
