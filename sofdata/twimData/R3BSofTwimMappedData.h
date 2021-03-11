@@ -10,8 +10,8 @@ class R3BSofTwimMappedData : public TObject
     R3BSofTwimMappedData();
 
     /** Constructor with arguments
-     *@param secID    Section ID
-     *@param anodeID  Anode ID
+     *@param secID    Section ID attention 0-based !
+     *@param anodeID  Anode ID attention 0-based !
      *@param dtime    Time [channels]
      *@param eLoss    Energy deposit [channels]
      **/

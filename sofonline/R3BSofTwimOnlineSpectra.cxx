@@ -150,16 +150,30 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     char Name2[255];
 
     cTwimMap_E = new TCanvas*[fNbSections];
-    // TWIM: Map data for E
+    cTwimMap_T = new TCanvas*[fNbSections];
+    cTwimMult = new TCanvas*[fNbSections];
+    // TWIM: Map data for E and T
     for (Int_t i = 0; i < fNbSections; i++)
     {
         sprintf(Name1, "Twim_Emap_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
         cTwimMap_E[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
         cTwimMap_E[i]->Divide(4, 4);
+
+        sprintf(Name1, "Twim_Tmap_Sec_%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTwimMap_T[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimMap_T[i]->Divide(4, 4);
+
+        sprintf(Name1, "Twim_Mult_Sec_%d", i + 1);
+        sprintf(Name2, "Section %d", i + 1);
+        cTwimMult[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
+        cTwimMult[i]->Divide(4, 4);
     }
 
     fh1_twimmap_E = new TH1F*[fNbSections * fNbAnodes];
+    fh1_twimmap_T = new TH1F*[fNbSections * fNbAnodes];
+    fh1_twimmult = new TH1F*[fNbSections * fNbAnodes];
     for (Int_t i = 0; i < fNbSections; i++)
     {
         for (Int_t j = 0; j < fNbAnodes; j++)
@@ -184,6 +198,38 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
             fh1_twimmap_E[i * fNbAnodes + j]->SetFillColor(31);
             cTwimMap_E[i]->cd(j + 1);
             fh1_twimmap_E[i * fNbAnodes + j]->Draw("");
+
+            sprintf(Name1, "fh1_twim_Tmap_sec%d_a%d", i + 1, j + 1);
+            sprintf(Name2, "Sec %d:Anode %d - T-Ttrig", i + 1, j + 1);
+            fh1_twimmap_T[i * fNbAnodes + j] = new TH1F(Name1, Name2, 25000, -50000, 50000);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetXaxis()->SetTitle("Raw Time - Trigger Time [channels]");
+            fh1_twimmap_T[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
+            fh1_twimmap_T[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_twimmap_T[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_twimmap_T[i * fNbAnodes + j]->SetFillColor(31);
+            cTwimMap_T[i]->cd(j + 1);
+            fh1_twimmap_T[i * fNbAnodes + j]->Draw("");
+
+            sprintf(Name1, "fh1_twim_mult_sec%d_a%d", i + 1, j + 1);
+            sprintf(Name2, "Sec %d:Anode %d - Mult per event", i + 1, j + 1);
+            fh1_twimmult[i * fNbAnodes + j] = new TH1F(Name1, Name2, 10, -0.5, 9.5);
+            fh1_twimmult[i * fNbAnodes + j]->GetXaxis()->SetTitle("mult per event");
+            fh1_twimmult[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
+            fh1_twimmult[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
+            fh1_twimmult[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);
+            fh1_twimmult[i * fNbAnodes + j]->GetYaxis()->CenterTitle(true);
+            fh1_twimmult[i * fNbAnodes + j]->GetXaxis()->SetLabelSize(0.045);
+            fh1_twimmult[i * fNbAnodes + j]->GetXaxis()->SetTitleSize(0.045);
+            fh1_twimmult[i * fNbAnodes + j]->GetYaxis()->SetLabelSize(0.045);
+            fh1_twimmult[i * fNbAnodes + j]->GetYaxis()->SetTitleSize(0.045);
+            fh1_twimmult[i * fNbAnodes + j]->SetFillColor(31);
+            cTwimMult[i]->cd(j + 1);
+            fh1_twimmult[i * fNbAnodes + j]->Draw("");
         }
     }
 
@@ -661,6 +707,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwimMap_E[i]);
     for (Int_t i = 0; i < fNbSections; i++)
+        mainfolTwim->Add(cTwimMap_T[i]);
+    for (Int_t i = 0; i < fNbSections; i++)
+        mainfolTwim->Add(cTwimMult[i]);
+    for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwimMap_DT[i]);
     for (Int_t i = 0; i < fNbSections; i++)
         mainfolTwim->Add(cTwimMap_DeltaTrefTrig[i]);
@@ -730,6 +780,7 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
         for (Int_t j = 0; j < fNbAnodes; j++)
         {
             fh1_twimmap_E[i * fNbAnodes + j]->Reset();
+            fh1_twimmap_T[i * fNbAnodes + j]->Reset();
             fh1_twimmap_DT[i * fNbAnodes + j]->Reset();
             fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->Reset();
         }
@@ -813,6 +864,7 @@ void R3BSofTwimOnlineSpectra::s455()
                 Traw[j][i] = 0.; // mult=1 !!!
                 mult[j][i] = 0;
             }
+
         Int_t nHits = fMappedItemsTwim->GetEntriesFast();
         // std::cout << "Event:\n";
         for (Int_t ihit = 0; ihit < nHits; ihit++)
@@ -824,12 +876,13 @@ void R3BSofTwimOnlineSpectra::s455()
             mult[hit->GetSecID()][hit->GetAnodeID()]++;
             if (Traw[hit->GetSecID()][hit->GetAnodeID()] == 0)
             {
-                if (hit->GetEnergy() < 8192 && hit->GetEnergy() > 0 && Eraw[hit->GetSecID()][hit->GetAnodeID()] == 0)
+                if (hit->GetEnergy() < 65535 && hit->GetEnergy() > 0 && Eraw[hit->GetSecID()][hit->GetAnodeID()] == 0)
                     Eraw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetEnergy(); // mult=1 !!!
                 Traw[hit->GetSecID()][hit->GetAnodeID()] = hit->GetTime();       // mult=1 !!!
             }
-        }
-        Int_t idTref = 16; // FIXME
+        } // end of loop over the Mapped data
+
+        Int_t idTref = fNbAnodes;
         for (Int_t j = 0; j < fNbSections; j++)
         {
             e1 = 0.;
@@ -843,7 +896,12 @@ void R3BSofTwimOnlineSpectra::s455()
             }
             for (Int_t i = 0; i < fNbAnodes; i++)
             {
-                // Tref = 16 for ch 0 to 15
+                fh1_twimmult[j * fNbSections + i]->Fill(mult[j][i]);
+                if ((mult[j][i] == 1) && (mult[j][fNbAnodes + fNbTref] == 1))
+                {
+                    // to check the searching window of the MDPP16 fNbAnodes+fNbTref = idTtri=g
+                    fh1_twimmap_T[j * fNbAnodes + i]->Fill(Traw[j][i] - Traw[j][fNbAnodes + fNbTref]);
+                }
                 if ((mult[j][i] == 1) && (mult[j][idTref] == 1))
                 {
                     fh1_twimmap_E[j * fNbAnodes + i]->Fill(Eraw[j][i]);
@@ -1139,6 +1197,8 @@ void R3BSofTwimOnlineSpectra::FinishTask()
         {
             fh1_Twimmap_mult[i]->Write();
             cTwimMap_E[i]->Write();
+            cTwimMap_T[i]->Write();
+            cTwimMult[i]->Write();
             cTwimMap_DT[i]->Write();
             cTwimMap_EvsDT[i]->Write();
             cTwim_DTvsDT[i]->Write();

@@ -19,6 +19,10 @@ R3BSofTwimReader::R3BSofTwimReader(EXT_STR_h101_SOFTWIM* data, UInt_t offset)
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
+    , fSections(4)
+    , fAnodes(16)
+    , fTref(1)
+    , fTtrig(1)
     , fArray(new TClonesArray("R3BSofTwimMappedData"))
 {
 }
@@ -57,15 +61,13 @@ Bool_t R3BSofTwimReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFTWIM_onion* data = (EXT_STR_h101_SOFTWIM_onion*)fData;
-    for (int s = 0; s < NUM_SOFTWIM_SECTIONS; s++)
+    for (int s = 0; s < fSections; s++)
     {
         data->SOFTWIM_S[s].EM = 0;
         data->SOFTWIM_S[s].TM = 0;
         data->SOFTWIM_S[s].TREFM = 0;
         data->SOFTWIM_S[s].TTRIGM = 0;
     }
-    for (int mult = 0; mult < NUM_SOFTWIM_ANODES+NUM_SOFTWIM_TREF+NUM_SOFTWIM_TTRIG; mult++)
-        multPerAnode[mult] = 0;
 
     return kTRUE;
 }
@@ -76,7 +78,7 @@ Bool_t R3BSofTwimReader::Read()
     EXT_STR_h101_SOFTWIM_onion* data = (EXT_STR_h101_SOFTWIM_onion*)fData;
 
     // loop over all planes and sections
-    for (UShort_t s = 0; s < NUM_SOFTWIM_SECTIONS; s++)
+    for (UShort_t s = 0; s < fSections; s++)
     {
         ReadData(data, s);
     }
@@ -94,12 +96,15 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
 
     Bool_t pileupFLAG;
     Bool_t overflowFLAG;
+    UInt_t multPerAnode[fAnodes + fTref + fTtrig];
+    for (int ch = 0; ch < fAnodes + fTref + fTtrig; ch++)
+        multPerAnode[ch] = 0;
 
     // --- -------------------------------------- --- //
     // --- NUMBER OF CHANNELS TREF, TTRIG, ANODES --- //
     // --- -------------------------------------- --- //
     UShort_t nAnodesTref = data->SOFTWIM_S[section].TREFM;
-    UShort_t nAnodesTrig = data->SOFTWIM_S[section].TTRIGM;
+    UShort_t nAnodesTtrig = data->SOFTWIM_S[section].TTRIGM;
     UShort_t nAnodesEnergy = data->SOFTWIM_S[section].EM;
     UShort_t nAnodesTime = data->SOFTWIM_S[section].TM;
     /*
@@ -108,7 +113,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
       std::cout << "R3BSofTwimReader::ReadDatai=()" << std::endl;
       std::cout << "------------------------------" << std::endl;
       std::cout <<" * nAnodesTref = "<< nAnodesTref <<std::endl;
-      std::cout <<"  * nAnodesTrig = "<< nAnodesTrig <<std::endl;
+      std::cout <<"  * nAnodesTtrig = "<< nAnodesTtrig <<std::endl;
       std::cout << "   * nAnodesEnergy = " << nAnodesEnergy << std::endl;
       std::cout << "   * nAnodesTime = " << nAnodesTime << std::endl;
       std::cout << "------------------------------" << std::endl;
@@ -124,12 +129,10 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     uint32_t nextTref = 0;
     UShort_t idAnodeTref = 0;
 
-    // s467 : TREF id Anode = 16 (ch0-7) and 17 (ch8-15)
-    // s455 : TREF id Anode = 16
     for (UShort_t a = 0; a < nAnodesTref; a++)
     {
         // TREFMI gives the 1-based Tref number
-        idAnodeTref = data->SOFTWIM_S[section].TREFMI[a] + 15;
+        idAnodeTref = data->SOFTWIM_S[section].TREFMI[a] + fAnodes - 1;
         nextTref = data->SOFTWIM_S[section].TREFME[a];
         multPerAnode[idAnodeTref] = nextTref - curTref;
         // std::cout << " * idAnodeTref = " << idAnodeTref << std::endl;
@@ -146,29 +149,29 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     }
 
     // --- TTRIG --- //
-    uint32_t curTrig = 0;
-    uint32_t nextTrig = 0;
-    UShort_t idAnodeTrig = 0;
+    uint32_t curTtrig = 0;
+    uint32_t nextTtrig = 0;
+    UShort_t idAnodeTtrig = 0;
 
     // s467 : TTRIG id Anode = 18 (ch0-7) and 19 (ch8-15)
     // s455 : TTRIG id Anode = 17
-    for (UShort_t a = 0; a < nAnodesTrig; a++)
+    for (UShort_t a = 0; a < nAnodesTtrig; a++)
     {
         // again TTRIGMI is 1 based
-        idAnodeTrig = data->SOFTWIM_S[section].TTRIGMI[a] + 15 + NUM_SOFTWIM_TREF;
-        nextTrig = data->SOFTWIM_S[section].TTRIGME[a];
-        multPerAnode[idAnodeTrig] = nextTrig - curTrig;
-        // std::cout << "  * idAnodeTrig = " << idAnodeTrig << std::endl;
-        // std::cout << "    multPerAnode[" << idAnodeTrig << "] = " << multPerAnode[idAnodeTrig] << std::endl;
-        for (int hit = curTrig; hit < nextTrig; hit++)
+        idAnodeTtrig = data->SOFTWIM_S[section].TTRIGMI[a] + fAnodes - 1 + fTref;
+        nextTtrig = data->SOFTWIM_S[section].TTRIGME[a];
+        multPerAnode[idAnodeTtrig] = nextTtrig - curTtrig;
+        // std::cout << "  * idAnodeTtrig = " << idAnodeTtrig << std::endl;
+        // std::cout << "    multPerAnode[" << idAnodeTtrig << "] = " << multPerAnode[idAnodeTtrig] << std::endl;
+        for (int hit = curTtrig; hit < nextTtrig; hit++)
         {
             pileupFLAG = (data->SOFTWIM_S[section].TTRIGv[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFTWIM_S[section].TTRIGv[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(
-                section, idAnodeTrig, data->SOFTWIM_S[section].TTRIGv[hit], 0, pileupFLAG, overflowFLAG);
-            // std::cout << "valTimeTrig = " << data->SOFTWIM_S[section].TTRIGv[hit] << std::endl;
+                section, idAnodeTtrig, data->SOFTWIM_S[section].TTRIGv[hit], 0, pileupFLAG, overflowFLAG);
+            // std::cout << "valTimeTtrig = " << data->SOFTWIM_S[section].TTRIGv[hit] << std::endl;
         }
-        curTrig = nextTrig;
+        curTtrig = nextTtrig;
     }
 
     // --- ANODES --- //
@@ -204,7 +207,7 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
             LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
         for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
         {
-	    // Attention, here the numbering is 0-based for section and anodes
+            // Attention, here the numbering is 0-based for section and anodes
             pileupFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFTWIM_S[section].Ev[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTwimMappedData(section,
