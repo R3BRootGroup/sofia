@@ -105,7 +105,7 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     Int_t fHitCalifaHist_bins;
 
     // check for trigger should be done globablly (somewhere else)
-    R3BEventHeader* header; /**< Event header. */
+    R3BEventHeader* fEventHeader; /**< Event header.      */
     Int_t fTrigger;         /**< Trigger value. */
     Int_t fNEvents;         /**< Event counter. */
     Float_t fZproj;         // Atomic number of projectile

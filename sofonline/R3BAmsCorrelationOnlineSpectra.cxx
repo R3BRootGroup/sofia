@@ -43,6 +43,7 @@ using namespace std;
 
 R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra()
     : FairTask("AmsCorrelationOnlineSpectra", 1)
+    , fEventHeader(nullptr)
     , fHitItemsAms(NULL)
     , fHitItemsMus(NULL)
     , fHitItemsTrim(NULL)
@@ -60,6 +61,7 @@ R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra()
 
 R3BAmsCorrelationOnlineSpectra::R3BAmsCorrelationOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
+    , fEventHeader(nullptr)
     , fHitItemsAms(NULL)
     , fHitItemsMus(NULL)
     , fHitItemsTrim(NULL)
@@ -101,12 +103,15 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
+    // get access to tpat data
+    fEventHeader = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
+
     // get access to Hit data
     fHitItemsAms = (TClonesArray*)mgr->GetObject("AmsHitData");
     if (!fHitItemsAms)
     {
         LOG(WARNING) << "R3BAmsCorrelationOnlineSpectra: AmsHitData not found";
-        // return kFATAL;
+        return kFATAL;
     }
 
     // get access to hit data of the TWIM
@@ -174,7 +179,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     { // one histo per detector
         sprintf(Name1, "fh_Ams_hit_Mul_%d", i + 1);
         sprintf(Name2, "Multiplicity Det %d", i + 1);
-        fh_Ams_hit_Mul[i] = new TH1F(Name1, Name2, 10, -0.5, 9.5);
+        fh_Ams_hit_Mul[i] = new TH1F(Name1, Name2, 30, -0.5, 29.5);
         fh_Ams_hit_Mul[i]->GetXaxis()->SetTitle("Multiplicity");
         fh_Ams_hit_Mul[i]->GetYaxis()->SetTitle("Counts");
         fh_Ams_hit_Mul[i]->GetXaxis()->CenterTitle(true);
@@ -421,10 +426,10 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     fh1_openangle->Draw("");
 
     // MAIN FOLDER-AMS-CALIFA-MUSICs
-    TFolder* mainfol = new TFolder("CALIFA-MUSICs", "AMS-CALIFA-MUSICs correlation info");
+    TFolder* mainfol = new TFolder("CALIFA-AMS", "AMS-CALIFA-MUSICs correlation info");
 
     // Folder for hit data
-    if ((fHitItemsMus||fHitItemsTrim) && fHitItemsTwim)
+    if (1) //((fHitItemsMus||fHitItemsTrim) && fHitItemsTwim)
     {
         TFolder* hitfol = new TFolder("Hit", "Hit AMS-CALIFA-MUSICs correlation info");
         for (Int_t i = 0; i < fNbDet; i++)
@@ -506,6 +511,32 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BAmsCorrelationOnlineSpectra::Exec FairRootManager not found";
 
+
+    // Fill histogram with trigger information
+
+    Int_t tpatbin;
+    Int_t tpat=0;
+    if (fEventHeader->GetTpat() > 0)
+    {
+        for (Int_t i = 0; i < 16; i++)
+        {
+            tpatbin = (fEventHeader->GetTpat() & (1 << i));
+            if (tpatbin != 0)
+                  tpat = i+1;
+          //      fh1_trigger->Fill(i + 1);
+        }
+    }
+    else if (fEventHeader->GetTpat() == 0)
+    {
+        //fh1_trigger->Fill(0);
+    }
+    else
+    {
+        LOG(INFO) << fNEvents << " " << fEventHeader->GetTpat();
+    }
+
+
+
     // Fill Califa-hit data
     /*   if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
        {
@@ -566,7 +597,11 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
     }
 
     // Conditions to fill AMS histograms
-    if ((fZproj + 0.5) > z_music && (fZproj - 0.5) < z_music && z_twim > (fZproj - 1.5) && z_twim < (fZproj - 0.5))
+    //if ((fZproj + 0.5) > z_music && (fZproj - 0.5) < z_music && z_twim > (fZproj - 1.5) && z_twim < (fZproj - 0.5))
+
+    //if(tpat>0)std::cout<<tpat <<std::endl;
+
+    if(tpat==3 || tpat==4)
     {
         // Fill Califa-hit data
         if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)
@@ -631,7 +666,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
                         fh2_Califa_coinTheta->Fill(califa_theta[i2], califa_theta[i1]);
                         fh2_Califa_coinPhi->Fill(califa_phi[i2], califa_phi[i1]);
                     }
-        }
+        //}
 
         // Fill AMS-hit data
         if (fHitItemsAms && fHitItemsAms->GetEntriesFast() > 0)
@@ -650,7 +685,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
                 Phimaxhit[i] = 90.;  // at 90 degrees we have nothing!
             }
 
-            Int_t nHits = fHitItemsAms->GetEntriesFast();
+            nHits = fHitItemsAms->GetEntriesFast();
             Int_t DetId = -1;
             // std::cout << nHits << std::endl;
             for (Int_t ihit = 0; ihit < nHits; ihit++)
@@ -714,6 +749,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
                 }
             }
         }
+       }
     } // z from music and z-1 from twim
 
     fNEvents += 1;

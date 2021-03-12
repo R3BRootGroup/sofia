@@ -197,14 +197,14 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
         UShort_t idAnodeTime = data->SOFTWIM_S[section].TMI[a] - 1;
         UShort_t idAnodeEnergy = data->SOFTWIM_S[section].EMI[a] - 1;
 
-        if (idAnodeEnergy != idAnodeTime)
-            LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR ANODE ID IN ENERGY #" << idAnodeEnergy
-                       << " AND TIME #" << idAnodeTime;
+        //if (idAnodeEnergy != idAnodeTime)
+        //    LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR ANODE ID IN ENERGY #" << idAnodeEnergy
+          //             << " AND TIME #" << idAnodeTime;
         uint32_t nextAnodeTimeStart = data->SOFTWIM_S[section].TME[a];
         uint32_t nextAnodeEnergyStart = data->SOFTWIM_S[section].EME[a];
         multPerAnode[idAnodeTime] = nextAnodeTimeStart - curAnodeTimeStart;
-        if (multPerAnode[idAnodeTime] != (nextAnodeEnergyStart - curAnodeEnergyStart))
-            LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
+        //if (multPerAnode[idAnodeTime] != (nextAnodeEnergyStart - curAnodeEnergyStart))
+        //    LOG(ERROR) << "R3BSofTwimReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
         for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
         {
             // Attention, here the numbering is 0-based for section and anodes
