@@ -12,6 +12,7 @@
 #include "R3BEventHeader.h"
 #include "R3BSofMwpcCalData.h"
 #include "R3BSofMwpcHitData.h"
+#include "R3BSofMwpcMappedData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -42,6 +43,7 @@ using namespace std;
 
 R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra()
     : FairTask("SofMwpcOnlineSpectra", 1)
+    , fMapItemsMwpc(NULL)
     , fCalItemsMwpc(NULL)
     , fHitItemsMwpc(NULL)
     , fNameDet("MWPC")
@@ -51,6 +53,7 @@ R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra()
 
 R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra(const TString& name, Int_t iVerbose, const TString& namedet)
     : FairTask(name, iVerbose)
+    , fMapItemsMwpc(NULL)
     , fCalItemsMwpc(NULL)
     , fHitItemsMwpc(NULL)
     , fNameDet(namedet)
@@ -61,6 +64,8 @@ R3BSofMwpcOnlineSpectra::R3BSofMwpcOnlineSpectra(const TString& name, Int_t iVer
 R3BSofMwpcOnlineSpectra::~R3BSofMwpcOnlineSpectra()
 {
     LOG(INFO) << "R3BSof" + fNameDet + "OnlineSpectra::Delete instance";
+    if (fMapItemsMwpc)
+        delete fMapItemsMwpc;
     if (fCalItemsMwpc)
         delete fCalItemsMwpc;
     if (fHitItemsMwpc)
@@ -84,6 +89,13 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     run->GetHttpServer()->Register("", this);
 
     // get access to mapped data of mwpcs
+    fMapItemsMwpc = (TClonesArray*)mgr->GetObject(fNameDet + "MappedData");
+    if (!fMapItemsMwpc)
+    {
+        return kFATAL;
+    }
+
+    // get access to cal data of mwpcs
     fCalItemsMwpc = (TClonesArray*)mgr->GetObject(fNameDet + "CalData");
     if (!fCalItemsMwpc)
     {
@@ -99,10 +111,62 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     TString Name1;
     TString Name2;
 
-    cMWPCCal = new TCanvas(fNameDet + "_cal", fNameDet + " cal info", 10, 10, 800, 700);
-    cMWPCCal->Divide(2, 1);
+    // MWPC: Mapped data
+    cMwpc_nPads = new TCanvas(fNameDet + "_nPads", fNameDet + "_nPads", 10, 10, 800, 700);
+    cMwpc_nPads->Divide(3, 1);
+
+    if (fNameDet == "Mwpc0")
+    {
+        Name1 = fNameDet + "_X_nPadsPerEvent";
+        fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
+        fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
+        cMwpc_nPads->cd(1);
+        fh1_mwpc_map_nPads[0]->Draw();
+
+        Name1 = fNameDet + "_Y_nPadsPerEvent";
+        fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
+        fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
+        cMwpc_nPads->cd(3);
+        fh1_mwpc_map_nPads[2]->Draw();
+    }
+    else if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+    {
+        Name1 = fNameDet + "_Xdown_nPadsPerEvent";
+        fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
+        fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
+        cMwpc_nPads->cd(1);
+        fh1_mwpc_map_nPads[0]->Draw();
+
+        Name1 = fNameDet + "_Xup_nPadsPerEvent";
+        fh1_mwpc_map_nPads[1] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
+        fh1_mwpc_map_nPads[1]->SetFillColor(kBlue - 3);
+        cMwpc_nPads->cd(2);
+        fh1_mwpc_map_nPads[1]->Draw();
+
+        Name1 = fNameDet + "_Y_nPadsPerEvent";
+        fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 43, -1.5, 41.5);
+        fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
+        cMwpc_nPads->cd(3);
+        fh1_mwpc_map_nPads[2]->Draw();
+    }
+    else
+    {
+        Name1 = fNameDet + "_X_nPadsPerEvent";
+        fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 243, -1.5, 241.5);
+        fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
+        cMwpc_nPads->cd(1);
+        fh1_mwpc_map_nPads[0]->Draw();
+
+        Name1 = fNameDet + "_Y_nPadsPerEvent";
+        fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 403, -1.5, 401.5);
+        fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
+        cMwpc_nPads->cd(3);
+        fh1_mwpc_map_nPads[2]->Draw();
+    }
 
     // MWPC: Cal data
+    cMWPCCal = new TCanvas(fNameDet + "_cal", fNameDet + " cal info", 10, 10, 800, 700);
+    cMWPCCal->Divide(2, 1);
     Name1 = "fh1_" + fNameDet + "_posx_cal";
     Name2 = fNameDet + ": Position X";
     if (fNameDet != "Mwpc3")
@@ -271,6 +335,7 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
 
     // MAIN FOLDER-MWPC
     TFolder* mainfolMW = new TFolder(fNameDet, fNameDet + " info");
+    mainfolMW->Add(cMwpc_nPads);
     mainfolMW->Add(cMWPCCal);
     mainfolMW->Add(cMWPCCal2D);
     mainfolMW->Add(cx);
@@ -293,6 +358,19 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
 void R3BSofMwpcOnlineSpectra::Reset_Histo()
 {
     LOG(INFO) << "R3BSof" + fNameDet + "OnlineSpectra::Reset_Histo";
+    // Mapped data
+    if (fMapItemsMwpc)
+    {
+        for (Int_t i = 0; i < 3; i++)
+            if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+                fh1_mwpc_map_nPads[i]->Reset();
+
+        if (fNameDet == "Mwpc0" || fNameDet == "Mwpc2")
+        {
+            fh1_mwpc_map_nPads[0]->Reset();
+            fh1_mwpc_map_nPads[2]->Reset();
+        }
+    }
     // Cal data
     if (fCalItemsMwpc)
     {
@@ -316,6 +394,33 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
         LOG(FATAL) << "R3BSof" + fNameDet + "OnlineSpectra::Exec FairRootManager not found";
+
+    if (fMapItemsMwpc && fMapItemsMwpc->GetEntriesFast() > 0)
+    {
+        Int_t nPadsPerEvent[3];
+        for (Int_t plane = 0; plane < 3; plane++)
+        {
+            nPadsPerEvent[plane] = 0;
+        }
+        Int_t nHits = fMapItemsMwpc->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofMwpcMappedData* hit = (R3BSofMwpcMappedData*)fMapItemsMwpc->At(ihit);
+            if (!hit)
+                continue;
+            nPadsPerEvent[hit->GetPlane() - 1]++;
+        }
+        if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+        {
+            for (int plane = 0; plane < 3; plane++)
+                fh1_mwpc_map_nPads[plane]->Fill(nPadsPerEvent[plane]);
+        }
+        else
+        {
+            fh1_mwpc_map_nPads[0]->Fill(nPadsPerEvent[0]);
+            fh1_mwpc_map_nPads[2]->Fill(nPadsPerEvent[2]);
+        }
+    }
 
     // Fill Cal data
     if (fCalItemsMwpc && fCalItemsMwpc->GetEntriesFast() > 0)
@@ -373,6 +478,10 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
 void R3BSofMwpcOnlineSpectra::FinishEvent()
 {
 
+    if (fMapItemsMwpc)
+    {
+        fMapItemsMwpc->Clear();
+    }
     if (fCalItemsMwpc)
     {
         fCalItemsMwpc->Clear();
@@ -385,6 +494,11 @@ void R3BSofMwpcOnlineSpectra::FinishEvent()
 
 void R3BSofMwpcOnlineSpectra::FinishTask()
 {
+
+    if (fMapItemsMwpc)
+    {
+        cMwpc_nPads->Write();
+    }
 
     if (fCalItemsMwpc)
     {
