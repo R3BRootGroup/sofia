@@ -107,7 +107,8 @@ void main_online()
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
       
-      filename = "--stream=lxlanddaq01:9000";
+      //filename = "--stream=lxlanddaq01:9000";
+      filename = "--stream=lxir133:9001";
       // filename = "~/lmd/main0042_0001.lmd";
       
       TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
@@ -153,7 +154,7 @@ void main_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
+    Bool_t fAt = false;       // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -536,6 +537,18 @@ void main_online()
         run->AddTask(MW2Cal2Hit);
     }
 
+    // MWPC3
+    if (fMwpc3)
+    {
+        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
+        MW3Map2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(MW3Map2Cal);
+
+        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
+        MW3Cal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(MW3Cal2Hit);
+    }
+
     // ToF-Wall
     if (fTofW)
     {
@@ -554,18 +567,6 @@ void main_online()
         SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
         SofTofWSingleTcal2Hit->SetExpId(expId);
         run->AddTask(SofTofWSingleTcal2Hit);
-    }
-
-    // MWPC3
-    if (fMwpc3)
-    {
-        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
-        MW3Map2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(MW3Map2Cal);
-
-        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
-        MW3Cal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(MW3Cal2Hit);
     }
 
     // Add online task ------------------------------------
@@ -732,6 +733,20 @@ void main_online()
         R3BSofMwpcCorrelationOnlineSpectra* mw0mw2online =
             new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_2CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc2");
         run->AddTask(mw0mw2online);
+    }
+
+    if (fMwpc0 && fMwpc3)
+    {
+        R3BSofMwpcCorrelationOnlineSpectra* mw0mw3online =
+            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_3CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc3");
+        run->AddTask(mw0mw3online);
+    }
+   
+    if (fMwpc1 && fMwpc3)
+    {
+        R3BSofMwpcCorrelationOnlineSpectra* mw1mw3online =
+            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc1_3CorrelationOnlineSpectra", 1, "Mwpc1", "Mwpc3");
+        run->AddTask(mw1mw3online);
     }
 
     if (fMwpc2 && fMwpc3)

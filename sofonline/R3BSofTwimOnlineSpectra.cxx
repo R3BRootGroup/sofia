@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// -----                  R3BSofTwimOnlineSpectra           -----
+// -----                  R3BSofTwimOnlineSpectra         -----
 // -----    Created 29/09/19  by J.L. Rodriguez-Sanchez   -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
@@ -263,7 +263,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh1_twim_EvsDT_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, 1, 40001);
+            if (fExpId == 455)
+                fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j] = new TH2F(Name1, Name2, 2500, 0, 64000, 800, 1, 40001);
+            else
+                fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j] = new TH2F(Name1, Name2, 500, 0, 8192, 800, 1, 40001);
             fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetXaxis()->SetTitle(
                 "Energy [channels, 8k ADC resolution], if mult==1");
             fh2_twim_EneRawVsDriftTime[i * fNbAnodes + j]->GetYaxis()->SetTitle(
@@ -283,9 +286,9 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_twim_DTvsDT_sec%d_a%d", i + 1, j);
             sprintf(Name2, "Sec %d: DT_%d vs DT_%d", i + 1, j + 1, j + 2);
-            fh2_twim_DTvsDT[i * fNbAnodes + j] = new TH2F(Name1, Name2, 800, 1, 40001, 800, 1, 40001);
+            fh2_twim_DTvsDT[i * fNbAnodes + j] = new TH2F(Name1, Name2, 800, 1, 40001, 200, -50, 50);
             sprintf(Name1, "Drift time %d [channels, 100ps TDC resolution]", j + 1);
-            sprintf(Name2, "Drift time %d [channels, 100ps TDC resolution]", j + 2);
+            sprintf(Name2, "DT %d - DT %d [channels, 100ps TDC res.]", j + 1, j + 2);
             fh2_twim_DTvsDT[i * fNbAnodes + j]->GetXaxis()->SetTitle(Name1);
             fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->SetTitle(Name2);
             fh2_twim_DTvsDT[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
@@ -301,7 +304,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
 
         sprintf(Name3, "fh2_Twim_EsumvsDT_sec%d", i + 1);
         sprintf(Name4, "Twim: Esum vs DT for sec%d", i + 1);
-        fh2_twim_EneRawSumVsDriftTime[i] = new TH2F(Name3, Name4, 1200, 1, 25000, 2192, 0, 8192);
+        if (fExpId == 455)
+            fh2_twim_EneRawSumVsDriftTime[i] = new TH2F(Name3, Name4, 1200, 1, 25000, 4000, 0, 64000);
+        else
+            fh2_twim_EneRawSumVsDriftTime[i] = new TH2F(Name3, Name4, 1200, 1, 25000, 2192, 0, 8192);
         fh2_twim_EneRawSumVsDriftTime[i]->GetXaxis()->SetTitle("Drift time [channels, 100ps TDC resolution]");
         fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetTitle("Energy Sum [channels]");
         fh2_twim_EneRawSumVsDriftTime[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -444,7 +450,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     {
         sprintf(Name1, "fh2_twim_ESum_vs_diffDT_Sec_%d", i + 1);
         sprintf(Name2, "TWIM: ESum vs diffDT in section %d", i + 1);
-        fh2_twim_ESum_vs_diffDT[i] = new TH2F(Name1, Name2, 2000, -2000, 2000, 2192, 0, 8192);
+        if (fExpId == 455)
+            fh2_twim_ESum_vs_diffDT[i] = new TH2F(Name1, Name2, 2000, -2000, 2000, 5000, 0, 64000);
+        else
+            fh2_twim_ESum_vs_diffDT[i] = new TH2F(Name1, Name2, 2000, -2000, 2000, 2192, 0, 8192);
         fh2_twim_ESum_vs_diffDT[i]->GetXaxis()->SetTitle("DT difference [channels]");
         fh2_twim_ESum_vs_diffDT[i]->GetYaxis()->SetTitle("Energy Sum [channels]");
         fh2_twim_ESum_vs_diffDT[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -917,8 +926,9 @@ void R3BSofTwimOnlineSpectra::s455()
                 // Tref = 16 for ch 0 to 15
                 if ((mult[j][i] == 1) && (mult[j][i + 1] == 1) && (mult[j][idTref] == 1))
                 {
-                    fh2_twim_DTvsDT[j * fNbAnodes + i]->Fill(Traw[j][i] - Traw[j][idTref],
-                                                             Traw[j][i + 1] - Traw[j][idTref]);
+                    fh2_twim_DTvsDT[j * fNbAnodes + i]->Fill(
+                        Traw[j][i] - Traw[j][idTref],
+                        Traw[j][i] - Traw[j][idTref] - (Traw[j][i + 1] - Traw[j][idTref]));
                 }
             }
             if ((mult[j][15] == 1) && (mult[j][0] == 1) && (mult[j][16] == 1))

@@ -259,44 +259,44 @@ InitStatus R3BSofAtOnlineSpectra::Init()
         cAtMap_EvsE_mult1_nopu->cd(a + 1);
         fh2_atmap_EvsE_mult1_nopu[a]->Draw("col");
     }
-/*
-    sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", fNumAnodes, 1);
-    sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", fNumAnodes, 1);
-    fh2_atmap_EvsE[fNumAnodes - 1] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->CenterTitle(true);
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->CenterTitle(true);
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetLabelSize(0.045);
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitleSize(0.045);
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetLabelSize(0.045);
-    fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleSize(0.045);
-    cAtMap_EvsE->cd(fNumAnodes);
-    fh2_atmap_EvsE[fNumAnodes - 1]->Draw("col");
-*/
+    /*
+        sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", fNumAnodes, 1);
+        sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", fNumAnodes, 1);
+        fh2_atmap_EvsE[fNumAnodes - 1] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->CenterTitle(true);
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->CenterTitle(true);
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetLabelSize(0.045);
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitleSize(0.045);
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetLabelSize(0.045);
+        fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleSize(0.045);
+        cAtMap_EvsE->cd(fNumAnodes);
+        fh2_atmap_EvsE[fNumAnodes - 1]->Draw("col");
+    */
     // MAPPED 2D DATA - ENERGY  MULT == 1 && PU KFALSE
-/*    cAtMap_EvsE_mult1_nopu = new TCanvas("at_EvsE_mult1_nopu", "at_EvsE_mult1_nopu", 10, 10, 800, 700);
-    cAtMap_EvsE_mult1_nopu->Divide(2, 2);
-    fh2_atmap_EvsE_mult1_nopu = new TH2F*[fNumAnodes];
-    for (Int_t a = 0; a < fNumAnodes - 1; a++)
-    {
-        sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", a + 2, a + 1);
-        sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", a + 2, a + 1);
-        fh2_atmap_EvsE_mult1_nopu[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
-        fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
-        fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
-        fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleOffset(1.1);
-        fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->CenterTitle(true);
-        fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->CenterTitle(true);
-        fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetLabelSize(0.045);
-        fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitleSize(0.045);
-        fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetLabelSize(0.045);
-        fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleSize(0.045);
-        cAtMap_EvsE_mult1_nopu->cd(a + 1);
-        fh2_atmap_EvsE_mult1_nopu[a]->Draw("col");
-    }
-*/
+    /*    cAtMap_EvsE_mult1_nopu = new TCanvas("at_EvsE_mult1_nopu", "at_EvsE_mult1_nopu", 10, 10, 800, 700);
+        cAtMap_EvsE_mult1_nopu->Divide(2, 2);
+        fh2_atmap_EvsE_mult1_nopu = new TH2F*[fNumAnodes];
+        for (Int_t a = 0; a < fNumAnodes - 1; a++)
+        {
+            sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", a + 2, a + 1);
+            sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", a + 2, a + 1);
+            fh2_atmap_EvsE_mult1_nopu[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
+            fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
+            fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
+            fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleOffset(1.1);
+            fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->CenterTitle(true);
+            fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->CenterTitle(true);
+            fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetLabelSize(0.045);
+            fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitleSize(0.045);
+            fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetLabelSize(0.045);
+            fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleSize(0.045);
+            cAtMap_EvsE_mult1_nopu->cd(a + 1);
+            fh2_atmap_EvsE_mult1_nopu[a]->Draw("col");
+        }
+    */
     sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", fNumAnodes, 1);
     sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", fNumAnodes, 1);
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1] =

@@ -359,7 +359,8 @@ InitStatus R3BSofOnlineSpectra::Init()
 
     // Difference between master and sofia WRs
     cWr = new TCanvas("WR_Master_Sofia", "WR_Master_Sofia", 10, 10, 500, 500);
-    fh1_wr[0] = new TH1F("fh1_WRSE_Master_Sofia", "WR-Master - WRSE-Sofia(back) , WR-Master - WRME-Sofia(red) ", 1200, -4100, 4100);
+    fh1_wr[0] = new TH1F(
+        "fh1_WRSE_Master_Sofia", "WR-Master - WRSE-Sofia(back) , WR-Master - WRME-Sofia(red) ", 1200, -4100, 4100);
     fh1_wr[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wr[0]->GetYaxis()->SetTitle("Counts");
     fh1_wr[0]->GetYaxis()->SetTitleOffset(1.3);

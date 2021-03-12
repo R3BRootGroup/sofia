@@ -266,7 +266,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         cTofWRawTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
         cTofWRawTof[i]->Divide(1, 2);
         sprintf(Name1, "SofTofW%i_RawTofAtTcal_Mult1", i + 1);
-        fh1_RawTof_AtTcalMult1[i] = new TH1D(Name1, Name1, 100000, -100, 100);
+        fh1_RawTof_AtTcalMult1[i] = new TH1D(Name1, Name1, 100000, -1000, 1000);
         fh1_RawTof_AtTcalMult1[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
         fh1_RawTof_AtTcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_RawTof_AtTcalMult1[i]->GetXaxis()->CenterTitle(true);
@@ -278,7 +278,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         cTofWRawTof[i]->cd(1);
         fh1_RawTof_AtTcalMult1[i]->Draw("");
         sprintf(Name1, "SofTofW%i_RawTofAtSingleTcal", i + 1);
-        fh1_RawTof_AtSingleTcal[i] = new TH1D(Name1, Name1, 100000, -100, 100);
+        fh1_RawTof_AtSingleTcal[i] = new TH1D(Name1, Name1, 100000, -1000, 1000);
         fh1_RawTof_AtSingleTcal[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns, 1ps/bin]");
         fh1_RawTof_AtSingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_RawTof_AtSingleTcal[i]->GetXaxis()->CenterTitle(true);
@@ -633,7 +633,7 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
             if ((mult[i * NbChs] == 1) && (mult[i * NbChs + 1] == 1))
             {
                 // Y position is increasing from down to up: PosRaw = TrawDown - TrawUp
-                tofpos = (Double_t)(iRawTimeNs[i * NbChs] - iRawTimeNs[i * NbChs+1]);
+                tofpos = (Double_t)(iRawTimeNs[i * NbChs] - iRawTimeNs[i * NbChs + 1]);
                 fh1_RawPos_AtTcalMult1[i]->Fill(tofpos);
                 if (mwpc3x > 0)
                 {
