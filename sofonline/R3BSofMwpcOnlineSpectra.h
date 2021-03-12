@@ -83,6 +83,7 @@ class R3BSofMwpcOnlineSpectra : public FairTask
     virtual void Reset_Histo();
 
   private:
+    TClonesArray* fMapItemsMwpc; // Array with mapped items
     TClonesArray* fCalItemsMwpc; /**< Array with cal items. */
     TClonesArray* fHitItemsMwpc; /**< Array with hit items. */
 
@@ -92,12 +93,16 @@ class R3BSofMwpcOnlineSpectra : public FairTask
     TString fNameDet;
 
     // Canvas
+    TCanvas* cMwpc_nPads;
     TCanvas *cMWPCCal, *cMWPCCal2D;
     TCanvas* chitx;
     TCanvas* chity;
     TCanvas* chitxy;
 
     // Histograms for Mapped data
+    TH1I* fh1_mwpc_map_nPads[3];
+
+    // Histograms for Cal data
     TH2F* fh2_mwpc_cal;
     TH1F* fh1_mwpc_cal[2];
     TH2F* fh2_mwpc_xq;
