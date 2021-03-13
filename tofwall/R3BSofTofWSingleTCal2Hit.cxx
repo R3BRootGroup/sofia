@@ -2,7 +2,9 @@
 // -----         R3BSofTofWSingleTCal2Hit source file          -----
 // -----    Created 15/02/20  by J.L. Rodriguez-Sanchez        -----
 // -----------------------------------------------------------------
+
 #include "R3BSofTofWSingleTCal2Hit.h"
+#include "R3BSofTofWSingleTcalData.h"
 #include "R3BTGeoPar.h"
 
 // R3BSofTofWSingleTCal2Hit: Default Constructor --------------------------
@@ -127,7 +129,7 @@ void R3BSofTofWSingleTCal2Hit::S455()
         return;
 
     // Data from cal level
-    calDat = new R3BSofTofWSingleTcalData*[nHits];
+    R3BSofTofWSingleTcalData** calDat = new R3BSofTofWSingleTcalData*[nHits];
     Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0., posx = 0., posy = 0.;
 
@@ -160,7 +162,7 @@ void R3BSofTofWSingleTCal2Hit::S467()
         return;
 
     // Data from cal level
-    calDat = new R3BSofTofWSingleTcalData*[nHits];
+    R3BSofTofWSingleTcalData** calDat = new R3BSofTofWSingleTcalData*[nHits];
     Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0., posx = 0., posy = 0.;
     Int_t mult = 0;

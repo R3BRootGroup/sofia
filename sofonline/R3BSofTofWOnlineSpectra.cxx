@@ -298,7 +298,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         cTwimvsTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
         sprintf(Name1, "fh2_Twim_vs_ToF_Plastic_%i", i + 1);
         sprintf(Name2, "Twim vs ToF for plastic %i", i + 1);
-        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 7000, fTwimTofRangeMin, fTwimTofRangeMax, 1000, 0, 40);
+        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 7000, fTwimTofRangeMin, fTwimTofRangeMax, 1000, 5, 95);
         fh2_Twim_Tof[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
         fh2_Twim_Tof[i]->GetYaxis()->SetTitle("Charge Z");
         fh2_Twim_Tof[i]->GetXaxis()->CenterTitle(true);
@@ -524,8 +524,8 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
             R3BSofTofWHitData* hit = (R3BSofTofWHitData*)fHitItemsTofW->At(ihit);
             if (!hit)
                 continue;
-            fh2_Tof_hit->Fill(hit->GetPaddle(), hit->GetTof());
-            fh2_Pos_hit->Fill(hit->GetPaddle(), hit->GetY());
+            fh2_Tof_hit->Fill(hit->GetPaddle() + gRandom->Uniform(-0.49, 0.49), hit->GetTof());
+            fh2_Pos_hit->Fill(hit->GetPaddle() + gRandom->Uniform(-0.49, 0.49), hit->GetY());
         }
     }
 
@@ -637,7 +637,7 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
                 fh1_RawPos_AtTcalMult1[i]->Fill(tofpos);
                 if (mwpc3x > 0)
                 {
-                    fh2_Mwpc3X_Tof->Fill(i + gRandom->Uniform(-0.5, 0.5), mwpc3x + gRandom->Uniform(-0.5, 0.5));
+                    fh2_Mwpc3X_Tof->Fill(i + 1 + gRandom->Uniform(-0.5, 0.5), mwpc3x + gRandom->Uniform(-0.5, 0.5));
                 }
                 if (mwpc3y > 0)
                 {

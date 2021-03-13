@@ -14,7 +14,8 @@
 
 #include "TClonesArray.h"
 #include "TMath.h"
-#include "TRandom.h"
+#include "TRandom3.h"
+
 class TRandom3;
 
 class R3BSofTofWMapped2Tcal : public FairTask
@@ -58,7 +59,10 @@ class R3BSofTofWMapped2Tcal : public FairTask
 
     UInt_t fNevent;
 
-    TRandom rand;
+    TRandom3 rand;
+
+    /** Private method AddTCalData **/
+    R3BSofTofWTcalData* AddTCalData(UShort_t detector, UShort_t pmt, Double_t t);
 
   public:
     ClassDef(R3BSofTofWMapped2Tcal, 1)

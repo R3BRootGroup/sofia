@@ -113,10 +113,13 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
 
     // MWPC: Mapped data
     cMwpc_nPads = new TCanvas(fNameDet + "_nPads", fNameDet + "_nPads", 10, 10, 800, 700);
-    cMwpc_nPads->Divide(3, 1);
+    cMwpcMap = new TCanvas(fNameDet + "_Q", fNameDet + "_Q", 10, 10, 800, 700);
 
     if (fNameDet == "Mwpc0")
     {
+        cMwpc_nPads->Divide(2, 1);
+        cMwpcMap->Divide(2, 1);
+
         Name1 = fNameDet + "_X_nPadsPerEvent";
         fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
@@ -126,11 +129,29 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         Name1 = fNameDet + "_Y_nPadsPerEvent";
         fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
-        cMwpc_nPads->cd(3);
+        cMwpc_nPads->cd(2);
         fh1_mwpc_map_nPads[2]->Draw();
+
+        Name1 = fNameDet + "_XQ";
+        fh2_mwpc_map_q[0] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("X Pad number");
+        fh2_mwpc_map_q[0]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(1);
+        fh2_mwpc_map_q[0]->Draw("col");
+
+        Name1 = fNameDet + "_YQ";
+        fh2_mwpc_map_q[2] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[2]->SetFillColor(kRed + 3);
+        fh2_mwpc_map_q[2]->GetXaxis()->SetTitle("Y Pad number");
+        fh2_mwpc_map_q[2]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(2);
+        fh2_mwpc_map_q[2]->Draw("col");
     }
     else if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
     {
+        cMwpc_nPads->Divide(3, 1);
+        cMwpcMap->Divide(3, 1);
+
         Name1 = fNameDet + "_Xdown_nPadsPerEvent";
         fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
@@ -148,9 +169,33 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
         cMwpc_nPads->cd(3);
         fh1_mwpc_map_nPads[2]->Draw();
+
+        Name1 = fNameDet + "_XdownQ";
+        fh2_mwpc_map_q[0] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("Xdown Pad number");
+        fh2_mwpc_map_q[0]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(1);
+        fh2_mwpc_map_q[0]->Draw("col");
+
+        Name1 = fNameDet + "_XupQ";
+        fh2_mwpc_map_q[1] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[1]->GetXaxis()->SetTitle("Xup Pad number");
+        fh2_mwpc_map_q[1]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(2);
+        fh2_mwpc_map_q[1]->Draw("col");
+
+        Name1 = fNameDet + "_YQ";
+        fh2_mwpc_map_q[2] = new TH2I(Name1, Name1, 43, -1.5, 41.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[2]->GetXaxis()->SetTitle("Y Pad number");
+        fh2_mwpc_map_q[2]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(3);
+        fh2_mwpc_map_q[2]->Draw("col");
     }
     else
     {
+        cMwpc_nPads->Divide(2, 1);
+        cMwpcMap->Divide(2, 1);
+
         Name1 = fNameDet + "_X_nPadsPerEvent";
         fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 243, -1.5, 241.5);
         fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
@@ -160,8 +205,22 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         Name1 = fNameDet + "_Y_nPadsPerEvent";
         fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 403, -1.5, 401.5);
         fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
-        cMwpc_nPads->cd(3);
+        cMwpc_nPads->cd(2);
         fh1_mwpc_map_nPads[2]->Draw();
+
+        Name1 = fNameDet + "_XQ";
+        fh2_mwpc_map_q[0] = new TH2I(Name1, Name1, 243, -1.5, 241.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("X Pad number");
+        fh2_mwpc_map_q[0]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(1);
+        fh2_mwpc_map_q[0]->Draw("col");
+
+        Name1 = fNameDet + "_YQ";
+        fh2_mwpc_map_q[2] = new TH2I(Name2, Name1, 403, -1.5, 401.5, 1000, 0, 5000);
+        fh2_mwpc_map_q[2]->GetXaxis()->SetTitle("Y Pad number");
+        fh2_mwpc_map_q[2]->GetYaxis()->SetTitle("Charge [channels]");
+        cMwpcMap->cd(2);
+        fh2_mwpc_map_q[2]->Draw("col");
     }
 
     // MWPC: Cal data
@@ -336,6 +395,7 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
     // MAIN FOLDER-MWPC
     TFolder* mainfolMW = new TFolder(fNameDet, fNameDet + " info");
     mainfolMW->Add(cMwpc_nPads);
+    mainfolMW->Add(cMwpcMap);
     mainfolMW->Add(cMWPCCal);
     mainfolMW->Add(cMWPCCal2D);
     mainfolMW->Add(cx);
@@ -361,16 +421,21 @@ void R3BSofMwpcOnlineSpectra::Reset_Histo()
     // Mapped data
     if (fMapItemsMwpc)
     {
-        for (Int_t i = 0; i < 3; i++)
-            if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+        if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
+            for (Int_t i = 0; i < 3; i++)
+            {
                 fh1_mwpc_map_nPads[i]->Reset();
-
-        if (fNameDet == "Mwpc0" || fNameDet == "Mwpc2")
+                fh2_mwpc_map_q[i]->Reset();
+            }
+        if (fNameDet == "Mwpc0" || fNameDet == "Mwpc3")
         {
             fh1_mwpc_map_nPads[0]->Reset();
             fh1_mwpc_map_nPads[2]->Reset();
+            fh2_mwpc_map_q[0]->Reset();
+            fh2_mwpc_map_q[2]->Reset();
         }
     }
+
     // Cal data
     if (fCalItemsMwpc)
     {
@@ -409,6 +474,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             nPadsPerEvent[hit->GetPlane() - 1]++;
+            fh2_mwpc_map_q[hit->GetPlane() - 1]->Fill(hit->GetPad(), hit->GetQ());
         }
         if (fNameDet == "Mwpc1" || fNameDet == "Mwpc2")
         {
@@ -433,6 +499,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
             if (!hit)
                 continue;
             if (hit->GetPlane() == 1 || hit->GetPlane() == 2)
+            // if (hit->GetPlane()==2)
             {
                 fh1_mwpc_cal[0]->Fill(hit->GetPad());
                 fh2_mwpc_xq->Fill(hit->GetPad() + gRandom->Uniform(-0.5, 0.5), hit->GetQ());
@@ -498,6 +565,7 @@ void R3BSofMwpcOnlineSpectra::FinishTask()
     if (fMapItemsMwpc)
     {
         cMwpc_nPads->Write();
+        cMwpcMap->Write();
     }
 
     if (fCalItemsMwpc)

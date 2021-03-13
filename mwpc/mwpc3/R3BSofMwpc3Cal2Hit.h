@@ -96,6 +96,8 @@ class R3BSofMwpc3Cal2Hit : public FairTask
     /** Private method to obtain the position Y **/
     Double_t GetPositionY(Double_t qmax, Int_t padmax, Double_t qdown, Double_t qup);
 
+    Double_t FittedHyperbolicSecant(string XorY, vector<double> vQ, vector<int> vStrip, int Qmax, int StripMax);
+
   public:
     // Class definition
     ClassDef(R3BSofMwpc3Cal2Hit, 1)

@@ -258,13 +258,19 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
     R3BSofTofWHitData** HitTofW = new R3BSofTofWHitData*[nHitTofW];
 
     TVector3 pos1[2];
+    pos1[0].SetXYZ(-100.,0.,0.);
+    pos1[1].SetXYZ(-100.,0.,0.);
     TVector3 pos2[2];
+    pos2[0].SetXYZ(-100.,0.,0.);
+    pos2[1].SetXYZ(-100.,0.,0.);
     TVector3 pos3[2];
-    
+    pos3[0].SetXYZ(-1000.,0.,0.);
+    pos3[1].SetXYZ(-1000.,0.,0.);
+
     for (Int_t i = 0; i < nHitTwim; i++)
     {
         HitTwim[i] = (R3BSofTwimHitData*)(fTwimHitDataCA->At(i));
-        if(HitTwim[i]->GetSecID()==3 || HitTwim[i]->GetSecID()==4)//Right
+        if(HitTwim[i]->GetSecID()==0 || HitTwim[i]->GetSecID()==1)//Left
           zf[0] = HitTwim[i]->GetZcharge();
         else
           zf[1] = HitTwim[i]->GetZcharge();
@@ -333,27 +339,24 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
            tof[0] = HitTofW[i]->GetTof();
           }
         }
-
-        // std::cout<<i<<" "<< HitTofW[i]->GetPaddle() <<" "<< HitTofW[i]->GetY()<<" "<< HitTofW[i]->GetTof()
-        // <<std::endl;
     }
-
-    if(tof[0]>1.0){
+    
+    if(tof[0]>1.0&&zf[0]>1.&&pos1[0].X()>-100.&&pos2[0].X()>-100&&pos3[0].X()>-1000.){
      Length = GetLength(pos1[0].X()/10.,pos2[0].X()/10.,pos3[0].X()/10.);
      Brho = GetBrho(pos1[0].X()/10.,pos2[0].X()/10.,pos3[0].X()/10.);
      //Length = sqrt(Length*Length + pos3.Y()*pos3.Y()/100.);
      double v = Length/tof[0]/c;
      double gamma = 1./sqrt(1.-v*v);
-     AddData(zf[0], Brho/v/gamma/3.107, v*c, Length, Brho, pdid[0]);
+     AddData(zf[0], Brho/v/gamma/3.107, v, Length, Brho, pdid[0]);
     }
     
-    if(tof[1]>1.0){
+    if(tof[1]>1.0&&zf[1]>1.&&pos1[1].X()>-100.&&pos2[1].X()>-100&&pos3[1].X()>-1000.){
      Length = GetLength(pos1[1].X()/10.,pos2[1].X()/10.,pos3[1].X()/10.);
      Brho = GetBrho(pos1[1].X()/10.,pos2[1].X()/10.,pos3[1].X()/10.);
      //Length = sqrt(Length*Length + pos3.Y()*pos3.Y()/100.);
      double v = Length/tof[1]/c;
      double gamma = 1./sqrt(1.-v*v);
-     AddData(zf[1], Brho/v/gamma/3.107, v*c, Length, Brho, pdid[1]);
+     AddData(zf[1], Brho/v/gamma/3.107, v, Length, Brho, pdid[1]);
     }
 
     if (HitMwpc0)
@@ -373,7 +376,7 @@ Double_t R3BSofFissionAnalysis::GetLength(Double_t mw1, Double_t mw2, Double_t m
     Double_t length = 0.;
     double L=fEffLength;//cm
     double alpha = -14.*TMath::DegToRad();
-    double beta = -18.*TMath::DegToRad();
+    double beta = -20.*TMath::DegToRad();
     double theta = atan((mw2-mw1)/(fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) );
 
     //std::cout<<mw1<<" "<<mw2<<" "<<fMw1GeoPar->GetPosZ()<<" "<<fMw2GeoPar->GetPosZ()<<std::endl;
@@ -433,10 +436,10 @@ Double_t R3BSofFissionAnalysis::GetLength(Double_t mw1, Double_t mw2, Double_t m
     
     double omega = 2.0*asin( sqrt( (posd.Z()-posb.Z())*(posd.Z()-posb.Z()) + (posd.X()-posb.X())*(posd.X()-posb.X())   )/2.0/rho);
 
-    length = (zb-fTargetGeoPar->GetPosZ())/cos(theta)+ omega*rho + (posf.Z()-posd.Z())/cos(-eta);
+    length = (zb-fTargetGeoPar->GetPosZ())/cos(theta)+ omega*rho + (posf.Z()-posd.Z())/cos(-eta) + 98.75;
     
     
-    //std::cout<<mw2<<" "<<mw3<<" "<< rho <<" "<<omega <<" "<<omega*rho <<" "<<(posd-posb).Mag()<<" "<<length<<std::endl;
+    //std::cout<<mw2<<" "<<mw3<<" "<< rho <<" "<<omega <<" "<<omega*rho <<" "<<(posd-posb).Mag()<<" "<< fTargetGeoPar->GetPosZ()<<" "<<length<<std::endl;
 
     return length;// [cm]
 }
@@ -448,7 +451,7 @@ Double_t R3BSofFissionAnalysis::GetBrho(Double_t mw1, Double_t mw2, Double_t mw3
 
     double L=fEffLength;//cm
     double alpha = -14.*TMath::DegToRad();
-    double beta = -18.*TMath::DegToRad();
+    double beta = -20.*TMath::DegToRad();
     double theta = atan((mw2-mw1)/(fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) );
 
     double xc = 1./(1.+tan(alpha)*tan(theta))*(mw1+(fFieldCentre-fMw1GeoPar->GetPosZ())*tan(theta));

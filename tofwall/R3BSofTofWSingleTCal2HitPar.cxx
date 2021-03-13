@@ -136,9 +136,9 @@ void R3BSofTofWSingleTCal2HitPar::Exec(Option_t* option)
     for (Int_t i = 0; i < nHits; i++)
     {
         calData[i] = (R3BSofTofWSingleTcalData*)(fTofCalDataCA->At(i));
-        sciId = calData[i]->GetDetector();
-        htof[sciId - 1]->Fill(calData[i]->GetRawTofNs());
-        hpos[sciId - 1]->Fill(calData[i]->GetRawPosNs());
+        sciId = calData[i]->GetDetector() - 1;
+        htof[sciId]->Fill(calData[i]->GetRawTofNs());
+        hpos[sciId]->Fill(calData[i]->GetRawPosNs());
     }
     if (calData)
         delete calData;

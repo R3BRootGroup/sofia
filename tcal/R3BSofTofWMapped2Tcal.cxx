@@ -139,7 +139,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
             continue;
         }
         tns = CalculateTimeNs(iDet, iCh, iTf, iTc);
-        new ((*fTcal)[fNumTcal++]) R3BSofTofWTcalData(iDet, iCh, tns);
+        AddTCalData(iDet, iCh, tns);
     }
 
     ++fNevent;
@@ -175,6 +175,15 @@ Double_t R3BSofTofWMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UIn
     }
 
     return (iTc_ns - iTf_ns);
+}
+
+// -----   Private method AddTCalData  --------------------------------------------
+R3BSofTofWTcalData* R3BSofTofWMapped2Tcal::AddTCalData(UShort_t detector, UShort_t pmt, Double_t t)
+{
+    // It fills the R3BSofTofWTcalData
+    TClonesArray& clref = *fTcal;
+    Int_t size = clref.GetEntriesFast();
+    return new (clref[size]) R3BSofTofWTcalData(detector, pmt, t);
 }
 
 ClassImp(R3BSofTofWMapped2Tcal)
