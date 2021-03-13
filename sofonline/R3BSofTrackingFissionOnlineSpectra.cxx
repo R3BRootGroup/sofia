@@ -571,16 +571,12 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
 
                     if ((mw1x > 0. && mw2x > 0.) || (mw1x < 0. && mw2x < 0.))
                     {
-                        zrand = gRandom->Uniform(fPosTarget, fDist_acelerator_glad);
-                        Double_t angX = (mw2x - mw1x) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
-                        Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
-                        fh2_tracking_planeXZ->Fill(
-                            zrand,
-                            mw1x + angX * (zrand - fPosTarget - fMw1GeoPar->GetPosZ() * 10. -
-                                           650.)); // 650mm is the target position with respect to (0,0,0)
-                        fh2_tracking_planeYZ->Fill(
-                            zrand, mw1y + angY * (zrand - fPosTarget - fMw1GeoPar->GetPosZ() * 10. - 650.));
-                    }
+                       zrand = gRandom->Uniform(0., fDist_acelerator_glad-fPosTarget);
+		       Double_t angX = (mw2x - mw1x) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+	               Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                       fh2_tracking_planeXZ->Fill(zrand+fPosTarget, mw1x + angX * (zrand - fMw1GeoPar->GetPosZ() * 10. - 730.)); // 730mm is the target position with respect to (0,0,0)
+                       fh2_tracking_planeYZ->Fill(zrand+fPosTarget, mw1y + angY * (zrand - fMw1GeoPar->GetPosZ() * 10. - 730.));
+		    }
                 }
             }
         }
@@ -590,7 +586,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
     if (fTrackingDataCA && fTrackingDataCA->GetEntriesFast() > 0)
     {
         // Fill mwpc3 Hit data
-        /*if (fMwpc3HitDataCA && fMwpc3HitDataCA->GetEntriesFast() > 0)
+        if (fMwpc3HitDataCA && fMwpc3HitDataCA->GetEntriesFast() > 0)
         {
             Int_t nHits = fMwpc3HitDataCA->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
@@ -600,7 +596,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                     continue;
                 mwpc3x = hit->GetX();
             }
-        }*/
+        }
 
         Int_t nHits = fTrackingDataCA->GetEntriesFast();
         Int_t nHitsTwim = fTwimHitDataCA->GetEntriesFast();
@@ -615,11 +611,11 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
             if (mwpc3x > -10000.)
             {
                 fh2_Mwpc3vsbeta->Fill(mwpc3x, hit->GetBeta());
-                /*if (nHitsTwim == 1)
+                if (nHitsTwim == 1)
                 {
                     R3BSofTwimHitData* hitTwim = (R3BSofTwimHitData*)fTwimHitDataCA->At(0);
                     fh2_ZvsBeta->Fill(hit->GetBeta(), hitTwim->GetZcharge());
-                }*/
+                }
             }
         }
     }

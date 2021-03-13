@@ -24,7 +24,6 @@
 // TofW headers
 #include "R3BSofTofWHitData.h"
 #include "R3BSofTofWHitPar.h"
-#include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWTcalData.h"
 
 class TClonesArray;
@@ -81,7 +80,6 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     TClonesArray* fTCalDataCA; /**< Array with Cal input data. >*/
     TClonesArray* fHitDataCA;  /**< Array with Hit output data. >*/
     Double_t fTof_lise;
-    R3BSofTofWSingleTcalData** calDat;
 
     R3BTGeoPar* fTofWGeoPar;
     R3BSofTofWHitPar* fTofWHitPar;

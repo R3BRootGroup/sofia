@@ -30,7 +30,7 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer()
     , fMCTrack(NULL)
     , fTofPoints(NULL)
     , fTofHits(NULL)
-    , fsigma_y(1)   // sigma=1mm
+    , fsigma_y(1)     // sigma=1mm
     , fsigma_t(0.017) // sigma=17ps
     , fsigma_ELoss(0.)
 {
@@ -151,7 +151,7 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
             time = pointData[i]->GetTime() + rand->Gaus(0., fsigma_t);
 
             // Add hit data
-            AddHitData(paddle, vpos.X()*10., vpos.Y()*10. + rand->Gaus(0., fsigma_y), time);
+            AddHitData(paddle, vpos.X() * 10., vpos.Y() * 10. + rand->Gaus(0., fsigma_y), time);
         }
     }
     if (pointData)

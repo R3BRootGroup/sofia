@@ -5,6 +5,8 @@
 // ----------------------------------------------------------------------
 
 #include "TClonesArray.h"
+#include "TF1.h"
+#include "TGraph.h"
 #include "TMath.h"
 
 // Fair headers
@@ -138,6 +140,13 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
         Double_t q = 0, qmx = 0, qmy = 0, qleft = 0, qright = 0, qdown = 0, qup = 0;
         Double_t x = -1000., y = -1000.;
 
+        vector<double> vQX, vQY;
+        vector<int> vStripX, vStripY;
+        vQX.clear();
+        vQY.clear();
+        vStripX.clear();
+        vStripY.clear();
+
         for (Int_t i = 0; i < Mw3PadsX; i++)
             fx[i] = 0;
         for (Int_t i = 0; i < Mw3PadsY; i++)
@@ -150,9 +159,18 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
             padId = calData[i]->GetPad();
             q = calData[i]->GetQ();
             if (planeId == 1)
+            {
                 fx[padId] = q;
+                vQX.push_back(q);
+                vStripX.push_back(padId);
+            }
             else
+            {
                 fy[padId] = q;
+                vQY.push_back(q);
+                vStripY.push_back(padId);
+            }
+
             if (q > qmx && planeId == 1)
             {
                 qmx = q;
@@ -173,6 +191,7 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
             // std::cout<<qleft<<" "<<qright<<std::endl;
             if (qleft > 0 && qright > 0)
                 x = GetPositionX(qmx, padmx, qleft, qright);
+            // x = FittedHyperbolicSecant("X",vQX,vStripX,qmx,padmx);
 
             // Obtain position Y ----
             qdown = fy[padmy - 1];
@@ -181,6 +200,7 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
             // if(padmy==63) std::cout << padmy << " " << qmy << " " << qdown << " " << qup << std::endl;
             if (qdown > 0 && qup > 0)
                 y = GetPositionY(qmy, padmy, qdown, qup);
+            // y = FittedHyperbolicSecant("Y",vQY,vStripY,qmy,padmy);
 
             AddHitData(x, y);
         }
@@ -189,6 +209,54 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
             delete calData;
     }
     return;
+}
+
+/* ---- Fitted Hyperbolic Secant ---- */
+Double_t R3BSofMwpc3Cal2Hit::FittedHyperbolicSecant(string XorY,
+                                                    vector<double> vQ,
+                                                    vector<int> vStrip,
+                                                    int Qmax,
+                                                    int StripMax)
+{
+    Double_t pos = -1000;
+    static TF1* f = new TF1("sechs", "[0]/(cosh(TMath::Pi()*(x-[1])/[2])*cosh(TMath::Pi()*(x-[1])/[2]))", 1, 300);
+
+    double StartingPoint = StripMax;
+
+    f->SetParameters(Qmax, StartingPoint, 2.5);
+    f->SetParLimits(0, 0.2 * Qmax, 1.2 * Qmax);
+
+    static vector<double> y;
+    static vector<double> q;
+    y.clear();
+    q.clear();
+    double final_size = 0;
+    unsigned int sizeQ = vQ.size();
+
+    for (unsigned int i = 0; i < sizeQ; i++)
+    {
+        if (vQ[i] > Qmax * 0.05)
+        {
+            q.push_back(vQ[i]);
+            y.push_back(vStrip[i]);
+            final_size++;
+        }
+    }
+
+    if (final_size < 3)
+        return -1000;
+
+    TGraph* g = new TGraph(q.size(), &y[0], &q[0]);
+    g->Fit(f, "QN0");
+    delete g;
+    Double_t pospad = f->GetParameter(1);
+
+    if (XorY == "Y")
+        pos = pospad * fwy - fSizeY / 2 + fwy / 2;
+    if (XorY == "X")
+        pos = -(pospad * fwx - fSizeX / 2 + fwx / 2);
+
+    return pos;
 }
 
 /* ---- Indentifying cluster and matching good hits using the tofwall information ---- */
@@ -210,10 +278,10 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
         twX.push_back(twHitData[i]->GetX());
         twY.push_back(twHitData[i]->GetY());
     }
-    if(twHitData)
-      delete twHitData;
+    if (twHitData)
+        delete twHitData;
 
-    // Getting Position information from mwpc3    
+    // Getting Position information from mwpc3
     Int_t nHits = fMwpcCalDataCA->GetEntries();
     if (!nHits)
         return;

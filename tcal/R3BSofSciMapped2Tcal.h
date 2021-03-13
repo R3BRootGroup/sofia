@@ -12,7 +12,7 @@
 // ROOT headers
 #include "TClonesArray.h"
 #include "TMath.h"
-#include "TRandom.h"
+#include "TRandom3.h"
 class TRandom3;
 
 // Fair headers
@@ -66,7 +66,7 @@ class R3BSofSciMapped2Tcal : public FairTask
 
     UInt_t fNevent;
 
-    TRandom rand;
+    TRandom3 rand;
 
     /** Private method CalData **/
     //** Adds a TcalData to the detector

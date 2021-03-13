@@ -125,7 +125,6 @@ InitStatus R3BSofTofWTcal2SingleTcal::ReInit()
 
 void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
 {
-
     // Reset entries in output arrays, local arrays
     Reset();
 
@@ -191,9 +190,9 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
                 if ((mult[d * fNumPmts + 1] == 1) && (mult[d * fNumPmts] == 1))
                 {
                     // Traw down is iTraw[d * fNumPmts]
-		    // Traw up   is iTraw[d * fNumPmts + 1]
-		    // To have a raw position which increases from down to up : RawPos = Tdown - Tup
-    		    iRawPos = iTraw[d * fNumPmts][0] - iTraw[d * fNumPmts + 1][0]; 
+                    // Traw up   is iTraw[d * fNumPmts + 1]
+                    // To have a raw position which increases from down to up : RawPos = Tdown - Tup
+                    iRawPos = iTraw[d * fNumPmts][0] - iTraw[d * fNumPmts + 1][0];
                     iRawTime = 0.5 * (iTraw[d * fNumPmts][0] + iTraw[d * fNumPmts + 1][0]);
                     iRawTof = (iRawTime - iRawTime_SofSci);
                     AddHitData(d + 1, iRawTime, iRawTof, iRawPos);
