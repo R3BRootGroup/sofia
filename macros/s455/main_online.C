@@ -107,8 +107,8 @@ void main_online()
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
       
-      // filename = "--stream=lxlanddaq01:9000";
-      filename = "--stream=lxir133:9001";
+      filename = "--stream=lxlanddaq01:9001";
+      // filename = "--stream=lxir133:9001";
       // filename = "~/lmd/s455/main0083_0001.lmd";
       
       TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
