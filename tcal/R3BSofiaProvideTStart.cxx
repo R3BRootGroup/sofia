@@ -55,7 +55,7 @@ Double_t R3BSofiaProvideTStart::GetTStart() const
     int ns = 0;
     for (const auto& sof : sofsci)
     {
-        if (sof->GetDetector() == 4)
+        if (sof->GetDetector() == 2)
         {
             if (sof->GetPmt() == 1 || sof->GetPmt() == 2)
             {
