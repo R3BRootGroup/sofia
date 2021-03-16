@@ -32,7 +32,7 @@ void runsim(Int_t nEvents = 0)
     TString generator1 = "box";
     TString generator2 = "ascii";
     TString generator3 = "r3b";
-    TString fGenerator = generator2;
+    TString fGenerator = generator1;
 
     // Input event file in the case of ascii generator
     // TString fEventFile = "p2p_238U.txt";
@@ -40,7 +40,7 @@ void runsim(Int_t nEvents = 0)
 
     Int_t fFieldMap = -1;          // Magentic field map selector
     Double_t fMeasCurrent = 2000.; // Magnetic field current
-    Float_t fFieldScale = -0.7;     // Magnetic field scale factor
+    Float_t fFieldScale = -0.82;     // Magnetic field scale factor
 
     // ---------------  Detector selection: true - false ----------------------
     // ---- R3B and SOFIA detectors as well as passive elements
@@ -392,7 +392,7 @@ void runsim(Int_t nEvents = 0)
     if (fGenerator.CompareTo("box") == 0)
     {
         // 2- Define the BOX generator
-        Int_t pdgId = 2212;      // proton beam
+        /*Int_t pdgId = 2212;      // proton beam
         Double32_t theta1 = 22.; // polar angle distribution
         Double32_t theta2 = 90.;
         Double32_t momentum = 0.8;
@@ -402,21 +402,19 @@ void runsim(Int_t nEvents = 0)
         boxGen->SetPhiRange(0., 360.);
         boxGen->SetXYZ(0.0, 0.0, -65.0);
         primGen->AddGenerator(boxGen);
-        /*
-                // 128-Sn fragment
-                R3BIonGenerator* ionGen = new R3BIonGenerator(50, 129, 50, 1, 0., 0., 0.9);
-                ionGen->SetSpotRadius(0.0, -65.5, 0.0);
-                ionGen->SetBeamParameter(0.0, 0.0);
-                // primGen->AddGenerator(ionGen);
+        */
+        // 208-Pb fragment
+        FairIonGenerator* ionGen = new FairIonGenerator(82, 208, 82, 1, 0., 0., 1.09, 0., 0., -75.);
+        primGen->AddGenerator(ionGen);
 
                 // neutrons
-                FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
+              /*  FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
                 boxGen_n->SetThetaRange(theta1, theta2);
                 boxGen_n->SetPRange(momentum, momentum * 1.2);
                 boxGen_n->SetPhiRange(0, 360);
-                boxGen_n->SetXYZ(0.0, 0.0, -1.5);
+                boxGen_n->SetXYZ(0.0, 0.0, -1.5);*/
                 // primGen->AddGenerator(boxGen_n);
-                */
+                
     }
 
     if (fGenerator.CompareTo("ascii") == 0)
@@ -502,7 +500,7 @@ void runsim(Int_t nEvents = 0)
     if (fCalifa && fCalifaHitFinder)
     {
         R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
-        califaHF->SetCrystalThreshold(0.000010);  // in GeV!! 0.000010 means 10 KeV
+        califaHF->SetCrystalThreshold(0.030000);  // in GeV!! 0.000010 means 10 KeV
         califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
         run->AddTask(califaHF);
     }

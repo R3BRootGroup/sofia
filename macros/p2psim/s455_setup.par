@@ -95,7 +95,7 @@ IonisationEnergy: Double_t 55.9e-6
 //----------------------------------------------------------------------------
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t 28.
+PositionZ: Double_t 30.
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
@@ -115,7 +115,7 @@ IonisationEnergy: Double_t 57.4e-6
 #############################################################################
 [TwimGeoPar]
 //----------------------------------------------------------------------------
-PositionX: Double_t 0.
+PositionX: Double_t -3.
 PositionY: Double_t 0.
 PositionZ: Double_t 61.
 RotationX: Double_t 0.
@@ -169,9 +169,9 @@ FieldCentre: Float_t 308.
 ##############################################################################
 [Mwpc3GeoPar]
 //----------------------------------------------------------------------------
-PositionX: Double_t -151.
+PositionX: Double_t -153.81
 PositionY: Double_t 0.
-PositionZ: Double_t 580.
+PositionZ: Double_t 578.97
 RotationX: Double_t 0.
 RotationY: Double_t -20.
 RotationZ: Double_t 0.
@@ -191,9 +191,9 @@ IonisationEnergy: Double_t 57.4e-6
 ##############################################################################
 [TofwGeoPar]
 //----------------------------------------------------------------------------
-PositionX: Double_t -178.
+PositionX: Double_t -180.82
 PositionY: Double_t 0.
-PositionZ: Double_t 652.
+PositionZ: Double_t 650.97
 RotationX: Double_t 0.
 RotationY: Double_t -20.
 RotationZ: Double_t 0.

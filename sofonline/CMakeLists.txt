@@ -46,6 +46,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 R3BSofOnlineSpectra.cxx
+R3BSofStatusOnlineSpectra.cxx
 R3BSofMwpcOnlineSpectra.cxx
 R3BSofMwpcCorrelationOnlineSpectra.cxx
 R3BSofMwpcvsMusicOnlineSpectra.cxx
