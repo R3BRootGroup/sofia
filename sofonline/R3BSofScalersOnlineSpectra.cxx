@@ -59,7 +59,6 @@ R3BSofScalersOnlineSpectra::~R3BSofScalersOnlineSpectra()
 
 InitStatus R3BSofScalersOnlineSpectra::Init()
 {
-
     LOG(INFO) << "R3BSofScalersOnlineSpectra::Init ";
 
     FairRootManager* mgr = FairRootManager::Instance();
