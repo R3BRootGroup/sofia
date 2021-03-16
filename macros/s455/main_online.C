@@ -101,21 +101,21 @@ void main_online()
       sofiacaldir = dir + "/sofia/macros/s467/parameters/";
     }
     else if (expId==455){
-      NumSofSci = 1; 
-      IdS2 = 0; 
+      NumSofSci = 2; 
+      IdS2 = 1; 
       IdS8 = 0; 
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
       
       filename = "--stream=lxlanddaq01:9001";
       // filename = "--stream=lxir133:9001";
-      // filename = "~/lmd/s455/main0083_0001.lmd";
+      //filename = "~/lmd/s455/main0089_0001.lmd";
       
       TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
-      //outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-      outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
+      outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
+      // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
-      //upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
+      // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
       upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
       // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
       ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
@@ -132,8 +132,8 @@ void main_online()
     
     // store data or not ------------------------------------
     Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
-    Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
-    Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
+    Bool_t NOTstoremappeddata = true; // if true, don't store mapped data in the root file
+    Bool_t NOTstorecaldata = true;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = true;    // if true, don't store hit data in the root file
 
     // Online server configuration --------------------------
@@ -145,7 +145,7 @@ void main_online()
     Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
     Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
     Bool_t fFrsMws = false;  // MWs at FRS (S8) for beam position
-    Bool_t fFrsSci = false;   // Start: Plastic scintillators at FRS
+    Bool_t fFrsSci = true;   // Start: Plastic scintillators at FRS
     // --- R3B standard -----------------------------------------------------------------
     Bool_t fNeuland = false;  // NeuLAND for neutrons behind GLAD
     Bool_t fAms = false;     // AMS tracking detectors

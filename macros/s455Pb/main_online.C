@@ -107,13 +107,13 @@ void main_online()
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
       
-      // filename = "--stream=lxlanddaq01:9000";
-      filename = "--stream=lxir133:9001";
+      filename = "--stream=lxlanddaq01:9001";
+      // filename = "--stream=lxir133:9001";
       // filename = "~/lmd/s455/main0083_0001.lmd";
       
       TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
-      //outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-      outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
+      outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
+      // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
       //upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
       upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
@@ -132,8 +132,8 @@ void main_online()
     
     // store data or not ------------------------------------
     Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
-    Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
-    Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
+    Bool_t NOTstoremappeddata = true; // if true, don't store mapped data in the root file
+    Bool_t NOTstorecaldata = true;    // if true, don't store cal data in the root file
     Bool_t NOTstorehitdata = true;    // if true, don't store hit data in the root file
 
     // Online server configuration --------------------------
