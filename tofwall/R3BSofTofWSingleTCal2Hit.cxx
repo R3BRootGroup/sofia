@@ -144,7 +144,7 @@ void R3BSofTofWSingleTCal2Hit::S455()
         posy = posy - fTofWHitPar->GetPosPar(fPaddleId);
         tofw = tofw - fTofWHitPar->GetTofPar(fPaddleId) + fTof_lise;
 
-        AddHitData(fPaddleId, posx, posy, tofw);
+        AddHitData(fPaddleId, posx, posy*41., tofw);
     }
     if (calDat)
         delete calDat;

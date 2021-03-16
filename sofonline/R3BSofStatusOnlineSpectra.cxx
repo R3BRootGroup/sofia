@@ -16,6 +16,7 @@
 #include "R3BSofTofWMappedData.h"
 #include "R3BSofTrimMappedData.h"
 #include "R3BSofTwimMappedData.h"
+#include "R3BWRAmsData.h"
 #include "R3BWRCalifaData.h"
 #include "R3BWRMasterData.h"
 #include "THttpServer.h"
@@ -52,6 +53,7 @@ R3BSofStatusOnlineSpectra::R3BSofStatusOnlineSpectra()
     , fEventHeader(nullptr)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
+    , fWRItemsAms(NULL)
     , fWRItemsCalifa(NULL)
     , fWRItemsNeuland(NULL)
     , fWRItemsS2(NULL)
@@ -74,6 +76,7 @@ R3BSofStatusOnlineSpectra::R3BSofStatusOnlineSpectra(const TString& name, Int_t 
     , fEventHeader(nullptr)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
+    , fWRItemsAms(NULL)
     , fWRItemsCalifa(NULL)
     , fWRItemsNeuland(NULL)
     , fWRItemsS2(NULL)
@@ -98,6 +101,8 @@ R3BSofStatusOnlineSpectra::~R3BSofStatusOnlineSpectra()
         delete fWRItemsMaster;
     if (fWRItemsSofia)
         delete fWRItemsSofia;
+    if (fWRItemsAms)
+        delete fWRItemsAms;
     if (fWRItemsCalifa)
         delete fWRItemsCalifa;
     if (fWRItemsNeuland)
@@ -156,6 +161,13 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     if (!fWRItemsSofia)
     {
         LOG(WARNING) << "R3BSofStatusOnlineSpectra::SofWRData not found";
+    }
+
+    // get access to WR-Ams data
+    fWRItemsAms = (TClonesArray*)mgr->GetObject("WRAmsData");
+    if (!fWRItemsAms)
+    {
+        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRAmsData not found";
     }
 
     // get access to WR-Califa data
@@ -286,6 +298,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     fh1_wr[1]->Draw("same");
 
     // Difference between Califa-Sofia WRs
+    stack_wrs = new THStack("stack_wrs", "WR-Sofia - WR-Other");
     sprintf(Name1, "WRs_Sofia_vs_others");
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     sprintf(Name2, "fh1_WR_Sofia_Wixhausen");
@@ -299,27 +312,33 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     fh1_wrs[0]->SetLineColor(2);
     fh1_wrs[0]->SetLineWidth(3);
     gPad->SetLogy(1);
-    fh1_wrs[0]->Draw("");
+    stack_wrs->Add(fh1_wrs[0]); //->Draw("");
     fh1_wrs[1] = new TH1F("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
     fh1_wrs[1]->SetLineColor(4);
     fh1_wrs[1]->SetLineWidth(3);
     if (fWRItemsCalifa)
-        fh1_wrs[1]->Draw("same");
+        stack_wrs->Add(fh1_wrs[1]); //->Draw("same");
     fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
     fh1_wrs[2]->SetLineColor(3);
     fh1_wrs[2]->SetLineWidth(3);
     if (fWRItemsNeuland)
-        fh1_wrs[2]->Draw("same");
+        stack_wrs->Add(fh1_wrs[2]); //->Draw("same");
     fh1_wrs[3] = new TH1F("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
     fh1_wrs[3]->SetLineColor(1);
     fh1_wrs[3]->SetLineWidth(3);
     if (fWRItemsS2)
-        fh1_wrs[3]->Draw("same");
+        stack_wrs->Add(fh1_wrs[3]); //->Draw("same");
     fh1_wrs[4] = new TH1F("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
     fh1_wrs[4]->SetLineColor(5);
     fh1_wrs[4]->SetLineWidth(3);
     if (fWRItemsS8)
-        fh1_wrs[4]->Draw("same");
+        stack_wrs->Add(fh1_wrs[4]); //->Draw("same");
+    fh1_wrs[5] = new TH1F("fh1_WR_Sofia_Ams", "", 1200, -4100, 4100);
+    fh1_wrs[5]->SetLineColor(7);
+    fh1_wrs[5]->SetLineWidth(3);
+    if (fWRItemsAms)
+        stack_wrs->Add(fh1_wrs[5]); //->Draw("same");
+    stack_wrs->Draw("nostack");
 
     TLegend* leg = new TLegend(0.05, 0.9, 0.39, 0.9999, NULL, "brNDC");
     leg->SetBorderSize(0);
@@ -360,6 +379,14 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     {
         entry = leg->AddEntry("null", "S8", "l");
         entry->SetLineColor(5);
+        entry->SetLineStyle(1);
+        entry->SetLineWidth(3);
+        entry->SetTextFont(62);
+    }
+    if (fWRItemsAms)
+    {
+        entry = leg->AddEntry("null", "AMS", "l");
+        entry->SetLineColor(7);
         entry->SetLineStyle(1);
         entry->SetLineWidth(3);
         entry->SetTextFont(62);
@@ -474,6 +501,8 @@ void R3BSofStatusOnlineSpectra::Reset_GENERAL_Histo()
             fh1_wrs[3]->Reset();
         if (fWRItemsS8)
             fh1_wrs[4]->Reset();
+        if (fWRItemsAms)
+            fh1_wrs[5]->Reset();
     }
 }
 
@@ -576,6 +605,18 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 if (!hit)
                     continue;
                 fh1_wrs[4]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
+            }
+        }
+        // AMS
+        if (fWRItemsAms && fWRItemsAms->GetEntriesFast() > 0)
+        {
+            nHits = fWRItemsAms->GetEntriesFast();
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BWRAmsData* hit = (R3BWRAmsData*)fWRItemsAms->At(ihit);
+                if (!hit)
+                    continue;
+                fh1_wrs[5]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
             }
         }
         // Master

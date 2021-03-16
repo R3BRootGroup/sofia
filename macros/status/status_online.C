@@ -226,7 +226,7 @@ void status_online()
     {
         unpackams = new R3BAmsReader((EXT_STR_h101_AMS_onion*)&ucesb_struct.ams, offsetof(EXT_STR_h101, ams));
         unpackWRAms =
-            new R3BWhiterabbitAmsReader((EXT_STR_h101_WRAMS*)&ucesb_struct.wrams, offsetof(EXT_STR_h101, wrams), 0x300);
+            new R3BWhiterabbitAmsReader((EXT_STR_h101_WRAMS*)&ucesb_struct.wrams, offsetof(EXT_STR_h101, wrams), 0x600);
     }
 
     if (fCalifa)
@@ -360,6 +360,12 @@ void status_online()
     // Initialize -------------------------------------------
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+
+    // Informations about portnumber and main data stream.
+    cout<<"\n\n"<<endl;
+    cout<<"Data stream is: "<<filename<<endl;
+    cout<<"Portnumber for status online is: "<<port<<endl;
+    cout<<"\n\n"<<endl;
 
     // Run --------------------------------------------------
     run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);

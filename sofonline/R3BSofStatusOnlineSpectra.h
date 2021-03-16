@@ -12,6 +12,7 @@
 #include "TGraph.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "THStack.h"
 #include "TLatex.h"
 #include "TMath.h"
 #include <array>
@@ -87,6 +88,7 @@ class R3BSofStatusOnlineSpectra : public FairTask
     TClonesArray* fWRItemsMaster;  /**< Array with WR-Master items. */
     TClonesArray* fWRItemsSofia;   /**< Array with WR-Sofia items. */
     TClonesArray* fWRItemsCalifa;  /**< Array with WR-Califa items. */
+    TClonesArray* fWRItemsAms;     /**< Array with WR-Ams items. */
     TClonesArray* fWRItemsNeuland; /**< Array with WR-Neuland items. */
     TClonesArray* fWRItemsS2;      /**< Array with WR-S2 items. */
     TClonesArray* fWRItemsS8;      /**< Array with WR-S8 items. */
@@ -117,7 +119,8 @@ class R3BSofStatusOnlineSpectra : public FairTask
     // Unpack
     TH1F *fh1_trigger, *fh1_wr[2];
     TH1F* fh1_GeneralView;
-    TH1F* fh1_wrs[5];
+    TH1F* fh1_wrs[6];
+    THStack* stack_wrs;
     TH1F* fh1_display;
     TGraph* gh;
 
