@@ -212,17 +212,17 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
 
                 c_TrimE_vs_AoQraw->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_AoQraw", section + 1);
-                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 500, 2.55, 2.60, 590, 1000, 60000);
-                fh2_TrimE_vs_BetaS2[section]->GetXaxis()->SetTitle("A/Q");
-                fh2_TrimE_vs_BetaS2[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
-                fh2_TrimE_vs_BetaS2[section]->Draw("COL");
+                fh2_TrimE_vs_AoQraw[section] = new TH2F(Name1, Name1, 500, 2.55, 2.60, 590, 1000, 60000);
+                fh2_TrimE_vs_AoQraw[section]->GetXaxis()->SetTitle("A/Q");
+                fh2_TrimE_vs_AoQraw[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
+                fh2_TrimE_vs_AoQraw[section]->Draw("COL");
 
                 c_AoQ_vs_PosS2_condTrim->cd(section + 1);
                 sprintf(Name1, "AoQ_vs_PosS2_condTrimiES%02d", section + 1);
-                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
-                fh2_TrimE_vs_BetaS2[section]->GetYaxis()->SetTitle("A/Q");
-                fh2_TrimE_vs_BetaS2[section]->GetXaxis()->SetTitle("Pos At S2 [mm]");
-                fh2_TrimE_vs_BetaS2[section]->Draw("COL");
+                fh2_AoQ_vs_PosS2_condTrim[section] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
+                fh2_AoQ_vs_PosS2_condTrim[section]->GetYaxis()->SetTitle("A/Q");
+                fh2_AoQ_vs_PosS2_condTrim[section]->GetXaxis()->SetTitle("Pos At S2 [mm]");
+                fh2_AoQ_vs_PosS2_condTrim[section]->Draw("COL");
             }
             c_TrimE_vs_BetaS2->cd(4);
             sprintf(Name1, "TrimESum_vs_BetaS2");
@@ -233,17 +233,17 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
 
             c_TrimE_vs_AoQraw->cd(4);
             sprintf(Name1, "TrimESum_vs_AoQraw");
-            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 500, 2.55, 2.60, 590, 1000, 60000);
-            fh2_TrimE_vs_BetaS2[3]->GetXaxis()->SetTitle("A/Q");
-            fh2_TrimE_vs_BetaS2[3]->GetYaxis()->SetTitle("Esum");
-            fh2_TrimE_vs_BetaS2[3]->Draw("COL");
+            fh2_TrimE_vs_AoQraw[3] = new TH2F(Name1, Name1, 500, 2.55, 2.60, 590, 1000, 60000);
+            fh2_TrimE_vs_AoQraw[3]->GetXaxis()->SetTitle("A/Q");
+            fh2_TrimE_vs_AoQraw[3]->GetYaxis()->SetTitle("Esum");
+            fh2_TrimE_vs_AoQraw[3]->Draw("COL");
 
             c_AoQ_vs_PosS2_condTrim->cd(4);
             sprintf(Name1, "AoQ_vs_PosS2_condTrimESum");
-            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
-            fh2_TrimE_vs_BetaS2[3]->GetXaxis()->SetTitle("Pos At S2 [mm]");
-            fh2_TrimE_vs_BetaS2[3]->GetYaxis()->SetTitle("A/Q");
-            fh2_TrimE_vs_BetaS2[3]->Draw("COL");
+            fh2_AoQ_vs_PosS2[3] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
+            fh2_AoQ_vs_PosS2[3]->GetXaxis()->SetTitle("Pos At S2 [mm]");
+            fh2_AoQ_vs_PosS2[3]->GetYaxis()->SetTitle("A/Q");
+            fh2_AoQ_vs_PosS2[3]->Draw("COL");
         }
         for (Int_t i = 0; i < fNbDetectors; i++)
         {
