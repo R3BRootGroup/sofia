@@ -713,60 +713,74 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
 
     // MAIN FOLDER-Twim
     TFolder* mainfolTwim = new TFolder("TWIM", "TWIM info");
+
+    // Folder for mapped data
+    TFolder* mapfolTwim = new TFolder("Map", "Map TWIM info");
     for (Int_t i = 0; i < fNbSections; i++)
-        mainfolTwim->Add(cTwimMap_E[i]);
+        mapfolTwim->Add(cTwimMap_E[i]);
     for (Int_t i = 0; i < fNbSections; i++)
-        mainfolTwim->Add(cTwimMap_T[i]);
+        mapfolTwim->Add(cTwimMap_T[i]);
     for (Int_t i = 0; i < fNbSections; i++)
-        mainfolTwim->Add(cTwimMult[i]);
+        mapfolTwim->Add(cTwimMult[i]);
     for (Int_t i = 0; i < fNbSections; i++)
-        mainfolTwim->Add(cTwimMap_DT[i]);
+        mapfolTwim->Add(cTwimMap_DT[i]);
     for (Int_t i = 0; i < fNbSections; i++)
-        mainfolTwim->Add(cTwimMap_DeltaTrefTrig[i]);
+        mapfolTwim->Add(cTwimMap_DeltaTrefTrig[i]);
     for (Int_t i = 0; i < fNbSections; i++)
-        mainfolTwim->Add(cTwim_Mult[i]);
+        mapfolTwim->Add(cTwim_Mult[i]);
     if (fExpId == 444 || fExpId == 467)
     {
-        mainfolTwim->Add(cTwimMap_ESum);
-        mainfolTwim->Add(cTwimMap_ESum1);
-        mainfolTwim->Add(cTwimMap_ESum2);
+        mapfolTwim->Add(cTwimMap_ESum);
+        mapfolTwim->Add(cTwimMap_ESum1);
+        mapfolTwim->Add(cTwimMap_ESum2);
     }
-    mainfolTwim->Add(cTwimMap_ESum_vs_diffDT);
+    mapfolTwim->Add(cTwimMap_ESum_vs_diffDT);
     for (Int_t i = 0; i < fNbSections; i++)
     {
-        mainfolTwim->Add(cTwimMap_EvsDT[i]);
-        mainfolTwim->Add(cTwim_DTvsDT[i]);
+        mapfolTwim->Add(cTwimMap_EvsDT[i]);
+        mapfolTwim->Add(cTwim_DTvsDT[i]);
     }
-    mainfolTwim->Add(cTwimMap_EsumvsDT);
+    mainfolTwim->Add(mapfolTwim);
 
     // Cal data --------------------------------------------------
     if (fCalItemsTwim)
     {
+        // Folder for cal data
+        TFolder* calfolTwim = new TFolder("Cal", "Cal TWIM info");
         for (Int_t i = 0; i < fNbSections; i++)
-            mainfolTwim->Add(cTwimCal_Pos[i]);
+            calfolTwim->Add(cTwimCal_Pos[i]);
+
+        mainfolTwim->Add(calfolTwim);
     }
+
+    // Folder for hit data
+    TFolder* hitfolTwim = new TFolder("Hit", "Hit TWIM info");
 
     // Hit data --------------------------------------------------
     if (fHitItemsTwim && (fExpId == 444 || fExpId == 467))
     {
-        mainfolTwim->Add(cTwim_Z);
-        mainfolTwim->Add(cTwim_theta);
-        mainfolTwim->Add(cTwim_zvstheta);
+        hitfolTwim->Add(cTwim_Z);
+        hitfolTwim->Add(cTwim_theta);
+        hitfolTwim->Add(cTwim_zvstheta);
         if (fHitItemsMwpc3)
         {
-            mainfolTwim->Add(cTwimTheta_vs_mwpc3x);
-            mainfolTwim->Add(cTwimZ_vs_mwpc3x);
+            hitfolTwim->Add(cTwimTheta_vs_mwpc3x);
+            hitfolTwim->Add(cTwimZ_vs_mwpc3x);
         }
+
+        mainfolTwim->Add(hitfolTwim);
     }
     else if (fHitItemsTwim && fExpId == 455)
     {
-        mainfolTwim->Add(cTwimZs);
-        mainfolTwim->Add(cTwimZsvsTof);
+        hitfolTwim->Add(cTwimZs);
+        hitfolTwim->Add(cTwimZsvsTof);
         for (Int_t i = 0; i < 4; i++)
-            mainfolTwim->Add(cTwimZsvsTofL[i]);
+            hitfolTwim->Add(cTwimZsvsTofL[i]);
 
         for (Int_t i = 0; i < 4; i++)
-            mainfolTwim->Add(cTwimZsvsTofR[i]);
+            hitfolTwim->Add(cTwimZsvsTofR[i]);
+
+        mainfolTwim->Add(hitfolTwim);
     }
 
     run->AddObject(mainfolTwim);

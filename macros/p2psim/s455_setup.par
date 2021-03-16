@@ -115,7 +115,7 @@ IonisationEnergy: Double_t 57.4e-6
 #############################################################################
 [TwimGeoPar]
 //----------------------------------------------------------------------------
-PositionX: Double_t -3.
+PositionX: Double_t 0.
 PositionY: Double_t 0.
 PositionZ: Double_t 61.
 RotationX: Double_t 0.
@@ -207,9 +207,3 @@ A: Double_t 11.0723
 Density: Double_t 1.032
 IonisationEnergy: Double_t 57.4e-6
 ##############################################################################
-#################################################
-[GladFieldPar]
-Bz: Float_t 2.155
-EffLength: Float_t 210.
-FieldCentre: Float_t 308.
-#################################################
