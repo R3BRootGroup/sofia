@@ -240,10 +240,10 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
 
             c_AoQ_vs_PosS2_condTrim->cd(4);
             sprintf(Name1, "AoQ_vs_PosS2_condTrimESum");
-            fh2_AoQ_vs_PosS2[3] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
-            fh2_AoQ_vs_PosS2[3]->GetXaxis()->SetTitle("Pos At S2 [mm]");
-            fh2_AoQ_vs_PosS2[3]->GetYaxis()->SetTitle("A/Q");
-            fh2_AoQ_vs_PosS2[3]->Draw("COL");
+            fh2_AoQ_vs_PosS2_condTrim[3] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
+            fh2_AoQ_vs_PosS2_condTrim[3]->GetXaxis()->SetTitle("Pos At S2 [mm]");
+            fh2_AoQ_vs_PosS2_condTrim[3]->GetYaxis()->SetTitle("A/Q");
+            fh2_AoQ_vs_PosS2_condTrim[3]->Draw("COL");
         }
         for (Int_t i = 0; i < fNbDetectors; i++)
         {
