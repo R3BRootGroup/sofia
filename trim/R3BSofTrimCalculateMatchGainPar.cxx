@@ -26,33 +26,27 @@ R3BSofTrimCalculateMatchGainPar::R3BSofTrimCalculateMatchGainPar()
     : FairTask("R3BSofTrimCalculateMatchGainPar", 1)
     , fNumSections(3)
     , fNumAnodes(6)
-    , fMinStatistics(0)
+    , fNumPairsPerSection(3)
     , fCalData(NULL)
     , fCalPar(NULL)
     , fEpsilon(0.01)
-    , fGainMin(0.8)
-    , fGainMax(1.2)
     , fOutputFile(NULL)
 {
-    fNumPairsPerSection = fNumAnodes / 2;
-    fNumHistosPerPair = (Int_t)((fGainMax - fGainMin) / fEpsilon);
+    fGainMin = new TArrayF(9);
 }
 
 // R3BSofTrimCalculateMatchGainPar: Standard Constructor --------------------------
 R3BSofTrimCalculateMatchGainPar::R3BSofTrimCalculateMatchGainPar(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fNumSections(0)
-    , fNumAnodes(0)
-    , fMinStatistics(0)
+    , fNumSections(3)
+    , fNumAnodes(6)
+    , fNumPairsPerSection(3)
     , fCalData(NULL)
     , fCalPar(NULL)
     , fEpsilon(0.01)
-    , fGainMin(0.8)
-    , fGainMax(1.2)
     , fOutputFile(NULL)
 {
-    fNumPairsPerSection = fNumAnodes / 2;
-    fNumHistosPerPair = (Int_t)((fGainMax - fGainMin) / fEpsilon);
+    fGainMin = new TArrayF(9);
 }
 
 // R3BSofTrimCalculateMatchGainPar: Destructor ----------------------------------------
@@ -74,9 +68,9 @@ InitStatus R3BSofTrimCalculateMatchGainPar::Init()
         return kFATAL;
     }
 
-    // --- ----------------- --- //
-    // --- INPUT MAPPED DATA --- //
-    // --- ------------------ --- //
+    // --- -------------- --- //
+    // --- INPUT CAL DATA --- //
+    // --- -------------- --- //
 
     fCalData = (TClonesArray*)rm->GetObject("TrimCalData");
     if (!fCalData)
@@ -114,22 +108,21 @@ InitStatus R3BSofTrimCalculateMatchGainPar::Init()
     // --- ---------------------- --- //
 
     char name[100];
-    fh2_TrimPerPair_Esub_vs_Y = new TH2D*[fNumSections * fNumPairsPerSection * fNumHistosPerPair];
+    fh2_TrimPerPair_Esub_vs_Y = new TH2D*[fNumSections * fNumPairsPerSection * 9];
     for (Int_t sec = 0; sec < fNumSections; sec++)
     {
-        for (Int_t pair = 0; pair < (fNumAnodes / 2); pair++)
+        for (Int_t pair = 0; pair < 3; pair++)
         {
-            for (Int_t k = 0; k < fNumHistosPerPair; k++)
+            for (Int_t k = 0; k < 9; k++)
             {
                 sprintf(name, "Trim_Esub_vs_Y_Sec%i_Pair%i_k%i", sec + 1, pair + 1, k + 1);
-                fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair + sec * fNumHistosPerPair * fNumAnodes / 2] =
-                    new TH2D(name, name, 1600, -0.4, 0.4, 1000, 0, 20000);
-                fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair + sec * fNumHistosPerPair * fNumAnodes / 2]
-                    ->GetXaxis()
-                    ->SetTitle("Ratio between EsubDiff and EsubSum <=> Y [channels]");
-                fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair + sec * fNumHistosPerPair * fNumAnodes / 2]
-                    ->GetYaxis()
-                    ->SetTitle("EsubSum [channels]");
+                fh2_TrimPerPair_Esub_vs_Y[k + pair * 9 + sec * 9 * fNumPairsPerSection] =
+                    new TH2D(name, name, 640, -0.4, 0.4, 1000, 0, 10000);
+                fh2_TrimPerPair_Esub_vs_Y[k + pair * 9 + sec * 9 * fNumPairsPerSection]->GetXaxis()->SetTitle(
+                    "Ratio between EsubDiff and EsubSum <=> Y [channels]");
+                fh2_TrimPerPair_Esub_vs_Y[k + pair * 9 + sec * 9 * fNumPairsPerSection]->GetYaxis()->SetTitle(
+                    "EsubSum [channels]");
+                fh2_TrimPerPair_Esub_vs_Y[k + pair * 9 + sec * 9 * fNumPairsPerSection]->ls();
             }
         }
     }
@@ -145,8 +138,9 @@ void R3BSofTrimCalculateMatchGainPar::Exec(Option_t* opt)
 {
 
     Int_t iSec, iAnode, iPair;
-    Float_t EsubDown[fNumSections * fNumPairsPerSection];
-    Float_t EsubUp[fNumSections * fNumPairsPerSection];
+    Double_t Esub[fNumSections * fNumAnodes];
+    Double_t EsubDown;
+    Double_t EsubUp;
     UInt_t mult[fNumSections * fNumAnodes];
     Double_t Esum, Ediff, gain_match_local;
 
@@ -165,6 +159,7 @@ void R3BSofTrimCalculateMatchGainPar::Exec(Option_t* opt)
         iSec = hit->GetSecID() - 1;
         iAnode = hit->GetAnodeID() - 1;
         mult[iAnode + iSec * fNumAnodes]++;
+        Esub[iAnode + iSec * fNumAnodes] = (Double_t)hit->GetEnergySub();
     } // end of loop over the cal data
 
     // --- --------------------------------------------- --- //
@@ -172,22 +167,22 @@ void R3BSofTrimCalculateMatchGainPar::Exec(Option_t* opt)
     // --- --------------------------------------------- --- //
     for (Int_t section = 0; section < fNumSections; section++)
     {
-        for (Int_t pair = 0; pair < fNumPairsPerSection; pair++)
+        for (Int_t pair = 0; pair < 3; pair++)
         {
             if ((mult[pair * 2 + section * fNumAnodes] == mult[pair * 2 + 1 + section * fNumAnodes]) &&
                 (mult[pair * 2 + section * fNumAnodes] == 1))
             {
-                for (Int_t k = 0; k < fNumHistosPerPair; k++)
+                for (Int_t k = 0; k < 9; k++)
                 {
-                    gain_match_local = (Double_t)fGainMin + (Double_t)k * (Double_t)fEpsilon;
-                    Esum = (Double_t)EsubUp[pair + section * fNumPairsPerSection] +
-                           gain_match_local * EsubDown[pair + section * fNumPairsPerSection];
-                    Ediff = (Double_t)EsubUp[pair + section * fNumPairsPerSection] -
-                            gain_match_local * EsubDown[pair + section * fNumPairsPerSection];
+                    gain_match_local = GetGainMin(pair + section * 3) + (Double_t)k * (Double_t)fEpsilon;
+                    EsubDown = (Double_t)Esub[pair * 2 + 1 + section * fNumAnodes];
+                    EsubUp = (Double_t)Esub[pair * 2 + section * fNumAnodes];
+                    Esum = EsubUp + gain_match_local * (Double_t)EsubDown;
+                    Ediff = (Double_t)EsubUp - gain_match_local * (Double_t)EsubDown;
                     if (Esum != 0)
-                        fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair +
-                                                  section * fNumHistosPerPair * fNumPairsPerSection]
-                            ->Fill(Ediff / Esum, Esum);
+                    {
+                        fh2_TrimPerPair_Esub_vs_Y[k + pair * 9 + section * 9 * 3]->Fill(Ediff / Esum, 0.1 * Esum);
+                    }
                 }
             } // end of check mult up = mult down
         }     // end of loop over the pairs
@@ -209,78 +204,26 @@ void R3BSofTrimCalculateMatchGainPar::FinishTask()
 // ------------------------------
 void R3BSofTrimCalculateMatchGainPar::PlotEvsY()
 {
-    LOG(INFO) << "R3BSofTrimCalculateMatchGainPar: CalculateGainMatchingParams()";
+    LOG(INFO) << "R3BSofTrimCalculateMatchGainPar: PlotEvsY()";
     char name[100];
-    TH1D** h1_ProjectionY = new TH1D*[fNumSections * fNumPairsPerSection * fNumHistosPerPair];
-    TF1** fit_max = new TF1*[fNumSections * fNumPairsPerSection * fNumHistosPerPair];
-    Double_t Bmax, Xmax, Sigma, Min;
-    TGraph** gr = new TGraph*[fNumSections * fNumPairsPerSection];
-    for (Int_t section = 0; section < fNumSections; section++)
+
+    TCanvas* can[9];
+    for (int i = 0; i < 9; i++)
     {
-        for (Int_t pair = 0; pair < fNumPairsPerSection; pair++)
+        sprintf(name, "Pair%i", i + 1);
+        can[i] = new TCanvas(name, name, 0, 0, 800, 700);
+        can[i]->Divide(3, 3);
+        for (int j = 0; j < 9; j++)
         {
-            sprintf(name, "Sigma_S%iP%i", section + 1, pair + 1);
-            gr[pair + section * fNumPairsPerSection] = new TGraph();
-            gr[pair + section * fNumPairsPerSection]->SetName(name);
-            gr[pair + section * fNumPairsPerSection]->SetTitle(name);
-            Min = 1000.;
-            for (Int_t k = 0; k < fNumHistosPerPair; k++)
-            {
-                if (fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair +
-                                              section * fNumHistosPerPair * fNumPairsPerSection]
-                        ->Integral() > 0)
-                {
-
-                    fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair +
-                                              section * fNumHistosPerPair * fNumPairsPerSection]
-                        ->Write();
-                    sprintf(name,
-                            "EvsY_S%iP%i_k%f_pjY",
-                            section + 1,
-                            pair + 1,
-                            (Double_t)fGainMin + (Double_t)k * (Double_t)fEpsilon);
-                    fh2_TrimPerPair_Esub_vs_Y[k + pair * fNumHistosPerPair +
-                                              section * fNumHistosPerPair * fNumPairsPerSection]
-                        ->ProjectionY(name);
-
-                    h1_ProjectionY[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection] =
-                        (TH1D*)gDirectory->FindObject(name);
-                    h1_ProjectionY[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection]
-                        ->Write();
-
-                    Bmax =
-                        h1_ProjectionY[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection]
-                            ->GetMaximumBin();
-                    Xmax =
-                        h1_ProjectionY[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection]
-                            ->GetBinCenter(Bmax);
-                    fit_max[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection] =
-                        new TF1("fit_gaus", "gaus", Xmax - 200, Xmax + 200);
-                    h1_ProjectionY[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection]
-                        ->Fit(fit_max[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection],
-                              "R");
-                    fit_max[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection]->Write();
-                    Sigma = fit_max[k + pair * fNumHistosPerPair + section * fNumHistosPerPair * fNumPairsPerSection]
-                                ->GetParameter(2);
-                    if (Sigma < Min)
-                    {
-                        Min = Sigma;
-                        fCalPar->SetEnergyMatchGain(
-                            (Double_t)fGainMin + (Double_t)k * (Double_t)fEpsilon, section + 1, (2 * pair) + 1);
-                        fCalPar->SetEnergyMatchGain(1., section + 1, (2 * pair) + 2);
-                    }
-                    gr[pair + section * fNumPairsPerSection]->SetPoint(
-                        k, (Double_t)fGainMin + (Double_t)k * (Double_t)fEpsilon, Sigma);
-                }
-            }
-            if (gr[pair + section * fNumPairsPerSection]->GetN() > 0)
-            {
-                gr[pair + section * fNumPairsPerSection]->Write();
-            }
+            can[i]->cd(j + 1);
+            gPad->SetGridy();
+            fh2_TrimPerPair_Esub_vs_Y[j + 9 * i]->Draw("colz");
+            fh2_TrimPerPair_Esub_vs_Y[j + 9 * i]->SetDirectory(0);
+            fh2_TrimPerPair_Esub_vs_Y[j + 9 * i]->Write();
         }
+        can[i]->Write();
     }
 
-    fCalPar->setChanged();
     return;
 }
 

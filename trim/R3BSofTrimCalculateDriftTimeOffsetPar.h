@@ -51,17 +51,17 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     const Int_t GetNumAnodes() { return fNumAnodes; }
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
-    const Float_t GetWidthAnode() { return fWidthAnode; }
-    const Float_t GetDistInterSection() { return fDistInterSection; }
-    const Float_t GetDriftVelocity() { return fDriftVelocity; }
+    const Double_t GetWidthAnode() { return fWidthAnode; }
+    const Double_t GetDistInterSection() { return fDistInterSection; }
+    const Double_t GetDriftVelocity() { return fDriftVelocity; }
 
     void SetNumSections(Int_t n) { fNumSections = n; }
     void SetNumAnodes(Int_t n) { fNumAnodes = n; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
-    void SetWidthAnode(Float_t w) { fWidthAnode = w; }
-    void SetDistInterSection(Float_t d) { fDistInterSection = d; }
-    void SetDriftVelocity(Float_t v) { fDriftVelocity = v; }
+    void SetWidthAnode(Double_t w) { fWidthAnode = w; }
+    void SetDistInterSection(Double_t d) { fDistInterSection = d; }
+    void SetDriftVelocity(Double_t v) { fDriftVelocity = v; }
 
   protected:
     Int_t fNumSections;
@@ -73,9 +73,9 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     R3BTGeoPar* fMwpc1GeoPar;
     R3BTGeoPar* fTrimGeoPar;
 
-    Float_t fWidthAnode;
-    Float_t fDistInterSection;
-    Float_t fDriftVelocity;
+    Double_t fWidthAnode;
+    Double_t fDistInterSection;
+    Double_t fDriftVelocity;
 
     // calibration parameters
     R3BSofTrimCalPar* fCalPar;

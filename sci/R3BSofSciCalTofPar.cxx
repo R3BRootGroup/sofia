@@ -142,16 +142,20 @@ Bool_t R3BSofSciCalTofPar::getParams(FairParamList* list)
         if (fDetIdS8 == 0)
             LOG(INFO) << "---Could not initialize fTof2InvV_FromS8: OK";
         else
+        {
             LOG(INFO) << "---Could not initialize fTof2InvV_FromS8";
-        return kFALSE;
+            return kFALSE;
+        }
     }
     if (!(list->fill("LS8", fFlightLength_FromS8)))
     {
         if (fDetIdS8 == 0)
             LOG(INFO) << "---Could not initialize fFlightLength_FromS8: OK";
         else
+        {
             LOG(INFO) << "---Could not initialize fFlightLength_FromS8";
-        return kFALSE;
+            return kFALSE;
+        }
     }
 
     if (fDetIdS2 > 0)
@@ -168,16 +172,20 @@ Bool_t R3BSofSciCalTofPar::getParams(FairParamList* list)
         if (fDetIdS2 == 0)
             LOG(INFO) << "---Could not initialize fTof2InvV_FromS2: OK";
         else
+        {
             LOG(INFO) << "---Could not initialize fTof2InvV_FromS2";
-        return kFALSE;
+            return kFALSE;
+        }
     }
     if (!(list->fill("LS2", fFlightLength_FromS2)))
     {
         if (fDetIdS2 == 0)
             LOG(INFO) << "---Could not initialize fFlightLength_FromS2: OK";
         else
+        {
             LOG(INFO) << "---Could not initialize fFlightLength_FromS2";
-        return kFALSE;
+            return kFALSE;
+        }
     }
     return kTRUE;
 }

@@ -130,7 +130,8 @@ void R3BSofSciSingleTcal2Cal::Exec(Option_t* option)
             CalVeloS2_MNs =
                 1. / (fTofPar->GetTof2InvV_FromS2(rank * 2) + fTofPar->GetTof2InvV_FromS2(rank * 2 + 1) * RawTofS2_Ns);
             CalTofS2_Ns = fTofPar->GetFlightLength_FromS2(rank) / CalVeloS2_MNs;
-            BetaS2 = CalVeloS2_MNs / (Double_t)SPEED_OF_LIGHT_MNS;
+
+	    BetaS2 = CalVeloS2_MNs / (Double_t)SPEED_OF_LIGHT_MNS;
         }
         else
         {

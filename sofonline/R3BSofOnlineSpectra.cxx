@@ -20,12 +20,13 @@
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofSciVsMusicOnlineSpectra.h"
-#include "R3BSofSciVsTrimOnlineSpectra.h"
 #include "R3BSofSciVsMwpc0OnlineSpectra.h"
+#include "R3BSofSciVsTrimOnlineSpectra.h"
 #include "R3BSofTofWOnlineSpectra.h"
 #include "R3BSofTrackingFissionOnlineSpectra.h"
 #include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTrimOnlineSpectra.h"
+#include "R3BSofTrimVsTofwOnlineSpectra.h"
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
@@ -81,6 +82,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fSciVsTrimOnline(NULL)
     , fSciVsMw0Online(NULL)
     , fTofWOnline(NULL)
+    , fTrimVsTofwOnline(NULL)
     , fScalersOnline(NULL)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
@@ -119,6 +121,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fSciVsTrimOnline(NULL)
     , fSciVsMw0Online(NULL)
     , fTofWOnline(NULL)
+    , fTrimVsTofwOnline(NULL)
     , fScalersOnline(NULL)
     , fMusicOnline(NULL)
     , fAmsOnline(NULL)
@@ -312,6 +315,12 @@ InitStatus R3BSofOnlineSpectra::Init()
     fTofWOnline = (R3BSofTofWOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTofWOnlineSpectra");
     if (!fTofWOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTofWOnlineSpectra not found";
+
+    // Looking for Trim vs Tofw online
+    fTrimVsTofwOnline =
+        (R3BSofTrimVsTofwOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrimVsTofwOnlineSpectra");
+    if (!fTrimVsTofwOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofTrimVsTofwOnlineSpectra not found";
 
     // Looking for Scalers online
     fScalersOnline = (R3BSofScalersOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofScalersOnlineSpectra");
@@ -550,6 +559,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Sci vs MWPC0 histograms if they exist somewhere
     if (fSciVsMw0Online)
         fSciVsMw0Online->Reset_Histo();
+    // Reset Trim vs Tofw histograms if they exist somewhere
+    if (fTrimVsTofwOnline)
+        fTrimVsTofwOnline->Reset_Histo();
     // Reset Scalers histograms if they exist somewhere
     if (fScalersOnline)
         fScalersOnline->Reset_Histo();

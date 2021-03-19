@@ -36,8 +36,8 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar()
     , fMwpc1GeoPar(NULL)
     , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
-    , fDistInterSection(50) // mm 2*edge anodes of 20 mm + 1*10 mm gap 
-    , fDriftVelocity(45)    //  mm/micros
+    , fDistInterSection(50) // mm 2*edge anodes of 20 mm + 1*10 mm gap
+    , fDriftVelocity(60)    //  mm/micros
     , fOutputFile(NULL)
 {
 }
@@ -56,8 +56,8 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar(con
     , fMwpc1GeoPar(NULL)
     , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
-    , fDistInterSection(50) // mm 
-    , fDriftVelocity(45)    // mm/micros
+    , fDistInterSection(50) // mm
+    , fDriftVelocity(60)    // mm/micros
     , fOutputFile(NULL)
 {
 }
@@ -201,7 +201,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
         for (Int_t anode = 0; anode < fNumAnodes; anode++)
         {
             sprintf(name, "DeltaDT_S%iA%i", section + 1, anode + 1);
-            fh1_DeltaDT[anode + section * fNumAnodes] = new TH1D(name, name, 5000, -2500, 2500);
+            fh1_DeltaDT[anode + section * fNumAnodes] = new TH1D(name, name, 4000, -20000, 20000);
             fh1_DeltaDT[anode + section * fNumAnodes]->GetXaxis()->SetTitle(
                 "Delta Drift Time [channels, 100 ps TDC resolution]");
         }
@@ -218,51 +218,69 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
 {
 
     Int_t iSec, iAnode;
-    Double_t X0, X1, DTraw, Xanode, ZposAnode;
-    UInt_t nHits;
+    Double_t geoX0, geoX1, geoZ0, geoZ1, geoDZ;
+    Double_t X0, X1, DX;
+    Double_t geoZtrim, geoZfirstanode, Xanode, DTraw, ZposAnode;
+    UInt_t nHitsMw0, nHitsMw1, nHits;
+
+    // FIX ME:
+    // geoX0 = 10. * (Double_t)fMwpc0GeoPar->GetPosX();
+    // geoX1 = 10. * (Double_t)fMwpc1GeoPar->GetPosX();
+    // geoZ0 = 10. * (Double_t)fMwpc0GeoPar->GetPosZ();
+    // geoZ1 = 10. * (Double_t)fMwpc1GeoPar->GetPosZ();
+    // geoZtrim = 10. * (Double_t)fTrimGeoPar->GetPosZ();
+    geoX0 = 3;      // mm
+    geoX1 = 0.;     // mm
+    geoZ0 = -2620.; // mm
+    geoZ1 = 300.;   // mm
+    geoDZ = geoZ1 - geoZ0;
+    geoZtrim = -2175; // mm
+    // geoZtrim is the center of the Triple-MUSIC in cm
+    // The active volume of the Triple-MUSIC is 590 mm = 59 cm
+    // The width of the screening anode is 20 mm = 2 cm each
+    // Therefore, the rim of the first anode of the first section is located 275 mm downstream
+    geoZfirstanode = geoZtrim - 275 + 0.5 * fWidthAnode;
 
     // --- -------------- --- //
-    // --- MWPC0 HIT DATA --- //
+    // --- MWPCs HIT DATA --- //
     // --- -------------- --- //
-    // only event with one single hit are considered
-    nHits = fMwpc0HitData->GetEntries();
-    if (nHits != 1)
-        return;
-    R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fMwpc0HitData->At(0);
-    X0 = hitMwpc0->GetX() + 10. * fMwpc0GeoPar->GetPosX(); // GetX in mm and GetPosX in cm
-
-    // --- -------------- --- //
-    // --- MWPC1 HIT DATA --- //
-    // --- -------------- --- //
-    // only event with empty target (beam data with minimum straggling) and one single event are considered
-    nHits = fMwpc1HitData->GetEntries();
-    if (nHits != 1)
-        return;
-    R3BSofMwpcHitData* hitMwpc1 = (R3BSofMwpcHitData*)fMwpc1HitData->At(0);
-    X1 = hitMwpc1->GetX() + 10. * fMwpc1GeoPar->GetPosX(); // GetX in mm and GetPosX in cm
-
-    // --- --------------------------------------- --- //
-    // --- LOOP OVER TRIANGLE CAL HITS FOR SofTrim --- //
-    // --- --------------------------------------- --- //
-    nHits = fTrimCalData->GetEntries();
-    if (!nHits)
-        return;
-    for (Int_t ihit = 0; ihit < nHits; ihit++)
+    nHitsMw0 = fMwpc0HitData->GetEntries();
+    nHitsMw1 = fMwpc1HitData->GetEntries();
+    // if (nHitsMw0 != 0)
+    //{
+    //    std::cout << std::endl;
+    //    std::cout << "nHitsMw0=" << nHitsMw0 << ", nHitsMw1=" << nHitsMw1 << std::endl;
+    //}
+    if (nHitsMw0 == 1 && nHitsMw1 == 1)
     {
-        R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fTrimCalData->At(ihit);
-        iSec = hit->GetSecID() - 1;
-        iAnode = hit->GetAnodeID() - 1;
-        DTraw = hit->GetDriftTimeRaw();
-	// ZposAnode is the center of the Triple-MUSIC in cm
-	// The active volume of the Triple-MUSIC is 590 mm = 59 cm
-	// The width of the screening anode is 20 mm = 2 cm each
-        // Therefire, the rim of the first anode of the first section is located 275 mm = 27.5 cm downstream
-	ZposAnode = 10. * (fTrimGeoPar->GetPosZ() - 27.5  - fMwpc0GeoPar->GetPosZ()) +
-                 (iAnode + iSec * fNumAnodes) * fWidthAnode + iSec * fDistInterSection;
-        Xanode = ZposAnode * (X1 - X0) / (fMwpc1GeoPar->GetPosZ() - fMwpc0GeoPar->GetPosZ());
-        fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity -
-                                                      DTraw); // 10000 : mm/micros -> mm/100ps
-    }                                                         // end of loop over the mapped data
+        R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fMwpc0HitData->At(0);
+        R3BSofMwpcHitData* hitMwpc1 = (R3BSofMwpcHitData*)fMwpc1HitData->At(0);
+        X0 = hitMwpc0->GetX() + 10. * geoX0; // GetX in mm and GetPosX in cm
+        X1 = hitMwpc1->GetX() + 10. * geoX1; // GetX in mm and GetPosX in cm
+        DX = X1 - X0;
+
+        // --- --------------------------------------- --- //
+        // --- LOOP OVER TRIANGLE CAL HITS FOR SofTrim --- //
+        // --- --------------------------------------- --- //
+        nHits = fTrimCalData->GetEntries();
+        if (!nHits)
+            return;
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fTrimCalData->At(ihit);
+            iSec = hit->GetSecID() - 1;
+            iAnode = hit->GetAnodeID() - 1;
+            DTraw = hit->GetDriftTimeRaw();
+            // std::cout << "Section:" << iSec + 1 << ", Anode:" << iAnode + 1 << ", DTraw=" << DTraw << std::endl;
+            ZposAnode = geoZfirstanode + (Double_t)(iAnode + iSec * fNumAnodes) * fWidthAnode +
+                        (Double_t)iSec * fDistInterSection;
+            Xanode = (ZposAnode * DX) / geoDZ;
+            // std::cout << "ZposAnode=" << ZposAnode << " mm, Xanode=" << Xanode << " mm or "
+            //          << 1000. * Xanode / fDriftVelocity << " [100 ps]" << std::endl;
+            fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity -
+                                                          DTraw); // 10000 : mm/micros -> mm/100ps
+        }                                                         // end of loop over the mapped data
+    }
 }
 
 // ---- Public method Reset   --------------------------------------------------
@@ -289,6 +307,7 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::CalculateOffsets()
     {
         for (Int_t anode = 0; anode < fNumAnodes; anode++)
         {
+            fh1_DeltaDT[anode + section * fNumAnodes]->Write();
             if (fh1_DeltaDT[anode + section * fNumAnodes]->Integral() > fMinStatistics)
             {
                 BinMax = fh1_DeltaDT[anode + section * fNumAnodes]->GetMaximumBin();
@@ -302,6 +321,14 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::CalculateOffsets()
     }
 
     fCalPar->setChanged();
+    fCalPar->printParams();
+    for (Int_t section = 0; section < fNumSections; section++)
+    {
+        for (Int_t anode = 0; anode < fNumAnodes; anode++)
+        {
+            std::cout << fit_max[anode + section * fNumAnodes]->GetParameter(1) << std::endl;
+        }
+    }
     return;
 }
 
