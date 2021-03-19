@@ -2,6 +2,7 @@
 #define __R3BSOFTRIMMATCHGAINPAR_H__
 
 #include "FairTask.h"
+#include "TCanvas.h"
 #include "TF1.h"
 #include "TGraph.h"
 #include "TH1D.h"
@@ -47,35 +48,16 @@ class R3BSofTrimCalculateMatchGainPar : public FairTask
 
     void SetOutputFile(const char* outFile);
 
-    /** Accessor functions **/
-    const Int_t GetNumSections() { return fNumSections; }
-    const Int_t GetNumAnodes() { return fNumAnodes; }
-    const Int_t GetNumPairsPerSection() { return fNumPairsPerSection; }
-    const Int_t GetMinStatistics() { return fMinStatistics; }
-
-    const Float_t GetEpsilon() { return fEpsilon; }
-    const Float_t GetGainMin() { return fGainMin; }
-    const Float_t GetGainMax() { return fGainMax; }
-
-    void SetNumSections(Int_t n) { fNumSections = n; }
-    void SetNumAnodes(Int_t n) { fNumAnodes = n; }
-    void SetNumPairsPerSection() { fNumPairsPerSection = fNumAnodes / 2; }
-    void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
-
-    void SetEpsilon(Float_t epsilon) { fEpsilon = epsilon; }
-    void SetGainMin(Float_t gain) { fGainMin = gain; }
-    void SetGainMax(Float_t gain) { fGainMax = gain; }
-    void SetNumHistosPerPair(Float_t gain_min, Float_t gain_max, Float_t epsilon)
-    {
-        fNumHistosPerPair = (Int_t)((fGainMax - fGainMin) / fEpsilon);
-    }
+    void SetEpsilon(Float_t e) { fEpsilon = e; }
+    void SetGainMin(Float_t gain, Int_t rank) { fGainMin->AddAt(gain, rank); }
+    Float_t GetGainMin(Int_t rank) { return fGainMin->GetAt(rank); }
 
   protected:
     Int_t fNumSections;
     Int_t fNumAnodes;
     Int_t fNumPairsPerSection;
-    Int_t fNumHistosPerPair;
-    Int_t fMinStatistics; // minimum statistics to proceed to the calibration
+    Float_t fEpsilon;
+    TArrayF* fGainMin;
 
     // calibration parameters
     R3BSofTrimCalPar* fCalPar;
@@ -85,9 +67,6 @@ class R3BSofTrimCalculateMatchGainPar : public FairTask
 
     // histograms
     TH2D** fh2_TrimPerPair_Esub_vs_Y;
-    Float_t fEpsilon;
-    Float_t fGainMin;
-    Float_t fGainMax;
     char* fOutputFile;
 
   public:

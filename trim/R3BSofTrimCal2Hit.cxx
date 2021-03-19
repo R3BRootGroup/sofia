@@ -118,10 +118,10 @@ InitStatus R3BSofTrimCal2Hit::Init()
     // --- ---------------------- --- //
     // --- INPUT CAL DATA FOR SCI --- //
     // --- ---------------------- --- //
-    fSciCalData = (TClonesArray*)rootManager->GetObject("SciCalData");
+    fSciCalData = (TClonesArray*)rootManager->GetObject("SofSciCalData");
     if (!fSciCalData)
     {
-        LOG(WARNING) << "R3BSofTrimCal2Hit::Init() SciCalData not found";
+        LOG(WARNING) << "R3BSofTrimCal2Hit::Init() SofSciCalData not found";
     }
 
     // --- --------------- --- //
@@ -179,8 +179,71 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
     else
         nAligned = fNumAnodes;
     Float_t eal[fNumSections * nAligned];
-    Float_t sumRaw, sumBeta, sumDT, sumTheta, zval;
+    Float_t sumRaw, sumBeta, sumDT, sumTheta, zval, ePair, dtPair, dtSection,Ddt;
     Double_t correction;
+    Float_t EpairVsDT_p0[fNumSections*nAligned];
+    Float_t EpairVsDT_p1[fNumSections*nAligned];
+    Float_t EpairVsDT_p2[fNumSections*nAligned];
+    Float_t EpairVsDT_p3[fNumSections*nAligned];
+
+	EpairVsDT_p0[0]=27549.8;
+	EpairVsDT_p0[1]=29515.2;
+	EpairVsDT_p0[2]=32100;
+	EpairVsDT_p0[3]=28230.2;
+	EpairVsDT_p0[4]=29915.9;
+	EpairVsDT_p0[5]=31560.7;
+	EpairVsDT_p0[6]=28905.1;
+	EpairVsDT_p0[7]=26874.7;
+	EpairVsDT_p0[8]=27567.5;
+
+	EpairVsDT_p1[0]=-0.475275;
+	EpairVsDT_p1[1]=-0.899539;
+	EpairVsDT_p1[2]=-0.751308;
+	EpairVsDT_p1[3]=0.15374;
+	EpairVsDT_p1[4]=0.0112768;
+	EpairVsDT_p1[5]=0.00240945;
+	EpairVsDT_p1[6]=-0.230107;
+	EpairVsDT_p1[7]=-0.473468;
+	EpairVsDT_p1[8]=-0.785311;
+
+	EpairVsDT_p2[0]=0.000496605;
+	EpairVsDT_p2[1]=0.000415774;
+	EpairVsDT_p2[2]=0.000265675;
+	EpairVsDT_p2[3]=-6.07408e-05;
+	EpairVsDT_p2[4]=1.35224e-05;
+	EpairVsDT_p2[5]=4.9109e-05;
+	EpairVsDT_p2[6]=0.000258047;
+	EpairVsDT_p2[7]=0.000458344;
+	EpairVsDT_p2[8]=0.000600714;
+
+	EpairVsDT_p3[0]=-5.87221e-08;
+	EpairVsDT_p3[1]=-3.92877e-08;
+	EpairVsDT_p3[2]=-2.27698e-08;
+	EpairVsDT_p3[3]=1.3715e-08;
+	EpairVsDT_p3[4]=1.46428e-09;
+	EpairVsDT_p3[5]=-4.32464e-09;
+	EpairVsDT_p3[6]=-2.99696e-08;
+	EpairVsDT_p3[7]=-5.77546e-08;
+	EpairVsDT_p3[8]=-7.44682e-08;
+
+	Float_t EsectionVsTheta_p0[3];
+	Float_t EsectionVsTheta_p1[3];
+	Float_t EsectionVsTheta_p2[3];
+	EsectionVsTheta_p0[0] =19801.;
+	EsectionVsTheta_p1[0] =-0.152059;
+	EsectionVsTheta_p2[0] =3.1925e-05;
+	EsectionVsTheta_p0[1] =19980.8;
+	EsectionVsTheta_p1[1] =0.250359;
+	EsectionVsTheta_p2[1] =0.000259866;
+	EsectionVsTheta_p0[2] =19888.1;
+	EsectionVsTheta_p1[2] =0.325335;
+	EsectionVsTheta_p2[2] =0.000579842;
+
+
+	Float_t gain[3];
+	gain[0] = 0.1817686086;
+        gain[1] = 0.0458905053;
+        gain[2] = 0.0382460368;
 
     // Initialization of the local variables
     for (Int_t s = 0; s < fNumSections; s++)
@@ -230,10 +293,15 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
     }
 
     // --- Fill the HIT level --- //
+    Ddt = 0.5*(dt[2]+dt[3]) - 0.5*(dt[14]+dt[15]);
     for (Int_t s = 0; s < fNumSections; s++)
     {
-
-        // === fEnergyRaw: sum of Aligned Energy === //
+	dtSection = 0.5*(dt[2+s*fNumAnodes]+dt[3+s*fNumAnodes]);
+        if( dtSection < 0 || dtSection > 5000 )
+        AddHitData(s + 1, -1, -1, -1, -1, -1);
+	else{
+	
+	// === fEnergyRaw: sum of Aligned Energy === //
         sumRaw = 0.;
         nRaw = 0;
         // if Rectangular shape:
@@ -253,11 +321,19 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
         {
             for (Int_t ch = 0; ch < nAligned; ch++)
             {
-                if (mult[2 * ch + s * fNumAnodes] == 1 && mult[2 * ch + 1 + s * fNumAnodes] == 1)
+                if (mult[2 * ch + s * fNumAnodes] == 1 && mult[2 * ch + 1 + s * fNumAnodes] == 1 && fTrimHitPar->GetEnergyAlignGain(s + 1, ch) > 0)
                 {
-                    eal[ch + s * nAligned] = (e[2 * ch + s * fNumAnodes] + e[2 * ch + 1 + s * fNumAnodes]) *
+                    ePair = (e[2 * ch + s * fNumAnodes] + e[2 * ch + 1 + s * fNumAnodes]) *
                                              fTrimHitPar->GetEnergyAlignGain(s + 1, ch);
-                    sumRaw += eal[ch + s * nAligned];
+		    dtPair = 0.5*(dt[2 * ch + s * fNumAnodes] + dt[2 * ch + 1 + s * fNumAnodes]);
+                    eal[ch+s*nAligned] = ePair*EpairVsDT_p0[ch+s*nAligned] / 
+			               (
+					EpairVsDT_p0[ch+s*nAligned]+
+				    	EpairVsDT_p1[ch+s*nAligned]*(TMath::Power(dtPair,1))+
+					EpairVsDT_p2[ch+s*nAligned]*(TMath::Power(dtPair,2))+
+					EpairVsDT_p3[ch+s*nAligned]*(TMath::Power(dtPair,3))
+					);
+		    sumRaw += eal[ch + s * nAligned];
                     nRaw++;
                 }
             } // end of loop over the anodes
@@ -273,7 +349,7 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
         }
         if (correction != 0)
         {
-            sumBeta = sumRaw / correction;
+            sumBeta = gain[s] * fTrimHitPar->GetEnergyCorrBetaPar(s + 1, 0) * sumRaw / correction;
         }
         else
         {
@@ -284,14 +360,22 @@ void R3BSofTrimCal2Hit::Exec(Option_t* option)
         sumDT = sumBeta;
 
         // TO DO : === fEnergyTheta: fEnergyDT corrected from the theta angle in the Triple-MUSIC ===
-        sumTheta = sumDT;
-
-        // TO DO : === fZ ===
-        zval = sumTheta;
-
+	//sumTheta = EsectionVsTheta_p0[s]*sumDT / (
+	//		EsectionVsTheta_p0[s]+
+	//		EsectionVsTheta_p1[s]*Ddt+
+	//		EsectionVsTheta_p1[s]*TMath::Power(Ddt,2)
+	//		);
+        if(s==1){
+	sumTheta = sumDT * 17461./17177.;
+	}
+	else{
+	sumTheta = sumDT;
+	}
+	// TO DO : === fZ ===
+        zval = 0.695*TMath::Sqrt(sumTheta) - 5.17 ;
         // FILL HIT DATA
         AddHitData(s + 1, sumRaw, sumBeta, sumDT, sumTheta, zval);
-
+	}
     } // end of loop over the sections
 
     return;

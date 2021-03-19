@@ -383,7 +383,10 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: calibrated position in mm at cal level === //
         sprintf(Name1, "SofSci%i_CalPos_mm", i + 1);
-        fh1_CalPos[i] = new TH1F(Name1, Name1, 2200, -110, 110);
+        if (i == (fNbDetectors - 1))
+            fh1_CalPos[i] = new TH1F(Name1, Name1, 5000, -25, 25);
+        else
+            fh1_CalPos[i] = new TH1F(Name1, Name1, 22000, -110, 110);
         fh1_CalPos[i]->GetXaxis()->SetTitle("(RIGHT, Wix. side) -->  x position [mm] --> (LEFT,Mes. side) -->");
         fh1_CalPos[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_CalPos[i]->GetXaxis()->CenterTitle(true);
@@ -397,7 +400,10 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // +++ TH2F: raw position versus calibrated position === //
         sprintf(Name1, "SofSci%i_RawPosVsCalPos", i + 1);
-        fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 1000, -100, 100, 1000, -10, 10);
+        if (i == (fNbDetectors - 1))
+            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -25, 25, 1000, -10, 10);
+        else
+            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 1000, -100, 100, 1000, -10, 10);
         fh2_RawPosVsCalPos[i]->GetXaxis()->SetTitle("Calculated X position [mm]");
         fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitle(
             "(RIGHT, Wixhausen side) --->  Raw X position [ns]  ---> (LEFT, Messel side)");
@@ -1023,6 +1029,7 @@ void R3BSofSciOnlineSpectra::FinishTask()
             }
             if (fCal)
             {
+		cBetaFromS2[i-fIdS2]->Write();
                 fh1_CalTofFromS2[i - fIdS2]->Write();
                 fh2_PosVsTofS2[2 * (i - fIdS2)]->Write();
                 fh2_PosVsTofS2[2 * (i - fIdS2) + 1]->Write();

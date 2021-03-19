@@ -59,7 +59,7 @@ void main_online()
     const Int_t expId = 455;               // select experiment: 444, 467 or 455
     // *********************************** //
     
-    // NumSofSci, file names and paths -----------------------------
+    // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
     TString ntuple_options = "RAW";
@@ -73,16 +73,19 @@ void main_online()
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
       
-      filename = "--stream=lxlanddaq01:9001";
+      //filename = "--stream=lxlanddaq01:9001";
       // filename = "--stream=lxir133:9001";
-      //filename = "~/lmd/s455/main0089_0001.lmd";
+      //filename = "/d/land5/202103_s455/stitched/main0209_*.lmd";
+      filename = "~/data/s455/stitched/main0204_*.lmd";
+      //filename = "~/data/s455/stitched/EvsBeta/main0197_0001.lmd";
+      //filename = "~/data/s455/stitched/main0209_*.lmd";
       
-      TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
-      outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-      // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
+      //TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
+      //outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
+      outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
-      // upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
+      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
+      //upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
       // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
       ucesb_path = upexps_dir + "/202103_s455/202103_s455_part2 --allow-errors --input-buffer=100Mi";
       
@@ -129,7 +132,7 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -392,21 +395,6 @@ void main_online()
         run->AddTask(MusCal2Hit);
     }
 
-    // Triple-MUSIC
-    if(fTrim)
-    {   
-        // --- Mapped 2 Cal
-        R3BSofTrimMapped2Cal* SofTrimMap2Cal = new R3BSofTrimMapped2Cal();
-        SofTrimMap2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(SofTrimMap2Cal);
-   
-	// --- Cal 2 Hit
-	R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
-	SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
-	SofTrimCal2Hit->SetTriShape(kTRUE);
-	run->AddTask(SofTrimCal2Hit);
-    }
-
     // SCI
     if (fSci)
     {
@@ -430,6 +418,21 @@ void main_online()
         SofSciSTcal2Hit->SetOnline(NOTstorehitdata);
         SofSciSTcal2Hit->SetCalParams(675.,-1922.);//ToF calibration at Cave-C
         run->AddTask(SofSciSTcal2Hit);
+    }
+
+    // Triple-MUSIC
+    if(fTrim)
+    {   
+        // --- Mapped 2 Cal
+        R3BSofTrimMapped2Cal* SofTrimMap2Cal = new R3BSofTrimMapped2Cal();
+        SofTrimMap2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(SofTrimMap2Cal);
+   
+	// --- Cal 2 Hit
+	R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
+	SofTrimCal2Hit->SetOnline(NOTstorehitdata);	
+	SofTrimCal2Hit->SetTriShape(kTRUE);
+	run->AddTask(SofTrimCal2Hit);
     }
 
     // FRS
@@ -583,13 +586,24 @@ void main_online()
 	scionline->SetNbChannels(3);
 	scionline->SetIdS2(IdS2);
 	scionline->SetIdS8(IdS8);
-        //scionline->SetCalTofS2min(355,0);
-	//scionline->SetCalTofS2max(358,0);
+        scionline->SetCalTofS2min(355,0);
+	scionline->SetCalTofS2max(358,0);
         run->AddTask(scionline);
 	if(fTrim)
 	{
 	  R3BSofSciVsTrimOnlineSpectra* scivstrimonline = new R3BSofSciVsTrimOnlineSpectra();
 	  scivstrimonline->SetNbDetectors(NumSofSci);
+	  scivstrimonline->SetEmin(0,17000);
+	  scivstrimonline->SetEmax(0,17400);
+	  scivstrimonline->SetEmin(1,17000);
+	  scivstrimonline->SetEmax(1,17400);
+	  scivstrimonline->SetEmin(2,17000);
+	  scivstrimonline->SetEmax(2,17400);
+	  scivstrimonline->SetEmin(3,17000);
+	  scivstrimonline->SetEmax(3,17400);
+	  scivstrimonline->SetDispersionS2(7250.);
+	  scivstrimonline->SetBrho0(9.3148); // run 204, 205
+	  //scivstrimonline->SetBrho0(14.1007);
 	  run->AddTask(scivstrimonline);
 	}
 	if(fMwpc0)

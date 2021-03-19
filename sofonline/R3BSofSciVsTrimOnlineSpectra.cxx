@@ -196,6 +196,10 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             c_TrimE_vs_AoQraw = new TCanvas("TrimE_vs_AoQraw", "TrimE_vs_AoQraw", 10, 10, 800, 700);
             c_TrimE_vs_AoQraw->Divide(2, 2);
             fh2_TrimE_vs_AoQraw = new TH2F*[4];
+            
+	    c_TrimZ_vs_AoQ = new TCanvas("TrimZvs_AoQ", "TrimZ_vs_AoQ", 10, 10, 800, 700);
+            c_TrimZ_vs_AoQ->Divide(2, 2);
+            fh2_TrimZ_vs_AoQ = new TH2F*[4];
 
             c_AoQ_vs_PosS2_condTrim = new TCanvas("AoQ_vs_PosS2_ifTrim", "AoQ_vs_PosS2_ifTrim", 10, 10, 800, 700);
             c_AoQ_vs_PosS2_condTrim->Divide(2, 2);
@@ -205,42 +209,56 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             {
                 c_TrimE_vs_BetaS2->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_BetaS2", section + 1);
-                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 200, 0.7, 0.9, 590, 1000, 60000);
+                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 1000, 0, 60000);
                 fh2_TrimE_vs_BetaS2[section]->GetXaxis()->SetTitle("Beta from S2");
                 fh2_TrimE_vs_BetaS2[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
                 fh2_TrimE_vs_BetaS2[section]->Draw("COL");
 
                 c_TrimE_vs_AoQraw->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_AoQraw", section + 1);
-                fh2_TrimE_vs_AoQraw[section] = new TH2F(Name1, Name1, 500, 2.55, 2.60, 590, 1000, 60000);
+                fh2_TrimE_vs_AoQraw[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 0, 60000);
                 fh2_TrimE_vs_AoQraw[section]->GetXaxis()->SetTitle("A/Q");
                 fh2_TrimE_vs_AoQraw[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
                 fh2_TrimE_vs_AoQraw[section]->Draw("COL");
 
+                c_TrimZ_vs_AoQ->cd(section + 1);
+                sprintf(Name1, "TrimZ_S%02d_vs_AoQ", section + 1);
+                fh2_TrimZ_vs_AoQ[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 55, 95);
+                fh2_TrimZ_vs_AoQ[section]->GetXaxis()->SetTitle("A/Q");
+                fh2_TrimZ_vs_AoQ[section]->GetYaxis()->SetTitle(Form("Z section %i", section + 1));
+                fh2_TrimZ_vs_AoQ[section]->Draw("COL");
+
                 c_AoQ_vs_PosS2_condTrim->cd(section + 1);
                 sprintf(Name1, "AoQ_vs_PosS2_condTrimiES%02d", section + 1);
-                fh2_AoQ_vs_PosS2_condTrim[section] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
+                fh2_AoQ_vs_PosS2_condTrim[section] = new TH2F(Name1, Name1, 1000, -100, 100, 500, 2.20, 2.40);
                 fh2_AoQ_vs_PosS2_condTrim[section]->GetYaxis()->SetTitle("A/Q");
                 fh2_AoQ_vs_PosS2_condTrim[section]->GetXaxis()->SetTitle("Pos At S2 [mm]");
                 fh2_AoQ_vs_PosS2_condTrim[section]->Draw("COL");
             }
             c_TrimE_vs_BetaS2->cd(4);
-            sprintf(Name1, "TrimESum_vs_BetaS2");
-            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 200, 0.7, 0.9, 590, 1000, 60000);
+            sprintf(Name1, "TrimEmax_vs_BetaS2");
+            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 1000, 0, 60000);
             fh2_TrimE_vs_BetaS2[3]->GetXaxis()->SetTitle("Beta from S2");
-            fh2_TrimE_vs_BetaS2[3]->GetYaxis()->SetTitle("Esum");
+            fh2_TrimE_vs_BetaS2[3]->GetYaxis()->SetTitle("Emax");
             fh2_TrimE_vs_BetaS2[3]->Draw("COL");
 
             c_TrimE_vs_AoQraw->cd(4);
-            sprintf(Name1, "TrimESum_vs_AoQraw");
-            fh2_TrimE_vs_AoQraw[3] = new TH2F(Name1, Name1, 500, 2.55, 2.60, 590, 1000, 60000);
+            sprintf(Name1, "TrimEmax_vs_AoQraw");
+            fh2_TrimE_vs_AoQraw[3] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 0, 60000);
             fh2_TrimE_vs_AoQraw[3]->GetXaxis()->SetTitle("A/Q");
-            fh2_TrimE_vs_AoQraw[3]->GetYaxis()->SetTitle("Esum");
+            fh2_TrimE_vs_AoQraw[3]->GetYaxis()->SetTitle("Emax");
             fh2_TrimE_vs_AoQraw[3]->Draw("COL");
+
+            c_TrimZ_vs_AoQ->cd(4);
+            sprintf(Name1, "TrimZmax_vs_AoQ");
+            fh2_TrimZ_vs_AoQ[3] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 55, 95);
+            fh2_TrimZ_vs_AoQ[3]->GetXaxis()->SetTitle("A/Q");
+            fh2_TrimZ_vs_AoQ[3]->GetYaxis()->SetTitle("Zmax");
+            fh2_TrimZ_vs_AoQ[3]->Draw("COL");
 
             c_AoQ_vs_PosS2_condTrim->cd(4);
             sprintf(Name1, "AoQ_vs_PosS2_condTrimESum");
-            fh2_AoQ_vs_PosS2_condTrim[3] = new TH2F(Name1, Name1, 800, -10, 10, 500, 2.55, 2.60);
+            fh2_AoQ_vs_PosS2_condTrim[3] = new TH2F(Name1, Name1, 800, -60, 10, 500, 2.20, 2.40);
             fh2_AoQ_vs_PosS2_condTrim[3]->GetXaxis()->SetTitle("Pos At S2 [mm]");
             fh2_AoQ_vs_PosS2_condTrim[3]->GetYaxis()->SetTitle("A/Q");
             fh2_AoQ_vs_PosS2_condTrim[3]->Draw("COL");
@@ -320,6 +338,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
         }
         mainfol->Add(c_TrimE_vs_BetaS2);
         mainfol->Add(c_TrimE_vs_AoQraw);
+        mainfol->Add(c_TrimZ_vs_AoQ);
         mainfol->Add(c_AoQ_vs_PosS2_condTrim);
     }
 
@@ -360,6 +379,7 @@ void R3BSofSciVsTrimOnlineSpectra::Reset_Histo()
         {
             fh2_TrimE_vs_BetaS2[i]->Reset();
             fh2_TrimE_vs_AoQraw[i]->Reset();
+            fh2_TrimZ_vs_AoQ[i]->Reset();
             fh2_AoQ_vs_PosS2_condTrim[i]->Reset();
         }
     }
@@ -375,6 +395,7 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     Float_t Eraw[3];
     Double_t DT[3];
     Float_t E[3];
+    Float_t Z[3];
     for (int section = 0; section < 3; section++)
     {
         Eraw[section] = -1.;
@@ -411,7 +432,8 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
                 continue;
             Eraw[hit->GetSecID() - 1] = hit->GetEnergyRaw();
             E[hit->GetSecID() - 1] = hit->GetEnergyTheta();
-        }
+            Z[hit->GetSecID() - 1] = hit->GetZcharge();
+	}
     }
 
     // --- ---------------------- --- //
@@ -474,25 +496,27 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     //    Bro = fBrho0 * (1 + xMwpc0/fDCC - xS2/fDS2)
     Double_t Brho = fBrho0 * (1. - xS2 / fDS2); // + X_mwpc0/fDCC
     Double_t AoQraw = Brho / (3.10716 * Gamma * BetaS2);
-    Double_t Esum = 0.;
+    Double_t Emax = 0.;
     Int_t nSections = 0;
     for (Int_t section = 0; section < 3; section++)
     {
         if (E[section] > 500.)
         {
-            Esum += E[section];
             nSections++;
             fh2_TrimE_vs_BetaS2[section]->Fill(BetaS2, E[section]);
-            fh2_TrimE_vs_BetaS2[section]->Fill(AoQraw, E[section]);
-            if (GetEmin(section) < E[section] && E[section] < GetEmax(section))
+            fh2_TrimE_vs_AoQraw[section]->Fill(AoQraw, E[section]);
+            fh2_TrimZ_vs_AoQ[section]->Fill(AoQraw, Z[section]);
+            if (17000 < E[section] && E[section] < 17400)
             {
                 fh2_AoQ_vs_PosS2_condTrim[section]->Fill(xS2, AoQraw);
             }
         }
     }
-    fh2_TrimE_vs_BetaS2[3]->Fill(BetaS2, Esum / nSections);
-    fh2_TrimE_vs_BetaS2[3]->Fill(AoQraw, Esum / nSections);
-    if (GetEmin(3) < (Esum / nSections) && (Esum / nSections) < GetEmax(3))
+    Emax = TMath::Max(E[0],E[1]);
+    fh2_TrimE_vs_BetaS2[3]->Fill(BetaS2, Emax);
+    fh2_TrimE_vs_AoQraw[3]->Fill(AoQraw, Emax);
+    fh2_TrimZ_vs_AoQ[3]->Fill(AoQraw, TMath::Max(Z[0],Z[1]));
+    if (17000 < Emax && Emax < 17400)
     {
         fh2_AoQ_vs_PosS2_condTrim[3]->Fill(xS2, AoQraw);
     }
@@ -550,6 +574,7 @@ void R3BSofSciVsTrimOnlineSpectra::FinishTask()
         {
             fh2_TrimE_vs_BetaS2[i]->Write();
             fh2_TrimE_vs_AoQraw[i]->Write();
+            fh2_TrimZ_vs_AoQ[i]->Write();
             fh2_AoQ_vs_PosS2_condTrim[i]->Write();
         }
     }
