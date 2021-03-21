@@ -15,6 +15,7 @@
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimHitData.h"
 #include "R3BSofTwimMappedData.h"
+#include "R3BCalifaHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -51,6 +52,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
     , fExpId(455)
     , fNbSections(1)
     , fNbAnodes(1)
+    , fHitItemsCalifa(NULL)
     , fNbTref(1)
     , fNbTrig(1)
 {
@@ -65,6 +67,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const TString& name, Int_t iVer
     , fHitItemsTofW(NULL)
     , fNEvents(0)
     , fExpId(455)
+    , fHitItemsCalifa(NULL)
     , fNbSections(1)
     , fNbAnodes(1)
     , fNbTref(1)
@@ -85,6 +88,8 @@ R3BSofTwimOnlineSpectra::~R3BSofTwimOnlineSpectra()
         delete fHitItemsMwpc3;
     if (fHitItemsTofW)
         delete fHitItemsTofW;
+           if (fHitItemsCalifa)
+        delete fHitItemsCalifa;
 }
 
 InitStatus R3BSofTwimOnlineSpectra::Init()
@@ -129,6 +134,13 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fHitItemsTofW = (TClonesArray*)mgr->GetObject("TofWHitData");
     if (!fHitItemsTofW)
         LOG(WARNING) << "R3BSofTwimOnlineSpectra: TofWHitData not found";
+        
+        
+    // get access to Hit data
+    fHitItemsCalifa = (TClonesArray*)mgr->GetObject("CalifaHitData");
+    if (!fHitItemsCalifa)
+        LOG(ERROR) << "R3BAmsCorrelationOnlineSpectra::CalifaHitData not found";
+        
 
     if (fExpId == 444 || fExpId == 467)
     {
@@ -599,6 +611,24 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetTitleSize(0.045);
     fh2_TwimZ_vs_mwpc3x->Draw("colz");
     // s444 and s467 experiment: end of histograms ------
+    
+        // CANVAS opening angle
+    sprintf(Name1, "Califa_Opening_angle_hit_aa");
+    sprintf(Name2, "fh1_Califa_Opening_aa");
+    sprintf(Name3, "Califa Opening angle (cond. Z-1)");
+    cCalifa_opening = new TCanvas(Name1, Name1, 10, 10, 500, 500);
+    fh1_openangle = new TH1F(Name2, Name3, 160, 10, 170);
+    fh1_openangle->GetXaxis()->SetTitle("Opening angle [degrees]");
+    fh1_openangle->GetYaxis()->SetTitle("Counts");
+    fh1_openangle->GetXaxis()->CenterTitle(true);
+    fh1_openangle->GetYaxis()->CenterTitle(true);
+    fh1_openangle->GetYaxis()->SetTitleOffset(1.2);
+    fh1_openangle->GetXaxis()->SetTitleOffset(1.2);
+    fh1_openangle->SetFillColor(8);
+    fh1_openangle->SetLineColor(1);
+    fh1_openangle->SetLineWidth(2);
+    fh1_openangle->Draw("");
+    
 
     //-----------------------------------------------------------
     // Hit data
@@ -780,9 +810,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         for (Int_t i = 0; i < 4; i++)
             hitfolTwim->Add(cTwimZsvsTofR[i]);
 
+        hitfolTwim->Add(cCalifa_opening);
         mainfolTwim->Add(hitfolTwim);
     }
-
+    
     run->AddObject(mainfolTwim);
 
     // Register command to reset histograms
@@ -1022,15 +1053,17 @@ void R3BSofTwimOnlineSpectra::s455()
         // FIXME in the future for complex fission events!
         if (zl > 0. && tof[0] > 0.)
         {
+            zl = zl+52.55-(147.39-6.568844*tof[0]+0.1109114*tof[0]*tof[0])-8.82;
             fh2_Twimhit_ZlvsTof->Fill(tof[0], zl);
             if (padid[0] < 25)
                 fh2_Twimhit_ZlvsTofl[padid[0] - 1]->Fill(tof[0], zl);
         }
         if (zr > 0. && tof[1] > 0.)
         {
+            zr = zr+52.55-(147.39-6.568844*tof[1]+0.1109114*tof[1]*tof[1])-8.35-0.9;
             fh2_Twimhit_ZrvsTof->Fill(tof[1], zr);
-            if (padid[1] > 4)
-                fh2_Twimhit_ZlvsTofl[padid[1] - 5]->Fill(tof[1], zr);
+            //if (padid[1] > 4)
+              //  fh2_Twimhit_ZlvsTofl[padid[1] - 5]->Fill(tof[1], zr);
         }
 
         if (zl > 0.)
@@ -1038,9 +1071,74 @@ void R3BSofTwimOnlineSpectra::s455()
         if (zr > 0.)
             fh1_Twimhit_Zr->Fill(zr);
 
-        if (zr > 0. && zl > 0.)
+        if (zr > 0. && zl > 0. && tof[0] > 0. && tof[1] > 0.)
             fh2_Twimhit_ZrZl->Fill(zl, zr);
+            
+ //--------------------------------------------
+ 
+         // Fill Califa-hit data
+        if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0 && zr+zl>90.5 && zr+zl<91.5)
+        {
+            nHits = fHitItemsCalifa->GetEntriesFast();
+            //fh1_Califa_MultHit->Fill(nHits);
+
+            Double_t theta = 0., phi = 0.;
+            Double_t califa_theta[nHits];
+            Double_t califa_phi[nHits];
+            Double_t califa_e[nHits];
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
+                R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
+                if (!hit)
+                    continue;
+                theta = hit->GetTheta() * TMath::RadToDeg();
+                phi = hit->GetPhi() * TMath::RadToDeg();
+                califa_theta[ihit] = theta;
+                califa_phi[ihit] = phi;
+               // califa_e[ihit] = hit->GetEnergy();
+               // fh2_Califa_theta_phi->Fill(theta, phi);
+               // fh2_Califa_theta_energy->Fill(theta + gRandom->Uniform(-1.5, 1.5), hit->GetEnergy());
+               // fh1_Califa_total_energy->Fill(hit->GetEnergy());
+            }
+
+            TVector3 master[2];
+            Double_t maxEL = 0., maxER = 0.;
+            for (Int_t i1 = 0; i1 < nHits; i1++)
+            {
+
+                if (califa_e[i1] > maxER && TMath::Abs(califa_phi[i1]) > 150.) // wixhausen
+                {
+                    master[0].SetMagThetaPhi(
+                        1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
+                    maxER = califa_e[i1];
+                }
+                if (califa_e[i1] > maxEL && TMath::Abs(califa_phi[i1]) < 60.)
+                { // messel
+                    master[1].SetMagThetaPhi(
+                        1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
+                    maxEL = califa_e[i1];
+                }
+            }
+            double fMinProtonE=30000;
+            if (maxEL > fMinProtonE && maxER > fMinProtonE)
+            {
+                fh1_openangle->Fill(master[0].Angle(master[1]) * TMath::RadToDeg());
+            }
+
+ 
+         }
+ 
+ 
+ 
+ //-------------------
+            
+            
+            
+            
+            
+            
     }
+
 }
 
 void R3BSofTwimOnlineSpectra::s444_s467()
@@ -1211,10 +1309,16 @@ void R3BSofTwimOnlineSpectra::FinishEvent()
     {
         fHitItemsTofW->Clear();
     }
+    if (fHitItemsCalifa)
+    {
+        fHitItemsCalifa->Clear();
+    }
 }
 
 void R3BSofTwimOnlineSpectra::FinishTask()
 {
+    fh1_openangle->Write();
+
     if (fMappedItemsTwim)
     {
         for (Int_t i = 0; i < fNbSections; i++)
