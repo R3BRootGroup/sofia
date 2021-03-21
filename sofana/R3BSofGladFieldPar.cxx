@@ -12,14 +12,10 @@ R3BSofGladFieldPar::R3BSofGladFieldPar(const TString& name, const TString& title
     , fEffLength(0.)
     , fFieldCentre(0.)
 {
-
 }
 
 // ----  Destructor ------------------------------------------------------------
-R3BSofGladFieldPar::~R3BSofGladFieldPar()
-{
-    clear();
-}
+R3BSofGladFieldPar::~R3BSofGladFieldPar() { clear(); }
 
 // ----  Method clear ----------------------------------------------------------
 void R3BSofGladFieldPar::clear()

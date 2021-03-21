@@ -23,8 +23,8 @@ class R3BSofGladFieldPar : public FairParGenericSet
   public:
     /** Standard constructor **/
     R3BSofGladFieldPar(const TString& name = "GladFieldPar",
-                    const TString& title = "Glad Field Parameters",
-                    const TString& context = "GladFieldParContext");
+                       const TString& title = "Glad Field Parameters",
+                       const TString& context = "GladFieldParContext");
 
     /** Destructor **/
     virtual ~R3BSofGladFieldPar();
@@ -52,10 +52,10 @@ class R3BSofGladFieldPar : public FairParGenericSet
     /** Create more Methods if you need them! **/
 
   private:
-    Float_t fBz;// Magnetic field in the Z direction [Tesla]
-    Float_t fEffLength; // Effective magnetic field length [cm]
+    Float_t fBz;          // Magnetic field in the Z direction [Tesla]
+    Float_t fEffLength;   // Effective magnetic field length [cm]
     Float_t fFieldCentre; // Field centre position in the Z direction [cm]
-    
+
     const R3BSofGladFieldPar& operator=(const R3BSofGladFieldPar&); /*< an assignment operator>*/
 
     R3BSofGladFieldPar(const R3BSofGladFieldPar&); /*< a copy constructor >*/

@@ -73,21 +73,22 @@ void main_online()
       sofiaWR_SE = 0xe00;
       sofiaWR_ME = 0xf00;
       
-      //filename = "--stream=lxlanddaq01:9001";
+      filename = "--stream=lxlanddaq01:9001";
       // filename = "--stream=lxir133:9001";
       //filename = "/d/land5/202103_s455/stitched/main0209_*.lmd";
-      filename = "~/data/s455/stitched/main0204_*.lmd";
+      // filename = "~/lmd/s455/main0220_0001_stitched.lmd";
+      //filename = "~/lmd/s455/main0273_0010.lmd";
       //filename = "~/data/s455/stitched/EvsBeta/main0197_0001.lmd";
       //filename = "~/data/s455/stitched/main0209_*.lmd";
       
-      //TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
-      //outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-      outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
+      TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
+      outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
+      //outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
       
-      upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-      //upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
+      //upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
+      upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
       // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-      ucesb_path = upexps_dir + "/202103_s455/202103_s455_part2 --allow-errors --input-buffer=100Mi";
+      ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
       
       sofiacaldir = dir + "/sofia/macros/s455/parameters/";
     }
@@ -114,7 +115,7 @@ void main_online()
     Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
     Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
     Bool_t fFrsMws = false;  // MWs at FRS (S8) for beam position
-    Bool_t fFrsSci = true;   // Start: Plastic scintillators at FRS
+    Bool_t fFrsSci = false;   // Start: Plastic scintillators at FRS
     // --- R3B standard -----------------------------------------------------------------
     Bool_t fNeuland = false;  // NeuLAND for neutrons behind GLAD
     Bool_t fAms = false;     // AMS tracking detectors
@@ -132,7 +133,7 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -589,7 +590,7 @@ void main_online()
         scionline->SetCalTofS2min(355,0);
 	scionline->SetCalTofS2max(358,0);
         run->AddTask(scionline);
-	if(fTrim)
+	if(fTrim && NumSofSci>1)
 	{
 	  R3BSofSciVsTrimOnlineSpectra* scivstrimonline = new R3BSofSciVsTrimOnlineSpectra();
 	  scivstrimonline->SetNbDetectors(NumSofSci);
