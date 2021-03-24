@@ -9,13 +9,13 @@
  */
 
 #include "R3BSofTwimOnlineSpectra.h"
+#include "R3BCalifaHitData.h"
 #include "R3BEventHeader.h"
 #include "R3BSofMwpcHitData.h"
 #include "R3BSofTofWHitData.h"
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimHitData.h"
 #include "R3BSofTwimMappedData.h"
-#include "R3BCalifaHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -52,7 +52,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra()
     , fExpId(455)
     , fNbSections(1)
     , fNbAnodes(1)
-    , fHitItemsCalifa(NULL)
+    //, fHitItemsCalifa(NULL)
     , fNbTref(1)
     , fNbTrig(1)
 {
@@ -67,7 +67,7 @@ R3BSofTwimOnlineSpectra::R3BSofTwimOnlineSpectra(const TString& name, Int_t iVer
     , fHitItemsTofW(NULL)
     , fNEvents(0)
     , fExpId(455)
-    , fHitItemsCalifa(NULL)
+    // , fHitItemsCalifa(NULL)
     , fNbSections(1)
     , fNbAnodes(1)
     , fNbTref(1)
@@ -88,8 +88,8 @@ R3BSofTwimOnlineSpectra::~R3BSofTwimOnlineSpectra()
         delete fHitItemsMwpc3;
     if (fHitItemsTofW)
         delete fHitItemsTofW;
-           if (fHitItemsCalifa)
-        delete fHitItemsCalifa;
+    //  if (fHitItemsCalifa)
+    // delete fHitItemsCalifa;
 }
 
 InitStatus R3BSofTwimOnlineSpectra::Init()
@@ -112,35 +112,29 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fMappedItemsTwim = (TClonesArray*)mgr->GetObject("TwimMappedData");
     if (!fMappedItemsTwim)
     {
+        LOG(ERROR) << "R3BSofTwimOnlineSpectra::TwimMappedData not found";
         return kFATAL;
     }
 
     // get access to cal data of the TWIM
     fCalItemsTwim = (TClonesArray*)mgr->GetObject("TwimCalData");
     if (!fCalItemsTwim)
-        LOG(WARNING) << "R3BSofTwimOnlineSpectra: TwimCalData not found";
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra::TwimCalData not found";
 
     // get access to hit data of the TWIM
     fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
     if (!fHitItemsTwim)
-        LOG(WARNING) << "R3BSofTwimOnlineSpectra: TwimHitData not found";
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra::TwimHitData not found";
 
     // get access to hit data of the MWPC3
     fHitItemsMwpc3 = (TClonesArray*)mgr->GetObject("Mwpc3HitData");
     if (!fHitItemsMwpc3)
-        LOG(WARNING) << "R3BSofTwimOnlineSpectra: Mwpc3HitData not found";
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra::Mwpc3HitData not found";
 
     // get access to hit data of the Tof-Wall
     fHitItemsTofW = (TClonesArray*)mgr->GetObject("TofWHitData");
     if (!fHitItemsTofW)
-        LOG(WARNING) << "R3BSofTwimOnlineSpectra: TofWHitData not found";
-        
-        
-    // get access to Hit data
-    fHitItemsCalifa = (TClonesArray*)mgr->GetObject("CalifaHitData");
-    if (!fHitItemsCalifa)
-        LOG(ERROR) << "R3BAmsCorrelationOnlineSpectra::CalifaHitData not found";
-        
+        LOG(WARNING) << "R3BSofTwimOnlineSpectra::TofWHitData not found";
 
     if (fExpId == 444 || fExpId == 467)
     {
@@ -611,9 +605,9 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_TwimZ_vs_mwpc3x->GetYaxis()->SetTitleSize(0.045);
     fh2_TwimZ_vs_mwpc3x->Draw("colz");
     // s444 and s467 experiment: end of histograms ------
-    
-        // CANVAS opening angle
-    sprintf(Name1, "Califa_Opening_angle_hit_aa");
+
+    // CANVAS opening angle
+    /*sprintf(Name1, "Califa_Opening_angle_hit_aa");
     sprintf(Name2, "fh1_Califa_Opening_aa");
     sprintf(Name3, "Califa Opening angle (cond. Z-1)");
     cCalifa_opening = new TCanvas(Name1, Name1, 10, 10, 500, 500);
@@ -628,7 +622,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_openangle->SetLineColor(1);
     fh1_openangle->SetLineWidth(2);
     fh1_openangle->Draw("");
-    
+    */
 
     //-----------------------------------------------------------
     // Hit data
@@ -636,7 +630,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     cTwimZs = new TCanvas("Twim_ZL_vs_ZR", "Twim: Zs", 10, 10, 800, 700);
     cTwimZs->Divide(2, 1);
     cTwimZs->cd(1);
-    fh1_Twimhit_Zl = new TH1F("fh1_Twim_zl", "Twim: ZL(blue) vs ZR(red)", 1000, 0, 94);
+    fh1_Twimhit_Zl = new TH1F("fh1_Twim_zl", "Twim: ZL(blue) vs ZR(red)", 1000, 1, 98);
     fh1_Twimhit_Zl->GetXaxis()->SetTitle("Z [atomic number]");
     fh1_Twimhit_Zl->GetYaxis()->SetTitle("Counts");
     fh1_Twimhit_Zl->GetYaxis()->SetTitleOffset(1.1);
@@ -648,11 +642,11 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh1_Twimhit_Zl->GetYaxis()->SetTitleSize(0.045);
     fh1_Twimhit_Zl->SetLineColor(4);
     fh1_Twimhit_Zl->Draw("");
-    fh1_Twimhit_Zr = new TH1F("fh1_Twim_zr", "Twim: ZR", 1000, 0, 94);
+    fh1_Twimhit_Zr = new TH1F("fh1_Twim_zr", "Twim: ZR", 1000, 1, 98);
     fh1_Twimhit_Zr->SetLineColor(2);
     fh1_Twimhit_Zr->Draw("same");
     cTwimZs->cd(2);
-    fh2_Twimhit_ZrZl = new TH2F("fh2_Twim_zlzr", "Twim: ZL vs ZR", 1500, 0, 94, 1500, 0, 94);
+    fh2_Twimhit_ZrZl = new TH2F("fh2_Twim_zlzr", "Twim: ZL vs ZR", 1500, 1, 98, 1500, 1, 98);
     fh2_Twimhit_ZrZl->GetXaxis()->SetTitle("Charge ZL");
     fh2_Twimhit_ZrZl->GetYaxis()->SetTitle("Charge ZR");
     fh2_Twimhit_ZrZl->GetYaxis()->SetTitleOffset(1.1);
@@ -667,7 +661,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     cTwimZsvsTof = new TCanvas("Twim_Zs_vs_Tof", "Twim: Zs vs Tof", 10, 10, 800, 700);
     cTwimZsvsTof->Divide(2, 1);
     cTwimZsvsTof->cd(1);
-    fh2_Twimhit_ZlvsTof = new TH2F("fh1_Twim_zlvstof", "Twim: ZL vs ToF", 1500, 20., 40., 1500, 0, 94);
+    fh2_Twimhit_ZlvsTof = new TH2F("fh1_Twim_zlvstof", "Twim: ZL vs ToF", 1500, 25., 40., 1500, 1, 98);
     fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitle("Charge ZL");
     fh2_Twimhit_ZlvsTof->GetXaxis()->SetTitle("ToF [ns]");
     fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitleOffset(1.1);
@@ -680,7 +674,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     fh2_Twimhit_ZlvsTof->SetLineColor(4);
     fh2_Twimhit_ZlvsTof->Draw("colz");
     cTwimZsvsTof->cd(2);
-    fh2_Twimhit_ZrvsTof = new TH2F("fh2_Twim_zrvstof", "Twim: ZR vs ToF", 1500, 20., 40., 1500, 0, 94);
+    fh2_Twimhit_ZrvsTof = new TH2F("fh2_Twim_zrvstof", "Twim: ZR vs ToF", 1500, 25., 40., 1500, 1, 98);
     fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitle("Charge ZR");
     fh2_Twimhit_ZrvsTof->GetXaxis()->SetTitle("ToF [ns]");
     fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitleOffset(1.1);
@@ -702,7 +696,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_ZL_vs_TofL%d", i * 6 + j + 1);
             sprintf(Name2, "ZL vs TofL for Sci %d", i * 6 + j + 1);
-            fh2_Twimhit_ZlvsTofl[i * 6 + j] = new TH2F(Name1, Name2, 1500, 20., 40., 1500, 0, 94);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j] = new TH2F(Name1, Name2, 1500, 25., 40., 1500, 1, 98);
             fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitle("Charge ZL");
             fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetXaxis()->SetTitle("ToF [ns]");
             fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitleOffset(1.1);
@@ -724,7 +718,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_ZR_vs_TofR%d", i * 6 + j + 5);
             sprintf(Name2, "ZR vs TofR for Sci %d", i * 6 + j + 5);
-            fh2_Twimhit_ZrvsTofr[i * 6 + j] = new TH2F(Name1, Name2, 1500, 20., 40., 1500, 0, 94);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j] = new TH2F(Name1, Name2, 1500, 25., 40., 1500, 1, 98);
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitle("Charge ZR");
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetXaxis()->SetTitle("ToF [ns]");
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitleOffset(1.1);
@@ -810,10 +804,10 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         for (Int_t i = 0; i < 4; i++)
             hitfolTwim->Add(cTwimZsvsTofR[i]);
 
-        hitfolTwim->Add(cCalifa_opening);
+        // hitfolTwim->Add(cCalifa_opening);
         mainfolTwim->Add(hitfolTwim);
     }
-    
+
     run->AddObject(mainfolTwim);
 
     // Register command to reset histograms
@@ -1053,17 +1047,17 @@ void R3BSofTwimOnlineSpectra::s455()
         // FIXME in the future for complex fission events!
         if (zl > 0. && tof[0] > 0.)
         {
-            zl = zl+52.55-(147.39-6.568844*tof[0]+0.1109114*tof[0]*tof[0])-8.82;
+            zl = zl + 52.55 - (147.39 - 6.568844 * tof[0] + 0.1109114 * tof[0] * tof[0]) - 8.82;
             fh2_Twimhit_ZlvsTof->Fill(tof[0], zl);
             if (padid[0] < 25)
                 fh2_Twimhit_ZlvsTofl[padid[0] - 1]->Fill(tof[0], zl);
         }
         if (zr > 0. && tof[1] > 0.)
         {
-            zr = zr+52.55-(147.39-6.568844*tof[1]+0.1109114*tof[1]*tof[1])-8.35-0.9;
+            zr = zr + 52.55 - (147.39 - 6.568844 * tof[1] + 0.1109114 * tof[1] * tof[1]) - 8.35 - 0.9;
             fh2_Twimhit_ZrvsTof->Fill(tof[1], zr);
-            //if (padid[1] > 4)
-              //  fh2_Twimhit_ZlvsTofl[padid[1] - 5]->Fill(tof[1], zr);
+            // if (padid[1] > 4)
+            //  fh2_Twimhit_ZlvsTofl[padid[1] - 5]->Fill(tof[1], zr);
         }
 
         if (zl > 0.)
@@ -1073,72 +1067,65 @@ void R3BSofTwimOnlineSpectra::s455()
 
         if (zr > 0. && zl > 0. && tof[0] > 0. && tof[1] > 0.)
             fh2_Twimhit_ZrZl->Fill(zl, zr);
-            
- //--------------------------------------------
- 
-         // Fill Califa-hit data
-        if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0 && zr+zl>90.5 && zr+zl<91.5)
-        {
-            nHits = fHitItemsCalifa->GetEntriesFast();
-            //fh1_Califa_MultHit->Fill(nHits);
 
-            Double_t theta = 0., phi = 0.;
-            Double_t califa_theta[nHits];
-            Double_t califa_phi[nHits];
-            Double_t califa_e[nHits];
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
-                R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
-                if (!hit)
-                    continue;
-                theta = hit->GetTheta() * TMath::RadToDeg();
-                phi = hit->GetPhi() * TMath::RadToDeg();
-                califa_theta[ihit] = theta;
-                califa_phi[ihit] = phi;
-               // califa_e[ihit] = hit->GetEnergy();
-               // fh2_Califa_theta_phi->Fill(theta, phi);
-               // fh2_Califa_theta_energy->Fill(theta + gRandom->Uniform(-1.5, 1.5), hit->GetEnergy());
-               // fh1_Califa_total_energy->Fill(hit->GetEnergy());
-            }
+        //--------------------------------------------
 
-            TVector3 master[2];
-            Double_t maxEL = 0., maxER = 0.;
-            for (Int_t i1 = 0; i1 < nHits; i1++)
-            {
+        /*        // Fill Califa-hit data
+               if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0 && zr+zl>90.5 && zr+zl<91.5)
+               {
+                   nHits = fHitItemsCalifa->GetEntriesFast();
+                   //fh1_Califa_MultHit->Fill(nHits);
 
-                if (califa_e[i1] > maxER && TMath::Abs(califa_phi[i1]) > 150.) // wixhausen
-                {
-                    master[0].SetMagThetaPhi(
-                        1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
-                    maxER = califa_e[i1];
+                   Double_t theta = 0., phi = 0.;
+                   Double_t califa_theta[nHits];
+                   Double_t califa_phi[nHits];
+                   Double_t califa_e[nHits];
+                   for (Int_t ihit = 0; ihit < nHits; ihit++)
+                   {
+                       R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
+                       if (!hit)
+                           continue;
+                       theta = hit->GetTheta() * TMath::RadToDeg();
+                       phi = hit->GetPhi() * TMath::RadToDeg();
+                       califa_theta[ihit] = theta;
+                       califa_phi[ihit] = phi;
+                      // califa_e[ihit] = hit->GetEnergy();
+                      // fh2_Califa_theta_phi->Fill(theta, phi);
+                      // fh2_Califa_theta_energy->Fill(theta + gRandom->Uniform(-1.5, 1.5), hit->GetEnergy());
+                      // fh1_Califa_total_energy->Fill(hit->GetEnergy());
+                   }
+
+                   TVector3 master[2];
+                   Double_t maxEL = 0., maxER = 0.;
+                   for (Int_t i1 = 0; i1 < nHits; i1++)
+                   {
+
+                       if (califa_e[i1] > maxER && TMath::Abs(califa_phi[i1]) > 150.) // wixhausen
+                       {
+                           master[0].SetMagThetaPhi(
+                               1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
+                           maxER = califa_e[i1];
+                       }
+                       if (califa_e[i1] > maxEL && TMath::Abs(califa_phi[i1]) < 60.)
+                       { // messel
+                           master[1].SetMagThetaPhi(
+                               1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
+                           maxEL = califa_e[i1];
+                       }
+                   }
+                   double fMinProtonE=30000;
+                   if (maxEL > fMinProtonE && maxER > fMinProtonE)
+                   {
+                       fh1_openangle->Fill(master[0].Angle(master[1]) * TMath::RadToDeg());
+                   }
+
+
                 }
-                if (califa_e[i1] > maxEL && TMath::Abs(califa_phi[i1]) < 60.)
-                { // messel
-                    master[1].SetMagThetaPhi(
-                        1., califa_theta[i1] * TMath::DegToRad(), califa_phi[i1] * TMath::DegToRad());
-                    maxEL = califa_e[i1];
-                }
-            }
-            double fMinProtonE=30000;
-            if (maxEL > fMinProtonE && maxER > fMinProtonE)
-            {
-                fh1_openangle->Fill(master[0].Angle(master[1]) * TMath::RadToDeg());
-            }
 
- 
-         }
- 
- 
- 
- //-------------------
-            
-            
-            
-            
-            
-            
+        */
+
+        //-------------------
     }
-
 }
 
 void R3BSofTwimOnlineSpectra::s444_s467()
@@ -1309,15 +1296,15 @@ void R3BSofTwimOnlineSpectra::FinishEvent()
     {
         fHitItemsTofW->Clear();
     }
-    if (fHitItemsCalifa)
+    /*if (fHitItemsCalifa)
     {
         fHitItemsCalifa->Clear();
-    }
+    }*/
 }
 
 void R3BSofTwimOnlineSpectra::FinishTask()
 {
-    fh1_openangle->Write();
+    // fh1_openangle->Write();
 
     if (fMappedItemsTwim)
     {

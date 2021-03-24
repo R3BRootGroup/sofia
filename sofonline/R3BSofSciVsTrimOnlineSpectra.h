@@ -142,7 +142,7 @@ class R3BSofSciVsTrimOnlineSpectra : public FairTask
     TH2F** fh2_TrimE_vs_SciPosCal;    // [fNbDetectors*3]
     TH2F** fh2_TrimE_vs_BetaS2;       // [4]
     TH2F** fh2_TrimE_vs_AoQraw;       // [4]
-    TH2F** fh2_TrimZ_vs_AoQ;       // [4]
+    TH2F** fh2_TrimZ_vs_AoQ;          // [4]
     TH2F** fh2_AoQ_vs_PosS2_condTrim; // [4]
 
   public:

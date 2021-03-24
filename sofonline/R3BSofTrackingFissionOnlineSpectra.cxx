@@ -571,12 +571,16 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
 
                     if ((mw1x > 0. && mw2x > 0.) || (mw1x < 0. && mw2x < 0.))
                     {
-                       zrand = gRandom->Uniform(0., fDist_acelerator_glad-fPosTarget);
-		       Double_t angX = (mw2x - mw1x) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
-	               Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
-                       fh2_tracking_planeXZ->Fill(zrand+fPosTarget, mw1x + angX * (zrand - fMw1GeoPar->GetPosZ() * 10. - 730.)); // 730mm is the target position with respect to (0,0,0)
-                       fh2_tracking_planeYZ->Fill(zrand+fPosTarget, mw1y + angY * (zrand - fMw1GeoPar->GetPosZ() * 10. - 730.));
-		    }
+                        zrand = gRandom->Uniform(0., fDist_acelerator_glad - fPosTarget);
+                        Double_t angX = (mw2x - mw1x) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                        Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
+                        fh2_tracking_planeXZ->Fill(
+                            zrand + fPosTarget,
+                            mw1x + angX * (zrand - fMw1GeoPar->GetPosZ() * 10. -
+                                           730.)); // 730mm is the target position with respect to (0,0,0)
+                        fh2_tracking_planeYZ->Fill(zrand + fPosTarget,
+                                                   mw1y + angY * (zrand - fMw1GeoPar->GetPosZ() * 10. - 730.));
+                    }
                 }
             }
         }
