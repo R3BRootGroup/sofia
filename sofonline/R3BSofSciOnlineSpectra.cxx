@@ -1029,7 +1029,7 @@ void R3BSofSciOnlineSpectra::FinishTask()
             }
             if (fCal)
             {
-		cBetaFromS2[i-fIdS2]->Write();
+                cBetaFromS2[i - fIdS2]->Write();
                 fh1_CalTofFromS2[i - fIdS2]->Write();
                 fh2_PosVsTofS2[2 * (i - fIdS2)]->Write();
                 fh2_PosVsTofS2[2 * (i - fIdS2) + 1]->Write();

@@ -92,7 +92,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TClonesArray* fHitItemsTwim;    /**< Array with hit items. */
     TClonesArray* fHitItemsMwpc3;   /**< Array with mw3-hit items. */
     TClonesArray* fHitItemsTofW;    /**< Array with tofw-hit items. */
-    TClonesArray* fHitItemsCalifa;
+    // TClonesArray* fHitItemsCalifa;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
@@ -116,7 +116,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TCanvas** cTwimMap_DeltaTrefTrig;
     TCanvas* cTwimTheta_vs_mwpc3x;
     TCanvas* cTwimZ_vs_mwpc3x;
-    TCanvas* cTwimZs, *cCalifa_opening;
+    TCanvas* cTwimZs; //, *cCalifa_opening;
     TCanvas* cTwimZsvsTofL[4];
     TCanvas* cTwimZsvsTofR[4];
     TCanvas* cTwimZsvsTof;
@@ -140,7 +140,7 @@ class R3BSofTwimOnlineSpectra : public FairTask
 
     // Histograms for Hit data
     // s444 and s467
-    TH1F* fh1_Twimhit_z, *fh1_openangle;
+    TH1F* fh1_Twimhit_z; //, *fh1_openangle;
     TH1F* fh1_Twimhit_theta;
     TH2F* fh2_Twimhit_zvstheta;
     TH2F* fh2_TwimTheta_vs_mwpc3x;

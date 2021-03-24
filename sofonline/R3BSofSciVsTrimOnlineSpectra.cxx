@@ -196,8 +196,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             c_TrimE_vs_AoQraw = new TCanvas("TrimE_vs_AoQraw", "TrimE_vs_AoQraw", 10, 10, 800, 700);
             c_TrimE_vs_AoQraw->Divide(2, 2);
             fh2_TrimE_vs_AoQraw = new TH2F*[4];
-            
-	    c_TrimZ_vs_AoQ = new TCanvas("TrimZvs_AoQ", "TrimZ_vs_AoQ", 10, 10, 800, 700);
+
+            c_TrimZ_vs_AoQ = new TCanvas("TrimZvs_AoQ", "TrimZ_vs_AoQ", 10, 10, 800, 700);
             c_TrimZ_vs_AoQ->Divide(2, 2);
             fh2_TrimZ_vs_AoQ = new TH2F*[4];
 
@@ -433,7 +433,7 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
             Eraw[hit->GetSecID() - 1] = hit->GetEnergyRaw();
             E[hit->GetSecID() - 1] = hit->GetEnergyTheta();
             Z[hit->GetSecID() - 1] = hit->GetZcharge();
-	}
+        }
     }
 
     // --- ---------------------- --- //
@@ -512,10 +512,10 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
             }
         }
     }
-    Emax = TMath::Max(E[0],E[1]);
+    Emax = TMath::Max(E[0], E[1]);
     fh2_TrimE_vs_BetaS2[3]->Fill(BetaS2, Emax);
     fh2_TrimE_vs_AoQraw[3]->Fill(AoQraw, Emax);
-    fh2_TrimZ_vs_AoQ[3]->Fill(AoQraw, TMath::Max(Z[0],Z[1]));
+    fh2_TrimZ_vs_AoQ[3]->Fill(AoQraw, TMath::Max(Z[0], Z[1]));
     if (17000 < Emax && Emax < 17400)
     {
         fh2_AoQ_vs_PosS2_condTrim[3]->Fill(xS2, AoQraw);
