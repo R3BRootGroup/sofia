@@ -43,8 +43,6 @@
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "TLegend.h"
-#include "TLegendEntry.h"
 #include "TVector3.h"
 
 #include "TClonesArray.h"

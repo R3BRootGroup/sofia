@@ -97,7 +97,7 @@ InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
 
     // Hit data
     TCanvas* c_Z = new TCanvas("Charge_z_correlation", "Charge Z correlation", 10, 10, 800, 700);
-    fh2_hit_z = new TH2F("fh2_Twim_vs_Trim_charge_z", "Twim vs Trim: Charge Z", 1000, 6, 38, 1000, 6, 38);
+    fh2_hit_z = new TH2F("fh2_Twim_vs_Trim_charge_z", "Twim vs Trim: Charge Z", 1000, 6, 98, 1000, 6, 98);
     fh2_hit_z->GetXaxis()->SetTitle("Trim charge (Z)");
     fh2_hit_z->GetYaxis()->SetTitle("Twim charge (Z)");
     fh2_hit_z->GetYaxis()->SetTitleOffset(1.1);

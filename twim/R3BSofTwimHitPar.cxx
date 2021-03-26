@@ -24,8 +24,8 @@ R3BSofTwimHitPar::R3BSofTwimHitPar(const char* name, const char* title, const ch
     fDetZHitParams = new TArrayF(fNumSec * fNumParamsZFit); // 2 Parameters for Z (Linear fits)
     fIn_use = new TArrayI(fNumAnodes * fNumSec);
     fAnode_pos = new TArrayF(fNumAnodes * fNumSec);
-    // only left and right --> 2
-    fTofHitParams = new TArrayF(2 * 28 * 3);
+    // left and right + up and down --> 4
+    fTofHitParams = new TArrayF(fNumSec * 3);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -73,7 +73,8 @@ void R3BSofTwimHitPar::putParams(FairParamList* list)
     LOG(INFO) << "Number of parameters for charge-Z: " << array_size;
     fDetZHitParams->Set(array_size);
     list->add("twimZHitPar", *fDetZHitParams);
-    fTofHitParams->Set(2 * 28 * 3);
+    // fTofHitParams->Set(2 * 28 * 3);
+    fTofHitParams->Set(fNumSec * 3);
     list->add("twimvstofHitPar", *fTofHitParams);
 }
 
@@ -162,14 +163,15 @@ void R3BSofTwimHitPar::printParams()
     }
 
     if (fTofHitParams)
-        for (Int_t s = 0; s < 2; s++)
+        for (Int_t s = 0; s < fNumSec; s++)
         {
             LOG(INFO) << "Section = " << s + 1;
-            for (Int_t p = 0; p < 28; p++)
-                for (Int_t j = 0; j < 3; j++)
-                {
-                    LOG(INFO) << "Tof sci nb " << p + 1 << ": FitParam(" << j
-                              << ") = " << fTofHitParams->GetAt(j + p * 3 + s * 3 * 28);
-                }
+            // for (Int_t p = 0; p < 28; p++)
+            for (Int_t j = 0; j < 3; j++)
+            {
+                // LOG(INFO) << "Tof sci nb " << p + 1 << ": FitParam(" << j
+                //       << ") = " << fTofHitParams->GetAt(j + p * 3 + s * 3 * 28);
+                LOG(INFO) << "FitParam(" << j << ") = " << fTofHitParams->GetAt(j + s * 3);
+            }
         }
 }

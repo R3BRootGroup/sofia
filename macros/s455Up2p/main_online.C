@@ -68,8 +68,8 @@ void main_online()
 
     if (expId == 455)
     {
-        NumSofSci = 2;
-        IdS2 = 1;
+        NumSofSci = 1;
+        IdS2 = 0;
         IdS8 = 0;
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
@@ -77,10 +77,7 @@ void main_online()
         filename = "--stream=lxlanddaq01:9001";
         // filename = "--stream=lxir133:9001";
         // filename = "/d/land5/202103_s455/stitched/main0209_*.lmd";
-        // filename = "~/lmd/s455/main0220_0001_stitched.lmd";
         // filename = "~/lmd/s455/main0273_0010.lmd";
-        // filename = "~/data/s455/stitched/EvsBeta/main0197_0001.lmd";
-        // filename = "~/data/s455/stitched/main0209_*.lmd";
 
         TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
         outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
@@ -89,22 +86,16 @@ void main_online()
         // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-        ucesb_path = upexps_dir + "/202104_s455/202104_s455 --allow-errors --input-buffer=70Mi";
+        ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
 
-        sofiacaldir = dir + "/sofia/macros/s455/parameters/";
+        sofiacaldir = dir + "/sofia/macros/s455Up2p/parameters/";
     }
     else
     {
         std::cout << "Experiment was not selected" << std::endl;
         gApplication->Terminate();
     }
-    
-    // SOFIA parameters
-    TString sofiacalfilename;
-    if (NumSofSci == 1)
-        sofiacalfilename = sofiacaldir + "CalibParam_onesci.par";
-    else if (NumSofSci == 2)
-        sofiacalfilename = sofiacaldir + "CalibParam_twosci.par";
+    TString sofiacalfilename = sofiacaldir + "CalibParam.par";
     ucesb_path.ReplaceAll("//", "/");
     sofiacalfilename.ReplaceAll("//", "/");
 
@@ -112,7 +103,7 @@ void main_online()
     Bool_t fCal_level_califa = false; // set true if there exists a file with the calibration parameters
     Bool_t NOTstoremappeddata = true; // if true, don't store mapped data in the root file
     Bool_t NOTstorecaldata = true;    // if true, don't store cal data in the root file
-    Bool_t NOTstorehitdata = true;   // if true, don't store hit data in the root file
+    Bool_t NOTstorehitdata = true;    // if true, don't store hit data in the root file
 
     // Online server configuration --------------------------
     Int_t refresh = 1; // Refresh rate for online histograms
@@ -132,7 +123,7 @@ void main_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
+    Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD

@@ -104,6 +104,7 @@ class R3BSofAtOnlineSpectra : public FairTask
     TCanvas* cAtMap_EvsE;
     TCanvas* cAtMap_EvsE_mult1_nopu;
     TCanvas** cTwimZs;
+    TCanvas* cTwimZsum;
 
     // Histograms for Mapped data
     TH1F* fh1_atmap_mult;
@@ -117,6 +118,7 @@ class R3BSofAtOnlineSpectra : public FairTask
     TH1F** fh1_Twimhit_Zl;
     TH1F** fh1_Twimhit_Zr;
     TH2F** fh2_Twimhit_ZrZl;
+    TH1F* fh1_twim_ZSum[3];
 
   public:
     ClassDef(R3BSofAtOnlineSpectra, 0)

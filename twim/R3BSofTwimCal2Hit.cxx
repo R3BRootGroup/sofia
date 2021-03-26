@@ -20,6 +20,7 @@
 #include <iomanip>
 
 // Twim headers
+#include "R3BSofTofWHitData.h"
 #include "R3BSofTwimCal2Hit.h"
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimHitData.h"
@@ -33,9 +34,11 @@ R3BSofTwimCal2Hit::R3BSofTwimCal2Hit()
     , fNumAnodesAngleFit(0)
     , fNumParams(2)
     , CalZParams(NULL)
+    , CalZTofParams(NULL)
     , fCal_Par(NULL)
     , fTwimHitDataCA(NULL)
     , fTwimCalDataCA(NULL)
+    , fHitItemsTofW(NULL)
     , fOnline(kFALSE)
 {
 }
@@ -48,9 +51,11 @@ R3BSofTwimCal2Hit::R3BSofTwimCal2Hit(const char* name, Int_t iVerbose)
     , fNumAnodesAngleFit(0)
     , fNumParams(2)
     , CalZParams(NULL)
+    , CalZTofParams(NULL)
     , fCal_Par(NULL)
     , fTwimHitDataCA(NULL)
     , fTwimCalDataCA(NULL)
+    , fHitItemsTofW(NULL)
     , fOnline(kFALSE)
 {
 }
@@ -63,6 +68,8 @@ R3BSofTwimCal2Hit::~R3BSofTwimCal2Hit()
         delete fTwimHitDataCA;
     if (fTwimCalDataCA)
         delete fTwimCalDataCA;
+    if (fHitItemsTofW)
+        delete fHitItemsTofW;
 }
 
 void R3BSofTwimCal2Hit::SetParContainers()
@@ -105,6 +112,14 @@ void R3BSofTwimCal2Hit::SetParameter()
             StatusAnodes[s][i] = fCal_Par->GetInUse(s + 1, i + 1);
         }
 
+    if (fHitItemsTofW)
+    {
+        LOG(INFO) << "R3BSofTwimCal2Hit: Nb parameters for charge-Z vs Tof correction: " << fNumParams;
+        CalZTofParams = new TArrayF();
+        Int_t size_tof = fNumSec * fNumParams;
+        CalZTofParams->Set(size_tof);
+        CalZTofParams = fCal_Par->GetZTofHitPar(); // Array with the Cal parameters
+    }
     LOG(INFO) << "R3BSofTwimCal2Hit: Nb parameters for charge-Z: " << fNumParams;
     CalZParams = new TArrayF();
     Int_t array_size = fNumSec * fNumParams;
@@ -123,6 +138,10 @@ void R3BSofTwimCal2Hit::SetParameter()
         }
         else if (fNumParams == 3)
         {
+            if (fHitItemsTofW)
+                LOG(INFO) << "R3BSofTwimCal2Hit parameters for charge-Z vs tof:" << CalZTofParams->GetAt(s * fNumParams)
+                          << " : " << CalZTofParams->GetAt(s * fNumParams + 1) << " : "
+                          << CalZTofParams->GetAt(s * fNumParams + 2);
             LOG(INFO) << "R3BSofTwimCal2Hit parameters for charge-Z:" << CalZParams->GetAt(s * fNumParams) << " : "
                       << CalZParams->GetAt(s * fNumParams + 1) << " : " << CalZParams->GetAt(s * fNumParams + 2);
             fZ0[s] = CalZParams->GetAt(s * fNumParams);
@@ -146,11 +165,18 @@ InitStatus R3BSofTwimCal2Hit::Init()
         return kFATAL;
     }
 
+    // get access to cal data of the Twim
     fTwimCalDataCA = (TClonesArray*)rootManager->GetObject("TwimCalData");
     if (!fTwimCalDataCA)
     {
+        LOG(ERROR) << "R3BSofTwimCal2Hit::TwimCalData not found";
         return kFATAL;
     }
+
+    // get access to hit data of the Tof-Wall
+    fHitItemsTofW = (TClonesArray*)rootManager->GetObject("TofWHitData");
+    if (!fHitItemsTofW)
+        LOG(WARNING) << "R3BSofTwimCal2Hit::TofWHitData not found";
 
     // OUTPUT DATA
     fTwimHitDataCA = new TClonesArray("R3BSofTwimHitData", 10);
@@ -209,26 +235,69 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
         }
     }
 
+    // std::cout<<"Event " <<std::endl;
     for (Int_t i = 0; i < nHits; i++)
     {
         CalDat[i] = (R3BSofTwimCalData*)(fTwimCalDataCA->At(i));
         secId = CalDat[i]->GetSecID();
         anodeId = CalDat[i]->GetAnodeID();
-        energyperanode[secId][anodeId] = CalDat[i]->GetEnergy();
-        dt[secId][anodeId] = CalDat[i]->GetDTime();
-        // std::cout<< secId <<" "<<anodeId <<std::endl;
+        if (energyperanode[secId][anodeId] == 0)
+        {
+            energyperanode[secId][anodeId] = CalDat[i]->GetEnergy();
+            dt[secId][anodeId] = CalDat[i]->GetDTime();
+            // std::cout<< secId <<" "<<anodeId <<" "<< CalDat[i]->GetEnergy() <<std::endl;
+        }
+    }
+
+    // Fill TofW Hit data
+    Double_t tof[2] = { 0., 0. };
+    Int_t padid[2] = { 0, 0 };
+    if (fHitItemsTofW && fHitItemsTofW->GetEntriesFast() > 0)
+    {
+        nHits = fHitItemsTofW->GetEntriesFast();
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
+            R3BSofTofWHitData* hit = (R3BSofTofWHitData*)fHitItemsTofW->At(ihit);
+            if (!hit)
+                continue;
+            if (padid[0] == 0)
+            {
+                padid[0] = hit->GetPaddle();
+                tof[0] = hit->GetTof();
+            }
+            else
+            {
+                if (hit->GetPaddle() > padid[0] && hit->GetPaddle() - padid[0] > 1)
+                {
+                    padid[1] = hit->GetPaddle();
+                    tof[1] = hit->GetTof(); // right
+                }
+                else if (hit->GetPaddle() - padid[0] < -1)
+                {
+                    tof[1] = tof[0]; // right
+                    padid[1] = padid[0];
+                    tof[0] = hit->GetTof(); // new left
+                    padid[0] = hit->GetPaddle();
+                }
+            }
+        }
     }
 
     // calculate truncated dE from 16 anodes, Twim-MUSIC
-    for (Int_t i = 0; i < fNumSec;)
+    for (Int_t i = 0; i < fNumSec; i++)
     {
         Double_t nba = 0, theta = -5000., Esum = 0.;
         fNumAnodesAngleFit = 0;
         for (Int_t j = 0; j < fNumAnodes; j++)
         {
+            // if(i==0){
+            // if (((energyperanode[i][j] > 0 && energyperanode[i+1][j] == 0) || (energyperanode[i][j] == 0 &&
+            // energyperanode[i+1][j] > 0)) && energyperanode[i][j] < 65535 && StatusAnodes[i][j] == 1 &&
+            // energyperanode[i+1][j] < 65535 && StatusAnodes[i+1][j] == 1)
+
             if (energyperanode[i][j] > 0 && energyperanode[i][j] < 65535 && StatusAnodes[i][j] == 1)
             {
-                Esum = Esum + energyperanode[i][j] + energyperanode[i + 1][j];
+                Esum += energyperanode[i][j];
                 if (dt[i][j] > 0.)
                     good_dt[fNumAnodesAngleFit] = dt[i][j];
                 else if (dt[i + 1][j] > 0.)
@@ -237,11 +306,25 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
                 fNumAnodesAngleFit++;
                 nba++;
             }
+            /*}else
+            if ( energyperanode[i][j] > 0 && energyperanode[i][j] < 65535 && StatusAnodes[i][j] == 1 &&
+            energyperanode[i+1][j] < 65535 && StatusAnodes[i+1][j] == 1)
+            {
+                Esum = Esum + energyperanode[i][j];// + energyperanode[i + 1][j];
+                if (dt[i][j] > 0.)
+                    good_dt[fNumAnodesAngleFit] = dt[i][j];
+                else if (dt[i + 1][j] > 0.)
+                    good_dt[fNumAnodesAngleFit] = dt[i + 1][j];
+                fPosAnodes[fNumAnodesAngleFit] = fCal_Par->GetAnodePos(j + 1);
+                fNumAnodesAngleFit++;
+                nba++;
+            }
+            */
         }
 
-        if (nba > 0 && (Esum / nba) > 0.)
+        if (nba > 8 && (Esum / nba) > 0.)
         {
-            if (fNumAnodesAngleFit > 4)
+            if (fNumAnodesAngleFit > 8)
             {
                 fPosZ.Use(fNumAnodesAngleFit, fPosAnodes);
                 TMatrixD A(fNumAnodesAngleFit, 2);
@@ -254,13 +337,33 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
                 TVectorD c_svd_r = svd.Solve(dt_r, ok);
                 theta = c_svd_r[1];
             }
-            Double_t zhit =
-                fZ0[i] + fZ1[i] * TMath::Sqrt(Esum / nba) + fZ2[i] * TMath::Sqrt(Esum / nba) * TMath::Sqrt(Esum / nba);
-            // if (zhit > 0 && theta > -5000.)
-            if (zhit > 0)
-                AddHitData(i, theta, zhit, Esum / nba);
+            if (CalZTofParams)
+            {
+                Double_t Esum_mean = Esum / nba;
+                if (i < 2)
+                    Esum_mean = Esum_mean - (CalZTofParams->GetAt(i * fNumParams) +
+                                             CalZTofParams->GetAt(i * fNumParams + 1) * tof[0] +
+                                             CalZTofParams->GetAt(i * fNumParams + 2) * tof[0] * tof[0]);
+                else
+                    Esum_mean = Esum_mean - (CalZTofParams->GetAt(i * fNumParams) +
+                                             CalZTofParams->GetAt(i * fNumParams + 1) * tof[1] +
+                                             CalZTofParams->GetAt(i * fNumParams + 2) * tof[1] * tof[1]);
+
+                Double_t zhit = fZ0[i] + fZ1[i] * TMath::Sqrt(Esum_mean) + fZ2[i] * Esum_mean;
+                // if (zhit > 0 && theta > -5000.)
+                if (zhit > 0)
+                    AddHitData(i, theta, zhit, Esum_mean);
+            }
+            else
+            {
+                Double_t Esum_mean = Esum / nba;
+                Double_t zhit = fZ0[i] + fZ1[i] * TMath::Sqrt(Esum_mean) + fZ2[i] * Esum_mean;
+                // if (zhit > 0 && theta > -5000.)
+                if (zhit > 0)
+                    AddHitData(i, theta, zhit, Esum_mean);
+            }
         }
-        i = i + 2;
+        // i = i + 2;
     }
 
     if (CalDat)
