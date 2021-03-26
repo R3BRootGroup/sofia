@@ -372,6 +372,52 @@ InitStatus R3BSofAtOnlineSpectra::Init()
         fh2_Twimhit_ZrZl[i]->Draw("colz");
     }
 
+    cTwimZsum = new TCanvas("At_Twim_Zsum", "ZSum correlated to At sections", 10, 10, 800, 700);
+    fh1_twim_ZSum[0] = new TH1F("fh1_Twim_ZSum_Atsec1", "Twim: ZL+ZR with AT conditions", 800, 60, 100);
+    fh1_twim_ZSum[0]->GetXaxis()->SetTitle("Fissioning system --> Z [atomic number]");
+    fh1_twim_ZSum[0]->GetYaxis()->SetTitle("Counts");
+    fh1_twim_ZSum[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_twim_ZSum[0]->GetXaxis()->CenterTitle(true);
+    fh1_twim_ZSum[0]->GetYaxis()->CenterTitle(true);
+    fh1_twim_ZSum[0]->GetXaxis()->SetLabelSize(0.045);
+    fh1_twim_ZSum[0]->GetXaxis()->SetTitleSize(0.045);
+    fh1_twim_ZSum[0]->GetYaxis()->SetLabelSize(0.045);
+    fh1_twim_ZSum[0]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ZSum[0]->SetLineColor(4);
+    fh1_twim_ZSum[0]->Draw("");
+    fh1_twim_ZSum[1] = new TH1F("fh1_Twim_ZSum_Atsec2", "", 800, 60, 100);
+    fh1_twim_ZSum[1]->SetLineColor(2);
+    fh1_twim_ZSum[1]->Draw("same");
+    fh1_twim_ZSum[2] = new TH1F("fh1_Twim_ZSum_Atsec3", "", 800, 60, 100);
+    fh1_twim_ZSum[2]->SetLineColor(3);
+    fh1_twim_ZSum[2]->Draw("same");
+
+    TLegend* leg = new TLegend(0.05, 0.9, 0.39, 0.9999, NULL, "brNDC");
+    leg->SetBorderSize(0);
+    leg->SetTextFont(62);
+    leg->SetTextSize(0.03);
+    leg->SetLineColor(1);
+    leg->SetLineStyle(1);
+    leg->SetLineWidth(1);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    TLegendEntry* entry = leg->AddEntry("null", "AT Section 1", "l");
+    entry->SetLineColor(4);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    entry = leg->AddEntry("null", "AT Section 2", "l");
+    entry->SetLineColor(2);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    entry = leg->AddEntry("null", "AT Section 3", "l");
+    entry->SetLineColor(3);
+    entry->SetLineStyle(1);
+    entry->SetLineWidth(3);
+    entry->SetTextFont(62);
+    leg->Draw();
+
     // Mapped data folder for the Active Target
     TFolder* MapfolAt = new TFolder("Map", "At mapped info");
     if (fMappedItemsAt)
@@ -388,6 +434,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     {
         folAtvsTwim->Add(cTwimZs[i]);
     }
+    folAtvsTwim->Add(cTwimZsum);
 
     // MAIN FOLDER-AT
     TFolder* mainfolAt = new TFolder("ActiveTarget", "At info");
@@ -429,6 +476,7 @@ void R3BSofAtOnlineSpectra::Reset_Histo()
             fh1_Twimhit_Zl[i]->Reset();
             fh1_Twimhit_Zr[i]->Reset();
             fh2_Twimhit_ZrZl[i]->Reset();
+            fh1_twim_ZSum[i]->Reset();
         }
 }
 
@@ -536,9 +584,9 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
                         if (!hit)
                             continue;
                         // FIXME: this is defined only for the experiment 4-march-2021
-                        if (hit->GetSecID() == 0)
+                        if (hit->GetSecID() == 0 || hit->GetSecID() == 1)
                             zl = hit->GetZcharge();
-                        else if (hit->GetSecID() == 2)
+                        else if (hit->GetSecID() == 2 || hit->GetSecID() == 3)
                             zr = hit->GetZcharge();
                     }
 
@@ -548,7 +596,10 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
                         fh1_Twimhit_Zr[a]->Fill(zr);
 
                     if (zr > 0. && zl > 0.)
+                    {
                         fh2_Twimhit_ZrZl[a]->Fill(zl, zr);
+                        fh1_twim_ZSum[a]->Fill(zl + zr);
+                    }
                 }
             }
         }
@@ -579,6 +630,7 @@ void R3BSofAtOnlineSpectra::FinishTask()
     {
         for (Int_t i = 0; i < fNumAnodes - 1; i++)
             cTwimZs[i]->Write();
+        cTwimZsum->Write();
     }
 }
 

@@ -116,7 +116,8 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TCanvas** cTwimMap_DeltaTrefTrig;
     TCanvas* cTwimTheta_vs_mwpc3x;
     TCanvas* cTwimZ_vs_mwpc3x;
-    TCanvas* cTwimZs; //, *cCalifa_opening;
+    TCanvas* cTwimZs[2]; //, *cCalifa_opening;
+    TCanvas* cTwimZsum;
     TCanvas* cTwimZsvsTofL[4];
     TCanvas* cTwimZsvsTofR[4];
     TCanvas* cTwimZsvsTof;
@@ -146,13 +147,14 @@ class R3BSofTwimOnlineSpectra : public FairTask
     TH2F* fh2_TwimTheta_vs_mwpc3x;
     TH2F* fh2_TwimZ_vs_mwpc3x;
     // s455
-    TH2F* fh2_Twimhit_ZrZl;
-    TH1F* fh1_Twimhit_Zr;
-    TH1F* fh1_Twimhit_Zl;
-    TH2F* fh2_Twimhit_ZlvsTof;
-    TH2F* fh2_Twimhit_ZrvsTof;
+    TH2F* fh2_Twimhit_ZrZl[2];
+    TH1F* fh1_Twimhit_Zr[2];
+    TH1F* fh1_Twimhit_Zl[2];
+    TH2F* fh2_Twimhit_ZlvsTof[2];
+    TH2F* fh2_Twimhit_ZrvsTof[2];
     TH2F* fh2_Twimhit_ZlvsTofl[24];
     TH2F* fh2_Twimhit_ZrvsTofr[24];
+    TH1F* fh1_twim_ZSum[2];
 
   public:
     ClassDef(R3BSofTwimOnlineSpectra, 1)

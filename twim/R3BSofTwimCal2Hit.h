@@ -60,6 +60,7 @@ class R3BSofTwimCal2Hit : public FairTask
     Float_t fZ0[4], fZ1[4], fZ2[4];
     Int_t StatusAnodes[4][16]; // Sections and anodes
     Double_t fPosAnodes[16];   // Position-Z of each anode
+    TArrayF* CalZTofParams;
     TArrayF* CalZParams;
     TVectorD fPosZ;
 
@@ -68,6 +69,7 @@ class R3BSofTwimCal2Hit : public FairTask
     R3BSofTwimHitPar* fCal_Par;   /**< Parameter container. >*/
     TClonesArray* fTwimCalDataCA; /**< Array with Twim Cal-input data. >*/
     TClonesArray* fTwimHitDataCA; /**< Array with Twim Hit-output data. >*/
+    TClonesArray* fHitItemsTofW;  /**< Array with tofw-hit items. */
 
     /** Private method TwimHitData **/
     //** Adds a TwimHitData to the detector

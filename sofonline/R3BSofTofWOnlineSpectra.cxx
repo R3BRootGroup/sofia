@@ -203,7 +203,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     sprintf(Name1, "SofTofW_RawPos_AtTcal_Mult1");
     cTofWRawPos = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
     cTofWRawPos->Divide(7, 4);
-    sprintf(Name1, "SofTofW_Rawaos_AtSingleTcal");
+    sprintf(Name1, "SofTofW_RawPos_AtSingleTcal");
     cTofWRawPosST = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
     cTofWRawPosST->Divide(7, 4);
     for (Int_t i = 0; i < NbDets; i++)

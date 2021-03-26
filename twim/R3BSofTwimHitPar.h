@@ -47,15 +47,26 @@ class R3BSofTwimHitPar : public FairParGenericSet
     const Int_t GetInUse(Int_t sec, Int_t anode) { return fIn_use->GetAt((sec - 1) * 16 + anode - 1); }
     const Float_t GetAnodePos(Int_t anode) { return fAnode_pos->GetAt(anode - 1); }
     TArrayF* GetZHitPar() { return fDetZHitParams; }
+    TArrayF* GetZTofHitPar() { return fTofHitParams; }
 
     // 1-based for sectwim and nbscitof
-    TArrayF* GetTofCorrectionPar(Int_t sectwim, Int_t nbscitof)
+    /*   TArrayF* GetTofCorrectionPar(Int_t sectwim, Int_t nbscitof)
+       {
+           // sectwim 1 for left and 2 for right
+           TArrayF* fPar = new TArrayF(3);
+           fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof - 1), 0);
+           fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof), 1);
+           fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof + 1), 2);
+           return fPar;
+       }
+       */
+    TArrayF* GetTofCorrectionPar(Int_t sectwim)
     {
         // sectwim 1 for left and 2 for right
         TArrayF* fPar = new TArrayF(3);
-        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof - 1), 0);
-        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof), 1);
-        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 28 * 3 + nbscitof + 1), 2);
+        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 3), 0);
+        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 3 + 1), 1);
+        fPar->AddAt(fTofHitParams->GetAt((sectwim - 1) * 3 + 2), 2);
         return fPar;
     }
 
@@ -64,15 +75,23 @@ class R3BSofTwimHitPar : public FairParGenericSet
     void SetNumParZFit(Int_t nbParams) { fNumParamsZFit = nbParams; }
     void SetInUse(Int_t value, Int_t anode) { fIn_use->AddAt(value, anode - 1); }
     void SetZHitPar(Double_t cc, Int_t ii) { fDetZHitParams->AddAt(cc, ii); }
+    void SetZTofHitPar(Double_t cc, Int_t ii) { fTofHitParams->AddAt(cc, ii); }
     void SetAnodePos(Float_t value, Int_t anode) { fAnode_pos->AddAt(value, anode - 1); }
 
     // 1-based for sectwim and nbscitof
-    void SetTofCorrectionPar(Float_t value[3], Int_t sectwim, Int_t nbscitof)
+    /*void SetTofCorrectionPar(Float_t value[3], Int_t sectwim, Int_t nbscitof)
     {
         // sectwim 1 for left and 2 for right
         fTofHitParams->AddAt(value[0], (sectwim - 1) * 28 * 3 + nbscitof - 1);
         fTofHitParams->AddAt(value[1], (sectwim - 1) * 28 * 3 + nbscitof);
         fTofHitParams->AddAt(value[2], (sectwim - 1) * 28 * 3 + nbscitof + 1);
+    }*/
+    void SetTofCorrectionPar(Float_t value[3], Int_t sectwim)
+    {
+        // sectwim 1 for left and 2 for right
+        fTofHitParams->AddAt(value[0], (sectwim - 1) * 3);
+        fTofHitParams->AddAt(value[1], (sectwim - 1) * 3 + 1);
+        fTofHitParams->AddAt(value[2], (sectwim - 1) * 3 + 2);
     }
 
     // Create more Methods if you need them!

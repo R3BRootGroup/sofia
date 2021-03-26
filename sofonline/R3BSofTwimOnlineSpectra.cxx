@@ -627,64 +627,124 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     //-----------------------------------------------------------
     // Hit data
     // s455 experiment: init of histograms ----------------------
-    cTwimZs = new TCanvas("Twim_ZL_vs_ZR", "Twim: Zs", 10, 10, 800, 700);
-    cTwimZs->Divide(2, 1);
-    cTwimZs->cd(1);
-    fh1_Twimhit_Zl = new TH1F("fh1_Twim_zl", "Twim: ZL(blue) vs ZR(red)", 1000, 1, 98);
-    fh1_Twimhit_Zl->GetXaxis()->SetTitle("Z [atomic number]");
-    fh1_Twimhit_Zl->GetYaxis()->SetTitle("Counts");
-    fh1_Twimhit_Zl->GetYaxis()->SetTitleOffset(1.1);
-    fh1_Twimhit_Zl->GetXaxis()->CenterTitle(true);
-    fh1_Twimhit_Zl->GetYaxis()->CenterTitle(true);
-    fh1_Twimhit_Zl->GetXaxis()->SetLabelSize(0.045);
-    fh1_Twimhit_Zl->GetXaxis()->SetTitleSize(0.045);
-    fh1_Twimhit_Zl->GetYaxis()->SetLabelSize(0.045);
-    fh1_Twimhit_Zl->GetYaxis()->SetTitleSize(0.045);
-    fh1_Twimhit_Zl->SetLineColor(4);
-    fh1_Twimhit_Zl->Draw("");
-    fh1_Twimhit_Zr = new TH1F("fh1_Twim_zr", "Twim: ZR", 1000, 1, 98);
-    fh1_Twimhit_Zr->SetLineColor(2);
-    fh1_Twimhit_Zr->Draw("same");
-    cTwimZs->cd(2);
-    fh2_Twimhit_ZrZl = new TH2F("fh2_Twim_zlzr", "Twim: ZL vs ZR", 1500, 1, 98, 1500, 1, 98);
-    fh2_Twimhit_ZrZl->GetXaxis()->SetTitle("Charge ZL");
-    fh2_Twimhit_ZrZl->GetYaxis()->SetTitle("Charge ZR");
-    fh2_Twimhit_ZrZl->GetYaxis()->SetTitleOffset(1.1);
-    fh2_Twimhit_ZrZl->GetXaxis()->CenterTitle(true);
-    fh2_Twimhit_ZrZl->GetYaxis()->CenterTitle(true);
-    fh2_Twimhit_ZrZl->GetXaxis()->SetLabelSize(0.045);
-    fh2_Twimhit_ZrZl->GetXaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_ZrZl->GetYaxis()->SetLabelSize(0.045);
-    fh2_Twimhit_ZrZl->GetYaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_ZrZl->Draw("colz");
+    cTwimZs[0] = new TCanvas("Twim_ZL1_vs_ZR3", "Twim: Zs", 10, 10, 800, 700);
+    cTwimZs[0]->Divide(2, 1);
+    cTwimZs[0]->cd(1);
+    fh1_Twimhit_Zl[0] = new TH1F("fh1_Twim_zl1", "Twim: ZL1(blue) and ZR3(red)", 1200, 5, 100);
+    fh1_Twimhit_Zl[0]->GetXaxis()->SetTitle("Z [atomic number]");
+    fh1_Twimhit_Zl[0]->GetYaxis()->SetTitle("Counts");
+    fh1_Twimhit_Zl[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Twimhit_Zl[0]->GetXaxis()->CenterTitle(true);
+    fh1_Twimhit_Zl[0]->GetYaxis()->CenterTitle(true);
+    fh1_Twimhit_Zl[0]->GetXaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_Zl[0]->GetXaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_Zl[0]->GetYaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_Zl[0]->GetYaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_Zl[0]->SetLineColor(4);
+    fh1_Twimhit_Zl[0]->Draw("");
+    fh1_Twimhit_Zr[0] = new TH1F("fh1_Twim_zr1", "Twim: ZR sec 3", 1200, 5, 100);
+    fh1_Twimhit_Zr[0]->SetLineColor(2);
+    fh1_Twimhit_Zr[0]->Draw("same");
+    cTwimZs[0]->cd(2);
+    fh2_Twimhit_ZrZl[0] = new TH2F("fh2_Twim_zlzr1", "Twim: ZL sec 1 vs ZR sec 3", 1200, 5, 100, 1200, 5, 100);
+    fh2_Twimhit_ZrZl[0]->GetXaxis()->SetTitle("Charge ZL");
+    fh2_Twimhit_ZrZl[0]->GetYaxis()->SetTitle("Charge ZR");
+    fh2_Twimhit_ZrZl[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZrZl[0]->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrZl[0]->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrZl[0]->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrZl[0]->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrZl[0]->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrZl[0]->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrZl[0]->Draw("colz");
+
+    cTwimZs[1] = new TCanvas("Twim_ZL2_vs_ZR4", "Twim: Zs", 10, 10, 800, 700);
+    cTwimZs[1]->Divide(2, 1);
+    cTwimZs[1]->cd(1);
+    fh1_Twimhit_Zl[1] = new TH1F("fh1_Twim_zl2", "Twim: ZL2(blue) and ZR4(red)", 1200, 5, 100);
+    fh1_Twimhit_Zl[1]->GetXaxis()->SetTitle("Z [atomic number]");
+    fh1_Twimhit_Zl[1]->GetYaxis()->SetTitle("Counts");
+    fh1_Twimhit_Zl[1]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_Twimhit_Zl[1]->GetXaxis()->CenterTitle(true);
+    fh1_Twimhit_Zl[1]->GetYaxis()->CenterTitle(true);
+    fh1_Twimhit_Zl[1]->GetXaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_Zl[1]->GetXaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_Zl[1]->GetYaxis()->SetLabelSize(0.045);
+    fh1_Twimhit_Zl[1]->GetYaxis()->SetTitleSize(0.045);
+    fh1_Twimhit_Zl[1]->SetLineColor(4);
+    fh1_Twimhit_Zl[1]->Draw("");
+    fh1_Twimhit_Zr[1] = new TH1F("fh1_Twim_zr2", "Twim: ZR", 1200, 5, 100);
+    fh1_Twimhit_Zr[1]->SetLineColor(2);
+    fh1_Twimhit_Zr[1]->Draw("same");
+    cTwimZs[1]->cd(2);
+    fh2_Twimhit_ZrZl[1] = new TH2F("fh2_Twim_zlzr2", "Twim: ZL sec 2 vs ZR sec 4", 1200, 5, 100, 1200, 5, 100);
+    fh2_Twimhit_ZrZl[1]->GetXaxis()->SetTitle("Charge ZL");
+    fh2_Twimhit_ZrZl[1]->GetYaxis()->SetTitle("Charge ZR");
+    fh2_Twimhit_ZrZl[1]->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZrZl[1]->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrZl[1]->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrZl[1]->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrZl[1]->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrZl[1]->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrZl[1]->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrZl[1]->Draw("colz");
 
     cTwimZsvsTof = new TCanvas("Twim_Zs_vs_Tof", "Twim: Zs vs Tof", 10, 10, 800, 700);
-    cTwimZsvsTof->Divide(2, 1);
+    cTwimZsvsTof->Divide(2, 2);
     cTwimZsvsTof->cd(1);
-    fh2_Twimhit_ZlvsTof = new TH2F("fh1_Twim_zlvstof", "Twim: ZL vs ToF", 1500, 25., 40., 1500, 1, 98);
-    fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitle("Charge ZL");
-    fh2_Twimhit_ZlvsTof->GetXaxis()->SetTitle("ToF [ns]");
-    fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitleOffset(1.1);
-    fh2_Twimhit_ZlvsTof->GetXaxis()->CenterTitle(true);
-    fh2_Twimhit_ZlvsTof->GetYaxis()->CenterTitle(true);
-    fh2_Twimhit_ZlvsTof->GetXaxis()->SetLabelSize(0.045);
-    fh2_Twimhit_ZlvsTof->GetXaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_ZlvsTof->GetYaxis()->SetLabelSize(0.045);
-    fh2_Twimhit_ZlvsTof->GetYaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_ZlvsTof->SetLineColor(4);
-    fh2_Twimhit_ZlvsTof->Draw("colz");
+    fh2_Twimhit_ZlvsTof[0] =
+        new TH2F("fh1_Twim_zlvstof_sec1", "Twim: ZL vs ToF section 1", 1000, 29., 40., 1000, 5, 100);
+    fh2_Twimhit_ZlvsTof[0]->GetYaxis()->SetTitle("Charge ZL");
+    fh2_Twimhit_ZlvsTof[0]->GetXaxis()->SetTitle("ToF [ns]");
+    fh2_Twimhit_ZlvsTof[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZlvsTof[0]->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZlvsTof[0]->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZlvsTof[0]->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZlvsTof[0]->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZlvsTof[0]->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZlvsTof[0]->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZlvsTof[0]->SetLineColor(4);
+    fh2_Twimhit_ZlvsTof[0]->Draw("colz");
     cTwimZsvsTof->cd(2);
-    fh2_Twimhit_ZrvsTof = new TH2F("fh2_Twim_zrvstof", "Twim: ZR vs ToF", 1500, 25., 40., 1500, 1, 98);
-    fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitle("Charge ZR");
-    fh2_Twimhit_ZrvsTof->GetXaxis()->SetTitle("ToF [ns]");
-    fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitleOffset(1.1);
-    fh2_Twimhit_ZrvsTof->GetXaxis()->CenterTitle(true);
-    fh2_Twimhit_ZrvsTof->GetYaxis()->CenterTitle(true);
-    fh2_Twimhit_ZrvsTof->GetXaxis()->SetLabelSize(0.045);
-    fh2_Twimhit_ZrvsTof->GetXaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_ZrvsTof->GetYaxis()->SetLabelSize(0.045);
-    fh2_Twimhit_ZrvsTof->GetYaxis()->SetTitleSize(0.045);
-    fh2_Twimhit_ZrvsTof->Draw("colz");
+    fh2_Twimhit_ZlvsTof[1] =
+        new TH2F("fh1_Twim_zlvstof_sec2", "Twim: ZL vs ToF section 2", 1000, 29., 40., 1000, 5, 100);
+    fh2_Twimhit_ZlvsTof[1]->GetYaxis()->SetTitle("Charge ZL");
+    fh2_Twimhit_ZlvsTof[1]->GetXaxis()->SetTitle("ToF [ns]");
+    fh2_Twimhit_ZlvsTof[1]->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZlvsTof[1]->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZlvsTof[1]->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZlvsTof[1]->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZlvsTof[1]->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZlvsTof[1]->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZlvsTof[1]->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZlvsTof[1]->SetLineColor(4);
+    fh2_Twimhit_ZlvsTof[1]->Draw("colz");
+    cTwimZsvsTof->cd(3);
+    fh2_Twimhit_ZrvsTof[0] =
+        new TH2F("fh2_Twim_zrvstof_sec3", "Twim: ZR vs ToF section 3", 1000, 29., 40., 1000, 5, 100);
+    fh2_Twimhit_ZrvsTof[0]->GetYaxis()->SetTitle("Charge ZR");
+    fh2_Twimhit_ZrvsTof[0]->GetXaxis()->SetTitle("ToF [ns]");
+    fh2_Twimhit_ZrvsTof[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZrvsTof[0]->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrvsTof[0]->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrvsTof[0]->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrvsTof[0]->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrvsTof[0]->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrvsTof[0]->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrvsTof[0]->Draw("colz");
+    cTwimZsvsTof->cd(4);
+    fh2_Twimhit_ZrvsTof[1] =
+        new TH2F("fh2_Twim_zrvstof_sec4", "Twim: ZR vs ToF section 4", 1000, 29., 40., 1000, 5, 100);
+    fh2_Twimhit_ZrvsTof[1]->GetYaxis()->SetTitle("Charge ZR");
+    fh2_Twimhit_ZrvsTof[1]->GetXaxis()->SetTitle("ToF [ns]");
+    fh2_Twimhit_ZrvsTof[1]->GetYaxis()->SetTitleOffset(1.1);
+    fh2_Twimhit_ZrvsTof[1]->GetXaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrvsTof[1]->GetYaxis()->CenterTitle(true);
+    fh2_Twimhit_ZrvsTof[1]->GetXaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrvsTof[1]->GetXaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrvsTof[1]->GetYaxis()->SetLabelSize(0.045);
+    fh2_Twimhit_ZrvsTof[1]->GetYaxis()->SetTitleSize(0.045);
+    fh2_Twimhit_ZrvsTof[1]->Draw("colz");
 
     for (Int_t i = 0; i < 4; i++)
     {
@@ -696,7 +756,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_ZL_vs_TofL%d", i * 6 + j + 1);
             sprintf(Name2, "ZL vs TofL for Sci %d", i * 6 + j + 1);
-            fh2_Twimhit_ZlvsTofl[i * 6 + j] = new TH2F(Name1, Name2, 1500, 25., 40., 1500, 1, 98);
+            fh2_Twimhit_ZlvsTofl[i * 6 + j] = new TH2F(Name1, Name2, 1000, 29., 40., 1000, 5, 100);
             fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitle("Charge ZL");
             fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetXaxis()->SetTitle("ToF [ns]");
             fh2_Twimhit_ZlvsTofl[i * 6 + j]->GetYaxis()->SetTitleOffset(1.1);
@@ -718,7 +778,7 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_ZR_vs_TofR%d", i * 6 + j + 5);
             sprintf(Name2, "ZR vs TofR for Sci %d", i * 6 + j + 5);
-            fh2_Twimhit_ZrvsTofr[i * 6 + j] = new TH2F(Name1, Name2, 1500, 25., 40., 1500, 1, 98);
+            fh2_Twimhit_ZrvsTofr[i * 6 + j] = new TH2F(Name1, Name2, 1000, 29., 40., 1000, 5, 100);
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitle("Charge ZR");
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetXaxis()->SetTitle("ToF [ns]");
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->GetYaxis()->SetTitleOffset(1.1);
@@ -732,6 +792,23 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
             fh2_Twimhit_ZrvsTofr[i * 6 + j]->Draw("colz");
         }
     }
+
+    cTwimZsum = new TCanvas("Twim_Zsum", "Twim: ZL+ZR", 10, 10, 800, 700);
+    fh1_twim_ZSum[0] = new TH1F("fh1_Twim_ZSum13", "Twim: ZL1+ZR3(blue) and ZL2+ZR4(red)", 800, 60, 100);
+    fh1_twim_ZSum[0]->GetXaxis()->SetTitle("Fissioning system --> Z [atomic number]");
+    fh1_twim_ZSum[0]->GetYaxis()->SetTitle("Counts");
+    fh1_twim_ZSum[0]->GetYaxis()->SetTitleOffset(1.1);
+    fh1_twim_ZSum[0]->GetXaxis()->CenterTitle(true);
+    fh1_twim_ZSum[0]->GetYaxis()->CenterTitle(true);
+    fh1_twim_ZSum[0]->GetXaxis()->SetLabelSize(0.045);
+    fh1_twim_ZSum[0]->GetXaxis()->SetTitleSize(0.045);
+    fh1_twim_ZSum[0]->GetYaxis()->SetLabelSize(0.045);
+    fh1_twim_ZSum[0]->GetYaxis()->SetTitleSize(0.045);
+    fh1_twim_ZSum[0]->SetLineColor(4);
+    fh1_twim_ZSum[0]->Draw("");
+    fh1_twim_ZSum[1] = new TH1F("fh1_Twim_ZSum24", "Twim: ZL+ZR", 800, 60, 100);
+    fh1_twim_ZSum[1]->SetLineColor(2);
+    fh1_twim_ZSum[1]->Draw("same");
 
     // s455 experiment: end of histograms -----------------------
 
@@ -796,7 +873,9 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     }
     else if (fHitItemsTwim && fExpId == 455)
     {
-        hitfolTwim->Add(cTwimZs);
+        hitfolTwim->Add(cTwimZs[0]);
+        hitfolTwim->Add(cTwimZs[1]);
+        hitfolTwim->Add(cTwimZsum);
         hitfolTwim->Add(cTwimZsvsTof);
         for (Int_t i = 0; i < 4; i++)
             hitfolTwim->Add(cTwimZsvsTofL[i]);
@@ -868,11 +947,18 @@ void R3BSofTwimOnlineSpectra::Reset_Histo()
     }
     else if (fHitItemsTwim && fExpId == 455)
     {
-        fh1_Twimhit_Zl->Reset();
-        fh1_Twimhit_Zr->Reset();
-        fh2_Twimhit_ZrZl->Reset();
-        fh2_Twimhit_ZrvsTof->Reset();
-        fh2_Twimhit_ZlvsTof->Reset();
+        fh1_Twimhit_Zl[0]->Reset();
+        fh1_Twimhit_Zr[0]->Reset();
+        fh1_Twimhit_Zl[1]->Reset();
+        fh1_Twimhit_Zr[1]->Reset();
+        fh2_Twimhit_ZrZl[0]->Reset();
+        fh2_Twimhit_ZrZl[1]->Reset();
+        fh1_twim_ZSum[0]->Reset();
+        fh1_twim_ZSum[1]->Reset();
+        fh2_Twimhit_ZrvsTof[0]->Reset();
+        fh2_Twimhit_ZlvsTof[1]->Reset();
+        fh2_Twimhit_ZrvsTof[0]->Reset();
+        fh2_Twimhit_ZlvsTof[1]->Reset();
         for (Int_t i = 0; i < 24; i++)
         {
             fh2_Twimhit_ZrvsTofr[i]->Reset();
@@ -1032,41 +1118,70 @@ void R3BSofTwimOnlineSpectra::s455()
     if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0)
     {
         Int_t nHits = fHitItemsTwim->GetEntriesFast();
-        Float_t zr = 0., zl = 0.;
+        Float_t zr[2] = { 0., 0. }, zl[2] = { 0., 0. };
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
             R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
             // FIXME: this is defined only for the experiment 4-march-2021
-            if (hit->GetSecID() == 0)
-                zl = hit->GetZcharge();
-            else if (hit->GetSecID() == 2)
-                zr = hit->GetZcharge();
+            if (hit->GetSecID() == 0 || hit->GetSecID() == 1)
+                zl[hit->GetSecID()] = hit->GetZcharge();
+            else if (hit->GetSecID() == 2 || hit->GetSecID() == 3)
+                zr[hit->GetSecID() - 2] = hit->GetZcharge();
         }
         // FIXME in the future for complex fission events!
-        if (zl > 0. && tof[0] > 0.)
+        if (zl[0] > 0. && tof[0] > 0.)
         {
-            zl = zl + 52.55 - (147.39 - 6.568844 * tof[0] + 0.1109114 * tof[0] * tof[0]) - 8.82;
-            fh2_Twimhit_ZlvsTof->Fill(tof[0], zl);
-            if (padid[0] < 25)
-                fh2_Twimhit_ZlvsTofl[padid[0] - 1]->Fill(tof[0], zl);
+            fh2_Twimhit_ZlvsTof[0]->Fill(tof[0], zl[0]);
+            // zl[0] = zl[0] + 52.55 - (147.39 - 6.568844 * tof[0] + 0.1109114 * tof[0] * tof[0]) - 8.82;
+            if (padid[0] < 24)
+                fh2_Twimhit_ZlvsTofl[padid[0] - 1]->Fill(tof[0], zl[0]);
         }
-        if (zr > 0. && tof[1] > 0.)
+        else if (zl[1] > 0. && tof[0] > 0.)
         {
-            zr = zr + 52.55 - (147.39 - 6.568844 * tof[1] + 0.1109114 * tof[1] * tof[1]) - 8.35 - 0.9;
-            fh2_Twimhit_ZrvsTof->Fill(tof[1], zr);
-            // if (padid[1] > 4)
-            //  fh2_Twimhit_ZlvsTofl[padid[1] - 5]->Fill(tof[1], zr);
+            fh2_Twimhit_ZlvsTof[1]->Fill(tof[0], zl[1]);
+            // zl[1] = zl[1] + 52.55 - (147.39 - 6.568844 * tof[0] + 0.1109114 * tof[0] * tof[0]) - 8.82;
+            if (padid[0] < 24)
+                fh2_Twimhit_ZlvsTofl[padid[0] - 1]->Fill(tof[0], zl[1]);
         }
 
-        if (zl > 0.)
-            fh1_Twimhit_Zl->Fill(zl);
-        if (zr > 0.)
-            fh1_Twimhit_Zr->Fill(zr);
+        if (zr[0] > 0. && tof[1] > 0.)
+        {
+            fh2_Twimhit_ZrvsTof[0]->Fill(tof[1], zr[0]);
+            // zr[0] = zr[0] + 52.55 - (147.39 - 6.568844 * tof[1] + 0.1109114 * tof[1] * tof[1]) - 8.35 - 0.9;
+            if (padid[1] > 4)
+                fh2_Twimhit_ZrvsTofr[padid[1] - 5]->Fill(tof[1], zr[0]);
+        }
+        else if (zr[1] > 0. && tof[1] > 0.)
+        {
 
-        if (zr > 0. && zl > 0. && tof[0] > 0. && tof[1] > 0.)
-            fh2_Twimhit_ZrZl->Fill(zl, zr);
+            fh2_Twimhit_ZrvsTof[1]->Fill(tof[1], zr[1]);
+            // zr[1] = zr[1] + 52.55 - (147.39 - 6.568844 * tof[1] + 0.1109114 * tof[1] * tof[1]) - 8.35 - 0.9;
+            if (padid[1] > 4)
+                fh2_Twimhit_ZrvsTofr[padid[1] - 5]->Fill(tof[1], zr[1]);
+        }
+
+        if (zl[0] > 0.)
+            fh1_Twimhit_Zl[0]->Fill(zl[0]);
+        else if (zl[1] > 0.)
+            fh1_Twimhit_Zl[1]->Fill(zl[1]);
+
+        if (zr[0] > 0.)
+            fh1_Twimhit_Zr[0]->Fill(zr[0]);
+        else if (zr[1] > 0.)
+            fh1_Twimhit_Zr[1]->Fill(zr[1]);
+
+        if (zr[0] > 0. && zl[0] > 0. /*&& tof[0] > 0. && tof[1] > 0.*/)
+        {
+            fh2_Twimhit_ZrZl[0]->Fill(zl[0], zr[0]);
+            fh1_twim_ZSum[0]->Fill(zl[0] + zr[0]);
+        }
+        else if (zr[1] > 0. && zl[1] > 0. /*&& tof[0] > 0. && tof[1] > 0.*/)
+        {
+            fh2_Twimhit_ZrZl[1]->Fill(zl[1], zr[1]);
+            fh1_twim_ZSum[1]->Fill(zl[1] + zr[1]);
+        }
 
         //--------------------------------------------
 
@@ -1346,7 +1461,9 @@ void R3BSofTwimOnlineSpectra::FinishTask()
         }
         else if (fExpId == 455)
         {
-            cTwimZs->Write();
+            cTwimZs[0]->Write();
+            cTwimZs[1]->Write();
+            cTwimZsum->Write();
             cTwimZsvsTof->Write();
             for (Int_t i = 0; i < 4; i++)
             {
