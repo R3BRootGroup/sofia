@@ -34,6 +34,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/trackingData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
+${R3BSOF_SOURCE_DIR}/sofdata/corrData
 ${R3BSOF_SOURCE_DIR}/sofonline
 )
 
@@ -66,6 +67,7 @@ R3BAmsCorrelationOnlineSpectra.cxx
 R3BSofTrackingOnlineSpectra.cxx
 R3BSofTrackingFissionOnlineSpectra.cxx
 R3BSofScalersOnlineSpectra.cxx
+R3BSofCorrOnlineSpectra.cxx
 )
 
 # fill list of header files from list of source files

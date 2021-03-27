@@ -228,6 +228,21 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     cMultMap2D = new TCanvas(Name1, Name1, 10, 10, 800, 700);
     cMultMap2D->Divide(2, fNbDetectors);
 
+    // === Delta Tref at TCAL === //
+    if (fNbDetectors > 1)
+    {
+        cDeltaTref = new TCanvas("DeltaTref", "DeltaTref", 10, 10, 800, 700);
+        cDeltaTref->Divide(1, fNbDetectors - 1);
+        fh1_DeltaTref = new TH1D*[fNbDetectors - 1];
+        for (int d = 0; d < fNbDetectors - 1; d++)
+        {
+            sprintf(Name1, "DeltaTref_Sci%02d_to_SciCaveC", d + 1);
+            fh1_DeltaTref[d] = new TH1D(Name1, Name1, 10000, -5500, -5400);
+            cDeltaTref->cd(d + 1);
+            fh1_DeltaTref[d]->Draw();
+        }
+    }
+
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
         // === TH1I: 1D-mult at SingleTcal level === //
@@ -655,6 +670,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         mainfolSci->Add(cPos[i]);
         mainfolSci->Add(cRawPosVsCalPos[i]);
     }
+    if (fNbDetectors > 1)
+        mainfolSci->Add(cDeltaTref);
     if (fIdS2 > 0)
     {
         for (Int_t i = fIdS2; i < fNbDetectors; i++)
@@ -706,6 +723,11 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh1_CalPos[i]->Reset();
         fh2_RawPosVsCalPos[i]->Reset();
     }
+
+    if (fNbDetectors > 1)
+        for (int d = 0; d < fNbDetectors - 1; d++)
+            fh1_DeltaTref[d]->Reset();
+
     // === TIME OF FLIGHT AND BETA === //
     if (fIdS2 > 0)
     {
@@ -805,6 +827,17 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 multTcal[iDet * fNbChannels + iCh]++;
                 iRawTimeNs[iDet * fNbChannels + iCh] = hittcal->GetRawTimeNs();
             } // --- end of loop over Tcal data --- //
+
+            if (fNbDetectors > 1)
+            {
+                for (int d = 0; d < fNbDetectors - 1; d++)
+                {
+                    fh1_DeltaTref[d]->Fill(iRawTimeNs[d * fNbChannels + 2] -
+                                           iRawTimeNs[(fNbDetectors - 1) * fNbChannels + 2]);
+                    // std::cout << "index first tref : " << d*fNbChannels+2 << ", index cave C Tref = " <<
+                    // (fNbDetectors-1)*fNbChannels+2 << std::endl;
+                }
+            }
 
             // --- --------------------- --- //
             // --- read single tcal data --- //
@@ -1013,6 +1046,9 @@ void R3BSofSciOnlineSpectra::FinishTask()
             }
         }
     } // end of loop over fNbDetectors
+
+    if (fNbDetectors > 1 && fTcal)
+        cDeltaTref->Write();
 
     if (fIdS2 > 0)
     {

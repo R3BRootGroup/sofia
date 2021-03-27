@@ -30,6 +30,7 @@
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
+#include "R3BSofCorrOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
 #include "R3BWRMasterData.h"
 #include "THttpServer.h"
@@ -88,6 +89,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fFrsOnline(NULL)
     , fTrackOnline(NULL)
     , fTrackFFOnline(NULL)
+    , fCorrOnline(NULL)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
@@ -127,6 +129,7 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fFrsOnline(NULL)
     , fTrackOnline(NULL)
     , fTrackFFOnline(NULL)
+    , fCorrOnline(NULL)
     , fWRItemsMaster(NULL)
     , fWRItemsSofia(NULL)
     , fWRItemsCalifa(NULL)
@@ -214,7 +217,13 @@ InitStatus R3BSofOnlineSpectra::Init()
         LOG(WARNING) << "R3BSofOnlineSpectra::WRS8Data not found";
     }
 
-    // Looking for AT online
+    // Looking Correlation of DAQ subsystem online
+    fCorrOnline =
+        (R3BSofCorrOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofCorrOnlineSpectra");
+    if (!fCorrOnline)
+        LOG(WARNING) << "R3BSofOnlineSpectra::SofCorrOnlineSpectra not found";
+    
+		// Looking for AT online
     fAtOnline = (R3BSofAtOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofAtOnlineSpectra");
     if (!fAtOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofAtOnlineSpectra not found";
@@ -584,6 +593,9 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
     // Reset Fission Tracking histograms if they exist somewhere
     if (fTrackFFOnline)
         fTrackFFOnline->Reset_Histo();
+    // Reset Corr histograms if they exist somewhere
+    if (fCorrOnline)
+        fCorrOnline->Reset_Histo();
 }
 
 void R3BSofOnlineSpectra::Exec(Option_t* option)
