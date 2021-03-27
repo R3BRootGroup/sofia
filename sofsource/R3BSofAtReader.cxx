@@ -81,30 +81,32 @@ Bool_t R3BSofAtReader::ReadData(EXT_STR_h101_SOFAT_onion* data)
     UShort_t nAnodesEnergy = data->SOFAT_EM;
     UShort_t nAnodesTime = data->SOFAT_TM;
     if (nAnodesEnergy != nAnodesTime)
-        LOG(ERROR) << "R3BSofAtReader::ReadData ERROR ! NOT THE SAME NUMBER OF ANODES HITTED IN ENERGY (" << nAnodesEnergy << ") AND TIME (" << nAnodesTime << ")";
+        LOG(ERROR) << "R3BSofAtReader::ReadData ERROR ! NOT THE SAME NUMBER OF ANODES HITTED IN ENERGY ("
+                   << nAnodesEnergy << ") AND TIME (" << nAnodesTime << ")";
 
     // --- energy and time are sorted
     uint32_t curAnodeTimeStart = 0;
     uint32_t curAnodeEnergyStart = 0;
-    for (UShort_t a = 0; a < nAnodesTime; a++){
-      // EMI and TMI give the 1-based anode number
-      UShort_t idAnodeTime = data->SOFAT_TMI[a];
-      UShort_t idAnodeEnergy = data->SOFAT_EMI[a];
-      if (idAnodeEnergy != idAnodeTime){
-        LOG(ERROR) << "R3BSofAtReader::ReadData ERROR ! MISMATCH FOR ANODE ID ";
-	LOG(ERROR) << "IN ENERGY #" << idAnodeEnergy << " AND TIME #" << idAnodeTime;
-      }
-      uint32_t nextAnodeTimeStart = data->SOFAT_TME[a];
-      uint32_t nextAnodeEnergyStart = data->SOFAT_EME[a];
-      if ((nextAnodeTimeStart - curAnodeTimeStart) != (nextAnodeEnergyStart - curAnodeEnergyStart))
-        LOG(ERROR) << "R3BSofAtReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
-      for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++){
-        pileupFLAG = (data->SOFAT_Ev[hit] & 0x00040000) >> 18;
-        overflowFLAG = (data->SOFAT_Ev[hit] & 0x00080000) >> 19;
-        new ((*fArray)[fArray->GetEntriesFast()]) R3BSofAtMappedData(idAnodeEnergy,
-                                                                     data->SOFAT_Ev[hit],
-                                                                     data->SOFAT_Tv[hit],
-                                                                     pileupFLAG,overflowFLAG);
+    for (UShort_t a = 0; a < nAnodesTime; a++)
+    {
+        // EMI and TMI give the 1-based anode number
+        UShort_t idAnodeTime = data->SOFAT_TMI[a];
+        UShort_t idAnodeEnergy = data->SOFAT_EMI[a];
+        if (idAnodeEnergy != idAnodeTime)
+        {
+            LOG(ERROR) << "R3BSofAtReader::ReadData ERROR ! MISMATCH FOR ANODE ID ";
+            LOG(ERROR) << "IN ENERGY #" << idAnodeEnergy << " AND TIME #" << idAnodeTime;
+        }
+        uint32_t nextAnodeTimeStart = data->SOFAT_TME[a];
+        uint32_t nextAnodeEnergyStart = data->SOFAT_EME[a];
+        if ((nextAnodeTimeStart - curAnodeTimeStart) != (nextAnodeEnergyStart - curAnodeEnergyStart))
+            LOG(ERROR) << "R3BSofAtReader::ReadData ERROR ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
+        for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
+        {
+            pileupFLAG = (data->SOFAT_Ev[hit] & 0x00040000) >> 18;
+            overflowFLAG = (data->SOFAT_Ev[hit] & 0x00080000) >> 19;
+            new ((*fArray)[fArray->GetEntriesFast()])
+                R3BSofAtMappedData(idAnodeEnergy, data->SOFAT_Ev[hit], data->SOFAT_Tv[hit], pileupFLAG, overflowFLAG);
         }
         curAnodeEnergyStart = nextAnodeEnergyStart;
         curAnodeTimeStart = nextAnodeTimeStart;

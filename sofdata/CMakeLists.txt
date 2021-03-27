@@ -17,6 +17,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
+${R3BSOF_SOURCE_DIR}/sofdata/corrData
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -54,6 +55,9 @@ trimData/R3BSofTrimHitData.cxx
 frsData/R3BSofFrsData.cxx
 trackingData/R3BSofTrackingData.cxx
 scalersData/R3BSofScalersMappedData.cxx
+corrData/R3BSofCorrmMappedData.cxx
+corrData/R3BSofCorrvMappedData.cxx
+corrData/R3BVftxTrigMappedData.cxx
 )
 
 

@@ -27,5 +27,6 @@
 #pragma link C++ class R3BSofTrackingOnlineSpectra + ;
 #pragma link C++ class R3BSofTrackingFissionOnlineSpectra + ;
 #pragma link C++ class R3BSofScalersOnlineSpectra + ;
+#pragma link C++ class R3BSofCorrOnlineSpectra + ;
 
 #endif

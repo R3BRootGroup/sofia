@@ -121,6 +121,7 @@ class R3BSofSciOnlineSpectra : public FairTask
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
+    TCanvas* cDeltaTref;
     TCanvas** cMapped;     // [fNbDetectors]
     TCanvas** cPos;        // [fNbDetectors]
     TCanvas** cTofFromS2;  // [fNbDetectors - fIdS2]
@@ -146,6 +147,7 @@ class R3BSofSciOnlineSpectra : public FairTask
     TH1I** fh1_finetime;       // [fNbDetectors * NbChannels];
     TH2I** fh2_mult;           // [fNbDetectors];
     TH2I** fh2_mult_TrefVsPmt; //[fNbDetectors * (NbChannels-1)]
+    TH1D** fh1_DeltaTref;
 
     // Histograms for X position at Tcal, SingleTcal and Cal levels
     TH1F** fh1_RawPos_TcalMult1;  // [fNbDetectors];

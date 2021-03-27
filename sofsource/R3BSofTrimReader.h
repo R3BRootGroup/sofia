@@ -33,8 +33,7 @@ class R3BSofTrimReader : public R3BReader
     /** Accessor to select online mode **/
     void SetOnline(Bool_t option) { fOnline = option; }
 
-    void SetNumSections(Int_t num) {fSections=num;}
-
+    void SetNumSections(Int_t num) { fSections = num; }
 
   private:
     Bool_t ReadData(EXT_STR_h101_SOFTRIM_onion*, UShort_t);

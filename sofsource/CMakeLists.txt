@@ -18,6 +18,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/twimData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
+${R3BSOF_SOURCE_DIR}/sofdata/corrData
 )
 
 set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} ${ucesb_LIBRARY_DIR} )
@@ -35,6 +36,8 @@ R3BSofTrimReader.cxx
 R3BSofMwpcReader.cxx
 R3BSofScalersReader.cxx
 R3BSofAtReader.cxx
+R3BSofCorrmReader.cxx
+R3BSofCorrvReader.cxx
 )
 
 Set(STRUCT_HEADERS
@@ -46,6 +49,9 @@ ext_h101_softrim.h
 ext_h101_sofmwpc.h
 ext_h101_sofscalers.h
 ext_h101_sofat.h
+ext_h101_vftx_tr.h
+ext_h101_sofcorrv.h
+ext_h101_sofcorrm.h
 )
 
 # fill list of header files from list of source files
