@@ -277,17 +277,17 @@ mwpc3ParamsFitPar:  Int_t  2
 [trimCalPar]
 //----------------------------------------------------------------------------
 trimDriftTimeOffsets:  Double_t \
--5397.91 -5515.04   -5290.97 -5413.29   -5161.05 -5308.73 \
--4934.88 -5086.79   -4924.64 -5125.15   -4890.57 -5017.66 \
--5047.94 -5054.42   -5257.42 -5288.32   -5385.41 -5348.71 
+-5397.91 -5515.04 -5290.97 -5413.29 -5161.05 -5308.73 \
+-4934.88 -5086.79 -4924.64 -5125.15 -4890.57 -5017.66 \
+-5047.94 -5054.42 -5257.42 -5288.32 -5385.41 -5348.71 
 trimEnergyPedestals: Float_t \
-0. 0. 0. 0. 0. 0.  \
-0. 0. 0. 0. 0. 0.  \
-0. 0. 0. 0. 0. 0. 
+0.0 0.0 0.0 0.0 0.0 0.0 \
+0.0 0.0 0.0 0.0 0.0 0.0 \
+0.0 0.0 0.0 0.0 0.0 0.0 
 trimEnergyMatchGains: Float_t \
-0.97 1.   0.95 1.   0.91 1.  \
-0.96 1.   0.98 1.   0.94 1.  \
-0.99 1.   0.95 1.   0.96 1.
+0.97 1.0 0.95 1.0 0.91 1.0  \
+0.96 1.0 0.98 1.0 0.94 1.0  \
+0.99 1.0 0.95 1.0 0.96 1.0
 trimNumSections:             Int_t 3
 trimNumAnodesPerSection:     Int_t 6
 ##############################################################################
@@ -304,9 +304,9 @@ trimEnergyAlignGains: Float_t \
 1.048331580  0.992940195  0.937848763  \
 1.010352748  1.077404318  1.058081627
 trimEnergyCorrBetaPars: Float_t \
-110051.0   -25927.0    -37123.0 \
-435798.0   -784707.0   405175.0 \
-552553.0   -1070000.0  581761.0
+110051.0 -25927.0 -37123.0 \
+435798.0 -784707.0 405175.0 \
+552553.0 -1070000.0 581761.0
 trimNumSections:               Int_t 3
 trimNumAlignGainsPerSection:   Int_t 3
 trimNumCorrBetaParsPerSection: Int_t 3
@@ -6687,7 +6687,7 @@ nRawTofParsPerSignal:  Int_t  2
 nDets: Int_t 2
 nCalPosParsPerDet: Int_t 2
 CalPosPar: Float_t \
--11.3  54.6     0.0  1.0 
+-11.3  54.6  0.0  1.0 
 ##############################################################################
 ##############################################################################
 # Class:   SofSciCalTofPar
@@ -6695,6 +6695,10 @@ CalPosPar: Float_t \
 ##############################################################################
 [SofSciCalTofPar]
 //----------------------------------------------------------------------------
+Tof2InvV_FromS8:  Float_t \
+0.0  0.0
+LS8:  Float_t \
+0.0
 Tof2InvV_FromS2:  Float_t \
 -7.7198  0.00723
 LS2:  Float_t \
@@ -6714,7 +6718,7 @@ tofwHitSciPar:  Int_t  28
 tofwInUsePar:  Int_t \
   1 1 1 1 1 1 1 1 1 1  \
   1 1 1 1 1 1 1 1 1 1  \
-  1 1 1 1 1 1 1 0
+  1 1 1 1 1 1 1 1
 tofwPosPar:  Float_t \
   2.07506 1.18403 1.01814 -2.29059 -0.889096 -0.384929 0.421241 -0.355589 3.26231 1.66536  \
   -2.61974 -1.44117 2.0633 4.15983 6.00654 -0.550969 -2.73341 -6.27025 -0.802897 0.0980565  \
@@ -6732,18 +6736,18 @@ tofwTofPar:  Float_t \
 //----------------------------------------------------------------------------
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t -73.75
+PositionZ: Double_t -150.0
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
-DimensionX: Double_t 3.0
-DimensionY: Double_t 3.0
-DimensionZ: Double_t 1.5
+DimensionX: Double_t 6.0
+DimensionY: Double_t 6.0
+DimensionZ: Double_t 0.04
 SigmaX: Double_t 0.
 SigmaY: Double_t 0.
 Z: Double_t 1.
 A: Double_t 1.
-Density: Double_t 0.07
+Density: Double_t 2.26
 IonisationEnergy: Double_t 55.9e-6
 #############################################################################
 #############################################################################
@@ -6820,7 +6824,7 @@ IonisationEnergy: Double_t 55.9e-6
 //----------------------------------------------------------------------------
 PositionX: Double_t 0.
 PositionY: Double_t 0.
-PositionZ: Double_t 30.
+PositionZ: Double_t 29.
 RotationX: Double_t 0.
 RotationY: Double_t 0.
 RotationZ: Double_t 0.
