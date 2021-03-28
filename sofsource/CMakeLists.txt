@@ -38,6 +38,7 @@ R3BSofScalersReader.cxx
 R3BSofAtReader.cxx
 R3BSofCorrmReader.cxx
 R3BSofCorrvReader.cxx
+R3BVftxTrigReader.cxx
 )
 
 Set(STRUCT_HEADERS
@@ -49,9 +50,9 @@ ext_h101_softrim.h
 ext_h101_sofmwpc.h
 ext_h101_sofscalers.h
 ext_h101_sofat.h
-ext_h101_vftx_tr.h
-ext_h101_sofcorrv.h
 ext_h101_sofcorrm.h
+ext_h101_sofcorrv.h
+ext_h101_vftx_tr.h
 )
 
 # fill list of header files from list of source files
