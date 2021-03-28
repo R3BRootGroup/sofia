@@ -1,7 +1,7 @@
 #include "FairLogger.h"
 
 #include "FairRootManager.h"
-#include "R3BVftxMappedData.h"
+#include "R3BVftxTrigMappedData.h"
 #include "R3BVftxTrigReader.h"
 
 extern "C"
@@ -14,7 +14,7 @@ extern "C"
 
 using namespace std;
 
-R3BVftxTrigReader::R3BVftxTrigReader(EXT_STR_h101_SOFCORRV* data, UInt_t offset)
+R3BVftxTrigReader::R3BVftxTrigReader(EXT_STR_h101_VFTX_TR* data, UInt_t offset)
     : R3BReader("R3BVftxTrigReader")
     , fData(data)
     , fOffset(offset)
@@ -36,7 +36,7 @@ Bool_t R3BVftxTrigReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
     LOG(INFO) << "R3BVftxTrigReader::Init";
-    EXT_STR_h101_SOFCORRV_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFCORRV, 0);
+    EXT_STR_h101_VFTX_TR_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_VFTX_TR, 0);
     if (!ok)
     {
         perror("ext_data_struct_info_item");

@@ -70,7 +70,7 @@ Bool_t R3BSofCorrvReader::Read()
     EXT_STR_h101_SOFCORRV_onion* data = (EXT_STR_h101_SOFCORRV_onion*)fData;
 
     // There is only one correlation signal
-    if (data->SOFCORRV_TRCM != 1 || data->SOFCORRV_TRFM != 1)
+    if (data->SOFCORRV_TRCM > 1 || data->SOFCORRV_TRFM > 1)
     {
         LOG(FATAL) << "R3BSofCorrvReader::Read(), SOFCORRV_TRCM=" << data->SOFCORRV_TRCM
                    << ", SOFCORRV_TRFM=" << data->SOFCORRV_TRFM;

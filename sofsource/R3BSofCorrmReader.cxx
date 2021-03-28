@@ -63,7 +63,7 @@ Bool_t R3BSofCorrmReader::Read()
     EXT_STR_h101_SOFCORRM_onion* data = (EXT_STR_h101_SOFCORRM_onion*)fData;
 
     // only one TR=correlation signal and TT=trig signal
-    if (data->SOFCORRM_TRM != 1 || data->SOFCORRM_TTM != 1)
+    if (data->SOFCORRM_TRM > 1 || data->SOFCORRM_TTM > 1)
     {
         LOG(FATAL) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
                    << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
