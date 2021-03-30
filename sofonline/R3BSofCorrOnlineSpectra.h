@@ -81,32 +81,34 @@ class R3BSofCorrOnlineSpectra : public FairTask
 
     void SetFirstXCorrv(Int_t x) { fFirstX_Corrv = x; }
     void SetLastXCorrv(Int_t x) { fLastX_Corrv = x; }
-    void SetNsPerBin_Corrv() { fNsPerBin_Corrv = (fLastX_Corrv - fFirstX_Corrv) / 5.; }
-    void SetVftxModuleId_Corrv(Int_t id) { fVftxModuleId_Corrv = id; }
+    void SetNsPerBin_Corrv() { fNsPerBin_Corrv = 5. / ((Double_t)fLastX_Corrv - (Double_t)fFirstX_Corrv) ; }
+    void SetTrefId_Corrv(Int_t id) { fTrefId_Corrv = id; }
 
   private:
-    TClonesArray* fCorrmMapped;    /**< Array with mapped items. */
-    TClonesArray* fCorrvMapped;    /**< Array with mapped items. */
-    TClonesArray* fVftxTrigMapped; /**< Array with mapped items. */
-
-    // check for trigger should be done globablly (somewhere else)
-    R3BEventHeader* header; /**< Event header.      */
-    Int_t fNEvents;         /**< Event counter.     */
-    Int_t fReset;
+    TClonesArray* fCorrmMapped; // Array with Corrm mapped items. //
+    TClonesArray* fCorrvMapped; // Array with Corrv mapped items. //
+    TClonesArray* fSciTcal;     // Array with SofSci tcal items.  //
 
     Int_t fFirstX_Corrv;
     Int_t fLastX_Corrv;
     Double_t fNsPerBin_Corrv;
-    Int_t fVftxModuleId_Corrv;
+    Int_t fTrefId_Corrv;
+    Int_t fNEvents;
 
-    // Canvas
-    TCanvas* cMapFT_CorrV;
-    TCanvas* cMap_DeltaT;
-		TCanvas* cMap_Corr;
+    // Histograms for sofia_vftx
+    TCanvas* cMap_CorrM;
+    TH1D* fh1_FineTime_CorrV;
+    TH1D* fh1_CoarseTime_CorrV;
+    TH1D* fh1_RawTime_CorrV;
+    TH1D* fh1_RawTime_TrefCorrV;
+    TH1D* fh1_DeltaT_sofia_vftx;
 
-    // Histograms for Mapped data
-    TH1F* fh1_FineTime_CorrV;
-    TH1F** fh1_DeltaCorrTrig;
+    // Histograms for sofia_mesy
+    TCanvas* cMap_CorrV;
+    TH1D** fh1_CorrM;
+
+    // Correlation between DAQ subsytems 2D histograms
+    TCanvas* cMap_Corr;
     TH2F** fh2_Correlation;
 
   public:

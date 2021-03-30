@@ -47,11 +47,11 @@ Bool_t R3BSofCorrvReader::Init(ext_data_struct_info* a_struct_info)
     // Register output array in tree
     if (!fOnline)
     {
-        FairRootManager::Instance()->Register("SofCorrvMappedData", "SofCorrv", fArray, kTRUE);
+        FairRootManager::Instance()->Register("CorrvMappedData", "SofCorrv", fArray, kTRUE);
     }
     else
     {
-        FairRootManager::Instance()->Register("SofCorrvMappedData", "SofCorrv", fArray, kFALSE);
+        FairRootManager::Instance()->Register("CorrvMappedData", "SofCorrv", fArray, kFALSE);
     }
     fArray->Clear();
 
@@ -69,7 +69,13 @@ Bool_t R3BSofCorrvReader::Read()
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFCORRV_onion* data = (EXT_STR_h101_SOFCORRV_onion*)fData;
 
-    // There is only one correlation signal
+    // Stop if no correlation signals
+    if (data->SOFCORRV_TRCM == 0 || data->SOFCORRV_TRFM == 0)
+    {
+			return kTRUE;
+		}
+
+		// There is only one correlation signal
     if (data->SOFCORRV_TRCM > 1 || data->SOFCORRV_TRFM > 1)
     {
         LOG(FATAL) << "R3BSofCorrvReader::Read(), SOFCORRV_TRCM=" << data->SOFCORRV_TRCM
