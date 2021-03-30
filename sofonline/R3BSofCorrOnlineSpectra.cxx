@@ -139,7 +139,7 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
 
     // Delta T = T(Correlation) - T(trig)
     cMap_DeltaT = new TCanvas("DeltaT", "DeltaT", 10, 10, 800, 700);
-    cMap_DeltaT->Divide(1,3);
+    cMap_DeltaT->Divide(1, 3);
     fh1_DeltaCorrTrig = new TH1F*[3];
 
     fh1_DeltaCorrTrig[0] = new TH1F("DeltaT_SofCorrv", "DeltaT_SofCorrv", 10000, -5000, 5000);
@@ -170,32 +170,31 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     cMap_DeltaT->cd(2);
     fh1_DeltaCorrTrig[1]->Draw("");
 
-    //fh1_DeltaCorrTrig[2] = new TH1F("DeltaT_S2Corr", "DeltaT_S2Corr", 10000, -5000, 5000);
-    //fh1_DeltaCorrTrig[2]->GetXaxis()->SetTitle("Tcorr - Ttrig [ns]");
-    //fh1_DeltaCorrTrig[2]->GetYaxis()->SetTitle("counts");
-    //fh1_DeltaCorrTrig[2]->GetYaxis()->SetTitleOffset(1.1);
-    //fh1_DeltaCorrTrig[2]->GetXaxis()->CenterTitle(true);
-    //fh1_DeltaCorrTrig[2]->GetYaxis()->CenterTitle(true);
-    //fh1_DeltaCorrTrig[2]->GetXaxis()->SetLabelSize(0.045);
-    //fh1_DeltaCorrTrig[2]->GetXaxis()->SetTitleSize(0.045);
-    //fh1_DeltaCorrTrig[2]->GetYaxis()->SetLabelSize(0.045);
-    //fh1_DeltaCorrTrig[2]->GetYaxis()->SetTitleSize(0.045);
-    //fh1_DeltaCorrTrig[2]->SetLineColor(kBlue);
-    //cMap_DeltaT->cd(3);
-    //fh1_DeltaCorrTrig[2]->Draw("");
+    // fh1_DeltaCorrTrig[2] = new TH1F("DeltaT_S2Corr", "DeltaT_S2Corr", 10000, -5000, 5000);
+    // fh1_DeltaCorrTrig[2]->GetXaxis()->SetTitle("Tcorr - Ttrig [ns]");
+    // fh1_DeltaCorrTrig[2]->GetYaxis()->SetTitle("counts");
+    // fh1_DeltaCorrTrig[2]->GetYaxis()->SetTitleOffset(1.1);
+    // fh1_DeltaCorrTrig[2]->GetXaxis()->CenterTitle(true);
+    // fh1_DeltaCorrTrig[2]->GetYaxis()->CenterTitle(true);
+    // fh1_DeltaCorrTrig[2]->GetXaxis()->SetLabelSize(0.045);
+    // fh1_DeltaCorrTrig[2]->GetXaxis()->SetTitleSize(0.045);
+    // fh1_DeltaCorrTrig[2]->GetYaxis()->SetLabelSize(0.045);
+    // fh1_DeltaCorrTrig[2]->GetYaxis()->SetTitleSize(0.045);
+    // fh1_DeltaCorrTrig[2]->SetLineColor(kBlue);
+    // cMap_DeltaT->cd(3);
+    // fh1_DeltaCorrTrig[2]->Draw("");
 
-		// Correlation between the Delta T
-		cMap_Corr = new TCanvas("CorrDeltaT","CorrDeltaT", 10, 10, 800, 700);
-		cMap_Corr->Divide(3,1);	
-		fh2_Correlation = new TH2F*[3];
+    // Correlation between the Delta T
+    cMap_Corr = new TCanvas("CorrDeltaT", "CorrDeltaT", 10, 10, 800, 700);
+    cMap_Corr->Divide(3, 1);
+    fh2_Correlation = new TH2F*[3];
 
-		fh2_Correlation[0] = new TH2F("Corrm_vs_Corrv","Corrm_vs_Corrv",1000,-5000,5000,1000,-5000,5000);
-		fh2_Correlation[0]->GetXaxis()->SetTitle("DeltaT CorrV [ns]");
-		fh2_Correlation[0]->GetYaxis()->SetTitle("DeltaT CorrM [100 ps]");
-		cMap_Corr->cd(1);
-		fh2_Correlation[0]->Draw("col");
-		
-		
+    fh2_Correlation[0] = new TH2F("Corrm_vs_Corrv", "Corrm_vs_Corrv", 1000, -5000, 5000, 1000, -5000, 5000);
+    fh2_Correlation[0]->GetXaxis()->SetTitle("DeltaT CorrV [ns]");
+    fh2_Correlation[0]->GetYaxis()->SetTitle("DeltaT CorrM [100 ps]");
+    cMap_Corr->cd(1);
+    fh2_Correlation[0]->Draw("col");
+
     // Folder
     TFolder* FoldCorr = new TFolder("Corr", "Correlation");
     if (fCorrvMapped)
@@ -205,7 +204,7 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
         if (fCorrmMapped && fVftxTrigMapped)
         {
             FoldCorr->Add(cMap_DeltaT);
-						FoldCorr->Add(cMap_DeltaT);
+            FoldCorr->Add(cMap_DeltaT);
         }
     }
 
@@ -227,11 +226,11 @@ void R3BSofCorrOnlineSpectra::Reset_Histo()
         if (fVftxTrigMapped)
         {
             fh1_DeltaCorrTrig[0]->Reset();
-						if(fCorrmMapped)
-						{
-							fh2_Correlation[0]->Reset();
-						}
-		    }
+            if (fCorrmMapped)
+            {
+                fh2_Correlation[0]->Reset();
+            }
+        }
     }
     if (fCorrmMapped)
     {
@@ -273,20 +272,21 @@ void R3BSofCorrOnlineSpectra::Exec(Option_t* option)
                 } // end of loop over entry2
             }
         } // end of loop over entry1
-    }// end of if(CorrVMappedData)
+    }     // end of if(CorrVMappedData)
 
-		Double_t DeltaT_CorrM;
-		if (fCorrmMapped && fCorrmMapped->GetEntriesFast()>0)
-		{
-			for(Int_t entry=0; entry<fCorrmMapped->GetEntriesFast(); entry++)
-			{
-				R3BSofCorrmMappedData* corrmmap = (R3BSofCorrmMappedData*)fCorrmMapped->At(entry);
-				if(!corrmmap) continue;
-				DeltaT_CorrM = corrmmap->GetTimeTrig() - corrmmap->GetTimeCorr();
-				fh1_DeltaCorrTrig[1]->Fill(DeltaT_CorrM);
-				fh2_Correlation[0]->Fill(DeltaT_CorrV, DeltaT_CorrM);
-			}
-		}
+    Double_t DeltaT_CorrM;
+    if (fCorrmMapped && fCorrmMapped->GetEntriesFast() > 0)
+    {
+        for (Int_t entry = 0; entry < fCorrmMapped->GetEntriesFast(); entry++)
+        {
+            R3BSofCorrmMappedData* corrmmap = (R3BSofCorrmMappedData*)fCorrmMapped->At(entry);
+            if (!corrmmap)
+                continue;
+            DeltaT_CorrM = corrmmap->GetTimeTrig() - corrmmap->GetTimeCorr();
+            fh1_DeltaCorrTrig[1]->Fill(DeltaT_CorrM);
+            fh2_Correlation[0]->Fill(DeltaT_CorrV, DeltaT_CorrM);
+        }
+    }
 
     fNEvents += 1;
 }
@@ -309,8 +309,8 @@ void R3BSofCorrOnlineSpectra::FinishTask()
         if (fVftxTrigMapped && fCorrmMapped)
         {
             cMap_DeltaT->Write();
-						cMap_Corr->Write();
-				}
+            cMap_Corr->Write();
+        }
     }
 }
 

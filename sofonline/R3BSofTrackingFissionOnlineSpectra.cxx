@@ -513,7 +513,8 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                 Double_t angY = (mwpc1y - mwpc0y) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) / 10.;
                 if (TMath::Abs(angX) < 0.075 && TMath::Abs(angY) < 0.075)
                 {
-                    zrand = gRandom->Uniform(0., fPosTarget);
+                    // zrand = gRandom->Uniform(0., fPosTarget);
+                    zrand = gRandom->Uniform(0., fDist_acelerator_glad);
                     fh2_tracking_planeYZ->Fill(zrand, mwpc0y + angY * zrand);
                     ytarget = mwpc0y + angY * fPosTarget;
                     fh2_tracking_planeXZ->Fill(zrand, mwpc0x + angX * zrand);
@@ -524,7 +525,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                 fh2_target_PosXY->Fill(xtarget, ytarget);
 
             // Fill mwpc2 Hit data for spallation reactions
-            if (fMwpc2HitDataCA->GetEntriesFast() == 1)
+            /*if (fMwpc2HitDataCA->GetEntriesFast() == 1)
             {
                 nHits = fMwpc2HitDataCA->GetEntriesFast();
                 for (Int_t ihit = 0; ihit < nHits; ihit++)
@@ -543,7 +544,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                         fh2_tracking_planeXZ->Fill(zrand, xtarget + angX * zrand);
                     }
                 }
-            }
+            }*/
         }
 
         // Fill mwpc1 & mwpc2 Hit data for fission events

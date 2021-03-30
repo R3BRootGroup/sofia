@@ -162,7 +162,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             for (Int_t j = 0; j < 3; j++)
             {
                 sprintf(Name1, "DTalignedS%02d_vs_PosRawSci%02d", j + 1, i + 1);
-                fh2_TrimDT_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 600, 0, 30000);
+                fh2_TrimDT_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 500, -5, 5, 1000, 0, 10000);
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
                     "(RIGHT,Wix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetYaxis()->SetTitle("DTaligned [ns, 100ps resolution]");
