@@ -120,26 +120,26 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         cMwpc_nPads->Divide(2, 1);
         cMwpcMap->Divide(2, 1);
 
-        Name1 = fNameDet + "_X_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane1_nPadsPerEvent";
         fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
         cMwpc_nPads->cd(1);
         fh1_mwpc_map_nPads[0]->Draw();
 
-        Name1 = fNameDet + "_Y_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane3_nPadsPerEvent";
         fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
         cMwpc_nPads->cd(2);
         fh1_mwpc_map_nPads[2]->Draw();
 
-        Name1 = fNameDet + "_XQ";
+        Name1 = fNameDet + "_Plane1Q";
         fh2_mwpc_map_q[0] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
         fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("X Pad number");
         fh2_mwpc_map_q[0]->GetYaxis()->SetTitle("Charge [channels]");
         cMwpcMap->cd(1);
         fh2_mwpc_map_q[0]->Draw("col");
 
-        Name1 = fNameDet + "_YQ";
+        Name1 = fNameDet + "_Plane3Q";
         fh2_mwpc_map_q[2] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
         fh2_mwpc_map_q[2]->SetFillColor(kRed + 3);
         fh2_mwpc_map_q[2]->GetXaxis()->SetTitle("Y Pad number");
@@ -152,39 +152,39 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         cMwpc_nPads->Divide(3, 1);
         cMwpcMap->Divide(3, 1);
 
-        Name1 = fNameDet + "_Xdown_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane1_nPadsPerEvent";
         fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
         cMwpc_nPads->cd(1);
         fh1_mwpc_map_nPads[0]->Draw();
 
-        Name1 = fNameDet + "_Xup_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane2_nPadsPerEvent";
         fh1_mwpc_map_nPads[1] = new TH1I(Name1, Name1, 67, -1.5, 65.5);
         fh1_mwpc_map_nPads[1]->SetFillColor(kBlue - 3);
         cMwpc_nPads->cd(2);
         fh1_mwpc_map_nPads[1]->Draw();
 
-        Name1 = fNameDet + "_Y_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane3_nPadsPerEvent";
         fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 43, -1.5, 41.5);
         fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
         cMwpc_nPads->cd(3);
         fh1_mwpc_map_nPads[2]->Draw();
 
-        Name1 = fNameDet + "_XdownQ";
+        Name1 = fNameDet + "_Plane1Q";
         fh2_mwpc_map_q[0] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
-        fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("Xdown Pad number");
+        fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("X Pad number");
         fh2_mwpc_map_q[0]->GetYaxis()->SetTitle("Charge [channels]");
         cMwpcMap->cd(1);
         fh2_mwpc_map_q[0]->Draw("col");
 
-        Name1 = fNameDet + "_XupQ";
+        Name1 = fNameDet + "_Plane2Q";
         fh2_mwpc_map_q[1] = new TH2I(Name1, Name1, 67, -1.5, 65.5, 1000, 0, 5000);
-        fh2_mwpc_map_q[1]->GetXaxis()->SetTitle("Xup Pad number");
+        fh2_mwpc_map_q[1]->GetXaxis()->SetTitle("X Pad number");
         fh2_mwpc_map_q[1]->GetYaxis()->SetTitle("Charge [channels]");
         cMwpcMap->cd(2);
         fh2_mwpc_map_q[1]->Draw("col");
 
-        Name1 = fNameDet + "_YQ";
+        Name1 = fNameDet + "_Plane3Q";
         fh2_mwpc_map_q[2] = new TH2I(Name1, Name1, 43, -1.5, 41.5, 1000, 0, 5000);
         fh2_mwpc_map_q[2]->GetXaxis()->SetTitle("Y Pad number");
         fh2_mwpc_map_q[2]->GetYaxis()->SetTitle("Charge [channels]");
@@ -196,26 +196,26 @@ InitStatus R3BSofMwpcOnlineSpectra::Init()
         cMwpc_nPads->Divide(2, 1);
         cMwpcMap->Divide(2, 1);
 
-        Name1 = fNameDet + "_X_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane1_nPadsPerEvent";
         fh1_mwpc_map_nPads[0] = new TH1I(Name1, Name1, 243, -1.5, 241.5);
         fh1_mwpc_map_nPads[0]->SetFillColor(kBlue + 3);
         cMwpc_nPads->cd(1);
         fh1_mwpc_map_nPads[0]->Draw();
 
-        Name1 = fNameDet + "_Y_nPadsPerEvent";
+        Name1 = fNameDet + "_Plane3_nPadsPerEvent";
         fh1_mwpc_map_nPads[2] = new TH1I(Name1, Name1, 403, -1.5, 401.5);
         fh1_mwpc_map_nPads[2]->SetFillColor(kRed + 3);
         cMwpc_nPads->cd(2);
         fh1_mwpc_map_nPads[2]->Draw();
 
-        Name1 = fNameDet + "_XQ";
+        Name1 = fNameDet + "_Plane1Q";
         fh2_mwpc_map_q[0] = new TH2I(Name1, Name1, 402, -1.5, 400.5, 1000, 0, 5000);
         fh2_mwpc_map_q[0]->GetXaxis()->SetTitle("X Pad number");
         fh2_mwpc_map_q[0]->GetYaxis()->SetTitle("Charge [channels]");
         cMwpcMap->cd(1);
         fh2_mwpc_map_q[0]->Draw("col");
 
-        Name1 = fNameDet + "_YQ";
+        Name1 = fNameDet + "_Plane3Q";
         fh2_mwpc_map_q[2] = new TH2I(Name2, Name1, 152, -1.5, 150.5, 1000, 0, 5000);
         fh2_mwpc_map_q[2]->GetXaxis()->SetTitle("Y Pad number");
         fh2_mwpc_map_q[2]->GetYaxis()->SetTitle("Charge [channels]");

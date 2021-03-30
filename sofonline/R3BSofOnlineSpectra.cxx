@@ -14,6 +14,7 @@
 #include "R3BEventHeader.h"
 #include "R3BMusicOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
+#include "R3BSofCorrOnlineSpectra.h"
 #include "R3BSofFrsOnlineSpectra.h"
 #include "R3BSofMwpcCorrelationOnlineSpectra.h"
 #include "R3BSofMwpcOnlineSpectra.h"
@@ -30,7 +31,6 @@
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
-#include "R3BSofCorrOnlineSpectra.h"
 #include "R3BWRCalifaData.h"
 #include "R3BWRMasterData.h"
 #include "THttpServer.h"
@@ -218,12 +218,11 @@ InitStatus R3BSofOnlineSpectra::Init()
     }
 
     // Looking Correlation of DAQ subsystem online
-    fCorrOnline =
-        (R3BSofCorrOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofCorrOnlineSpectra");
+    fCorrOnline = (R3BSofCorrOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofCorrOnlineSpectra");
     if (!fCorrOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofCorrOnlineSpectra not found";
-    
-		// Looking for AT online
+
+    // Looking for AT online
     fAtOnline = (R3BSofAtOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofAtOnlineSpectra");
     if (!fAtOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofAtOnlineSpectra not found";

@@ -347,7 +347,8 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh1_twim_DTmap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
-            fh1_twimmap_DT[i * fNbAnodes + j] = new TH1F(Name1, Name2, 1000, 1, 40001);
+            fh1_twimmap_DT[i * fNbAnodes + j] =
+                new TH1F(Name1, Name2, 26000, -1000, 25000); // keep negative values to have the FG
             fh1_twimmap_DT[i * fNbAnodes + j]->GetXaxis()->SetTitle("Drift time [channels, 100ps TDC resolution]");
             fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
             fh1_twimmap_DT[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
@@ -500,6 +501,11 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
     }
 
     // Cal data, position in mm for each anode
+    // Section 1: LEFT - DOWN,  x increasing from cathode to FG
+    // Section 2: LEFT - UP,    x increasing from cathode to FG
+    // Section 3: RIGHT - UP,   x increasing from FG to cathode
+    // Section 4: RIGHT - DOWN, x increasing from FG to cathode
+    // the distance from the FG to the cathode is 110 mm
     cTwimCal_Pos = new TCanvas*[fNbSections];
     fh1_Twimcal_Pos = new TH1F*[fNbSections * fNbAnodes];
     for (Int_t i = 0; i < fNbSections; i++)
@@ -512,11 +518,16 @@ InitStatus R3BSofTwimOnlineSpectra::Init()
         {
             sprintf(Name1, "fh1_Twim_Sec%d_Pos_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d, Anode %d", i + 1, j + 1);
-            if (i == 0 || i == 3)
-                fh1_Twimcal_Pos[i * fNbAnodes + j] = new TH1F(Name1, Name2, 500, -50., 100.);
+            if (i == 0 || i == 1)
+            {
+                fh1_Twimcal_Pos[i * fNbAnodes + j] = new TH1F(Name1, Name2, 1400, 120, -10.);
+                fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->SetTitle("LEFT / MESSEL Position-X [mm]");
+            }
             else
-                fh1_Twimcal_Pos[i * fNbAnodes + j] = new TH1F(Name1, Name2, 500, -100., 50.);
-            fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->SetTitle("Position-X [mm]");
+            {
+                fh1_Twimcal_Pos[i * fNbAnodes + j] = new TH1F(Name1, Name2, 1400, -120., 10.);
+                fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->SetTitle("RIGHT / WIXHAUSEN Position-X [mm]");
+            }
             fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->SetTitle("Counts");
             fh1_Twimcal_Pos[i * fNbAnodes + j]->GetYaxis()->SetTitleOffset(1.1);
             fh1_Twimcal_Pos[i * fNbAnodes + j]->GetXaxis()->CenterTitle(true);

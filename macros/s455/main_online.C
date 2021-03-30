@@ -62,30 +62,27 @@ void main_online()
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString ntuple_options = "RAW,time-stitch=1000";
-    // TString ntuple_options = "RAW"; // Use this for lmd files
+    TString ntuple_options = "RAW";                     // ntuple_options for stitched events
+    //TString ntuple_options = "RAW,time-stitch=1000";  // ntuple_options for raw events
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
     if (expId == 455)
     {
-        NumSofSci = 2;
-        IdS2 = 1;
+        NumSofSci = 1;
+        IdS2 = 0;
         IdS8 = 0;
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
-        filename = "--stream=lxlanddaq01:9100"; // 9100 is for raw events (needed for multi-events unpacking)
-        // filename = "--stream=lxlanddaq01:9000"; // 9000 is for stitched events 
-	// filename = "~/lmd/s455/main026*.lmd";			        
+        filename = "--stream=lxlanddaq01:9000"; // 9000 is for stitched events 
+        //filename = "--stream=lxlanddaq01:9100"; // 9100 is for raw events (needed for multi-events unpacking)
 
         TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
         outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-        // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
 
-        // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
+        //upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
-        // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
         ucesb_path = upexps_dir + "/202104_s455/202104_s455 --allow-errors --input-buffer=70Mi";
 
         sofiacaldir = dir + "/sofia/macros/s455/parameters/";
@@ -129,7 +126,7 @@ void main_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
+    Bool_t fAt = false;       // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -138,7 +135,7 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -323,7 +320,8 @@ void main_online()
     run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
     run->ActivateHttpServer(refresh, port);
-    run->GetHttpServer()->CreateEngine(TString::Format("fastcgi:%d",1000 + port));
+    run->GetHttpServer()->CreateEngine(TString::Format("fastcgi:%d",
+	1000 + port));
 
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
@@ -623,44 +621,7 @@ void main_online()
 
     if (fAt)
     {
-        TCutG* cutSet12 = new TCutG("cutSet12", 5);
-        cutSet12->SetVarX("E1");
-        cutSet12->SetVarY("E2");
-        cutSet12->SetPoint(0, 50000., 20000.0);
-        cutSet12->SetPoint(1, 50000., 40000.);
-        cutSet12->SetPoint(2, 40000, 40000);
-        cutSet12->SetPoint(3, 40000, 20000.0);
-        cutSet12->SetPoint(4, 50000, 20000.0);
-        cutSet12->SetLineColor(2);
-        cutSet12->SetLineStyle(7);
-        cutSet12->SetLineWidth(3);
-        TCutG* cutSet23 = new TCutG("cutSet23", 5);
-        cutSet23->SetVarX("E2");
-        cutSet23->SetVarY("E3");
-        cutSet23->SetPoint(0, 50000., 20000.0);
-        cutSet23->SetPoint(1, 50000., 40000.);
-        cutSet23->SetPoint(2, 40000, 40000);
-        cutSet23->SetPoint(3, 40000, 20000.0);
-        cutSet23->SetPoint(4, 50000, 20000.0);
-        cutSet23->SetLineColor(2);
-        cutSet23->SetLineStyle(7);
-        cutSet23->SetLineWidth(3);
-        TCutG* cutSet34 = new TCutG("cutSet34", 5);
-        cutSet34->SetVarX("E3");
-        cutSet34->SetVarY("E4");
-        cutSet34->SetPoint(0, 50000., 20000.0);
-        cutSet34->SetPoint(1, 50000., 40000.);
-        cutSet34->SetPoint(2, 40000, 40000);
-        cutSet34->SetPoint(3, 40000, 20000.0);
-        cutSet34->SetPoint(4, 50000, 20000.0);
-        cutSet34->SetLineColor(2);
-        cutSet34->SetLineStyle(7);
-        cutSet34->SetLineWidth(3);
-    
         R3BSofAtOnlineSpectra* atonline = new R3BSofAtOnlineSpectra();
-        atonline->SetSelection(1, cutSet12); // cut for anodes 1 and 2
-        atonline->SetSelection(2, cutSet23); // cut for anodes 2 and 3
-        atonline->SetSelection(3, cutSet34); // cut for anodes 3 and 4
         run->AddTask(atonline);
     }
     
@@ -781,8 +742,7 @@ void main_online()
         run->AddTask(TrackingAna); 
 
         R3BSofTrackingFissionOnlineSpectra* Trackingonline = new R3BSofTrackingFissionOnlineSpectra();
-        Trackingonline->Set_Charge_range(10.,98.);
-        Trackingonline->Set_TargetPos(1230.);
+        Trackingonline->Set_Charge_range(10.,94.);
         run->AddTask(Trackingonline); 
     }
 

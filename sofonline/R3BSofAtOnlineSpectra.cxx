@@ -529,12 +529,12 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
 
         for (Int_t a = 0; a < fNumAnodes - 1; a++)
         {
-            if (mult[a] > 0 && mult[a + 1] > 0)
+            if (mult[a] == 1 && mult[a + 1] == 1)
             {
                 fh2_atmap_EvsE[a]->Fill(E[a], E[a + 1]);
             }
         }
-        if (mult[0] > 0 && mult[fNumAnodes - 1] > 0)
+        if (mult[0] == 1 && mult[fNumAnodes - 1] == 1)
         { //      x ,  y
             fh2_atmap_EvsE[fNumAnodes - 1]->Fill(E[0], E[fNumAnodes - 1]);
         }
@@ -547,7 +547,7 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
                 fh2_atmap_EvsE_mult1_nopu[a]->Fill(E[a], E[a + 1]);
             }
         }
-        if (mult[0] > 0 && mult[fNumAnodes - 1] > 0)
+        if (mult[0] == 1 && mult[fNumAnodes - 1] == 1 && pu[0] == kFALSE && pu[fNumAnodes - 1] == kFALSE)
         { //      x ,  y
             fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->Fill(E[0], E[fNumAnodes - 1]);
         }
