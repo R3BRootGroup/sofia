@@ -57,7 +57,6 @@ trackingData/R3BSofTrackingData.cxx
 scalersData/R3BSofScalersMappedData.cxx
 corrData/R3BSofCorrmMappedData.cxx
 corrData/R3BSofCorrvMappedData.cxx
-corrData/R3BVftxTrigMappedData.cxx
 )
 
 

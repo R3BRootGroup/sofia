@@ -37,6 +37,10 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRSOFIA_t wrsofia;
     EXT_STR_h101_WRS2_t wrs2;
     EXT_STR_h101_WRS8_t wrs8;
+
+		EXT_STR_h101_SOFCORRM_onion_t corrm;
+		EXT_STR_h101_SOFCORRV_onion_t corrv;
+
 } EXT_STR_h101;
 
 void main_online()
@@ -62,8 +66,8 @@ void main_online()
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString ntuple_options = "RAW";                     // ntuple_options for stitched events
-    //TString ntuple_options = "RAW,time-stitch=1000";  // ntuple_options for raw events
+    //TString ntuple_options = "RAW";                     // ntuple_options for stitched events
+    TString ntuple_options = "RAW,time-stitch=1000";  // ntuple_options for raw events
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
@@ -75,14 +79,15 @@ void main_online()
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
-        filename = "--stream=lxlanddaq01:9000"; // 9000 is for stitched events 
-        //filename = "--stream=lxlanddaq01:9100"; // 9100 is for raw events (needed for multi-events unpacking)
+        //filename = "--stream=lxlanddaq01:9000"; // 9000 is for stitched events 
+        filename = "--stream=lxlanddaq01:9100"; // 9100 is for raw events (needed for multi-events unpacking)
 
-        TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
+        TString outputpath = "~/data/s455/root-online/";
+        //TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
         outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
 
-        //upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
-        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
+        upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
+        //upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         ucesb_path = upexps_dir + "/202104_s455/202104_s455 --allow-errors --input-buffer=70Mi";
 
         sofiacaldir = dir + "/sofia/macros/s455/parameters/";
@@ -136,6 +141,9 @@ void main_online()
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
+		// --- Correlation signals between the different DAQ subsystems ---------------------
+		Bool_t fCorrm = true;     // correlation and trigger signals on sofia_mesy at cave C
+		Bool_t fCorrv = true;     // correlation signal on sofia_vftx at cave C
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -175,6 +183,9 @@ void main_online()
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
+
+		R3BSofCorrmReader* unpackcorrm;
+		R3BSofCorrvReader* unpackcorrv;
 
 
     if (fFrsTpcs)
@@ -235,11 +246,18 @@ void main_online()
             (EXT_STR_h101_WRNEULAND*)&ucesb_struct.wrneuland, offsetof(EXT_STR_h101, wrneuland), 0x900);
     }
 
+		if(fCorrm)
+			unpackcorrm = new R3BSofCorrmReader((EXT_STR_h101_SOFCORRM*)&ucesb_struct.corrm, offsetof(EXT_STR_h101,corrm));
+
+		if(fCorrv)
+			unpackcorrv = new R3BSofCorrvReader((EXT_STR_h101_SOFCORRV*)&ucesb_struct.corrv, offsetof(EXT_STR_h101,corrv));
+
+
     // Add readers ------------------------------------------
     source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack,offsetof(EXT_STR_h101, unpack)));
     source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat,offsetof(EXT_STR_h101, unpacktpat)));
-
-    if (fFrsTpcs)
+	  
+	  if (fFrsTpcs)
     {
      unpackfrs->SetOnline(NOTstoremappeddata);
      source->AddReader(unpackfrs);
@@ -314,6 +332,17 @@ void main_online()
         unpackWRNeuland->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRNeuland);
     }
+
+		if(fCorrm)
+		{
+			unpackcorrm->SetOnline(NOTstoremappeddata);
+			source->AddReader(unpackcorrm);
+		}
+		if(fCorrv)
+		{
+			unpackcorrv->SetOnline(NOTstoremappeddata);
+			source->AddReader(unpackcorrv);
+		}
 
     // Create online run ------------------------------------
     FairRunOnline* run = new FairRunOnline(source);
@@ -745,6 +774,17 @@ void main_online()
         Trackingonline->Set_Charge_range(10.,94.);
         run->AddTask(Trackingonline); 
     }
+
+		if (fCorrm && fCorrv)
+		{
+			R3BSofCorrOnlineSpectra* corronline = new R3BSofCorrOnlineSpectra();
+			corronline->SetFirstXCorrv(125);
+			corronline->SetLastXCorrv(919);
+			corronline->SetNsPerBin_Corrv();
+			corronline->SetTrefId_Corrv(1);
+			run->AddTask(corronline);
+		}
+
 
     R3BSofOnlineSpectra* sofonline = new R3BSofOnlineSpectra();
     run->AddTask(sofonline);
