@@ -47,23 +47,22 @@ class R3BSofTofWMapped2TcalPar : public FairTask
     /** Accessor functions **/
     const Double_t GetNumDetectors() { return fNumDetectors; }
     const Double_t GetNumChannels() { return fNumChannels; }
-    const Double_t GetNumSignals() { return fNumSignals; }
+    //const Double_t GetNumSignals() { return fNumSignals; }
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
     void SetNumDetectors(Int_t NumberOfDetectors) { fNumDetectors = NumberOfDetectors; }
     void SetNumChannels(Int_t NumberOfChannels) { fNumChannels = NumberOfChannels; }
-    void SetNumSignals(Int_t NumberOfDetectors, Int_t NumberOfChannels)
-    {
-
-        fNumSignals = NumberOfDetectors * NumberOfChannels;
-    }
+    //void SetNumSignals(Int_t NumberOfDetectors, Int_t NumberOfChannels)
+    //{
+      //  fNumSignals = NumberOfDetectors * NumberOfChannels;
+    //}
     void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) { fNumTcalParsPerSignal = NumberOfTcalParsPerSignal; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
     Int_t fNumDetectors; // number of detectors (=2 for Sci, =28 for TofW)
     Int_t fNumChannels;  // number of channels  (=3 for Sci, =2 for TofW)
-    Int_t fNumSignals;
+    //Int_t fNumSignals;
     Int_t fNumTcalParsPerSignal;
     Int_t fMinStatistics; // minimum statistics to proceed to the calibration
 

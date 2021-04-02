@@ -37,7 +37,7 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar()
     , fTrimGeoPar(NULL)
     , fWidthAnode(25)       // mm
     , fDistInterSection(50) // mm 2*edge anodes of 20 mm + 1*10 mm gap
-    , fDriftVelocity(60)    //  mm/micros
+    , fDriftVelocity(60)    // mm/micros, distance from anode to FG: 80 mm with a difference of V = 2700V
     , fOutputFile(NULL)
 {
 }
@@ -224,17 +224,17 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     UInt_t nHitsMw0, nHitsMw1, nHits;
 
     // FIX ME:
-    // geoX0 = 10. * (Double_t)fMwpc0GeoPar->GetPosX();
-    // geoX1 = 10. * (Double_t)fMwpc1GeoPar->GetPosX();
-    // geoZ0 = 10. * (Double_t)fMwpc0GeoPar->GetPosZ();
-    // geoZ1 = 10. * (Double_t)fMwpc1GeoPar->GetPosZ();
-    // geoZtrim = 10. * (Double_t)fTrimGeoPar->GetPosZ();
     geoX0 = 3;      // mm
     geoX1 = 0.;     // mm
     geoZ0 = -2620.; // mm
     geoZ1 = 300.;   // mm
     geoDZ = geoZ1 - geoZ0;
     geoZtrim = -2175; // mm
+    // geoX0 = 10. * (Double_t)fMwpc0GeoPar->GetPosX();
+    // geoX1 = 10. * (Double_t)fMwpc1GeoPar->GetPosX();
+    // geoZ0 = 10. * (Double_t)fMwpc0GeoPar->GetPosZ();
+    // geoZ1 = 10. * (Double_t)fMwpc1GeoPar->GetPosZ();
+    // geoZtrim = 10. * (Double_t)fTrimGeoPar->GetPosZ();
     // geoZtrim is the center of the Triple-MUSIC in cm
     // The active volume of the Triple-MUSIC is 590 mm = 59 cm
     // The width of the screening anode is 20 mm = 2 cm each
@@ -255,8 +255,8 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     {
         R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fMwpc0HitData->At(0);
         R3BSofMwpcHitData* hitMwpc1 = (R3BSofMwpcHitData*)fMwpc1HitData->At(0);
-        X0 = hitMwpc0->GetX() + 10. * geoX0; // GetX in mm and GetPosX in cm
-        X1 = hitMwpc1->GetX() + 10. * geoX1; // GetX in mm and GetPosX in cm
+        X0 = hitMwpc0->GetX() + geoX0;
+        X1 = hitMwpc1->GetX() + geoX1;
         DX = X1 - X0;
 
         // --- --------------------------------------- --- //

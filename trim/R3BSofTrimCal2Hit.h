@@ -64,7 +64,15 @@ class R3BSofTrimCal2Hit : public FairTask
     TClonesArray* fTrimHitData;    // Array with Hit output data for Triple-MUSIC
 
     // --- Private method --- //
-    R3BSofTrimHitData* AddHitData(Int_t secID, Float_t Eraw, Float_t Ebeta, Float_t Edt, Float_t Etheta, Float_t Z);
+    R3BSofTrimHitData* AddHitData(Int_t secID,
+                                  Float_t e1,
+                                  Float_t e2,
+                                  Float_t e3,
+                                  Float_t Eraw,
+                                  Float_t Ebeta,
+                                  Float_t Edt,
+                                  Float_t Etheta,
+                                  Float_t Z);
 
   public:
     //--- Class definition --- //

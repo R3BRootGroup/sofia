@@ -106,10 +106,10 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */
-    Int_t fTrigger;         /**< Trigger value. */
-    Int_t fNEvents;         /**< Event counter. */
-    Float_t fZproj;         // Atomic number of projectile
-    Float_t fMinProtonE;    /**< Min proton energy (in keV) to calculate the opening angle */
+    Int_t fTrigger;               /**< Trigger value. */
+    Int_t fNEvents;               /**< Event counter. */
+    Float_t fZproj;               // Atomic number of projectile
+    Float_t fMinProtonE;          /**< Min proton energy (in keV) to calculate the opening angle */
 
     TCanvas* cHit[6];
     TCanvas* cHitAngles;

@@ -36,19 +36,35 @@ void R3BSofTcalContFact::setAllContainers()
     /** Creates the Container objects with all accepted contexts and adds them to
      *  the list of containers for the STS library.*/
 
-    // --- ---------------------------------- --- //
-    // --- for scintillators at S2 and Cave C --- //
-    // --- ---------------------------------- --- //
+    // --- --------------------------------------------------- --- //
+    // --- VFTX calibration for scintillators at S2 and Cave C --- //
+    // --- --------------------------------------------------- --- //
     FairContainer* p1 = new FairContainer("SofSciTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
     p1->addContext("SofTcalParContext");
     containers->Add(p1);
 
-    // --- ----------------------- --- //
-    // --- for time-of-flight wall --- //
-    // --- ----------------------- --- //
+    // --- ---------------------------------------- --- //
+    // --- VFTX calibration for time-of-flight wall --- //
+    // --- ---------------------------------------- --- //
     FairContainer* p2 = new FairContainer("SofTofWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
     p2->addContext("SofTcalParContext");
     containers->Add(p2);
+
+		// --- ----------------------------------------------- --- //
+		// --- Clock offset for scintillators at S2 and Cave C --- //
+		// --- ----------------------------------------------- --- //
+    FairContainer* p3 = new FairContainer("SofSciClockOffsetPar", "Sof Tcal Parameters", "SofTcalParContext");
+    p3->addContext("SofTcalParContext");
+    containers->Add(p3);
+
+
+		// --- ------------------------------------ --- //
+		// --- Clock offset for time-of-flight wall --- //
+		// --- ------------------------------------ --- //
+    FairContainer* p4 = new FairContainer("SofTofWClockOffsetPar", "Sof Tcal Parameters", "SofTcalParContext");
+    p4->addContext("SofTcalParContext");
+    containers->Add(p4);
+	
 }
 
 FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
@@ -69,6 +85,15 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+		if (strcmp(name, "SofSciClockOffsetPar") == 0)
+	  {
+        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+		}
+		if (strcmp(name, "SofTofWClockOffsetPar") == 0)
+	  {
+        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+		}
+
 
     return p;
 }

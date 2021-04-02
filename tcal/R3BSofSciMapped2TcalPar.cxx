@@ -36,7 +36,7 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar()
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 {
-    fNumSignals = fNumSci * fNumChannels;
+    //fNumSignals = fNumSci * fNumChannels;
 }
 
 // R3BSofSciMapped2TcalPar: Standard Constructor --------------------------
@@ -51,7 +51,7 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbos
     , fOutputFile(NULL)
 
 {
-    fNumSignals = fNumSci * fNumChannels;
+    //fNumSignals = fNumSci * fNumChannels;
 }
 
 // R3BSofSciMapped2TcalPar: Destructor ----------------------------------------
@@ -105,7 +105,7 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     {
         fTcalPar->SetNumDetectors(fNumSci);
         fTcalPar->SetNumChannels(fNumChannels);
-        fTcalPar->SetNumSignals(fNumSci, fNumChannels);
+        //fTcalPar->SetNumSignals(fNumSci, fNumChannels);
         fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
     }
 
@@ -119,8 +119,8 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     // --- channel 2  : Pmt L     --- //
     // --- ---------------------- --- //
     char name[100];
-    fh_TimeFineBin = new TH1F*[fNumSignals];
-    fh_TimeFineNs = new TH1F*[fNumSignals];
+    fh_TimeFineBin = new TH1F*[fNumSci*fNumChannels];
+    fh_TimeFineNs = new TH1F*[fNumSci*fNumChannels];
     for (Int_t det = 0; det < fNumSci; det++)
     {
         for (Int_t ch = 0; ch < fNumChannels; ch++)
@@ -214,11 +214,11 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt)
         // ***     * signal=5                              *** //
         // *** ******************************************* *** //
         iSignalSci = (hitSci->GetDetector() - 1) * fNumChannels + (hitSci->GetPmt() - 1);
-        if ((0 <= iSignalSci) && (iSignalSci <= fNumSignals))
+        if ((0 <= iSignalSci) && (iSignalSci <= fNumSci*fNumChannels))
             fh_TimeFineBin[iSignalSci]->Fill(hitSci->GetTimeFine());
         else
             LOG(ERROR) << "R3BSofSciMapped2TcalPar::Exec() Number of signals out of range: " << iSignalSci
-                       << " instead of [0," << fNumSignals << "]: det=" << hitSci->GetDetector()
+                       << " instead of [0," << fNumSci*fNumChannels << "]: det=" << hitSci->GetDetector()
                        << ",  fNumChannels = " << fNumChannels << ",  pmt = " << hitSci->GetPmt();
 
     } // end of loop over the number of hits per event in MappedSci
@@ -245,7 +245,7 @@ void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
     UInt_t IntegralPartial;
     Double_t Bin2Ns[fNumTcalParsPerSignal];
 
-    for (Int_t sig = 0; sig < fNumSignals; sig++)
+    for (Int_t sig = 0; sig < fNumSci*fNumChannels; sig++)
     {
         if (fh_TimeFineBin[sig]->GetEntries() > fMinStatistics)
         {

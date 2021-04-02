@@ -117,6 +117,7 @@ class R3BSofTrimOnlineSpectra : public FairTask
     TCanvas** cTrimCal_DT;
     TCanvas* cTrimCal_EnePair;
     TCanvas* cTrimCal_EnePairVsDT;
+    TCanvas* cTrimCal_EnePairVsDeltaDT;
 
     // Histograms for Cal data
     TH1F** fh1_trimcal_Esub;
@@ -125,8 +126,10 @@ class R3BSofTrimOnlineSpectra : public FairTask
     TH1D** fh1_trimcal_DTalign;
     TH1F** fh1_trimcal_EmatchPair;
     TH2F** fh2_trimcal_EnePairVsDT;
+    TH2F** fh2_trimcal_EnePairVsDeltaDT;
 
     // Canvas for Hit data
+    TCanvas* cTrimHit_ErawPair;
     TCanvas* cTrimHit_E;
     TCanvas* cTrimHit_Z;
     TCanvas** cTrimHit_CorrDep;
@@ -135,6 +138,7 @@ class R3BSofTrimOnlineSpectra : public FairTask
     TCanvas* cTrimHit_Emax;
 
     // Histograms for Hit data
+    TH1F** fh1_trimhit_ErawPair;
     TH1F** fh1_trimhit_Eraw;
     TH1F** fh1_trimhit_Ebeta;
     TH1F** fh1_trimhit_Edt;
@@ -145,10 +149,7 @@ class R3BSofTrimOnlineSpectra : public FairTask
     TH2F** fh2_trimhit_Edt_vs_DT;
     TH2F** fh2_trimhit_Edt_vs_theta;
     TH2F** fh2_trimhit_Etheta_vs_theta;
-    // TH2F** fh2_trimhit_EvsE_raw;
-    // TH2F** fh2_trimhit_EvsE_beta;
-    // TH2F** fh2_trimhit_EvsE_dt;
-    TH2F** fh2_trimhit_EvsE_theta;
+    TH2F** fh2_trimhit_EvsE;
     TH2F** fh2_trimhit_ZvsZ;
     TH1F* fh1_trimhit_Emax;
 

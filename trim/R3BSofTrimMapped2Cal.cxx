@@ -197,6 +197,7 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
                         esub = (Float_t)iEraw[a + fNumChannels * s][i] - fCal_Par->GetEnergyPedestal(s + 1, a + 1);
                         ematch = esub * fCal_Par->GetEnergyMatchGain(s + 1, a + 1);
                         AddCalData(s + 1, a + 1, dtraw, dtal, esub, ematch);
+                        // std::cout << "Add Cal Data: s=" << s+1 << ", a=" << a+1<< ", ematch=" << ematch << std::endl;
                     }
                 } // end of check that anode has data
             }     // end of loop over the anodes
