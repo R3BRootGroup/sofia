@@ -18,10 +18,12 @@
 R3BSofTrimHitPar::R3BSofTrimHitPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
     , fNumSections(3)
-    , fNumAlignGainsPerSection(3) // 3 if triangular, 6 if rectangular
+    , fNumSignalsPerSection(3) // 3 if triangular, 6 if rectangular
     , fNumCorrBetaParsPerSection(3)
 {
-    fEnergyAlignGains = new TArrayF(fNumSections * fNumAlignGainsPerSection);
+    fEnergyCorrDeltaDTPars = new TArrayF(fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal);
+    fEnergyAlignOffsets = new TArrayF(fNumSections);
+    fEnergyAlignGains = new TArrayF(fNumSections);
     fEnergyCorrBetaPars = new TArrayF(fNumSections * fNumCorrBetaParsPerSection);
 }
 
@@ -29,6 +31,10 @@ R3BSofTrimHitPar::R3BSofTrimHitPar(const char* name, const char* title, const ch
 R3BSofTrimHitPar::~R3BSofTrimHitPar()
 {
     clear();
+    if (fEnergyCorrDeltaDTPars)
+        delete fEnergyCorrBetaPars;
+    if (fEnergyAlignOffsets)
+        delete fEnergyAlignOffsets;
     if (fEnergyAlignGains)
         delete fEnergyAlignGains;
     if (fEnergyCorrBetaPars)
@@ -51,17 +57,29 @@ void R3BSofTrimHitPar::putParams(FairParamList* list)
         return;
     }
     Int_t array_size;
-    array_size = fNumSections * fNumAlignGainsPerSection;
+
+    array_size = fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal;
+    LOG(INFO) << "Array Size corr deltaDT parameters: " << array_size;
+    fEnergyCorrDeltaDTPars->Set(array_size);
+
+    array_size = fNumSections;
     LOG(INFO) << "Array Size align gains: " << array_size;
     fEnergyAlignGains->Set(array_size);
+
+    array_size = fNumSections;
+    LOG(INFO) << "Array Size align offset: " << array_size;
+    fEnergyAlignOffsets->Set(array_size);
 
     array_size = fNumSections * fNumCorrBetaParsPerSection;
     LOG(INFO) << "Array Size corr beta parameters: " << array_size;
     fEnergyCorrBetaPars->Set(array_size);
 
     list->add("trimNumSections", fNumSections);
-    list->add("trimNumAlignGainsPerSection", fNumAlignGainsPerSection);
+    list->add("trimNumCorrDeltaDTParsPerSignal", fNumCorrDeltaDTParsPerSignal);
+    list->add("trimNumSignalsPerSection", fNumSignalsPerSection);
     list->add("trimNumCorrBetaParsPerSection", fNumCorrBetaParsPerSection);
+    list->add("trimEnergyCorrDeltaDTPars", *fEnergyCorrDeltaDTPars);
+    list->add("trimEnergyAlignOffsets", *fEnergyAlignOffsets);
     list->add("trimEnergyAlignGains", *fEnergyAlignGains);
     list->add("trimEnergyCorrBetaPars", *fEnergyCorrBetaPars);
 }
@@ -81,7 +99,12 @@ Bool_t R3BSofTrimHitPar::getParams(FairParamList* list)
         return kFALSE;
     }
 
-    if (!list->fill("trimNumAlignGainsPerSection", &fNumAlignGainsPerSection))
+    if (!list->fill("trimNumCorrDeltaDTParsPerSignal", &fNumCorrDeltaDTParsPerSignal))
+    {
+        return kFALSE;
+    }
+
+    if (!list->fill("trimNumSignalsPerSection", &fNumSignalsPerSection))
     {
         return kFALSE;
     }
@@ -93,7 +116,25 @@ Bool_t R3BSofTrimHitPar::getParams(FairParamList* list)
 
     Int_t array_size;
 
-    array_size = fNumSections * fNumAlignGainsPerSection;
+    array_size = fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal;
+    LOG(INFO) << "Array Size for deltaDT per pair in use: " << array_size;
+    fEnergyCorrDeltaDTPars->Set(array_size);
+    if (!(list->fill("trimEnergyCorrDeltaDTPars", fEnergyCorrDeltaDTPars)))
+    {
+        LOG(INFO) << "---Could not initialize trimEnergyCorrDeltaDTPars";
+        return kFALSE;
+    }
+
+    array_size = fNumSections;
+    LOG(INFO) << "Array Size for align offset in use: " << array_size;
+    fEnergyAlignOffsets->Set(array_size);
+    if (!(list->fill("trimEnergyAlignOffsets", fEnergyAlignGains)))
+    {
+        LOG(INFO) << "---Could not initialize trimEnergyAlignOffsets";
+        return kFALSE;
+    }
+
+    array_size = fNumSections;
     LOG(INFO) << "Array Size for align gain in use: " << array_size;
     fEnergyAlignGains->Set(array_size);
     if (!(list->fill("trimEnergyAlignGains", fEnergyAlignGains)))
@@ -119,22 +160,31 @@ void R3BSofTrimHitPar::printParams()
 {
 
     LOG(INFO) << "R3BSofTrimHitPar: Triple MUSIC energy aligned gain per pair of down/up anode: ";
+    for (Int_t sec = 0; sec < fNumSections; sec++)
+    {
+        LOG(INFO) << "Trim section: " << sec + 1;
+        for (Int_t sig = 0; sig < fNumSignalsPerSection; sig++)
+        {
+            LOG(INFO) << "signal : " << sig + 1;
+            for (Int_t deg = 0; deg < fNumCorrDeltaDTParsPerSignal; deg++)
+            {
+                LOG(INFO) << "p: " << deg << " = " << GetEnergyCorrDeltaDTPar(sec + 1, sig + 1, deg);
+            }
+        }
+    }
     for (Int_t s = 0; s < fNumSections; s++)
     {
-        LOG(INFO) << "Trim section: " << s + 1;
-        for (Int_t i = 0; i < fNumAlignGainsPerSection; i++)
-        {
-            LOG(INFO) << "index: " << i << ": Energy Align Gain = " << GetEnergyAlignGain(s + 1, i);
-        }
+        LOG(INFO) << "Trim section: " << s + 1 << " : Energy Align Offset = " << GetEnergyAlignOffset(s + 1);
+        LOG(INFO) << "Trim section: " << s + 1 << " : Energy Align Gain = " << GetEnergyAlignGain(s + 1);
     }
 
     LOG(INFO) << "R3BSofTrimHitPar: Triple MUSIC energy per section correction from beta: ";
     for (Int_t s = 0; s < fNumSections; s++)
     {
         LOG(INFO) << "Trim section: " << s + 1;
-        for (Int_t p = 0; p < fNumCorrBetaParsPerSection; p++)
+        for (Int_t deg = 0; deg < fNumCorrBetaParsPerSection; deg++)
         {
-            LOG(INFO) << "P" << p << " = " << GetEnergyCorrBetaPar(s + 1, p);
+            LOG(INFO) << "P" << deg << " = " << GetEnergyCorrBetaPar(s + 1, deg);
         }
     }
 }

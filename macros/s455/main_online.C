@@ -38,8 +38,8 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRS2_t wrs2;
     EXT_STR_h101_WRS8_t wrs8;
 
-		EXT_STR_h101_SOFCORRM_onion_t corrm;
-		EXT_STR_h101_SOFCORRV_onion_t corrv;
+    EXT_STR_h101_SOFCORRM_onion_t corrm;
+    EXT_STR_h101_SOFCORRV_onion_t corrv;
 
 } EXT_STR_h101;
 
@@ -73,22 +73,22 @@ void main_online()
 
     if (expId == 455)
     {
-        NumSofSci = 1;
-        IdS2 = 0;
+        NumSofSci = 2;
+        IdS2 = 1;
         IdS8 = 0;
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
         //filename = "--stream=lxlanddaq01:9000"; // 9000 is for stitched events 
         filename = "--stream=lxlanddaq01:9100"; // 9100 is for raw events (needed for multi-events unpacking)
+        //filename = "/d/land5/202104_s455/lmd/main0420_0001.lmd*"; // 9100 is for raw events (needed for multi-events unpacking)
 
-        TString outputpath = "~/data/s455/root-online/";
-        //TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
+        TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
         outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
 
-        upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
-        //upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
-        ucesb_path = upexps_dir + "/202104_s455/202104_s455 --allow-errors --input-buffer=70Mi";
+        //upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
+        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
+        ucesb_path = upexps_dir + "/202104_s455/202104_s455_part2 --allow-errors --input-buffer=70Mi";
 
         sofiacaldir = dir + "/sofia/macros/s455/parameters/";
     }
@@ -131,7 +131,7 @@ void main_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = false;       // Active Targer for Coulomb-induced fission
+    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -140,10 +140,10 @@ void main_online()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false;  // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
-		// --- Correlation signals between the different DAQ subsystems ---------------------
-		Bool_t fCorrm = true;     // correlation and trigger signals on sofia_mesy at cave C
-		Bool_t fCorrv = true;     // correlation signal on sofia_vftx at cave C
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
+    // --- Correlation signals between the different DAQ subsystems ---------------------
+    Bool_t fCorrm = true;     // correlation and trigger signals on sofia_mesy at cave C
+    Bool_t fCorrv = true;     // correlation signal on sofia_vftx at cave C
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
@@ -527,18 +527,6 @@ void main_online()
         run->AddTask(MW2Cal2Hit);
     }
 
-    // MWPC3
-    if (fMwpc3)
-    {
-        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
-        MW3Map2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(MW3Map2Cal);
-
-        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
-        MW3Cal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(MW3Cal2Hit);
-    }
-
     // ToF-Wall
     if (fTofW)
     {
@@ -559,6 +547,19 @@ void main_online()
         SofTofWSingleTcal2Hit->SetTofLISE(33.);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
+
+    // MWPC3
+    if (fMwpc3)
+    {
+        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
+        MW3Map2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(MW3Map2Cal);
+
+        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
+        MW3Cal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(MW3Cal2Hit);
+    }
+
 
     // TWIM
     if (fTwim)
@@ -615,28 +616,43 @@ void main_online()
 
     if (fSci)
     {
-        R3BSofSciOnlineSpectra* scionline = new R3BSofSciOnlineSpectra();
-	scionline->SetNbDetectors(NumSofSci);
-	scionline->SetNbChannels(3);
-	scionline->SetIdS2(IdS2);
-	scionline->SetIdS8(IdS8);
-        scionline->SetCalTofS2min(355,0);
-	scionline->SetCalTofS2max(358,0);
-        run->AddTask(scionline);
+       R3BSofSciOnlineSpectra* scionline = new R3BSofSciOnlineSpectra();
+	     scionline->SetNbDetectors(NumSofSci);
+	     scionline->SetNbChannels(3);
+	     scionline->SetIdS2(IdS2);
+	     scionline->SetIdS8(IdS8);
+             scionline->SetCalTofS2min(535,0);
+	     scionline->SetCalTofS2max(550,0);
+       run->AddTask(scionline);
 	if(fTrim)
 	{
 	  R3BSofSciVsTrimOnlineSpectra* scivstrimonline = new R3BSofSciVsTrimOnlineSpectra();
 	  scivstrimonline->SetNbDetectors(NumSofSci);
-	  scivstrimonline->SetEmin(0,17000);
-	  scivstrimonline->SetEmax(0,17400);
-	  scivstrimonline->SetEmin(1,17000);
-	  scivstrimonline->SetEmax(1,17400);
-	  scivstrimonline->SetEmin(2,17000);
-	  scivstrimonline->SetEmax(2,17400);
-	  scivstrimonline->SetEmin(3,17000);
-	  scivstrimonline->SetEmax(3,17400);
+	  scivstrimonline->SetEmin(0,22000);
+	  scivstrimonline->SetEmax(0,22400);
+	  scivstrimonline->SetEmin(1,22000);
+	  scivstrimonline->SetEmax(1,22400);
+	  scivstrimonline->SetEmin(2,22000);
+	  scivstrimonline->SetEmax(2,22400);
+	  scivstrimonline->SetEmin(3,22000);
+	  scivstrimonline->SetEmax(3,22400);
 	  scivstrimonline->SetDispersionS2(7250.);
-	  scivstrimonline->SetBrho0(9.3148); // run 204, 205
+	  scivstrimonline->SetBrho0(11.0955);   // 199At
+	  //scivstrimonline->SetBrho0(11.5067);   // 221Pa
+	  //scivstrimonline->SetBrho0(12.3352);   // 238U calibration point with plastic#2 at S2
+	  //scivstrimonline->SetBrho0(11.0864);   // 204Fr
+	  //scivstrimonline->SetBrho0(10.6814);   // 175Pt
+	  //scivstrimonline->SetBrho0(10.9558);   // 184Hg
+	  //scivstrimonline->SetBrho0(10.8138);   // 187Pb
+	  //scivstrimonline->SetBrho0(10.8183);   // 182Hg
+	  //scivstrimonline->SetBrho0(10.9476);   // 189Pb
+	  //scivstrimonline->SetBrho0(10.6814);   // 180Hg
+	  //scivstrimonline->SetBrho0(11.2712); // 207Fr
+	  //scivstrimonline->SetBrho0(11.3418); // 226,216Th
+	  //scivstrimonline->SetBrho0(12.3354); //ATTENTION PARAMETERS CALCULATED WITH (12.3255) TO BE DONE AGAIN WITH THE GOOD VALUE; // FRS S2 to Cave C ToF calibration point 3 with plastic#1 at S2
+	  //scivstrimonline->SetBrho0(12.8719); // FRS S2 to Cave C ToF calibration point 2 with plastic#1 at S2
+	  //scivstrimonline->SetBrho0(14.1008); // FRS S2 to Cave C ToF calibration point 1 with plastic#1 at S2
+	  //scivstrimonline->SetBrho0(9.3148);  // run 204, 205
 	  //scivstrimonline->SetBrho0(14.1007);
 	  run->AddTask(scivstrimonline);
 	}
@@ -651,7 +667,37 @@ void main_online()
     if (fAt)
     {
         R3BSofAtOnlineSpectra* atonline = new R3BSofAtOnlineSpectra();
-        run->AddTask(atonline);
+        TCutG* cut1 = new TCutG();
+	cut1->SetName("cut_section1");
+	cut1->SetFillColorAlpha(0,0);
+	cut1->SetPoint(0,1000,13000);
+	cut1->SetPoint(1,9000,13000);
+	cut1->SetPoint(2,9000,22000);
+	cut1->SetPoint(3,1000,22000);
+	cut1->SetPoint(4,1000,13000);
+	atonline->SetSelection(1,cut1);
+
+	TCutG* cut2 = new TCutG();
+	cut2->SetName("cut_section2");
+	cut2->SetFillColorAlpha(0,0);
+	cut2->SetPoint(0,40000,1000);
+	cut2->SetPoint(1,53000,1000);
+	cut2->SetPoint(2,53000,22000);
+	cut2->SetPoint(3,43000,22000);
+	cut2->SetPoint(4,40000,1000);
+	atonline->SetSelection(2,cut2);
+	
+	TCutG* cut3 = new TCutG();
+	cut3->SetFillColorAlpha(0,0);
+	cut3->SetName("cut_section3");
+	cut3->SetPoint(0,26000,42000);
+	cut3->SetPoint(1,36000,42000);
+	cut3->SetPoint(2,36000,54000);
+	cut3->SetPoint(3,26000,54000);
+	cut3->SetPoint(4,26000,42000);
+	atonline->SetSelection(3,cut3);
+	
+	run->AddTask(atonline);
     }
     
     if (fAms)

@@ -70,7 +70,7 @@ class R3BSofSciMapped2Tcal : public FairTask
 
     /** Private method CalData **/
     //** Adds a TcalData to the detector
-    R3BSofSciTcalData* AddTcalData(Int_t det, Int_t ch, Double_t tns);
+    R3BSofSciTcalData* AddTcalData(Int_t det, Int_t ch, Double_t tns, UInt_t clock);
 
   public:
     ClassDef(R3BSofSciMapped2Tcal, 1)

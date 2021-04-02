@@ -16,5 +16,4 @@
 
 #pragma link C++ class R3BSofTrimCal2Hit + ;
 
-
 #endif

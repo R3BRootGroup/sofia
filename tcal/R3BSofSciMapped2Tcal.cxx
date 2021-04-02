@@ -55,7 +55,7 @@ void R3BSofSciMapped2Tcal::SetParContainers()
     else
     {
         LOG(INFO) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with "
-                  << fTcalPar->GetNumSignals() << " signals";
+                  << fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
     }
 }
 
@@ -101,14 +101,13 @@ InitStatus R3BSofSciMapped2Tcal::Init()
     // --- -------------------------- --- //
     // --- CHECK THE TCALPAR VALIDITY --- //
     // --- -------------------------- --- //
-    if (fTcalPar->GetNumSignals() == 0)
+    if (fTcalPar->GetNumDetectors() == 0)
     {
         LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() : There are no Tcal parameters for SofSci";
         return kFATAL;
     }
     else
     {
-        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of Signals =" << fTcalPar->GetNumSignals();
         LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of SofSci =" << fTcalPar->GetNumDetectors();
         LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of Channel per SofSci =" << fTcalPar->GetNumChannels();
     }
@@ -156,7 +155,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
             continue;
         }
         tns = CalculateTimeNs(det, ch, tf, tc);
-        AddTcalData(det, ch, tns);
+        AddTcalData(det, ch, tns, tc);
     }
 
     if (nHitsPerEvent_SofSci != fTcal->GetEntries())
@@ -177,21 +176,22 @@ void R3BSofSciMapped2Tcal::Reset()
 void R3BSofSciMapped2Tcal::Finish() {}
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddTcalData(Int_t det, Int_t ch, Double_t tns)
+R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddTcalData(Int_t det, Int_t ch, Double_t tns, UInt_t clock)
 {
     // It fills the R3BSofSciTcalData
     TClonesArray& clref = *fTcal;
     Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofSciTcalData(det, ch, tns);
+    return new (clref[size]) R3BSofSciTcalData(det, ch, tns, clock);
 }
 
 Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt_t iTf, UInt_t iTc)
 {
     UInt_t rank = iTf + fTcalPar->GetNumTcalParsPerSignal() * ((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
     Double_t iPar = (Double_t)fTcalPar->GetSignalTcalParams(rank);
-    Double_t r = (Double_t)rand.Rndm() - 0.5;
+    Double_t iDeltaClock = (Double_t)fTcalPar->GetClockOffset((iDet-1)*fTcalPar->GetNumChannels()+(iCh -1));
+		Double_t r = (Double_t)rand.Rndm() - 0.5;
     Double_t iTf_ns;
-    Double_t iTc_ns = (Double_t)iTc * 5.;
+    Double_t iTc_ns = ((Double_t)iTc-iDeltaClock) * 5.;
     //  std::cout << "R3BSofSciMapped2Tcal::CalculateTimeNs : iDet=" << iDet << ", iCh=" << iCh << ", iTf=" << iTf << ",
     //  rank=" << rank  << std::endl;
 

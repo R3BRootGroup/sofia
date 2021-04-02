@@ -18,14 +18,10 @@ void softrim_dtoffset()
   UShort_t NumSofSci ;
   TString filename, upexps_dir, ucesb_path;
 
-  //filename = "--stream=lxir123:7803";
-  //filename = "/lustre/land/202002_s467/lustre/r3b/202002_s467/main0341_0001.lmd";
-  filename = "/media/audrey/COURGE/SOFIA/ANALYSE/SOFIA3/data/202002_s467/main0238_0001.lmd";
+  filename = "~/data/s455/stitched/EvsBeta/main0197_0001.lmd";
 
   upexps_dir = ucesb_dir + "/../upexps/";                      // for local computers
-  // upexps_dir = "/u/land/fake_cvmfs/upexps";                 // for lxlandana computers
-  // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-  ucesb_path = upexps_dir + "/202005_s455/202005_s455 --allow-errors --input-buffer=100Mi";
+  ucesb_path = upexps_dir + "/202103_s455/202103_s455_part2 --allow-errors --input-buffer=100Mi";
   ucesb_path.ReplaceAll("//","/");
 
   // Output file ----------------------------------------------------

@@ -162,7 +162,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             for (Int_t j = 0; j < 3; j++)
             {
                 sprintf(Name1, "DTalignedS%02d_vs_PosRawSci%02d", j + 1, i + 1);
-                fh2_TrimDT_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 500, -5, 5, 1000, 0, 10000);
+                fh2_TrimDT_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 600, -10000, 30000);
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
                     "(RIGHT,Wix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetYaxis()->SetTitle("DTaligned [ns, 100ps resolution]");
@@ -209,14 +209,14 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             {
                 c_TrimE_vs_BetaS2->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_BetaS2", section + 1);
-                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 1000, 0, 60000);
+                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
                 fh2_TrimE_vs_BetaS2[section]->GetXaxis()->SetTitle("Beta from S2");
                 fh2_TrimE_vs_BetaS2[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
                 fh2_TrimE_vs_BetaS2[section]->Draw("COL");
 
                 c_TrimE_vs_AoQraw->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_AoQraw", section + 1);
-                fh2_TrimE_vs_AoQraw[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 0, 60000);
+                fh2_TrimE_vs_AoQraw[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
                 fh2_TrimE_vs_AoQraw[section]->GetXaxis()->SetTitle("A/Q");
                 fh2_TrimE_vs_AoQraw[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
                 fh2_TrimE_vs_AoQraw[section]->Draw("COL");
@@ -237,14 +237,14 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             }
             c_TrimE_vs_BetaS2->cd(4);
             sprintf(Name1, "TrimEmax_vs_BetaS2");
-            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 1000, 0, 60000);
+            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
             fh2_TrimE_vs_BetaS2[3]->GetXaxis()->SetTitle("Beta from S2");
             fh2_TrimE_vs_BetaS2[3]->GetYaxis()->SetTitle("Emax");
             fh2_TrimE_vs_BetaS2[3]->Draw("COL");
 
             c_TrimE_vs_AoQraw->cd(4);
             sprintf(Name1, "TrimEmax_vs_AoQraw");
-            fh2_TrimE_vs_AoQraw[3] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 0, 60000);
+            fh2_TrimE_vs_AoQraw[3] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
             fh2_TrimE_vs_AoQraw[3]->GetXaxis()->SetTitle("A/Q");
             fh2_TrimE_vs_AoQraw[3]->GetYaxis()->SetTitle("Emax");
             fh2_TrimE_vs_AoQraw[3]->Draw("COL");
@@ -277,7 +277,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             for (Int_t j = 0; j < 3; j++)
             {
                 sprintf(Name1, "ErawS%02d_vs_PosRawSci%02d", j + 1, i + 1);
-                fh2_TrimEraw_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 590, 1000, 60000);
+                fh2_TrimEraw_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 900, 15000, 35000);
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
                     "(RIGHT,Wix. side) -->  SofSci X [ns] --> (LEFT,Mes. side) -->");
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j]->GetYaxis()->SetTitle("Eraw [channels]");
@@ -294,7 +294,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
                 if (fSciCal)
                 {
                     sprintf(Name1, "ES%02d_vs_PosCalSci%02d", j + 1, i + 1);
-                    fh2_TrimE_vs_SciPosCal[i * 3 + j] = new TH2F(Name1, Name1, 1000, -20, 20, 590, 1000, 65000);
+                    fh2_TrimE_vs_SciPosCal[i * 3 + j] = new TH2F(Name1, Name1, 1000, -20, 20, 900, 15000, 35000);
                     fh2_TrimE_vs_SciPosCal[i * 3 + j]->GetXaxis()->SetTitle(
                         "(RIGWix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
                     fh2_TrimE_vs_SciPosCal[i * 3 + j]->GetYaxis()->SetTitle("E [channels]");

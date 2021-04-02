@@ -47,19 +47,19 @@ class R3BSofSciMapped2TcalPar : public FairTask
     /** Accessor functions **/
     const UShort_t GetNumSci() { return fNumSci; }
     const UShort_t GetNumChannels() { return fNumChannels; }
-    const UShort_t GetNumSignals() { return fNumSignals; }
+    //const UShort_t GetNumSignals() { return fNumSignals; }
     const Int_t GetMinStatistics() { return fMinStatistics; }
 
     void SetNumSci(UShort_t num) { fNumSci = num; }
     void SetNumChannels(UShort_t num) { fNumChannels = num; }
-    void SetNumSignals(UShort_t NumSci, UShort_t NumChs) { fNumSignals = NumSci * NumChs; }
+    //void SetNumSignals(UShort_t NumSci, UShort_t NumChs) { fNumSignals = NumSci * NumChs; }
     void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) { fNumTcalParsPerSignal = NumberOfTcalParsPerSignal; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
     UShort_t fNumSci;            // number of detectors (=1 if cave C only, 2 or more if FRS in used)
     UShort_t fNumChannels;       // number of channels  (=2 if cave C only, 3 if FRS in used: LEFT, RIGHT, Tref)
-    UShort_t fNumSignals;        // number of signal
+    //UShort_t fNumSignals;        // number of signal
     Int_t fNumTcalParsPerSignal; // =1000 for each signal
     Int_t fMinStatistics;        // minimum statistics to proceed to the calibration
 

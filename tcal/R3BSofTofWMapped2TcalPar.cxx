@@ -34,7 +34,7 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar()
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 {
-    fNumSignals = fNumDetectors * fNumChannels;
+    //fNumSignals = fNumDetectors * fNumChannels;
 }
 
 // R3BSofTofWMapped2TcalPar: Standard Constructor --------------------------
@@ -49,7 +49,7 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerb
     , fOutputFile(NULL)
 
 {
-    fNumSignals = fNumDetectors * fNumChannels;
+    //fNumSignals = fNumDetectors * fNumChannels;
 }
 
 // R3BSofTofWMapped2TcalPar: Destructor ----------------------------------------
@@ -100,7 +100,7 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     {
         fTcalPar->SetNumDetectors(fNumDetectors);
         fTcalPar->SetNumChannels(fNumChannels);
-        fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
+        //fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
         fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
     }
 
@@ -109,8 +109,8 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     // --- ---------------------- --- //
 
     char name[100];
-    fh_TimeFineBin = new TH1F*[fNumSignals];
-    fh_TimeFineNs = new TH1F*[fNumSignals];
+    fh_TimeFineBin = new TH1F*[fNumDetectors*fNumChannels];
+    fh_TimeFineNs = new TH1F*[fNumDetectors*fNumChannels];
     for (Int_t det = 0; det < fNumDetectors; det++)
     {
         for (Int_t ch = 0; ch < fNumChannels; ch++)
@@ -165,11 +165,11 @@ void R3BSofTofWMapped2TcalPar::Exec(Option_t* opt)
         // *** SofTofW PmtUp SIGNAL for P28 is 55    *** //
         // *** ************************************* *** //
         UInt_t iSignal = (hit->GetDetector() - 1) * fNumChannels + (hit->GetPmt() - 1);
-        if ((0 <= iSignal) && (iSignal < fNumSignals))
+        if ((0 <= iSignal) && (iSignal < fNumDetectors*fNumChannels))
             fh_TimeFineBin[iSignal]->Fill(hit->GetTimeFine());
         else
             LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Exec() Number of signals out of range: " << iSignal
-                       << " instead of [0," << fNumSignals << "] "
+                       << " instead of [0," << fNumDetectors*fNumChannels << "] "
                        << " det = " << hit->GetDetector() << " fNumChannels = " << fNumChannels
                        << " pmt = " << hit->GetPmt();
 
@@ -197,7 +197,7 @@ void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
     UInt_t IntegralPartial;
     Double_t Bin2Ns[fNumTcalParsPerSignal];
 
-    for (Int_t sig = 0; sig < fNumSignals; sig++)
+    for (Int_t sig = 0; sig < fNumDetectors*fNumChannels; sig++)
     {
         if (fh_TimeFineBin[sig]->GetEntries() > fMinStatistics)
         {

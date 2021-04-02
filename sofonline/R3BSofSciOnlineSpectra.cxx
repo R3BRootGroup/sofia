@@ -38,6 +38,11 @@
 #include <iostream>
 #include <sstream>
 
+#define DeltaClockTrefRight_S2 0
+#define DeltaClockTrefLeft_S2 0
+#define DeltaClockTrefRight_CaveC 50
+#define DeltaClockTrefLeft_CaveC 47
+
 R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra()
     : FairTask("SofSciOnlineSpectra", 1)
     , fMapped(NULL)
@@ -98,7 +103,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofSciOnlineSpectra::Init FairRootManager not found";
-    // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
+
+    fEventHeader = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
@@ -143,16 +149,24 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- declare TCanvas and Histograms --- //
     // --- ------------------------------ --- //
 
-    // === 1D-MULTIPLICITY === //
+    // === 1D-MULTIPLICITY without condition on TPAT === //
     fh1_multMap = new TH1I*[fNbDetectors * fNbChannels];
     fh1_multTcal = new TH1I*[fNbDetectors * fNbChannels];
     fh1_multSingleTcal = new TH1I*[fNbDetectors];
     fh1_multCal = new TH1I*[fNbDetectors];
 
+    // === 1D-MULTIPLICITY with condition on TPAT === //
+    fh1_multMap_condTpat = new TH1I*[fNbDetectors * fNbChannels];
+    fh1_multTcal_condTpat = new TH1I*[fNbDetectors * fNbChannels];
+    fh1_multSingleTcal_condTpat = new TH1I*[fNbDetectors];
+    // fh1_multCal_condTpat = new TH1I*[fNbDetectors];
+
     // === MAPPED LEVEL: FINE TIME AND MULT PER EVENT === //
     cMapped = new TCanvas*[fNbDetectors];
     fh1_finetime = new TH1I*[fNbDetectors * fNbChannels];
     fh2_mult = new TH2I*[fNbDetectors];
+    fh2_mult_RvsL = new TH2I*[fNbDetectors];
+    fh2_mult_RvsL_condTpat = new TH2I*[fNbDetectors];
 
     // === POSITION AT TCAL, SINGLE TCAL AND CAL LEVELS === //
     cPos = new TCanvas*[fNbDetectors];
@@ -196,6 +210,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
     // === 2D multiplicity at Mapped level: Tref vs PMT === //
     fh2_mult_TrefVsPmt = new TH2I*[fNbDetectors * (fNbChannels - 1)];
+    fh2_mult_TrefVsPmt_condTpat = new TH2I*[fNbDetectors * (fNbChannels - 1)];
 
     // --- ----------------------------- --- //
     // --- create TCanvas and Histograms --- //
@@ -226,18 +241,64 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // === TCanvas: 2D-MultMap === //
     sprintf(Name1, "MultMap2D");
     cMultMap2D = new TCanvas(Name1, Name1, 10, 10, 800, 700);
-    cMultMap2D->Divide(2, fNbDetectors);
+    cMultMap2D->Divide(4, fNbDetectors);
 
-    // === Delta Tref at TCAL === //
+    // === TCanvas: 2D-MultMap === //
+    sprintf(Name1, "MultMap2D_RvsL");
+    cMultMap2D_RvsL = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cMultMap2D_RvsL->Divide(2, fNbDetectors);
+
+    // === TCanvas: Delta Clock Per Sci === //
+    sprintf(Name1, "DeltaClockPerSci");
+    cDeltaClockPerSci = new TCanvas(Name1, Name1, 10, 10, 800, 700);
+    cDeltaClockPerSci->Divide(2, fNbDetectors);
+    fh1_deltaClockPerSci = new TH1F*[fNbDetectors * 2];
+    fh1_deltaClockPerSci_condTpat = new TH1F*[fNbDetectors * 2];
+    for (int d = 0; d < fNbDetectors; d++)
+    {
+        // with condition on TPAT
+        sprintf(Name1, "DeltaClock_Sci%i_TrefRight", d + 1);
+        sprintf(Name2, "DeltaClock_Sci%i_TrefRight (blue no condition on TPAT and red TPAT = 1 or 2)", d + 1);
+        fh1_deltaClockPerSci[2 * d] = new TH1F(Name1, Name2, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci[2 * d]->SetLineColor(kBlue);
+        fh1_deltaClockPerSci[2 * d]->SetLineWidth(2);
+        cDeltaClockPerSci->cd(2 * d + 1);
+        fh1_deltaClockPerSci[2 * d]->Draw();
+
+        sprintf(Name1, "DeltaClock_Sci%i_TrefLeft", d + 1);
+        sprintf(Name2, "DeltaClock_Sci%i_TrefLeft (blue no condition on Tpat and ref TPAT = 1 or 2)", d + 1);
+        fh1_deltaClockPerSci[2 * d + 1] = new TH1F(Name1, Name2, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci[2 * d + 1]->SetLineColor(kBlue);
+        fh1_deltaClockPerSci[2 * d + 1]->SetLineWidth(2);
+        cDeltaClockPerSci->cd(2 * d + 2);
+        fh1_deltaClockPerSci[2 * d + 1]->Draw();
+
+        // with condition on TPAT
+        sprintf(Name1, "DeltaClock_Sci%i_TrefRight_wCondTpat", d + 1);
+        fh1_deltaClockPerSci_condTpat[2 * d] = new TH1F(Name1, Name1, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci_condTpat[2 * d]->SetLineColor(kRed);
+        fh1_deltaClockPerSci_condTpat[2 * d]->SetLineWidth(1);
+        cDeltaClockPerSci->cd(2 * d + 1);
+        fh1_deltaClockPerSci_condTpat[2 * d]->Draw("sames");
+
+        sprintf(Name1, "DeltaClock_Sci%i_TrefLeft_wCondTpat", d + 1);
+        fh1_deltaClockPerSci_condTpat[2 * d + 1] = new TH1F(Name1, Name1, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci_condTpat[2 * d + 1]->SetLineColor(kRed);
+        fh1_deltaClockPerSci_condTpat[2 * d + 1]->SetLineWidth(1);
+        cDeltaClockPerSci->cd(2 * d + 2);
+        fh1_deltaClockPerSci_condTpat[2 * d + 1]->Draw("sames");
+    }
+
     if (fNbDetectors > 1)
     {
+        // === Delta Tref at TCAL === //
         cDeltaTref = new TCanvas("DeltaTref", "DeltaTref", 10, 10, 800, 700);
         cDeltaTref->Divide(1, fNbDetectors - 1);
         fh1_DeltaTref = new TH1D*[fNbDetectors - 1];
         for (int d = 0; d < fNbDetectors - 1; d++)
         {
             sprintf(Name1, "DeltaTref_Sci%02d_to_SciCaveC", d + 1);
-            fh1_DeltaTref[d] = new TH1D(Name1, Name1, 10000, -5500, -5400);
+            fh1_DeltaTref[d] = new TH1D(Name1, Name1, 45000, -20000, 25000);
             cDeltaTref->cd(d + 1);
             fh1_DeltaTref[d]->Draw();
         }
@@ -246,8 +307,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
         // === TH1I: 1D-mult at SingleTcal level === //
-        sprintf(Name1, "Sci%i_MultPerEvent_SingleTal", i + 1);
-        fh1_multSingleTcal[i] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+        sprintf(Name1, "Sci%i_MultPerEvent_SingleTcal", i + 1);
+        sprintf(Name2, "Sci%i_MultPerEvent_SingleTcal (blue no Tpat condition, red: Tpat=1 or 2)", i + 1);
+        fh1_multSingleTcal[i] = new TH1I(Name1, Name2, 20, -0.5, 19.5);
         fh1_multSingleTcal[i]->GetXaxis()->SetTitle("Multiplicity per event");
         fh1_multSingleTcal[i]->GetYaxis()->SetTitle("Counts");
         fh1_multSingleTcal[i]->GetXaxis()->CenterTitle(true);
@@ -256,9 +318,29 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         fh1_multSingleTcal[i]->GetXaxis()->SetTitleSize(0.05);
         fh1_multSingleTcal[i]->GetYaxis()->SetLabelSize(0.05);
         fh1_multSingleTcal[i]->GetYaxis()->SetTitleSize(0.05);
+        fh1_multSingleTcal[i]->SetLineColor(kBlue);
+        fh1_multSingleTcal[i]->SetLineWidth(2);
         cMultSingleTcal->cd(i + 1);
         gPad->SetLogy();
         fh1_multSingleTcal[i]->Draw("");
+
+        sprintf(Name1, "Sci%i_MultPerEvent_SingleTcal_condTpat", i + 1);
+        sprintf(
+            Name2, "Sci%i_MultPerEvent_SingleTcal_condTpat (blue no condition on Tpat, red for Tpat=1 or 2)", i + 1);
+        fh1_multSingleTcal_condTpat[i] = new TH1I(Name1, Name2, 20, -0.5, 19.5);
+        fh1_multSingleTcal_condTpat[i]->GetXaxis()->SetTitle("Multiplicity per event");
+        fh1_multSingleTcal_condTpat[i]->GetYaxis()->SetTitle("Counts");
+        fh1_multSingleTcal_condTpat[i]->GetXaxis()->CenterTitle(true);
+        fh1_multSingleTcal_condTpat[i]->GetYaxis()->CenterTitle(true);
+        fh1_multSingleTcal_condTpat[i]->GetXaxis()->SetLabelSize(0.05);
+        fh1_multSingleTcal_condTpat[i]->GetXaxis()->SetTitleSize(0.05);
+        fh1_multSingleTcal_condTpat[i]->GetYaxis()->SetLabelSize(0.05);
+        fh1_multSingleTcal_condTpat[i]->GetYaxis()->SetTitleSize(0.05);
+        fh1_multSingleTcal_condTpat[i]->SetLineColor(kRed);
+        fh1_multSingleTcal_condTpat[i]->SetLineWidth(1);
+        cMultSingleTcal->cd(i + 1);
+        gPad->SetLogy();
+        fh1_multSingleTcal_condTpat[i]->Draw("sames");
 
         // === TH1I: 1D-mult at cal level === //
         sprintf(Name1, "Sci%i_MultPerEvent_Cal", i + 1);
@@ -293,7 +375,11 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         {
             // === TH1I: 1D-mult at map level === //
             sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Mapped", i + 1, j + 1);
-            fh1_multMap[i * fNbChannels + j] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+            sprintf(Name2,
+                    "Sci%i_Pmt%i_MultPerEvent_Mapped (blue no condition on TPAT, red condition on TPAT = 1 or 2)",
+                    i + 1,
+                    j + 1);
+            fh1_multMap[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
             fh1_multMap[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
             fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
             fh1_multMap[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -302,13 +388,35 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_multMap[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
             fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
             fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            fh1_multMap[i * fNbChannels + j]->SetLineWidth(2);
+            fh1_multMap[i * fNbChannels + j]->SetLineColor(kBlue);
             cMultMap->cd(i * fNbChannels + j + 1);
             gPad->SetLogy();
             fh1_multMap[i * fNbChannels + j]->Draw("");
 
+            sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Mapped_condTpat", i + 1, j + 1);
+            fh1_multMap_condTpat[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetYaxis()->CenterTitle(true);
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetXaxis()->SetLabelSize(0.05);
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
+            fh1_multMap_condTpat[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            fh1_multMap_condTpat[i * fNbChannels + j]->SetLineWidth(1);
+            fh1_multMap_condTpat[i * fNbChannels + j]->SetLineColor(kRed);
+            cMultMap->cd(i * fNbChannels + j + 1);
+            gPad->SetLogy();
+            fh1_multMap_condTpat[i * fNbChannels + j]->Draw("sames");
+
             // === TH1I: 1D-mult at tcal level === //
             sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Tcal", i + 1, j + 1);
-            fh1_multTcal[i * fNbChannels + j] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+            sprintf(Name2,
+                    "Sci%i_Pmt%i_MultPerEvent_Tcal (blue no condition on Tpat, red condition on TPAT = 1 or 2)",
+                    i + 1,
+                    j + 1);
+            fh1_multTcal[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
             fh1_multTcal[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
             fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
             fh1_multTcal[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -317,9 +425,27 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_multTcal[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
             fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
             fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            fh1_multTcal[i * fNbChannels + j]->SetLineWidth(2);
+            fh1_multTcal[i * fNbChannels + j]->SetLineColor(kBlue);
             cMultTcal->cd(i * fNbChannels + j + 1);
             gPad->SetLogy();
             fh1_multTcal[i * fNbChannels + j]->Draw("");
+
+            sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Tcal_condTpat", i + 1, j + 1);
+            fh1_multTcal_condTpat[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetYaxis()->CenterTitle(true);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetXaxis()->SetLabelSize(0.05);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetXaxis()->SetTitleSize(0.05);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetYaxis()->SetLabelSize(0.05);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->GetYaxis()->SetTitleSize(0.05);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->SetLineWidth(1);
+            fh1_multTcal_condTpat[i * fNbChannels + j]->SetLineColor(kRed);
+            cMultTcal->cd(i * fNbChannels + j + 1);
+            gPad->SetLogy();
+            fh1_multTcal_condTpat[i * fNbChannels + j]->Draw("sames");
 
             // === TH1F: fine time === //
             sprintf(Name1, "Sci%i_FineTimeCh%i", i + 1, j + 1);
@@ -339,7 +465,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         for (Int_t pmt = 0; pmt < fNbChannels - 1; pmt++)
         {
             sprintf(Name1, "SofSci%i_MultMap_TrefVsPmt%i", i + 1, pmt + 1);
-            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] = new TH2I(Name1, Name1, 30, -0.5, 29.5, 5, -0.5, 4.5);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] = new TH2I(Name1, Name1, 70, -0.5, 69.5, 5, -0.5, 4.5);
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitle("Mult Pmt");
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitle("Mult Tref");
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->CenterTitle(true);
@@ -350,6 +476,21 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitleSize(0.05);
             cMultMap2D->cd(i * (fNbChannels - 1) + pmt + 1);
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->Draw("col");
+
+            sprintf(Name1, "SofSci%i_MultMap_TrefVsPmt%ii_condTpat", i + 1, pmt + 1);
+            sprintf(Name2, "SofSci%i_MultMap_TrefVsPmt%i for Tpat = 1 or 2", i + 1, pmt + 1);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt] =
+                new TH2I(Name1, Name2, 70, -0.5, 69.5, 5, -0.5, 4.5);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitle("Mult Pmt");
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitle("Mult Tref");
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetXaxis()->CenterTitle(true);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetYaxis()->CenterTitle(true);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetLabelSize(0.05);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitleSize(0.05);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetLabelSize(0.05);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitleSize(0.05);
+            cMultMap2D->cd(fNbChannels + i * (fNbChannels - 1) + pmt + 2);
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + pmt]->Draw("col");
         }
 
         // === TH1F: multiplicity per event and channel at mapped level === //
@@ -366,9 +507,37 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         cMapped[i]->cd(4);
         fh2_mult[i]->Draw("COL");
 
+        // === TH1F: multiplicity per event and channel at mapped level === //
+        sprintf(Name1, "Sci%i_MultPerEvent_RvsL", i + 1);
+        fh2_mult_RvsL[i] = new TH2I(Name1, Name1, 40, -1.5, 38.5, 40, -1.5, 38.5);
+        fh2_mult_RvsL[i]->GetXaxis()->SetTitle("Multiplicity per event on the Left Pmt");
+        fh2_mult_RvsL[i]->GetYaxis()->SetTitle("Multiplicity per event on the Right Pmt");
+        fh2_mult_RvsL[i]->GetXaxis()->CenterTitle(true);
+        fh2_mult_RvsL[i]->GetYaxis()->CenterTitle(true);
+        fh2_mult_RvsL[i]->GetXaxis()->SetLabelSize(0.05);
+        fh2_mult_RvsL[i]->GetXaxis()->SetTitleSize(0.05);
+        fh2_mult_RvsL[i]->GetYaxis()->SetLabelSize(0.05);
+        fh2_mult_RvsL[i]->GetYaxis()->SetTitleSize(0.05);
+        cMultMap2D_RvsL->cd(i + 1);
+        fh2_mult_RvsL[i]->Draw("COL");
+
+        // === TH1F: multiplicity per event and channel at mapped level === //
+        sprintf(Name1, "Sci%i_MultPerEvent_RvsL_condTpat", i + 1);
+        fh2_mult_RvsL_condTpat[i] = new TH2I(Name1, Name1, 40, -1.5, 38.5, 40, -1.5, 38.5);
+        fh2_mult_RvsL_condTpat[i]->GetXaxis()->SetTitle("Multiplicity per event on the Left Pmt");
+        fh2_mult_RvsL_condTpat[i]->GetYaxis()->SetTitle("Multiplicity per event on the Right Pmt");
+        fh2_mult_RvsL_condTpat[i]->GetXaxis()->CenterTitle(true);
+        fh2_mult_RvsL_condTpat[i]->GetYaxis()->CenterTitle(true);
+        fh2_mult_RvsL_condTpat[i]->GetXaxis()->SetLabelSize(0.05);
+        fh2_mult_RvsL_condTpat[i]->GetXaxis()->SetTitleSize(0.05);
+        fh2_mult_RvsL_condTpat[i]->GetYaxis()->SetLabelSize(0.05);
+        fh2_mult_RvsL_condTpat[i]->GetYaxis()->SetTitleSize(0.05);
+        cMultMap2D_RvsL->cd(fNbDetectors + i + 1);
+        fh2_mult_RvsL_condTpat[i]->Draw("COL");
+
         // === TH1F: raw position at tcal level if mult=1 === //
         sprintf(Name1, "SofSci%i_RawPos_Tcal_Mult1", i + 1);
-        fh1_RawPos_TcalMult1[i] = new TH1F(Name1, Name1, 20000, -10, 10);
+        fh1_RawPos_TcalMult1[i] = new TH1F(Name1, Name1, 200000, -100, 100);
         fh1_RawPos_TcalMult1[i]->GetXaxis()->SetTitle(
             "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
         fh1_RawPos_TcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
@@ -383,7 +552,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: raw position at single tcal level === //
         sprintf(Name1, "SofSci%i_RawPos_SingleTcal", i + 1);
-        fh1_RawPos_SingleTcal[i] = new TH1F(Name1, Name1, 20000, -10, 10);
+        fh1_RawPos_SingleTcal[i] = new TH1F(Name1, Name1, 100000, -50, 50);
         fh1_RawPos_SingleTcal[i]->GetXaxis()->SetTitle(
             "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
         fh1_RawPos_SingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
@@ -401,7 +570,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         if (i == (fNbDetectors - 1))
             fh1_CalPos[i] = new TH1F(Name1, Name1, 5000, -25, 25);
         else
-            fh1_CalPos[i] = new TH1F(Name1, Name1, 22000, -110, 110);
+            fh1_CalPos[i] = new TH1F(Name1, Name1, 30000, -150, 150);
         fh1_CalPos[i]->GetXaxis()->SetTitle("(RIGHT, Wix. side) -->  x position [mm] --> (LEFT,Mes. side) -->");
         fh1_CalPos[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_CalPos[i]->GetXaxis()->CenterTitle(true);
@@ -416,9 +585,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // +++ TH2F: raw position versus calibrated position === //
         sprintf(Name1, "SofSci%i_RawPosVsCalPos", i + 1);
         if (i == (fNbDetectors - 1))
-            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -25, 25, 1000, -10, 10);
+            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -25, 25, 500, -25, 25);
         else
-            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 1000, -100, 100, 1000, -10, 10);
+            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -100, 100, 500, -10, 10);
         fh2_RawPosVsCalPos[i]->GetXaxis()->SetTitle("Calculated X position [mm]");
         fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitle(
             "(RIGHT, Wixhausen side) --->  Raw X position [ns]  ---> (LEFT, Messel side)");
@@ -452,7 +621,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: raw ToF from S2 at tcal level if mult==1 for the 4 PMTs + 2 Tref signals === //
             sprintf(Name1, "RawTofNs_Tcal_m1_wTref_S2_to_Sci%02d", i + 1);
-            fh1_RawTofFromS2_TcalMult1[i - fIdS2] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2] = new TH1D(Name1, Name1, 1000000, -50000, 50000);
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->SetTitle("Raw Tof [ns]");
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->CenterTitle(true);
@@ -662,8 +831,10 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     mainfolSciMult->Add(cMultSingleTcal);
     mainfolSciMult->Add(cMultCal);
     mainfolSciMult->Add(cMultMap2D);
+    mainfolSciMult->Add(cMultMap2D_RvsL);
 
     TFolder* mainfolSci = new TFolder("SofSci", "SofSci info");
+    mainfolSci->Add(cDeltaClockPerSci);
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
         mainfolSci->Add(cMapped[i]);
@@ -702,6 +873,12 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 void R3BSofSciOnlineSpectra::Reset_Histo()
 {
     LOG(INFO) << "R3BSofSciOnlineSpectra::Reset_Histo";
+    for (Int_t d = 0; d < fNbDetectors; d++)
+        for (Int_t p = 0; p < 2; p++)
+        {
+            fh1_deltaClockPerSci[2 * d + p]->Reset();
+            fh1_deltaClockPerSci_condTpat[2 * d + p]->Reset();
+        }
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
         // === MULTIPLICITY === //
@@ -709,9 +886,18 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh1_multTcal[i]->Reset();
         fh1_multSingleTcal[i]->Reset();
         fh1_multCal[i]->Reset();
+        fh1_multMap_condTpat[i]->Reset();
+        fh1_multTcal_condTpat[i]->Reset();
+        fh1_multSingleTcal_condTpat[i]->Reset();
+        // fh1_multCal_condTpat[i]->Reset();
         fh2_mult[i]->Reset();
+        fh2_mult_RvsL[i]->Reset();
+        fh2_mult_RvsL_condTpat[i]->Reset();
         for (Int_t j = 0; j < fNbChannels - 1; j++)
+        {
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Reset();
+            fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + j]->Reset();
+        }
 
         // === FINE TIME === //
         for (Int_t j = 0; j < fNbChannels; j++)
@@ -725,9 +911,10 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
     }
 
     if (fNbDetectors > 1)
+    {
         for (int d = 0; d < fNbDetectors - 1; d++)
             fh1_DeltaTref[d]->Reset();
-
+    }
     // === TIME OF FLIGHT AND BETA === //
     if (fIdS2 > 0)
     {
@@ -761,6 +948,17 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofSciOnlineSpectra::Exec FairRootManager not found";
 
+    // --- -------------- --- //
+    // --- TPAT CONDITION --- //
+    // --- -------------- --- //
+    Bool_t BeamOrFission = kFALSE;
+    if (fEventHeader->GetTpat() > 0)
+    {
+        if ((fEventHeader->GetTpat() & 0x1) == 1 || // beam
+            (fEventHeader->GetTpat() & 0x2) == 2)   // fission
+            BeamOrFission = kTRUE;
+    }
+
     // --- --------------- --- //
     // --- local variables --- //
     // --- --------------- --- //
@@ -780,6 +978,8 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     Int_t multSTcal[fNbDetectors];
     Int_t multCal[fNbDetectors];
     Double_t iRawTimeNs[fNbDetectors * fNbChannels];
+    Float_t iClock[fNbDetectors * fNbChannels];
+    Float_t iCoarse[fNbDetectors * fNbChannels];
 
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
@@ -787,6 +987,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
         {
             multMap[i * fNbChannels + j] = 0;
             multTcal[i * fNbChannels + j] = 0;
+            iRawTimeNs[i * fNbChannels + j] = 0;
+            iClock[i * fNbChannels + j] = 0;
+            iCoarse[i * fNbChannels + j] = 0;
         }
         multSTcal[i] = 0;
         multCal[i] = 0;
@@ -809,6 +1012,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             iCh = hitmapped->GetPmt() - 1;
             multMap[iDet * fNbChannels + iCh]++;
             fh1_finetime[iDet * fNbChannels + iCh]->Fill(hitmapped->GetTimeFine());
+            iCoarse[iDet * fNbChannels + iCh] = (Float_t)hitmapped->GetTimeCoarse();
         } // end of loop over mapped data
 
         if (fTcal && fTcal->GetEntriesFast())
@@ -826,14 +1030,23 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 iCh = hittcal->GetPmt() - 1;
                 multTcal[iDet * fNbChannels + iCh]++;
                 iRawTimeNs[iDet * fNbChannels + iCh] = hittcal->GetRawTimeNs();
+                iClock[iDet * fNbChannels + iCh] = (Float_t)hittcal->GetCoarseTime();
+                if (multMap[iDet * fNbChannels + iCh] == 1 &&
+                    iCoarse[iDet * fNbChannels + iCh] != iClock[iDet * fNbChannels + iCh])
+                {
+                    std::cout << "iCoarse[" << iDet * fNbChannels + iCh << "] = " << iCoarse[iDet * fNbChannels + iCh]
+                              << ", iClock[" << iDet * fNbChannels + iCh << "]" << iClock[iDet * fNbChannels + iCh]
+                              << std::endl;
+                }
             } // --- end of loop over Tcal data --- //
 
             if (fNbDetectors > 1)
             {
                 for (int d = 0; d < fNbDetectors - 1; d++)
                 {
-                    fh1_DeltaTref[d]->Fill(iRawTimeNs[d * fNbChannels + 2] -
-                                           iRawTimeNs[(fNbDetectors - 1) * fNbChannels + 2]);
+                    if (multMap[(fNbDetectors - 1) * fNbChannels + 2] == 1 && multMap[d * fNbChannels + 2] == 1)
+                        fh1_DeltaTref[d]->Fill(iRawTimeNs[d * fNbChannels + 2] -
+                                               iRawTimeNs[(fNbDetectors - 1) * fNbChannels + 2]);
                     // std::cout << "index first tref : " << d*fNbChannels+2 << ", index cave C Tref = " <<
                     // (fNbDetectors-1)*fNbChannels+2 << std::endl;
                 }
@@ -901,35 +1114,110 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
         // --- ----------------------------------------- --- //
         // --- filling some histogramms outside the loop --- //
         // --- ----------------------------------------- --- //
+        Float_t delta = 0;
         for (Int_t i = 0; i < fNbDetectors; i++)
         {
+            fh2_mult_RvsL[i]->Fill(multMap[i * fNbChannels + 1], multMap[i * fNbChannels]);
+            for (Int_t j = 0; j < (fNbChannels - 1); j++)
+                fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
+                                                                    multMap[i * fNbChannels + 2]);
+            if (BeamOrFission == kTRUE)
+            {
+                fh2_mult_RvsL_condTpat[i]->Fill(multMap[i * fNbChannels + 1], multMap[i * fNbChannels]);
+                for (Int_t j = 0; j < (fNbChannels - 1); j++)
+                    fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
+                                                                                 multMap[i * fNbChannels + 2]);
+            }
+
             for (Int_t j = 0; j < fNbChannels; j++)
             {
                 fh2_mult[i]->Fill(j + 1, multMap[i * fNbChannels + j]);
                 fh1_multMap[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
                 fh1_multTcal[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
-            }
-            for (Int_t j = 0; j < (fNbChannels - 1); j++)
-            {
-                fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
-                                                                    multMap[i * fNbChannels + 2]);
+                if (BeamOrFission == kTRUE)
+                {
+                    fh1_multMap_condTpat[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
+                    fh1_multTcal_condTpat[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
+                }
             }
             fh1_multSingleTcal[i]->Fill(multSTcal[i]);
             fh1_multCal[i]->Fill(multCal[i]);
-
+            if (BeamOrFission == kTRUE)
+            {
+                fh1_multSingleTcal_condTpat[i]->Fill(multSTcal[i]);
+                // fh1_multCal_condTpat[i]->Fill(multCal[i]);
+            }
             if ((multTcal[i * fNbChannels] == 1) && (multTcal[i * fNbChannels + 1] == 1))
             {
                 // TrawRIGHT-TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
                 iRawPos = iRawTimeNs[i * fNbChannels] - iRawTimeNs[i * fNbChannels + 1];
                 fh1_RawPos_TcalMult1[i]->Fill(iRawPos);
+                if (multTcal[i * fNbChannels + 2] == 1)
+                {
+                    if (fNbDetectors > 1 && fIdS2 > 0)
+                    {
+                        if (i == 0)
+                        {
+                            fh1_deltaClockPerSci[2 * i]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
+                                (Float_t)(DeltaClockTrefRight_S2));
+                            fh1_deltaClockPerSci[2 * i + 1]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
+                                (Float_t)(DeltaClockTrefLeft_S2));
+                            if (BeamOrFission == kTRUE)
+                            {
+                                fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
+                                    (Float_t)(DeltaClockTrefRight_S2));
+                                fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
+                                    (Float_t)(DeltaClockTrefLeft_S2));
+                            }
+                        }
+                        else if (i == 1)
+                        {
+                            fh1_deltaClockPerSci[2 * i]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
+                                (Float_t)(DeltaClockTrefRight_CaveC));
+                            fh1_deltaClockPerSci[2 * i + 1]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
+                                (Float_t)(DeltaClockTrefLeft_CaveC));
+                            if (BeamOrFission == kTRUE)
+                            {
+                                fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
+                                    (Float_t)(DeltaClockTrefRight_CaveC));
+                                fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
+                                    (Float_t)(DeltaClockTrefLeft_CaveC));
+                            }
+                        }
+                    }
+                    else if (fNbDetectors == 1)
+                    {
+                        fh1_deltaClockPerSci[2 * i]->Fill(
+                            (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
+                            (Float_t)(DeltaClockTrefRight_CaveC));
+                        fh1_deltaClockPerSci[2 * i + 1]->Fill(
+                            (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
+                            (Float_t)(DeltaClockTrefLeft_CaveC));
+                        if (BeamOrFission == kTRUE)
+                        {
+                            fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
+                                (Float_t)(DeltaClockTrefRight_CaveC));
+                            fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
+                                (Float_t)(DeltaClockTrefLeft_CaveC));
+                        }
+                    }
+                }
             }
-
             fh2_RawPosVsCalPos[i]->Fill(CalPos[i], RawPos[i]);
         }
 
         if (fIdS2 > 0)
         {
-
             for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
             {
                 if ((multTcal[(fIdS2 - 1) * fNbChannels] == 1) &&     // SofSci at S2: PMT RIGHT
@@ -1007,9 +1295,12 @@ void R3BSofSciOnlineSpectra::FinishTask()
         {
             cMapped[i]->Write();
             fh2_mult[i]->Write();
+            fh2_mult_RvsL[i]->Write();
+            fh2_mult_RvsL_condTpat[i]->Write();
             for (Int_t j = 0; j < (fNbChannels - 1); j++)
             {
                 fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Write();
+                fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + j]->Write();
             }
         }
 
@@ -1017,6 +1308,7 @@ void R3BSofSciOnlineSpectra::FinishTask()
         {
             cPos[i]->Write();
             fh1_RawPos_TcalMult1[i]->Write();
+            cDeltaClockPerSci->Write();
         }
 
         if (fSingleTcal)
@@ -1048,8 +1340,9 @@ void R3BSofSciOnlineSpectra::FinishTask()
     } // end of loop over fNbDetectors
 
     if (fNbDetectors > 1 && fTcal)
+    {
         cDeltaTref->Write();
-
+    }
     if (fIdS2 > 0)
     {
         for (Int_t i = fIdS2; i < fNbDetectors; i++)
