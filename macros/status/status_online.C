@@ -111,13 +111,12 @@ void status_online()
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
-        filename = "--stream=lxlanddaq01:9001";
-        // filename = "--stream=lxir133:9001";
+        filename = "--stream=lxir133:9001";
         // filename = "~/lmd/s455/main0079_0001.lmd";
 
         TString outputpath = "/d/land4/202103_s455/rootfiles/sofia/";
         outputFilename = outputpath + "s455_data_status_online_" + oss.str() + ".root";
-        //outputFilename = "s455_data_status_online_" + oss.str() + ".root";
+        // outputFilename = "s455_data_status_online_" + oss.str() + ".root";
 
         // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers

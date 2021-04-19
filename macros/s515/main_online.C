@@ -1,13 +1,13 @@
 /*
  *  Macro to run the online for all the detectors simultaneously
  *
- *  One needs to set up the Phase0 experiments: s444, s467, or s455
+ *  One needs to set up the Phase0 experiments, in this case s515
  *
- *  at $UCESB_DIR/../upexps/yyyymm_s4xx
+ *  at $UCESB_DIR/../upexps/202104_s515
  *
  *
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
- *  @since Feb 20th, 2020
+ *  @since April 19th, 2021
  *
  */
 
@@ -19,6 +19,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_MUSIC_onion_t music;
     EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_CALIFA_t califa;
+    EXT_STR_h101_PSP_onion_t psp;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
 
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
@@ -56,7 +57,7 @@ void main_online()
     // *********************************** //
     // PLEASE CHANGE THE EXPERIMENT NUMBER //
     // *********************************** //
-    const Int_t expId = 455; // select experiment: 444, 467 or 455
+    const Int_t expId = 515; // select experiment 515
     // *********************************** //
 
     // NumSoiSci, file names and paths -----------------------------
@@ -66,7 +67,7 @@ void main_online()
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
-    if (expId == 455)
+    if (expId == 515)
     {
         NumSofSci = 1;
         IdS2 = 0;
@@ -75,28 +76,31 @@ void main_online()
         sofiaWR_ME = 0xf00;
 
         filename = "--stream=lxlanddaq01:9001";
-        // filename = "--stream=lxir133:9001";
-        // filename = "/d/land5/202103_s455/stitched/main0209_*.lmd";
-        // filename = "~/lmd/s455/main0273_0010.lmd";
-        // filename = "~/lmd/s455/main0273_0010_stitched.lmd";
+        // filename = "/d/land5/202104_s5155/stitched/main0010_*.lmd";
 
-        TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
-        outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-        // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
+        TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
+        outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
+        // outputFilename = "s515_data_sofia_online_" + oss.str() + ".root";
 
         // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
-        // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
-        ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=70Mi";
+        // upexps_dir = "/u/land/lynx.landexp/202104_s515/upexps/";  // for lxg computers
+        ucesb_path = upexps_dir + "/202104_s515/202104_s515 --allow-errors --input-buffer=100Mi";
 
-        sofiacaldir = dir + "/sofia/macros/s455Up2p/parameters/";
+        sofiacaldir = dir + "/sofia/macros/s515/parameters/";
     }
     else
     {
         std::cout << "Experiment was not selected" << std::endl;
         gApplication->Terminate();
     }
-    TString sofiacalfilename = sofiacaldir + "CalibParam.par";
+    
+    // SOFIA parameters
+    TString sofiacalfilename;
+    if (NumSofSci == 1)
+        sofiacalfilename = sofiacaldir + "CalibParam_onesci.par";
+    else if (NumSofSci == 2)
+        sofiacalfilename = sofiacaldir + "CalibParam_twosci.par";
     ucesb_path.ReplaceAll("//", "/");
     sofiacalfilename.ReplaceAll("//", "/");
 
@@ -119,25 +123,26 @@ void main_online()
     // --- R3B standard -----------------------------------------------------------------
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
     Bool_t fAms = false;     // AMS tracking detectors
-    Bool_t fCalifa = true;  // Califa calorimeter
-    Bool_t fMusic = false;   // R3B-Music: Ionization chamber for charge-Z
+    Bool_t fCalifa = false;  // Califa calorimeter
+    Bool_t fMusic = true ;   // R3B-Music: Ionization chamber for charge-Z
+    Bool_t fPsp = true ;     // Psp: Silicon detectors for tracking
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
+    Bool_t fTrim = false;    // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
     Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
-    Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
-    Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
-    Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
-    Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
+    Bool_t fMwpc2 = false;   // MWPC2 for tracking of fragments before GLAD
+    Bool_t fTwim = false;    // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc3 = false;   // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fTofW = false;    // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
-    TString califadir = dir + "/macros/r3b/unpack/s455/califa/parameters/";
+    TString califadir = dir + "/macros/r3b/unpack/s515/califa/parameters/";
     TString califamapfilename = califadir + "Califa_Mapping_3March2021.par";
     califamapfilename.ReplaceAll("//", "/");
     // Parameters for CALIFA calibration in keV
@@ -157,6 +162,7 @@ void main_online()
     R3BMusicReader* unpackmusic;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
+    R3BPspxReader* unpackpsp;
     R3BNeulandTamexReader* unpackneuland;
 
     R3BSofTrimReader* unpacktrim;
@@ -173,12 +179,18 @@ void main_online()
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
+    
+    unpackWRMaster = new R3BWhiterabbitMasterReader(
+            (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x1000);
 
     if (fFrsTpcs)
         unpackfrs = new R3BFrsReaderNov19((EXT_STR_h101_FRS*)&ucesb_struct.frs, offsetof(EXT_STR_h101, frs));
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
+        
+    if (fPsp)        
+       unpackpsp = new R3BPspxReader((EXT_STR_h101_PSP*)&ucesb_struct.psp, offsetof(EXT_STR_h101, psp));
 
     if (fFrsSci)
     {
@@ -192,8 +204,6 @@ void main_online()
     {
         unpacksci =
             new R3BSofSciReader((EXT_STR_h101_SOFSCI_t*)&ucesb_struct.sci, offsetof(EXT_STR_h101, sci), NumSofSci);
-        unpackWRMaster = new R3BWhiterabbitMasterReader(
-            (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x1000);
         unpackWRSofia = new R3BSofWhiterabbitReader(
             (EXT_STR_h101_WRSOFIA*)&ucesb_struct.wrsofia, offsetof(EXT_STR_h101, wrsofia), sofiaWR_SE, sofiaWR_ME);
     }
@@ -251,6 +261,13 @@ void main_online()
         unpackmusic->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackmusic);
     }
+    
+    if (fPsp) 
+    {
+        // unpackpsp->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackpsp);
+    }
+    
     if (fSci)
     {
         unpacksci->SetOnline(NOTstoremappeddata);
@@ -399,6 +416,22 @@ void main_online()
         R3BMusicCal2Hit* MusCal2Hit = new R3BMusicCal2Hit();
         MusCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MusCal2Hit);
+    }
+    
+    // Psp silicon detectors
+    if (fPsp) 
+    {
+    R3BPspxMapped2Precal* pspxMapped2Precal = new R3BPspxMapped2Precal("PspxMapped2Precal", 1);
+    // pspxMapped2Precal->SetOnline(NOTstorecaldata);
+    run->AddTask(pspxMapped2Precal);
+
+    R3BPspxPrecal2Cal* pspxPrecal2Cal = new R3BPspxPrecal2Cal("PspxPrecal2Cal", 1);
+    // pspxPrecal2Cal->SetOnline(NOTstorecaldata);
+    run->AddTask(pspxPrecal2Cal);
+
+    R3BPspxCal2Hit* pspxCal2Hit = new R3BPspxCal2Hit("PspxCal2Hit", 1);
+    // pspxCal2Hit->SetOnline(NOTstorehitdata);
+    run->AddTask(pspxCal2Hit);
     }
 
     // SCI
@@ -579,6 +612,12 @@ void main_online()
                 new R3BSofMwpcvsMusicOnlineSpectra("SofMwpc0vsMusicOnlineSpectra", 1, "Mwpc0");
             run->AddTask(mw0vsmusiconline);
         }
+    }
+
+    if (fPsp) 
+    {
+     R3BPspxOnlineSpectra* pspOnline = new R3BPspxOnlineSpectra("PspxOnlineSpectra", 1);
+     run->AddTask(pspOnline);
     }
 
     if (fTrim)
