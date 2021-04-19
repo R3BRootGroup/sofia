@@ -111,7 +111,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     if (!fHitItemsAms)
     {
         LOG(WARNING) << "R3BAmsCorrelationOnlineSpectra: AmsHitData not found";
-        return kFATAL;
+       // return kFATAL;
     }
 
     // get access to hit data of the TWIM
@@ -589,7 +589,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
             R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
-            z_twim = hit->GetZcharge();
+            z_twim += hit->GetZcharge();
         }
     }
 
@@ -598,7 +598,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
 
     // if(tpat>0)std::cout<<tpat <<std::endl;
 
-    if (tpat == 3 || tpat == 4)
+    if( tpat==4 && z_twim>90. && z_twim<92.) 
     {
         // Fill Califa-hit data
         if (fHitItemsCalifa && fHitItemsCalifa->GetEntriesFast() > 0)

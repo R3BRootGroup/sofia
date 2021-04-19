@@ -525,7 +525,7 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
             {
                 fh1_trigger->Fill(i + 1);
                 fCounterTpats[i]++;
-                if (i + 1 > 0 && i + 1 < 9)
+                if (i + 1 > 0 && i + 1 < 5)
                     ok = true;
             }
         }
@@ -828,7 +828,7 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
     }
 
     // Update histograms
-    if (fNEvents > 999)
+    if (fNEvents > 9999)
     {
 
         for (int i = 0; i < 10; i++)

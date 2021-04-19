@@ -351,12 +351,12 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
     if (tof[0] > 1.0 && zf[0] > 1. && pos1[0].X() > -100. && pos2[0].X() > -100 && pos3[0].X() > -451.)
     {
         Length = GetLength(pos1[0].X() / 10., pos2[0].X() / 10., pos3[0].X() / 10.);
-        // Brho = GetBrho(pos1[0].X()/10.,pos2[0].X()/10.,pos3[0].X()/10.);
+        Brho = GetBrho(pos1[0].X() / 10., pos2[0].X() / 10., pos3[0].X() / 10.);
         // Length = sqrt(Length*Length + pos3.Y()*pos3.Y()/100.);
         // std::cout<<"1: "<<Length<<" "<< Brho<<" "<< tof[0] <<std::endl;
         double v = Length / tof[0] / c;
         double gamma = 1. / sqrt(1. - v * v);
-        // AddData(zf[0], Brho/v/gamma/3.107, v, Length, Brho, pdid[0]);
+        AddData(zf[0], Brho / v / gamma / 3.107, v, Length, Brho, pdid[0]);
     }
 
     if (tof[1] > 1.0 && zf[1] > 1. && pos1[1].X() > -100. && pos2[1].X() > -100 && pos3[1].X() > -451.)
