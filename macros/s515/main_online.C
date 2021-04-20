@@ -264,7 +264,7 @@ void main_online()
     
     if (fPsp) 
     {
-        // unpackpsp->SetOnline(NOTstoremappeddata);
+        unpackpsp->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackpsp);
     }
     
@@ -421,16 +421,16 @@ void main_online()
     // Psp silicon detectors
     if (fPsp) 
     {
-    R3BPspxMapped2Precal* pspxMapped2Precal = new R3BPspxMapped2Precal("PspxMapped2Precal", 1);
-    // pspxMapped2Precal->SetOnline(NOTstorecaldata);
+    R3BPspxMapped2Precal* pspxMapped2Precal = new R3BPspxMapped2Precal();
+    pspxMapped2Precal->SetOnline(NOTstorecaldata);
     run->AddTask(pspxMapped2Precal);
 
-    R3BPspxPrecal2Cal* pspxPrecal2Cal = new R3BPspxPrecal2Cal("PspxPrecal2Cal", 1);
-    // pspxPrecal2Cal->SetOnline(NOTstorecaldata);
+    R3BPspxPrecal2Cal* pspxPrecal2Cal = new R3BPspxPrecal2Cal();
+    pspxPrecal2Cal->SetOnline(NOTstorecaldata);
     run->AddTask(pspxPrecal2Cal);
 
-    R3BPspxCal2Hit* pspxCal2Hit = new R3BPspxCal2Hit("PspxCal2Hit", 1);
-    // pspxCal2Hit->SetOnline(NOTstorehitdata);
+    R3BPspxCal2Hit* pspxCal2Hit = new R3BPspxCal2Hit();
+    pspxCal2Hit->SetOnline(NOTstorehitdata);
     run->AddTask(pspxCal2Hit);
     }
 
