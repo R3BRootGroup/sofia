@@ -20,6 +20,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_CALIFA_t califa;
     EXT_STR_h101_PSP_onion_t psp;
+    EXT_STR_h101_TOFD_t tofd;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
 
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
@@ -94,7 +95,7 @@ void main_online()
         std::cout << "Experiment was not selected" << std::endl;
         gApplication->Terminate();
     }
-    
+
     // SOFIA parameters
     TString sofiacalfilename;
     if (NumSofSci == 1)
@@ -124,18 +125,19 @@ void main_online()
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
-    Bool_t fMusic = true ;   // R3B-Music: Ionization chamber for charge-Z
-    Bool_t fPsp = true ;     // Psp: Silicon detectors for tracking
+    Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
+    Bool_t fPsp = true;      // Psp: Silicon detectors for tracking
     // --- Sofia ------------------------------------------------------------------------
-    Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fTrim = false;    // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
-    Bool_t fSci = true;      // Start: Plastic scintillator for ToF
-    Bool_t fMwpc1 = false;   // MWPC1 for tracking of fragments in front of target
-    Bool_t fMwpc2 = false;   // MWPC2 for tracking of fragments before GLAD
-    Bool_t fTwim = false;    // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 = false;   // MWPC3 for tracking of fragments behind GLAD
-    Bool_t fTofW = false;    // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fMwpc0 = true;  // MWPC0 for tracking at entrance of Cave-C
+    Bool_t fTrim = false;  // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
+    Bool_t fAt = false;    // Active Targer for Coulomb-induced fission
+    Bool_t fSci = true;    // Start: Plastic scintillator for ToF
+    Bool_t fMwpc1 = false; // MWPC1 for tracking of fragments in front of target
+    Bool_t fMwpc2 = false; // MWPC2 for tracking of fragments before GLAD
+    Bool_t fTwim = false;  // Twim: Ionization chamber for charge-Z of fragments
+    Bool_t fMwpc3 = false; // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fTofW = false;  // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fTofD = true;
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
@@ -163,6 +165,7 @@ void main_online()
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
     R3BPspxReader* unpackpsp;
+    R3BTofdReader* unpacktofd;
     R3BNeulandTamexReader* unpackneuland;
 
     R3BSofTrimReader* unpacktrim;
@@ -179,18 +182,18 @@ void main_online()
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
-    
+
     unpackWRMaster = new R3BWhiterabbitMasterReader(
-            (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x1000);
+        (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x1000);
 
     if (fFrsTpcs)
         unpackfrs = new R3BFrsReaderNov19((EXT_STR_h101_FRS*)&ucesb_struct.frs, offsetof(EXT_STR_h101, frs));
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
-        
-    if (fPsp)        
-       unpackpsp = new R3BPspxReader((EXT_STR_h101_PSP*)&ucesb_struct.psp, offsetof(EXT_STR_h101, psp));
+
+    if (fPsp)
+        unpackpsp = new R3BPspxReader((EXT_STR_h101_PSP*)&ucesb_struct.psp, offsetof(EXT_STR_h101, psp));
 
     if (fFrsSci)
     {
@@ -233,6 +236,9 @@ void main_online()
     if (fTofW)
         unpacktofw = new R3BSofTofWReader((EXT_STR_h101_SOFTOFW_t*)&ucesb_struct.tofw, offsetof(EXT_STR_h101, tofw));
 
+    if (fTofD)
+        unpacktofd = new R3BTofdReader((EXT_STR_h101_TOFD_t*)&ucesb_struct.tofd, offsetof(EXT_STR_h101, tofd));
+
     if (fScalers)
         unpackscalers =
             new R3BSofScalersReader((EXT_STR_h101_SOFSCALERS_t*)&ucesb_struct.scalers, offsetof(EXT_STR_h101, scalers));
@@ -261,13 +267,13 @@ void main_online()
         unpackmusic->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackmusic);
     }
-    
-    if (fPsp) 
+
+    if (fPsp)
     {
         unpackpsp->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackpsp);
     }
-    
+
     if (fSci)
     {
         unpacksci->SetOnline(NOTstoremappeddata);
@@ -324,6 +330,13 @@ void main_online()
         unpacktofw->SetOnline(NOTstoremappeddata);
         source->AddReader(unpacktofw);
     }
+
+    if (fTofD)
+    {
+        unpacktofd->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpacktofd);
+    }
+
     if (fScalers)
     {
         unpackscalers->SetOnline(NOTstoremappeddata);
@@ -394,6 +407,7 @@ void main_online()
         TpcCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(TpcCal2Hit);
     }
+    
     // MWPC0
     if (fMwpc0)
     {
@@ -417,21 +431,21 @@ void main_online()
         MusCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MusCal2Hit);
     }
-    
+
     // Psp silicon detectors
-    if (fPsp) 
+    if (fPsp)
     {
-    R3BPspxMapped2Precal* pspxMapped2Precal = new R3BPspxMapped2Precal();
-    pspxMapped2Precal->SetOnline(NOTstorecaldata);
-    run->AddTask(pspxMapped2Precal);
+        R3BPspxMapped2Precal* pspxMapped2Precal = new R3BPspxMapped2Precal();
+        pspxMapped2Precal->SetOnline(NOTstorecaldata);
+        run->AddTask(pspxMapped2Precal);
 
-    R3BPspxPrecal2Cal* pspxPrecal2Cal = new R3BPspxPrecal2Cal();
-    pspxPrecal2Cal->SetOnline(NOTstorecaldata);
-    run->AddTask(pspxPrecal2Cal);
+        R3BPspxPrecal2Cal* pspxPrecal2Cal = new R3BPspxPrecal2Cal();
+        pspxPrecal2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(pspxPrecal2Cal);
 
-    R3BPspxCal2Hit* pspxCal2Hit = new R3BPspxCal2Hit();
-    pspxCal2Hit->SetOnline(NOTstorehitdata);
-    run->AddTask(pspxCal2Hit);
+        R3BPspxCal2Hit* pspxCal2Hit = new R3BPspxCal2Hit();
+        pspxCal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(pspxCal2Hit);
     }
 
     // SCI
@@ -565,6 +579,12 @@ void main_online()
         SofTofWSingleTcal2Hit->SetTofLISE(33.);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
+    
+    if(fTofd){  
+    R3BTofdMapped2Cal* tofdMapped2Cal=new R3BTofdMapped2Cal();
+    //tofdMapped2Cal->SetNofModules(4,44);
+    //run->AddTask( tofdMapped2Cal );
+    } 
 
     // TWIM
     if (fTwim)
@@ -614,10 +634,10 @@ void main_online()
         }
     }
 
-    if (fPsp) 
+    if (fPsp)
     {
-     R3BPspxOnlineSpectra* pspOnline = new R3BPspxOnlineSpectra("PspxOnlineSpectra", 1);
-     run->AddTask(pspOnline);
+        R3BPspxOnlineSpectra* pspOnline = new R3BPspxOnlineSpectra("PspxOnlineSpectra", 1);
+        run->AddTask(pspOnline);
     }
 
     if (fTrim)
@@ -722,7 +742,7 @@ void main_online()
     if (fTrim && fCalifa && fTwim)
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
-        CalifaAmsOnline->SetZproj(82.0);                       // Projectile atomic number
+        CalifaAmsOnline->SetZproj(82.0);                    // Projectile atomic number
         CalifaAmsOnline->SetCalifa_bins_maxrange(0, 30000); // 300000 -> 300MeV
         run->AddTask(CalifaAmsOnline);
     }
