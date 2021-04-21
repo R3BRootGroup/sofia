@@ -78,6 +78,7 @@ void main_online()
 
         filename = "--stream=lxlanddaq01:9001";
         // filename = "/d/land5/202104_s5155/stitched/main0010_*.lmd";
+        // filename = "~/lmd/s515/*.lmd";
 
         TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
         outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
@@ -580,7 +581,7 @@ void main_online()
         run->AddTask(SofTofWSingleTcal2Hit);
     }
     
-    if(fTofd){  
+    if(fTofD){  
     R3BTofdMapped2Cal* tofdMapped2Cal=new R3BTofdMapped2Cal();
     //tofdMapped2Cal->SetNofModules(4,44);
     //run->AddTask( tofdMapped2Cal );

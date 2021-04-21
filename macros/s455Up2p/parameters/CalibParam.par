@@ -307,9 +307,10 @@ trimEnergyCorrBetaPars: Float_t \
   0. 1. 0.  \
   0. 1. 0.  \
   0. 1. 0.
-trimNumSections:               Int_t 3
-trimNumAlignGainsPerSection:   Int_t 3
-trimNumCorrBetaParsPerSection: Int_t 3
+trimNumSections:                 Int_t 3
+trimNumSignalsPerSection:        Int_t 3
+trimNumCorrDeltaDTParsPerSignal: Int_t 4
+trimNumCorrBetaParsPerSection:   Int_t 3
 ##############################################################################
 //----------------------------------------------------------------------------
 ##############################################################################
@@ -737,6 +738,12 @@ nDetectorsTcalPar:  Int_t  1
 nChannelsTcalPar:  Int_t  3 
 nSignalsTcalPar:  Int_t  3 
 nTcalParsPerSignal:  Int_t  1000 
+// for ClockOffsets  : one line per scintillator (s455: line1=S2, line2=CaveC)
+// 3 offsets per line: PmtRight  PmtLeft  PmtTref
+// s455_coulex: PmtRight, PmtLeft, PmtTref should stay at 0 (same VFTX)
+// PmtTref should always stay at 0
+ClockOffsets:  Float_t \
+0.  0.  0. \
 ##############################################################################
 ##############################################################################
 # Class:   SofTofWTcalPar
@@ -6349,6 +6356,35 @@ nDetectorsTcalPar:  Int_t  28
 nChannelsTcalPar:  Int_t  2 
 nSignalsTcalPar:  Int_t  56 
 nTcalParsPerSignal:  Int_t  1000 
+ClockOffsets:  Float_t \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0.  \
+0.  0. 
 ##############################################################################
 # Class:   SofSciRawPosPar
 # Context: SofSciParContext
