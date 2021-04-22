@@ -11,6 +11,7 @@ ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/music
 ${R3BROOT_SOURCE_DIR}/passive
 ${R3BROOT_SOURCE_DIR}/r3bdata/musicData
+${R3BROOT_SOURCE_DIR}/r3bdata/pspData
 ${R3BROOT_SOURCE_DIR}/r3bdata/amsData
 ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/wrData
@@ -68,6 +69,7 @@ R3BSofTrackingOnlineSpectra.cxx
 R3BSofTrackingFissionOnlineSpectra.cxx
 R3BSofScalersOnlineSpectra.cxx
 R3BSofCorrOnlineSpectra.cxx
+R3BSofSciVsPspxOnlineSpectra.cxx
 )
 
 # fill list of header files from list of source files

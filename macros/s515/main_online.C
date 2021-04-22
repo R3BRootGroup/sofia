@@ -76,7 +76,7 @@ void main_online()
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
-        filename = "--stream=lxlanddaq01:9001";
+        filename = "--stream=lxlanddaq01:9100";
         // filename = "/d/land5/202104_s5155/stitched/main0010_*.lmd";
         // filename = "~/lmd/s515/*.lmd";
 
@@ -132,13 +132,13 @@ void main_online()
     Bool_t fMwpc0 = true;  // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = false;  // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
     Bool_t fAt = false;    // Active Targer for Coulomb-induced fission
-    Bool_t fSci = true;    // Start: Plastic scintillator for ToF
+    Bool_t fSci = false;   // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = false; // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = false; // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = false;  // Twim: Ionization chamber for charge-Z of fragments
     Bool_t fMwpc3 = false; // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = false;  // ToF-Wall for time-of-flight of fragments behind GLAD
-    Bool_t fTofD = true;
+    Bool_t fTofD = false;
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
@@ -408,7 +408,7 @@ void main_online()
         TpcCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(TpcCal2Hit);
     }
-    
+
     // MWPC0
     if (fMwpc0)
     {
@@ -580,12 +580,13 @@ void main_online()
         SofTofWSingleTcal2Hit->SetTofLISE(33.);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
-    
-    if(fTofD){  
-    R3BTofdMapped2Cal* tofdMapped2Cal=new R3BTofdMapped2Cal();
-    //tofdMapped2Cal->SetNofModules(4,44);
-    //run->AddTask( tofdMapped2Cal );
-    } 
+
+    if (fTofD)
+    {
+        R3BTofdMapped2Cal* tofdMapped2Cal = new R3BTofdMapped2Cal();
+        // tofdMapped2Cal->SetNofModules(4,44);
+        // run->AddTask( tofdMapped2Cal );
+    }
 
     // TWIM
     if (fTwim)
@@ -623,9 +624,24 @@ void main_online()
         run->AddTask(mw0online);
     }
 
+    if (fPsp)
+    {
+        R3BPspxOnlineSpectra* pspOnline = new R3BPspxOnlineSpectra("PspxOnlineSpectra", 1);
+        run->AddTask(pspOnline);
+
+        if (fSci && NumSofSci == 2)
+        {
+            R3BSofSciVsPspxOnlineSpectra* pspsciOnline = new R3BSofSciVsPspxOnlineSpectra();
+            pspsciOnline->SetDispersionS2(7250.);
+            pspsciOnline->SetBrho0(9.3148);
+            run->AddTask(pspsciOnline);
+        }
+    }
+
     if (fMusic)
     {
         R3BMusicOnlineSpectra* musonline = new R3BMusicOnlineSpectra();
+        musonline->SetExpId(expId);
         run->AddTask(musonline);
         if (fMwpc0)
         {
@@ -633,12 +649,6 @@ void main_online()
                 new R3BSofMwpcvsMusicOnlineSpectra("SofMwpc0vsMusicOnlineSpectra", 1, "Mwpc0");
             run->AddTask(mw0vsmusiconline);
         }
-    }
-
-    if (fPsp)
-    {
-        R3BPspxOnlineSpectra* pspOnline = new R3BPspxOnlineSpectra("PspxOnlineSpectra", 1);
-        run->AddTask(pspOnline);
     }
 
     if (fTrim)
