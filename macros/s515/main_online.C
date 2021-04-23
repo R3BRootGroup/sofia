@@ -19,9 +19,11 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_MUSIC_onion_t music;
     EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_CALIFA_t califa;
+    EXT_STR_h101_LOS_t los;
     EXT_STR_h101_PSP_onion_t psp;
     EXT_STR_h101_TOFD_t tofd;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
+    EXT_STR_h101_timestamp_master_t timestamp_master;
 
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
     EXT_STR_h101_SOFTRIM_onion_t trim;
@@ -77,12 +79,12 @@ void main_online()
         sofiaWR_ME = 0xf00;
 
         filename = "--stream=lxlanddaq01:9100";
-        // filename = "/d/land5/202104_s5155/stitched/main0010_*.lmd";
+        // filename = "~/lmd/s455/main0273_*.lmd";
         // filename = "~/lmd/s515/*.lmd";
 
         TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
         outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
-        // outputFilename = "s515_data_sofia_online_" + oss.str() + ".root";
+        //outputFilename = "s515_data_sofia_online_" + oss.str() + ".root";
 
         // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
@@ -124,6 +126,7 @@ void main_online()
     Bool_t fFrsSci = false;  // Start: Plastic scintillators at FRS
     // --- R3B standard -----------------------------------------------------------------
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
+    Bool_t fLos = false;     // Los scintillator for R3B experiments
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z
@@ -146,11 +149,16 @@ void main_online()
     // Calibration files ------------------------------------
     // Parameters for CALIFA mapping
     TString califadir = dir + "/macros/r3b/unpack/s515/califa/parameters/";
-    TString califamapfilename = califadir + "Califa_Mapping_3March2021.par";
+    TString califamapfilename = califadir + "CALIFA_mapping_s515.par";
     califamapfilename.ReplaceAll("//", "/");
     // Parameters for CALIFA calibration in keV
-    TString califacalfilename = califadir + "Califa_CalPar_4March2021.par";
+    TString califacalfilename = califadir + "Califa_CalPar_s515_23April2021.par";
     califacalfilename.ReplaceAll("//", "/");
+
+    // Parameters for LOS
+    TString losdir = dir + "/macros/r3b/unpack/s515/los/parameters/";
+    TString loscalfilename = losdir + "tcal_los_pulser.root";
+    loscalfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -163,6 +171,8 @@ void main_online()
     R3BFrsReaderNov19* unpackfrs;
 
     R3BMusicReader* unpackmusic;
+    R3BTimestampMasterReader* unpackttm;
+    R3BLosReader* unpacklos;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
     R3BPspxReader* unpackpsp;
@@ -192,6 +202,13 @@ void main_online()
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
+
+    if (fLos)
+    {
+        unpackttm = new R3BTimestampMasterReader((EXT_STR_h101_timestamp_master_t*)&ucesb_struct.timestamp_master,
+                                                 offsetof(EXT_STR_h101, timestamp_master));
+        unpacklos = new R3BLosReader((EXT_STR_h101_LOS_t*)&ucesb_struct.los, offsetof(EXT_STR_h101, los));
+    }
 
     if (fPsp)
         unpackpsp = new R3BPspxReader((EXT_STR_h101_PSP*)&ucesb_struct.psp, offsetof(EXT_STR_h101, psp));
@@ -267,6 +284,13 @@ void main_online()
     {
         unpackmusic->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackmusic);
+    }
+
+    if (fLos)
+    {
+        source->AddReader(unpackttm);
+        unpacklos->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpacklos);
     }
 
     if (fPsp)
@@ -363,6 +387,16 @@ void main_online()
     {
         parIo1->open(sofiacalfilename, "in");
         rtdb->setFirstInput(parIo1);
+        if (fLos)
+        {
+            // Root file
+            Bool_t kParameterMerged = kFALSE;
+            FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged);
+            TList* parList2 = new TList();
+            parList2->Add(new TObjString(loscalfilename));
+            parIo2->open(parList2);
+            rtdb->setSecondInput(parIo2);
+        }
         rtdb->print();
     }
     else
@@ -431,6 +465,16 @@ void main_online()
         R3BMusicCal2Hit* MusCal2Hit = new R3BMusicCal2Hit();
         MusCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MusCal2Hit);
+    }
+
+    // R3B-Scintillator LOS
+    if (fLos)
+    {
+        R3BLosMapped2Cal* losMapped2Cal = new R3BLosMapped2Cal("R3BLosMapped2Cal", 1);
+        losMapped2Cal->SetNofModules(1, 8);
+        losMapped2Cal->SetTrigger(1);
+        losMapped2Cal->SetOnline(NOTstorecaldata);
+        run->AddTask(losMapped2Cal);
     }
 
     // Psp silicon detectors
@@ -649,6 +693,22 @@ void main_online()
                 new R3BSofMwpcvsMusicOnlineSpectra("SofMwpc0vsMusicOnlineSpectra", 1, "Mwpc0");
             run->AddTask(mw0vsmusiconline);
         }
+    }
+
+    if (fLos)
+    {
+        R3BOnlineSpectraLosStandalone* r3bOnlineSpectra =
+            new R3BOnlineSpectraLosStandalone("R3BOnlineSpectraLosStandalone", 1);
+        r3bOnlineSpectra->SetNofLosModules(1); // 1 or 2 LOS detectors
+        r3bOnlineSpectra->SetLosXYTAMEX(0, 0, 1, 1, 0, 0, 1, 1);
+        r3bOnlineSpectra->SetLosXYMCFD(1.011, 1.216, 1.27, 1.88, 0, 0, 1, 1);
+        r3bOnlineSpectra->SetLosXYToT(-0.002373, 0.007423, 2.27, 3.22, 0, 0, 1, 1);
+        // Events with ToT>Epileup are not considered
+        r3bOnlineSpectra->SetEpileup(350.);
+        // -1 = no trigger selection
+        r3bOnlineSpectra->SetTrigger(1);
+        // if 0, no tpat selection
+        r3bOnlineSpectra->SetTpat(0);
     }
 
     if (fTrim)
