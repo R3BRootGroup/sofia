@@ -118,8 +118,8 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     // --- ------------------------------------------ --- //
     // --- get access to cal data of the Pspx         --- //
     // --- ------------------------------------------ --- //
-    fPspxCal = (TClonesArray*)mgr->GetObject("Pspx1_xCal");
-    if (!fPspxCal)
+    fPspxHit = (TClonesArray*)mgr->GetObject("Pspx1_xCal");
+    if (!fPspxHit)
     {
         LOG(WARNING) << "R3BSofSciVsPspxOnlineSpectra: Pspx1_xCal not found";
     }
@@ -127,11 +127,11 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     // --- ------------------------------------------ --- //
     // --- get access to hit data of the Pspx         --- //
     // --- ------------------------------------------ --- //
-    fPspxHit = (TClonesArray*)mgr->GetObject("Pspx1_xHit");
+    /*fPspxHit = (TClonesArray*)mgr->GetObject("Pspx1_xHit");
     if (!fPspxHit)
     {
         LOG(WARNING) << "R3BSofSciVsPspxOnlineSpectra: Pspx1_xHit not found";
-    }
+    }*/
 
     // --- ------------------------------- --- //
     // --- Create histograms for detectors --- //
