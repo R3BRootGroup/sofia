@@ -15,7 +15,7 @@ typedef struct EXT_STR_h101_t
 {
     EXT_STR_h101_unpack_t unpack;
     EXT_STR_h101_TPAT_t unpacktpat;
-
+    EXT_STR_h101_SCI2_t s2;
     EXT_STR_h101_MUSIC_onion_t music;
     EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_CALIFA_t califa;
@@ -26,21 +26,12 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_timestamp_master_t timestamp_master;
 
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
-    EXT_STR_h101_SOFTRIM_onion_t trim;
-    EXT_STR_h101_SOFAT_onion_t at;
-    EXT_STR_h101_SOFSCI_onion_t sci;
-    EXT_STR_h101_SOFTWIM_onion_t twim;
-    EXT_STR_h101_SOFTOFW_onion_t tofw;
-    EXT_STR_h101_SOFSCALERS_onion_t scalers;
-
-    EXT_STR_h101_FRS_t frs;
 
     EXT_STR_h101_WRMASTER_t wrmaster;
     EXT_STR_h101_WRCALIFA_t wrcalifa;
     EXT_STR_h101_WRNEULAND_t wrneuland;
     EXT_STR_h101_WRSOFIA_t wrsofia;
     EXT_STR_h101_WRS2_t wrs2;
-    EXT_STR_h101_WRS8_t wrs8;
 } EXT_STR_h101;
 
 void main_online()
@@ -110,18 +101,17 @@ void main_online()
 
     // Setup: Selection of detectors ------------------------
     // --- FRS --------------------------------------------------------------------------
-    Bool_t fFrs = false;     // FRS for production of exotic beams (just scintillators)
-    Bool_t fFrsTpcs = false; // Tpcs at FRS (S2) for scintillator calibration in position
-    Bool_t fFrsSci = false;  // Start: Plastic scintillators at FRS
+    Bool_t fFrsid = true;   // FRS for production of exotic beams (just scintillators)
+    Bool_t fFrsSci = false; // Start: Plastic scintillators at FRS
     // --- R3B standard -----------------------------------------------------------------
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
-    Bool_t fLos = true;     // Los scintillator for R3B experiments
+    Bool_t fLos = true;      // Los scintillator for R3B experiments
     Bool_t fAms = false;     // AMS tracking detectors
     Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z before GLAD
-    Bool_t fPsp = false;      // Psp: Silicon detectors for tracking
+    Bool_t fPsp = false;     // Psp: Silicon detectors for tracking
     // --- Sofia ------------------------------------------------------------------------
-    Bool_t fMwpc0 = true;  // MWPC0 for tracking at entrance of GLAD
+    Bool_t fMwpc0 = true; // MWPC0 for tracking at entrance of GLAD
     Bool_t fTofD = false; // ToF-Wall for time-of-flight of fragments behind GLAD
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
@@ -136,9 +126,11 @@ void main_online()
     califacalfilename.ReplaceAll("//", "/");
 
     // Parameters for LOS
-    TString losdir = dir + "/macros/r3b/unpack/s515/los/parameters/";
-    TString loscalfilename = losdir + "tcal_los_pulser.root";
+    TString pardir = dir + "/sofia/macros/s515/parameters/";
+    TString loscalfilename = pardir + "tcal_los_pulser.root";
     loscalfilename.ReplaceAll("//", "/");
+    TString scis2calfilename = pardir + "tcal_s2.root";
+    scis2calfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -158,9 +150,8 @@ void main_online()
     R3BPspxReader* unpackpsp;
     R3BTofdReader* unpacktofd;
     R3BNeulandTamexReader* unpackneuland;
-
+    R3BSci2Reader* unpacks2;
     R3BSofMwpcReader* unpackmwpc;
-
 
     R3BWhiterabbitS2Reader* unpackWRS2;
     R3BWhiterabbitMasterReader* unpackWRMaster;
@@ -171,8 +162,8 @@ void main_online()
     unpackWRMaster = new R3BWhiterabbitMasterReader(
         (EXT_STR_h101_WRMASTER*)&ucesb_struct.wrmaster, offsetof(EXT_STR_h101, wrmaster), 0x1000);
 
-    if (fFrsTpcs)
-        unpackfrs = new R3BFrsReaderNov19((EXT_STR_h101_FRS*)&ucesb_struct.frs, offsetof(EXT_STR_h101, frs));
+    if (fFrsid)
+        unpacks2 = new R3BSci2Reader(&ucesb_struct.s2, offsetof(EXT_STR_h101_t, s2));
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
@@ -222,12 +213,10 @@ void main_online()
     source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
     source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
 
-    if (fFrsTpcs)
+    if (fFrsid)
     {
-        unpackfrs->SetOnline(NOTstoremappeddata);
-        source->AddReader(unpackfrs);
+        source->AddReader(unpacks2);
     }
-
     if (fMusic)
     {
         unpackmusic->SetOnline(NOTstoremappeddata);
@@ -246,7 +235,6 @@ void main_online()
         unpackpsp->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackpsp);
     }
-
 
     if (fFrsSci)
     {
@@ -291,65 +279,143 @@ void main_online()
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
-    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii
+    FairParAsciiFileIo* parIo1;
+
     if (!fCalifa)
     {
-        parIo1->open(sofiacalfilename, "in");
-        rtdb->setFirstInput(parIo1);
-        if (fLos)
+        if (fFrsid || fLos)
         {
             // Root file
-            Bool_t kParameterMerged = kFALSE;
+            Bool_t kParameterMerged = kTRUE;
             FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged);
             TList* parList2 = new TList();
-            parList2->Add(new TObjString(loscalfilename));
+            if (fLos)
+                parList2->Add(new TObjString(loscalfilename));
+            if (fFrsid)
+                parList2->Add(new TObjString(scis2calfilename));
             parIo2->open(parList2);
-            rtdb->setSecondInput(parIo2);
+            rtdb->setFirstInput(parIo2);
+
+            parIo1 = new FairParAsciiFileIo(); // Ascii
+            parIo1->open(sofiacalfilename, "in");
+            rtdb->setSecondInput(parIo1);
+
+            rtdb->print();
+            if (fFrsid && fLos)
+            {
+                rtdb->addRun(fRunId);
+                rtdb->getContainer("LosTCalPar");
+                rtdb->setInputVersion(fRunId, (char*)"LosTCalPar", 1, 1);
+                rtdb->getContainer("Sci2TCalPar");
+                rtdb->setInputVersion(fRunId, (char*)"Sci2TCalPar", 1, 1);
+            }
         }
-        rtdb->print();
+        else
+        {
+
+            parIo1 = new FairParAsciiFileIo(); // Ascii
+            parIo1->open(sofiacalfilename, "in");
+            rtdb->setFirstInput(parIo1);
+        }
     }
     else
     {
         if (!fCal_level_califa)
         { // SOFIA and CALIFA mapping: Ascii files
-            TList* parList1 = new TList();
-            parList1->Add(new TObjString(sofiacalfilename));
-            parList1->Add(new TObjString(califamapfilename));
-            parIo1->open(parList1);
-            rtdb->setFirstInput(parIo1);
-            rtdb->print();
+            if (fFrsid || fLos)
+            {
+                // Root file
+                Bool_t kParameterMerged = kTRUE;
+                FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged);
+                TList* parList2 = new TList();
+                if (fLos)
+                    parList2->Add(new TObjString(loscalfilename));
+                if (fFrsid)
+                    parList2->Add(new TObjString(scis2calfilename));
+                parIo2->open(parList2);
+                rtdb->setFirstInput(parIo2);
+
+                parIo1 = new FairParAsciiFileIo(); // Ascii
+                TList* parList1 = new TList();
+                parList1->Add(new TObjString(sofiacalfilename));
+                parList1->Add(new TObjString(califamapfilename));
+                parIo1->open(parList1);
+                rtdb->setSecondInput(parIo1);
+
+                rtdb->print();
+                if (fFrsid && fLos)
+                {
+                    rtdb->addRun(fRunId);
+                    rtdb->getContainer("LosTCalPar");
+                    rtdb->setInputVersion(fRunId, (char*)"LosTCalPar", 1, 1);
+                    rtdb->getContainer("Sci2TCalPar");
+                    rtdb->setInputVersion(fRunId, (char*)"Sci2TCalPar", 1, 1);
+                }
+            }
+            else
+            {
+                parIo1 = new FairParAsciiFileIo(); // Ascii
+                TList* parList1 = new TList();
+                parList1->Add(new TObjString(sofiacalfilename));
+                parList1->Add(new TObjString(califamapfilename));
+                parIo1->open(parList1);
+                rtdb->setFirstInput(parIo1);
+                rtdb->print();
+            }
         }
         else
         { // SOFIA, CALIFA mapping and CALIFA calibration parameters
-          // parIo1->open(sofiacalfilename, "in"); // Ascii file
-          // rtdb->setFirstInput(parIo1);
-          // rtdb->print();
-          // Bool_t kParameterMerged = kFALSE;
-          // FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged); // Root file
-          // TList* parList2 = new TList();
-          // parList2->Add(new TObjString(califacalfilename));
-          // parIo2->open(parList2);
-          // rtdb->setSecondInput(parIo2);
-            //
-            TList* parList1 = new TList();
-            parList1->Add(new TObjString(sofiacalfilename));
-            parList1->Add(new TObjString(califacalfilename));
-            parIo1->open(parList1);
-            rtdb->setFirstInput(parIo1);
-            rtdb->print();
+
+            if (fFrsid || fLos)
+            {
+                // Root file
+                Bool_t kParameterMerged = kTRUE;
+                FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged);
+                TList* parList2 = new TList();
+                if (fLos)
+                    parList2->Add(new TObjString(loscalfilename));
+                if (fFrsid)
+                    parList2->Add(new TObjString(scis2calfilename));
+                parIo2->open(parList2);
+                rtdb->setFirstInput(parIo2);
+
+                parIo1 = new FairParAsciiFileIo(); // Ascii
+                TList* parList1 = new TList();
+                parList1->Add(new TObjString(sofiacalfilename));
+                parList1->Add(new TObjString(califacalfilename));
+                parIo1->open(parList1);
+                rtdb->setSecondInput(parIo1);
+
+                rtdb->print();
+                if (fFrsid && fLos)
+                {
+                    rtdb->addRun(fRunId);
+                    rtdb->getContainer("LosTCalPar");
+                    rtdb->setInputVersion(fRunId, (char*)"LosTCalPar", 1, 1);
+                    rtdb->getContainer("Sci2TCalPar");
+                    rtdb->setInputVersion(fRunId, (char*)"Sci2TCalPar", 1, 1);
+                }
+            }
+            else
+            {
+                parIo1 = new FairParAsciiFileIo(); // Ascii
+                TList* parList1 = new TList();
+                parList1->Add(new TObjString(sofiacalfilename));
+                parList1->Add(new TObjString(califacalfilename));
+                parIo1->open(parList1);
+                rtdb->setFirstInput(parIo1);
+                rtdb->print();
+            }
         }
     }
 
     // Add analysis task ------------------------------------
-    // TPCs at S2
-    if (fFrsTpcs)
+
+    // S2 Mapped -> Tcal
+    if (fFrsid)
     {
-        R3BTpcMapped2Cal* TpcMap2Cal = new R3BTpcMapped2Cal();
-        TpcMap2Cal->SetOnline(NOTstorecaldata);
-        run->AddTask(TpcMap2Cal);
-        R3BTpcCal2Hit* TpcCal2Hit = new R3BTpcCal2Hit();
-        TpcCal2Hit->SetOnline(NOTstorehitdata);
-        run->AddTask(TpcCal2Hit);
+        R3BSci2Mapped2Tcal* s2Mapped2Tcal = new R3BSci2Mapped2Tcal("Sci2Map2Tcal", 1);
+        run->AddTask(s2Mapped2Tcal);
     }
 
     // MWPC0
@@ -402,14 +468,6 @@ void main_online()
         run->AddTask(pspxCal2Hit);
     }
 
-    // FRS
-    if (fMwpc0 && fMusic && fFrs)
-    {
-       // R3BSofFrsAnalysis* FrsAna = new R3BSofFrsAnalysis();
-       // FrsAna->SetOnline(NOTstorehitdata);
-       // run->AddTask(FrsAna);
-    }
-
     // AMS
     if (fAms)
     {
@@ -437,7 +495,6 @@ void main_online()
         run->AddTask(CalifaCal2Hit);
     }
 
-
     if (fTofD)
     {
         R3BTofdMapped2Cal* tofdMapped2Cal = new R3BTofdMapped2Cal();
@@ -446,16 +503,61 @@ void main_online()
     }
 
     // Add online task ------------------------------------
-    if (fFrsTpcs)
+
+    if (fFrsid)
     {
-        FrsTpcOnlineSpectra* tpconline = new FrsTpcOnlineSpectra();
-        run->AddTask(tpconline);
+        // --- SCI2 STANDALONE
+        R3BOnlineSpectraSci2* s2online = new R3BOnlineSpectraSci2();
+        s2online->SetNbDetectors(1);
+        s2online->SetNbChannels(3);
+        run->AddTask(s2online);
     }
 
-    if (fMwpc0)
+    if (fLos)
     {
-        R3BSofMwpcOnlineSpectra* mw0online = new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra", 1, "Mwpc0");
-        run->AddTask(mw0online);
+        if (fFrsid)
+        {
+            // --- LOS VS SCI2
+            R3BOnlineSpectraLosVsSci2* loss2online = new R3BOnlineSpectraLosVsSci2("R3BOnlineSpectraLosVsSci2", 1);
+            loss2online->SetNofLosModules(1); // 1 or 2 LOS detectors
+            //  Set parameters for X,Y calibration
+            //  (offsetX, offsetY,VeffX,VeffY)
+            loss2online->SetLosXYTAMEX(0, 0, 1, 1, 0, 0, 1, 1);
+            loss2online->SetLosXYMCFD(1.011, 1.216, 1.27, 1.88, 0, 0, 1, 1); //(0.9781,1.152,1.5,1.5,0,0,1,1);
+            loss2online->SetLosXYToT(
+                -0.002373, 0.007423, 2.27, 3.22, 0, 0, 1, 1); //(-0.02054,-0.02495,2.5,3.6,0,0,1,1);
+            loss2online->SetEpileup(350.);                    // Events with ToT>Epileup are not considered
+            loss2online->SetTrigger(1);                       // -1 = no trigger selection
+            loss2online->SetTpat(0);                          // if 0, no tpat selection
+            // AoQ calibration :
+            loss2online->SetToFoffset(0.);
+            loss2online->SetToFmin(-8803);
+            loss2online->SetToFmin(-8801);
+            loss2online->SetTof2InvV_p0(67.69245);
+            loss2online->SetTof2InvV_p1(0.007198663);
+            loss2online->SetFlightLength(139.915);
+            loss2online->SetPos_p0(126.451);
+            loss2online->SetPos_p1(56.785);
+            loss2online->SetDispersionS2(7000);
+            loss2online->SetBrho0_S2toCC(10.574); // main 461
+            run->AddTask(loss2online);
+        }
+        else
+        {
+            R3BOnlineSpectraLosStandalone* r3bOnlineSpectra =
+                new R3BOnlineSpectraLosStandalone("R3BOnlineSpectraLosStandalone", 1);
+            r3bOnlineSpectra->SetNofLosModules(1); // 1 or 2 LOS detectors
+            r3bOnlineSpectra->SetLosXYTAMEX(0, 0, 1, 1, 0, 0, 1, 1);
+            r3bOnlineSpectra->SetLosXYMCFD(1.011, 1.216, 1.27, 1.88, 0, 0, 1, 1);
+            r3bOnlineSpectra->SetLosXYToT(-0.002373, 0.007423, 2.27, 3.22, 0, 0, 1, 1);
+            // Events with ToT>Epileup are not considered
+            r3bOnlineSpectra->SetEpileup(180.);
+            // -1 = no trigger selection
+            r3bOnlineSpectra->SetTrigger(1);
+            // if 0, no tpat selection
+            r3bOnlineSpectra->SetTpat(0);
+            run->AddTask(r3bOnlineSpectra);
+        }
     }
 
     if (fPsp)
@@ -472,6 +574,12 @@ void main_online()
         }*/
     }
 
+    if (fMwpc0)
+    {
+        R3BSofMwpcOnlineSpectra* mw0online = new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra", 1, "Mwpc0");
+        run->AddTask(mw0online);
+    }
+
     if (fMusic)
     {
         R3BMusicOnlineSpectra* musonline = new R3BMusicOnlineSpectra();
@@ -483,23 +591,6 @@ void main_online()
                 new R3BSofMwpcvsMusicOnlineSpectra("SofMwpc0vsMusicOnlineSpectra", 1, "Mwpc0");
             run->AddTask(mw0vsmusiconline);
         }
-    }
-
-    if (fLos)
-    {
-        R3BOnlineSpectraLosStandalone* r3bOnlineSpectra =
-            new R3BOnlineSpectraLosStandalone("R3BOnlineSpectraLosStandalone", 1);
-        r3bOnlineSpectra->SetNofLosModules(1); // 1 or 2 LOS detectors
-        r3bOnlineSpectra->SetLosXYTAMEX(0, 0, 1, 1, 0, 0, 1, 1);
-        r3bOnlineSpectra->SetLosXYMCFD(1.011, 1.216, 1.27, 1.88, 0, 0, 1, 1);
-        r3bOnlineSpectra->SetLosXYToT(-0.002373, 0.007423, 2.27, 3.22, 0, 0, 1, 1);
-        // Events with ToT>Epileup are not considered
-        r3bOnlineSpectra->SetEpileup(180.);
-        // -1 = no trigger selection
-        r3bOnlineSpectra->SetTrigger(1);
-        // if 0, no tpat selection
-        r3bOnlineSpectra->SetTpat(0);
-        run->AddTask(r3bOnlineSpectra);
     }
 
     if (fAms)
@@ -516,7 +607,6 @@ void main_online()
         CalifaOnline->SetMaxBinFebex(10000); // 10000 -> 10MeV
         run->AddTask(CalifaOnline);
     }
-
 
     R3BSofOnlineSpectra* sofonline = new R3BSofOnlineSpectra();
     run->AddTask(sofonline);
@@ -536,5 +626,5 @@ void main_online()
     std::cout << "Macro finished succesfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
-    //gApplication->Terminate();
+    // gApplication->Terminate();
 }
