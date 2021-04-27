@@ -54,13 +54,16 @@ void main_online()
     const Int_t expId = 515; // select experiment 515
     // *********************************** //
     
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // AoverQ for FRS-ID
+    // -------------------------------------------------------------
     // Run 484
     Double_t fBrho = 13.0721;
     Double_t fTofOffset = -5644.95117;
     // Run 473
     //Double_t fBrho = 10.2096;
     //Double_t fTofOffset = -16824.97;
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
@@ -73,8 +76,7 @@ void main_online()
     if (expId == 515)
     {
         filename = "--stream=lxlanddaq01:9001";
-        // filename = "~/lmd/s455/main0273_*.lmd";
-        // filename = "~/lmd/s515/main0461_0001_stitched.lmd";
+        // filename = "/d/land6/202104_s515/lmd/main0484*.lmd --allow-errors --input-buffer=50Mi";
 
         TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
         outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
