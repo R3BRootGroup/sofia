@@ -53,17 +53,26 @@ void main_online()
     // *********************************** //
     const Int_t expId = 515; // select experiment 515
     // *********************************** //
+    
+    // AoverQ for FRS-ID
+    // Run 484
+    Double_t fBrho = 13.0721;
+    Double_t fTofOffset = -5644.95117;
+    // Run 473
+    //Double_t fBrho = 10.2096;
+    //Double_t fTofOffset = -16824.97;
 
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString ntuple_options = "RAW";
+    TString ntuple_options = "RAW,time-stitch=1000";
+    // TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
     if (expId == 515)
     {
-        filename = "--stream=lxlanddaq01:9100";
+        filename = "--stream=lxlanddaq01:9001";
         // filename = "~/lmd/s455/main0273_*.lmd";
         // filename = "~/lmd/s515/main0461_0001_stitched.lmd";
 
@@ -526,20 +535,20 @@ void main_online()
             loss2online->SetLosXYMCFD(1.011, 1.216, 1.27, 1.88, 0, 0, 1, 1); //(0.9781,1.152,1.5,1.5,0,0,1,1);
             loss2online->SetLosXYToT(
                 -0.002373, 0.007423, 2.27, 3.22, 0, 0, 1, 1); //(-0.02054,-0.02495,2.5,3.6,0,0,1,1);
-            loss2online->SetEpileup(350.);                    // Events with ToT>Epileup are not considered
+            loss2online->SetEpileup(180.);                    // Events with ToT>Epileup are not considered
             loss2online->SetTrigger(1);                       // -1 = no trigger selection
             loss2online->SetTpat(0);                          // if 0, no tpat selection
             // AoQ calibration :
-            loss2online->SetToFoffset(0.);
-            loss2online->SetToFmin(-8803);
-            loss2online->SetToFmin(-8801);
+            loss2online->SetToFoffset(fTofOffset);
+            loss2online->SetToFmin(8000);
+            loss2online->SetToFmax(8010);
             loss2online->SetTof2InvV_p0(67.69245);
             loss2online->SetTof2InvV_p1(0.007198663);
             loss2online->SetFlightLength(139.915);
             loss2online->SetPos_p0(126.451);
             loss2online->SetPos_p1(56.785);
             loss2online->SetDispersionS2(7000);
-            loss2online->SetBrho0_S2toCC(10.574); // main 461
+            loss2online->SetBrho0_S2toCC(fBrho); // main 484
             run->AddTask(loss2online);
         }
         else
