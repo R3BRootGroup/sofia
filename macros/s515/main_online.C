@@ -20,8 +20,8 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_AMS_onion_t ams;
     EXT_STR_h101_CALIFA_t califa;
     EXT_STR_h101_LOS_t los;
+    EXT_STR_h101_TOFD_onion_t tofd;
     EXT_STR_h101_PSP_onion_t psp;
-    EXT_STR_h101_TOFD_t tofd;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
     EXT_STR_h101_timestamp_master_t timestamp_master;
 
@@ -32,6 +32,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRNEULAND_t wrneuland;
     EXT_STR_h101_WRSOFIA_t wrsofia;
     EXT_STR_h101_WRS2_t wrs2;
+
 } EXT_STR_h101;
 
 void main_online()
@@ -53,7 +54,7 @@ void main_online()
     // *********************************** //
     const Int_t expId = 515; // select experiment 515
     // *********************************** //
-    
+
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // AoverQ for FRS-ID
     // -------------------------------------------------------------
@@ -61,32 +62,35 @@ void main_online()
     Double_t fBrho = 13.0721;
     Double_t fTofOffset = -5644.95117;
     // Run 473
-    //Double_t fBrho = 10.2096;
-    //Double_t fTofOffset = -16824.97;
+    // Double_t fBrho = 10.2096;
+    // Double_t fTofOffset = -16824.97;
+    // Run 458
+    // Double_t fBrho = 11.9891;
+    // Double_t fTofOffset = 0.0;
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString ntuple_options = "RAW,time-stitch=1000";
-    // TString ntuple_options = "RAW";
+    TString ntuple_options = "RAW"; // For stitched data
+    // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
     if (expId == 515)
     {
         filename = "--stream=lxlanddaq01:9001";
-        // filename = "/d/land6/202104_s515/lmd/main0484*.lmd --allow-errors --input-buffer=50Mi";
+        // filename = "~/lmd/s515/main0484_0001_stit.lmd";
 
         TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
         outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
         // outputFilename = "s515_data_sofia_online_" + oss.str() + ".root";
 
-        // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
+        // upexps_dir = ucesb_dir + "/../upexps"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         // upexps_dir = "/u/land/lynx.landexp/202104_s515/upexps/";  // for lxg computers
         ucesb_path = upexps_dir + "/202104_s515/202104_s515 --allow-errors --input-buffer=100Mi";
-
+        ucesb_path.ReplaceAll("//", "/");
         sofiacaldir = dir + "/sofia/macros/s515/parameters/";
     }
     else
@@ -94,11 +98,6 @@ void main_online()
         std::cout << "Experiment was not selected" << std::endl;
         gApplication->Terminate();
     }
-
-    // SOFIA parameters
-    TString sofiacalfilename = sofiacaldir + "CalibParam_sofia.par";
-    ucesb_path.ReplaceAll("//", "/");
-    sofiacalfilename.ReplaceAll("//", "/");
 
     // store data or not ------------------------------------
     Bool_t fCal_level_califa = false; // set true if there exists a file with the calibration parameters
@@ -123,13 +122,17 @@ void main_online()
     Bool_t fPsp = false;     // Psp: Silicon detectors for tracking
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true; // MWPC0 for tracking at entrance of GLAD
-    Bool_t fTofD = false; // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fTofD = true;  // ToF-Wall for time-of-flight of fragments behind GLAD
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
+    // SOFIA parameters
+    TString sofiacalfilename = sofiacaldir + "CalibParam_sofia.par";
+    sofiacalfilename.ReplaceAll("//", "/");
+
     // Parameters for CALIFA mapping
-    TString califadir = dir + "/macros/r3b/unpack/s515/califa/parameters/";
+    TString califadir = dir + "/macros/macros/r3b/unpack/s515/califa/parameters/";
     TString califamapfilename = califadir + "CALIFA_mapping_s515.par";
     califamapfilename.ReplaceAll("//", "/");
     // Parameters for CALIFA calibration in keV
@@ -140,8 +143,14 @@ void main_online()
     TString pardir = dir + "/sofia/macros/s515/parameters/";
     TString loscalfilename = pardir + "tcal_los_pulser.root";
     loscalfilename.ReplaceAll("//", "/");
+
+    // Parameters for S2 scintillator
     TString scis2calfilename = pardir + "tcal_s2.root";
     scis2calfilename.ReplaceAll("//", "/");
+
+    // Parameters for ToFD
+    TString tofdcalfilename = pardir + "TofdTcalPar_main0019.root";
+    tofdcalfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -193,6 +202,8 @@ void main_online()
     {
         unpackWRS2 =
             new R3BWhiterabbitS2Reader((EXT_STR_h101_WRS2*)&ucesb_struct.wrs2, offsetof(EXT_STR_h101, wrs2), 0x200);
+        unpackWRSofia = new R3BSofWhiterabbitReader(
+            (EXT_STR_h101_WRSOFIA*)&ucesb_struct.wrsofia, offsetof(EXT_STR_h101, wrsofia), 0x1100, 0);
     }
 
     if (fAms)
@@ -209,7 +220,7 @@ void main_online()
         unpackmwpc = new R3BSofMwpcReader((EXT_STR_h101_SOFMWPC_t*)&ucesb_struct.mwpc, offsetof(EXT_STR_h101, mwpc));
 
     if (fTofD)
-        unpacktofd = new R3BTofdReader((EXT_STR_h101_TOFD_t*)&ucesb_struct.tofd, offsetof(EXT_STR_h101, tofd));
+        unpacktofd = new R3BTofdReader((EXT_STR_h101_TOFD*)&ucesb_struct.tofd, offsetof(EXT_STR_h101, tofd));
 
     if (fNeuland)
     {
@@ -251,6 +262,8 @@ void main_online()
     {
         unpackWRS2->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRS2);
+        unpackWRSofia->SetOnline(NOTstoremappeddata);
+        source->AddReader(unpackWRSofia);
     }
 
     if (fMwpc0)
@@ -304,6 +317,8 @@ void main_online()
                 parList2->Add(new TObjString(loscalfilename));
             if (fFrsid)
                 parList2->Add(new TObjString(scis2calfilename));
+            if (fTofD)
+                parList2->Add(new TObjString(tofdcalfilename));
             parIo2->open(parList2);
             rtdb->setFirstInput(parIo2);
 
@@ -312,13 +327,20 @@ void main_online()
             rtdb->setSecondInput(parIo1);
 
             rtdb->print();
+
+            if (fFrsid || fLos || fTofD)
+                rtdb->addRun(fRunId);
             if (fFrsid && fLos)
             {
-                rtdb->addRun(fRunId);
                 rtdb->getContainer("LosTCalPar");
                 rtdb->setInputVersion(fRunId, (char*)"LosTCalPar", 1, 1);
                 rtdb->getContainer("Sci2TCalPar");
                 rtdb->setInputVersion(fRunId, (char*)"Sci2TCalPar", 1, 1);
+            }
+            if (fTofD)
+            {
+                rtdb->getContainer("TofdTCalPar");
+                rtdb->setInputVersion(fRunId, (char*)"TofdTCalPar", 1, 1);
             }
         }
         else
@@ -343,6 +365,8 @@ void main_online()
                     parList2->Add(new TObjString(loscalfilename));
                 if (fFrsid)
                     parList2->Add(new TObjString(scis2calfilename));
+                if (fTofD)
+                    parList2->Add(new TObjString(tofdcalfilename));
                 parIo2->open(parList2);
                 rtdb->setFirstInput(parIo2);
 
@@ -354,13 +378,19 @@ void main_online()
                 rtdb->setSecondInput(parIo1);
 
                 rtdb->print();
+                if (fFrsid || fLos || fTofD)
+                    rtdb->addRun(fRunId);
                 if (fFrsid && fLos)
                 {
-                    rtdb->addRun(fRunId);
                     rtdb->getContainer("LosTCalPar");
                     rtdb->setInputVersion(fRunId, (char*)"LosTCalPar", 1, 1);
                     rtdb->getContainer("Sci2TCalPar");
                     rtdb->setInputVersion(fRunId, (char*)"Sci2TCalPar", 1, 1);
+                }
+                if (fTofD)
+                {
+                    rtdb->getContainer("TofdTCalPar");
+                    rtdb->setInputVersion(fRunId, (char*)"TofdTCalPar", 1, 1);
                 }
             }
             else
@@ -421,7 +451,6 @@ void main_online()
     }
 
     // Add analysis task ------------------------------------
-
     // S2 Mapped -> Tcal
     if (fFrsid)
     {
@@ -509,8 +538,8 @@ void main_online()
     if (fTofD)
     {
         R3BTofdMapped2Cal* tofdMapped2Cal = new R3BTofdMapped2Cal();
-        // tofdMapped2Cal->SetNofModules(4,44);
-        // run->AddTask( tofdMapped2Cal );
+        tofdMapped2Cal->SetNofModules(4, 44);
+        run->AddTask(tofdMapped2Cal);
     }
 
     // Add online task ------------------------------------
@@ -542,15 +571,17 @@ void main_online()
             loss2online->SetTpat(0);                          // if 0, no tpat selection
             // AoQ calibration :
             loss2online->SetToFoffset(fTofOffset);
-            loss2online->SetToFmin(8000);
-            loss2online->SetToFmax(8010);
+            loss2online->SetToFmin(-8050);
+            loss2online->SetToFmax(8050);
             loss2online->SetTof2InvV_p0(67.69245);
             loss2online->SetTof2InvV_p1(0.007198663);
             loss2online->SetFlightLength(139.915);
             loss2online->SetPos_p0(126.451);
             loss2online->SetPos_p1(56.785);
             loss2online->SetDispersionS2(7000);
-            loss2online->SetBrho0_S2toCC(fBrho); // main 484
+            loss2online->SetBrho0_S2toCC(fBrho);
+            // 3 parameters for velocity correction, primary beam charge and offset in Z.
+            // loss2online->SetBetaCorrectionForZ(-2.12371e7, 4.9473e7,-2.87635e7,50.,-17.3);
             run->AddTask(loss2online);
         }
         else
