@@ -84,11 +84,11 @@ void main_online()
         outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
         // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
 
-        // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
+        // upexps_dir = ucesb_dir + "/../upexps"; // for local computers
         upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
         ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=70Mi";
-
+        ucesb_path.ReplaceAll("//", "/");
         sofiacaldir = dir + "/sofia/macros/s455Up2p/parameters/";
     }
     else
@@ -96,9 +96,6 @@ void main_online()
         std::cout << "Experiment was not selected" << std::endl;
         gApplication->Terminate();
     }
-    TString sofiacalfilename = sofiacaldir + "CalibParam.par";
-    ucesb_path.ReplaceAll("//", "/");
-    sofiacalfilename.ReplaceAll("//", "/");
 
     // store data or not ------------------------------------
     Bool_t fCal_level_califa = false; // set true if there exists a file with the calibration parameters
@@ -119,23 +116,25 @@ void main_online()
     // --- R3B standard -----------------------------------------------------------------
     Bool_t fNeuland = false; // NeuLAND for neutrons behind GLAD
     Bool_t fAms = false;     // AMS tracking detectors
-    Bool_t fCalifa = true;  // Califa calorimeter
+    Bool_t fCalifa = false;  // Califa calorimeter
     Bool_t fMusic = false;   // R3B-Music: Ionization chamber for charge-Z
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
+    Bool_t fTrim = false;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
     Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fMwpc3 =true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files ------------------------------------
+    TString sofiacalfilename = sofiacaldir + "CalibParam.par";
+    sofiacalfilename.ReplaceAll("//", "/");
     // Parameters for CALIFA mapping
     TString califadir = dir + "/macros/r3b/unpack/s455/califa/parameters/";
     TString califamapfilename = califadir + "Califa_Mapping_3March2021.par";
