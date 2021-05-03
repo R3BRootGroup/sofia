@@ -62,7 +62,8 @@ void main_online()
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString ntuple_options = "RAW";
+    TString ntuple_options = "RAW"; // For stitched data
+    // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
@@ -120,28 +121,31 @@ void main_online()
     Bool_t fMusic = false;   // R3B-Music: Ionization chamber for charge-Z
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
-    Bool_t fTrim = false;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
+    Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
     Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
     Bool_t fTwim = true;     // Twim: Ionization chamber for charge-Z of fragments
-    Bool_t fMwpc3 =true;    // MWPC3 for tracking of fragments behind GLAD
+    Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
 
-    // Calibration files ------------------------------------
+    // Calibration files for SOFIA ----------------------------------------------
     TString sofiacalfilename = sofiacaldir + "CalibParam.par";
     sofiacalfilename.ReplaceAll("//", "/");
-    // Parameters for CALIFA mapping
+    // Parameters for CALIFA mapping  -------------------------------------------
     TString califadir = dir + "/macros/r3b/unpack/s455/califa/parameters/";
     TString califamapfilename = califadir + "Califa_Mapping_3March2021.par";
     califamapfilename.ReplaceAll("//", "/");
-    // Parameters for CALIFA calibration in keV
+    // Parameters for CALIFA calibration in keV  --------------------------------
     TString califacalfilename = califadir + "Califa_CalPar_4March2021.par";
     califacalfilename.ReplaceAll("//", "/");
+    // Parameters for AMS   -----------------------------------------------------
+    TString amscalfilename = sofiacaldir + "Ams_CalPar_20210312.par";
+    amscalfilename.ReplaceAll("//", "/");
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -327,43 +331,21 @@ void main_online()
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
     FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii
-    if (!fCalifa)
+    TList* parList1 = new TList();
+    parList1->Add(new TObjString(sofiacalfilename));
+    if (fCalifa)
     {
-        parIo1->open(sofiacalfilename, "in");
-        rtdb->setFirstInput(parIo1);
-        rtdb->print();
-    }
-    else
-    {
-        if (!fCal_level_califa)
-        { // SOFIA and CALIFA mapping: Ascii files
-            TList* parList1 = new TList();
-            parList1->Add(new TObjString(sofiacalfilename));
-            parList1->Add(new TObjString(califamapfilename));
-            parIo1->open(parList1);
-            rtdb->setFirstInput(parIo1);
-            rtdb->print();
-        }
-        else
-        { // SOFIA, CALIFA mapping and CALIFA calibration parameters
-          // parIo1->open(sofiacalfilename, "in"); // Ascii file
-          // rtdb->setFirstInput(parIo1);
-          // rtdb->print();
-          // Bool_t kParameterMerged = kFALSE;
-          // FairParRootFileIo* parIo2 = new FairParRootFileIo(kParameterMerged); // Root file
-          // TList* parList2 = new TList();
-          // parList2->Add(new TObjString(califacalfilename));
-          // parIo2->open(parList2);
-          // rtdb->setSecondInput(parIo2);
-            //
-            TList* parList1 = new TList();
-            parList1->Add(new TObjString(sofiacalfilename));
+        if (fCal_level_califa)
             parList1->Add(new TObjString(califacalfilename));
-            parIo1->open(parList1);
-            rtdb->setFirstInput(parIo1);
-            rtdb->print();
-        }
+        else
+            parList1->Add(new TObjString(califamapfilename));
     }
+    if (fAms)
+        parList1->Add(new TObjString(amscalfilename));
+
+    parIo1->open(parList1);
+    rtdb->setFirstInput(parIo1);
+    rtdb->print();
 
     // Add analysis task ------------------------------------
     // TPCs at S2
@@ -436,6 +418,8 @@ void main_online()
         // --- Cal 2 Hit
         R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
         SofTrimCal2Hit->SetOnline(NOTstorehitdata);
+        SofTrimCal2Hit->SetExpId(expId);
+        SofTrimCal2Hit->SetCoulex(kFALSE);
         SofTrimCal2Hit->SetTriShape(kTRUE);
         run->AddTask(SofTrimCal2Hit);
     }
@@ -682,7 +666,7 @@ void main_online()
     if (fTrim && fCalifa && fTwim)
     {
         R3BAmsCorrelationOnlineSpectra* CalifaAmsOnline = new R3BAmsCorrelationOnlineSpectra();
-        CalifaAmsOnline->SetZproj(82.0);                       // Projectile atomic number
+        CalifaAmsOnline->SetZproj(82.0);                    // Projectile atomic number
         CalifaAmsOnline->SetCalifa_bins_maxrange(0, 30000); // 300000 -> 300MeV
         run->AddTask(CalifaAmsOnline);
     }

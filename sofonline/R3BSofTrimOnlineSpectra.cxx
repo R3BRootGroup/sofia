@@ -905,7 +905,6 @@ void R3BSofTrimOnlineSpectra::Reset_Histo()
 
 void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
 {
-
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofTrimOnlineSpectra::Exec FairRootManager not found";
