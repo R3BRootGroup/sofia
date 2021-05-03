@@ -45,6 +45,10 @@ class R3BSofTrimCal2Hit : public FairTask
     /** Virtual method Finish **/
     virtual void Finish();
 
+    /** Method to set up the experiment ID **/
+    void SetExpId(Int_t exp) { fExpId = exp; }
+    void SetCoulex(Bool_t opt) { fCoulex = opt; }
+
     void SetNumSections(Int_t n) { fNumSections = n; }
     void SetNumAnodes(Int_t n) { fNumAnodes = n; }
     void SetOnline(Bool_t option) { fOnline = option; }
@@ -55,6 +59,8 @@ class R3BSofTrimCal2Hit : public FairTask
     Int_t fNumSections;
     Int_t fNumAnodes;
     Int_t fIdCaveC;
+    Int_t fExpId;
+    Bool_t fCoulex;
     Bool_t fTriShape;
     Bool_t fOnline; // Don't store data for online
 
@@ -62,6 +68,9 @@ class R3BSofTrimCal2Hit : public FairTask
     TClonesArray* fTrimCalData;    // Array with Cal input data for Triple-MUSIC
     TClonesArray* fSciCalData;     // Array with Cal input data for incoming beam velocity
     TClonesArray* fTrimHitData;    // Array with Hit output data for Triple-MUSIC
+
+    void S455_Coulex();
+    void S455_P2p();
 
     // --- Private method --- //
     R3BSofTrimHitData* AddHitData(Int_t secID,
