@@ -310,7 +310,7 @@ trimEnergyCorrDeltaDTPars: Float_t \
 26545.2  0.79954  0.00371342  1.22089e-06  \ 
 27301.9  1.35216  0.00396846  1.16699e-06   
 trimEnergyAlignOffsets: Float_t \
--193.15 0. 28.85. 
+-193.15 0.0 28.85 
 trimEnergyAlignGains: Float_t \
 1.0347 1.0 1.080826 
 trimEnergyCorrBetaPars: Float_t \ 
