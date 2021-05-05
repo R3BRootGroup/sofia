@@ -83,7 +83,7 @@ Bool_t R3BSofMwpc0::ProcessHits(FairVolume* vol)
         gMC->TrackPosition(fPosOut);
         gMC->TrackMomentum(fMomOut);
         if (fELoss == 0.)
-               return kFALSE;
+            return kFALSE;
 
         if (gMC->IsTrackExiting())
         {

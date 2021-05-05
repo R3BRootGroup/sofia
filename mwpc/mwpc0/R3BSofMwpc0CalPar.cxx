@@ -13,9 +13,6 @@
 
 #include <iostream>
 
-using std::cout;
-using std::endl;
-
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofMwpc0CalPar::R3BSofMwpc0CalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
@@ -30,7 +27,8 @@ R3BSofMwpc0CalPar::R3BSofMwpc0CalPar(const char* name, const char* title, const 
 R3BSofMwpc0CalPar::~R3BSofMwpc0CalPar()
 {
     clear();
-    delete fPadCalParams;
+    if (fPadCalParams)
+        delete fPadCalParams;
 }
 
 // ----  Method clear ----------------------------------------------------------
@@ -106,15 +104,15 @@ void R3BSofMwpc0CalPar::printParams()
     {
         if (i < fNumPadsX)
         {
-            cout << "MWPC0 Plane X Pad Number: " << i + 1 << endl;
+            LOG(INFO) << "MWPC0 Plane X Pad Number: " << i + 1;
         }
         else
         {
-            cout << "MWPC0 Plane Y Pad Number: " << i + 1 - fNumPadsX << endl;
+            LOG(INFO) << "MWPC0 Plane Y Pad Number: " << i + 1 - fNumPadsX;
         }
         for (Int_t j = 0; j < fNumParamsFit; j++)
         {
-            cout << "FitParam(" << j << ") = " << fPadCalParams->GetAt(i * fNumParamsFit + j) << endl;
+            LOG(INFO) << "FitParam(" << j << ") = " << fPadCalParams->GetAt(i * fNumParamsFit + j);
         }
     }
 }

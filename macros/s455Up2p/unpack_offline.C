@@ -5,7 +5,7 @@
  *
  *  at $UCESB_DIR/../upexps/yyyymm_s4xx
  *
- *  This macro generates a root file with all the data at mapped level using 
+ *  This macro generates a root file with all the data at mapped level using
  *  a lmd file as input
  *
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
@@ -281,6 +281,7 @@ void unpack_offline()
 
     // Create online run ------------------------------------
     FairRunOnline* run = new FairRunOnline(source);
+    run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
 
     // Initialize -------------------------------------------

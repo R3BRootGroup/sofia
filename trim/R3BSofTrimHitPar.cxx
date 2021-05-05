@@ -19,12 +19,13 @@ R3BSofTrimHitPar::R3BSofTrimHitPar(const char* name, const char* title, const ch
     : FairParGenericSet(name, title, context)
     , fNumSections(3)
     , fNumSignalsPerSection(3) // 3 if triangular, 6 if rectangular
+    , fNumCorrDeltaDTParsPerSignal(4)
     , fNumCorrBetaParsPerSection(3)
 {
-    fEnergyCorrDeltaDTPars = new TArrayF(fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal);
     fEnergyAlignOffsets = new TArrayF(fNumSections);
     fEnergyAlignGains = new TArrayF(fNumSections);
     fEnergyCorrBetaPars = new TArrayF(fNumSections * fNumCorrBetaParsPerSection);
+    fEnergyCorrDeltaDTPars = new TArrayF(fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -58,10 +59,6 @@ void R3BSofTrimHitPar::putParams(FairParamList* list)
     }
     Int_t array_size;
 
-    array_size = fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal;
-    LOG(INFO) << "Array Size corr deltaDT parameters: " << array_size;
-    fEnergyCorrDeltaDTPars->Set(array_size);
-
     array_size = fNumSections;
     LOG(INFO) << "Array Size align gains: " << array_size;
     fEnergyAlignGains->Set(array_size);
@@ -73,6 +70,10 @@ void R3BSofTrimHitPar::putParams(FairParamList* list)
     array_size = fNumSections * fNumCorrBetaParsPerSection;
     LOG(INFO) << "Array Size corr beta parameters: " << array_size;
     fEnergyCorrBetaPars->Set(array_size);
+
+    array_size = fNumSections * fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal;
+    LOG(INFO) << "Array Size corr deltaDT parameters: " << array_size;
+    fEnergyCorrDeltaDTPars->Set(array_size);
 
     list->add("trimNumSections", fNumSections);
     list->add("trimNumCorrDeltaDTParsPerSignal", fNumCorrDeltaDTParsPerSignal);
@@ -87,7 +88,6 @@ void R3BSofTrimHitPar::putParams(FairParamList* list)
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofTrimHitPar::getParams(FairParamList* list)
 {
-
     LOG(INFO) << "R3BSofTrimHitPar::getParams() called";
     if (!list)
     {
