@@ -38,7 +38,7 @@ void cal_offline()
     if (expId == 455)
     {
         // Input file
-        filename = "s455_map_data_offline_20210505_164531.root";
+        filename = "s455_map_data_offline_20210512_004757.root";
 
         TString outputpath = "/path/to/your/disk/";
         // outputFilename = outputpath + "s455_cal_data_offline_" + oss.str() + ".root";
@@ -94,12 +94,14 @@ void cal_offline()
 
     // Create source using root files for input ---------------------------------
     FairRunAna* run = new FairRunAna();
+    R3BEventHeader* r3bEvntHeader = new R3BEventHeader();
+    run->SetEventHeader(r3bEvntHeader);
     FairFileSource* source = new FairFileSource(filename);
-    source->SetRunId(fRunId);
+    //run->SetRunId(fRunId);
     run->SetSource(source);
-    source->AddFile("s455_map_data_offline_20210505_164531.root");
     run->SetSink(new FairRootFileSink(outputFilename));
 
+    
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
@@ -280,7 +282,7 @@ void cal_offline()
     if (nev > -1)
         run->Run(nev);
     else
-        run->Run();
+        run->Run();    
 
     // Finish -----------------------------------------------
     timer.Stop();
