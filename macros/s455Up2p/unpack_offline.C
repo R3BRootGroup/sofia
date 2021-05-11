@@ -132,10 +132,17 @@ void unpack_offline()
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
+    
+    // Create online run ------------------------------------
+    FairRunOnline* run = new FairRunOnline();
+    R3BEventHeader* EvntHeader = new R3BEventHeader();
+    run->SetEventHeader(EvntHeader);
+    run->SetSink(new FairRootFileSink(outputFilename));
 
     R3BUcesbSource* source =
         new R3BUcesbSource(filename, ntuple_options, ucesb_path, &ucesb_struct, sizeof(ucesb_struct));
     source->SetMaxEvents(nev);
+    // source->SetInputFileName("setup_runid.dat");
 
     // Definition of reader ---------------------------------
     R3BAmsReader* unpackams;
@@ -155,6 +162,10 @@ void unpack_offline()
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
+
+   // Add readers ------------------------------------------
+    source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
+    source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
 
     if (fFrsSci)
     {
@@ -209,10 +220,6 @@ void unpack_offline()
         unpackWRNeuland = new R3BWhiterabbitNeulandReader(
             (EXT_STR_h101_WRNEULAND*)&ucesb_struct.wrneuland, offsetof(EXT_STR_h101, wrneuland), 0x900);
     }
-
-    // Add readers ------------------------------------------
-    source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
-    source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
 
     if (fSci)
     {
@@ -278,11 +285,7 @@ void unpack_offline()
         unpackWRNeuland->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRNeuland);
     }
-
-    // Create online run ------------------------------------
-    FairRunOnline* run = new FairRunOnline(source);
-    run->SetRunId(fRunId);
-    run->SetSink(new FairRootFileSink(outputFilename));
+    run->SetSource(source);
 
     // Initialize -------------------------------------------
     run->Init();
