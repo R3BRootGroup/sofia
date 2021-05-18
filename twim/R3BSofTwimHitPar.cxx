@@ -69,7 +69,7 @@ void R3BSofTwimHitPar::putParams(FairParamList* list)
     list->add("twimAnodePosPar", *fAnode_pos);
 
     list->add("twimZHitParamsFitPar", fNumParamsZFit);
-    Int_t array_size = fNumParamsZFit;
+    Int_t array_size = fNumSec * fNumParamsZFit;
     LOG(INFO) << "Number of parameters for charge-Z: " << array_size;
     fDetZHitParams->Set(array_size);
     list->add("twimZHitPar", *fDetZHitParams);

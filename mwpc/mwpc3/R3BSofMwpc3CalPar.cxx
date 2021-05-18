@@ -12,9 +12,6 @@
 
 #include <iostream>
 
-using std::cout;
-using std::endl;
-
 /* ---- Standard Constructor ---- */
 R3BSofMwpc3CalPar::R3BSofMwpc3CalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
@@ -22,7 +19,7 @@ R3BSofMwpc3CalPar::R3BSofMwpc3CalPar(const char* name, const char* title, const 
     , fNumPadsY(120)
     , fNumParamsFit(2)
 {
-    fPadCalParams = new TArrayI(816); //(288 Pads in X + 120 Pads in Y) x 2 Calibration Parameter (Pedestal)
+    fPadCalParams = new TArrayI((fNumPadsX + fNumPadsY) * fNumParamsFit);
 }
 
 /* ----  Destructor ---- */
@@ -116,3 +113,5 @@ void R3BSofMwpc3CalPar::printParams()
         }
     }
 }
+
+ClassImp(R3BSofMwpc3CalPar)

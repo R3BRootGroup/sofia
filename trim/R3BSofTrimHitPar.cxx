@@ -33,7 +33,7 @@ R3BSofTrimHitPar::~R3BSofTrimHitPar()
 {
     clear();
     if (fEnergyCorrDeltaDTPars)
-        delete fEnergyCorrBetaPars;
+        delete fEnergyCorrDeltaDTPars;
     if (fEnergyAlignOffsets)
         delete fEnergyAlignOffsets;
     if (fEnergyAlignGains)
@@ -128,13 +128,11 @@ Bool_t R3BSofTrimHitPar::getParams(FairParamList* list)
     array_size = fNumSections;
     LOG(INFO) << "Array Size for align offset in use: " << array_size;
     fEnergyAlignOffsets->Set(array_size);
-    if (!(list->fill("trimEnergyAlignOffsets", fEnergyAlignGains)))
+    if (!(list->fill("trimEnergyAlignOffsets", fEnergyAlignOffsets)))
     {
         LOG(INFO) << "---Could not initialize trimEnergyAlignOffsets";
         return kFALSE;
     }
-
-    array_size = fNumSections;
     LOG(INFO) << "Array Size for align gain in use: " << array_size;
     fEnergyAlignGains->Set(array_size);
     if (!(list->fill("trimEnergyAlignGains", fEnergyAlignGains)))
@@ -188,3 +186,5 @@ void R3BSofTrimHitPar::printParams()
         }
     }
 }
+
+ClassImp(R3BSofTrimHitPar)

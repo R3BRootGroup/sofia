@@ -17,10 +17,10 @@
 R3BSofMwpc0CalPar::R3BSofMwpc0CalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
     , fNumPadsX(64)
-    , fNumPadsY(40)
+    , fNumPadsY(64)
     , fNumParamsFit(1)
 {
-    fPadCalParams = new TArrayI(104); //(64 Pads in X + 40 Pads in Y) x 1 Calibration Parameter (Pedestal)
+    fPadCalParams = new TArrayI((fNumPadsX+fNumPadsY)*fNumParamsFit); //(64 Pads in X + 64 Pads in Y) x 1 Calibration Parameter (Pedestal)
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -116,3 +116,5 @@ void R3BSofMwpc0CalPar::printParams()
         }
     }
 }
+
+ClassImp(R3BSofMwpc0CalPar)
