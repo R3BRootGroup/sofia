@@ -78,7 +78,7 @@ void main_online()
         filename = "--stream=lxlanddaq01:9001";
         // filename = "--stream=lxir133:9001";
         // filename = "/d/land5/202103_s455/stitched/main0209_*.lmd";
-        // filename = "~/lmd/s455/main0273_0010.lmd";
+        // filename = "~/lmd/s455/main0147_0001.lmd";
         // filename = "~/lmd/s455/main0273_0010_stitched.lmd";
 
         TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
@@ -150,6 +150,14 @@ void main_online()
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
 
+    // Create online run ------------------------------------
+    FairRunOnline* run = new FairRunOnline();
+    R3BEventHeader* EvntHeader = new R3BEventHeader();
+    run->SetEventHeader(EvntHeader);
+    run->SetRunId(fRunId);
+    run->SetSink(new FairRootFileSink(outputFilename));
+    run->ActivateHttpServer(refresh, port);
+
     R3BUcesbSource* source =
         new R3BUcesbSource(filename, ntuple_options, ucesb_path, &ucesb_struct, sizeof(ucesb_struct));
     source->SetMaxEvents(nev);
@@ -176,6 +184,10 @@ void main_online()
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
+    
+    // Add readers ------------------------------------------
+    source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
+    source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
 
     if (fFrsTpcs)
         unpackfrs = new R3BFrsReaderNov19((EXT_STR_h101_FRS*)&ucesb_struct.frs, offsetof(EXT_STR_h101, frs));
@@ -239,9 +251,6 @@ void main_online()
             (EXT_STR_h101_WRNEULAND*)&ucesb_struct.wrneuland, offsetof(EXT_STR_h101, wrneuland), 0x900);
     }
 
-    // Add readers ------------------------------------------
-    source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
-    source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
 
     if (fFrsTpcs)
     {
@@ -320,12 +329,8 @@ void main_online()
         unpackWRNeuland->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRNeuland);
     }
-
-    // Create online run ------------------------------------
-    FairRunOnline* run = new FairRunOnline(source);
-    run->SetRunId(fRunId);
-    run->SetSink(new FairRootFileSink(outputFilename));
-    run->ActivateHttpServer(refresh, port);
+    
+    run->SetSource(source);
 
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
@@ -569,7 +574,7 @@ void main_online()
         R3BSofTrimOnlineSpectra* trimonline = new R3BSofTrimOnlineSpectra();
         run->AddTask(trimonline);
     }
-
+/*
     if (fSci)
     {
         R3BSofSciOnlineSpectra* scionline = new R3BSofSciOnlineSpectra();
@@ -604,7 +609,7 @@ void main_online()
             run->AddTask(scivsmw0online);
         }
     }
-
+*/
     if (fAt)
     {
         TCutG* cutSet12 = new TCutG("cutSet12", 5);

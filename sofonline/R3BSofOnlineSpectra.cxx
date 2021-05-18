@@ -159,7 +159,6 @@ R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
 
 InitStatus R3BSofOnlineSpectra::Init()
 {
-
     LOG(INFO) << "R3BSofOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
@@ -168,7 +167,7 @@ InitStatus R3BSofOnlineSpectra::Init()
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofOnlineSpectra::Init FairRootManager not found";
-    fEventHeader = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
+    fEventHeader = (R3BEventHeader*)mgr->GetObject("EventHeader.");
 
     FairRunOnline* run = FairRunOnline::Instance();
     if (NULL == run)

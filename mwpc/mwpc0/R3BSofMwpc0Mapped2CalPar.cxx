@@ -119,7 +119,7 @@ InitStatus R3BSofMwpc0Mapped2CalPar::ReInit() { return kSUCCESS; }
 void R3BSofMwpc0Mapped2CalPar::Exec(Option_t* opt)
 {
 
-    Int_t nHits = fMwpcMappedDataCA->GetEntries();
+    Int_t nHits = fMwpcMappedDataCA->GetEntries();    
     if (!nHits)
         return;
 
@@ -174,7 +174,7 @@ void R3BSofMwpc0Mapped2CalPar::SearchPedestals()
         nbpad = i * fNumParams;
         if (fh_Map_q_pad[i]->GetEntries() > fMinStadistics)
         {
-            Int_t tmp = fh_Map_q_pad[i]->GetMaximumBin() * 10;
+            Int_t tmp = fh_Map_q_pad[i]->GetMaximumBin();
             TF1* f1 = new TF1("f1", "gaus", fMapHistos_left, fMapHistos_right);
             fh_Map_q_pad[i]->Fit("f1", "QON", "", tmp - 80, tmp + 80);
             fPad_Par->SetPadCalParams(f1->GetParameter(1), nbpad);
