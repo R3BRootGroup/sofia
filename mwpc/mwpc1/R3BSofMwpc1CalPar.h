@@ -19,9 +19,6 @@ class R3BSofMwpc1CalPar : public FairParGenericSet
 {
 
   public:
-    /** Default Constructor **/
-    R3BSofMwpc1CalPar();
-
     /** Standard constructor **/
     R3BSofMwpc1CalPar(const char* name = "mwpc1CalPar",
                       const char* title = "Mwpc1 Cal Parameters",

@@ -142,7 +142,7 @@ void unpack_offline()
     R3BUcesbSource* source =
         new R3BUcesbSource(filename, ntuple_options, ucesb_path, &ucesb_struct, sizeof(ucesb_struct));
     source->SetMaxEvents(nev);
-    // source->SetInputFileName("setup_runid.dat");
+    // source->SetInputFileName("setup_runid.par");
 
     // Definition of reader ---------------------------------
     R3BAmsReader* unpackams;

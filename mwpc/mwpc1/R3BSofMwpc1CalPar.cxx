@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------
-// -----		                R3BSofMwpc1CalPar 			                -----
+// -----		      R3BSofMwpc1CalPar        	      -----
 // -----          Created 15/10/19  by G. García Jiménez            -----
 // -----  by modifying J.L. Rodriguez-Sanchez  classes for Mwpc2    -----
 // ----------------------------------------------------------------------
@@ -13,9 +13,6 @@
 
 #include <iostream>
 
-using std::cout;
-using std::endl;
-
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofMwpc1CalPar::R3BSofMwpc1CalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
@@ -23,7 +20,7 @@ R3BSofMwpc1CalPar::R3BSofMwpc1CalPar(const char* name, const char* title, const 
     , fNumPadsY(40)
     , fNumParamsFit(1)
 {
-    fPadCalParams = new TArrayI(336); //(128 Pads in X + 40 Pads in Y) x 2 Calibration Parameter (Pedestal)
+    fPadCalParams = new TArrayI((fNumPadsX + fNumPadsY) * fNumParamsFit);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -106,19 +103,21 @@ void R3BSofMwpc1CalPar::printParams()
     {
         if (i < fNumPadsX / 2)
         {
-            cout << "MWPC1 Plane X down, Pad Number: " << i + 1 << endl;
+            LOG(INFO) << "MWPC1 Plane X down, Pad Number: " << i + 1;
         }
         else if (i < fNumPadsX)
         {
-            cout << "MWPC1 Plane X up, Pad Number: " << i + 1 - fNumPadsX / 2 << endl;
+            LOG(INFO) << "MWPC1 Plane X up, Pad Number: " << i + 1 - fNumPadsX / 2;
         }
         else
         {
-            cout << "MWPC1 Plane Y, Pad Number: " << i + 1 - fNumPadsX << endl;
+            LOG(INFO) << "MWPC1 Plane Y, Pad Number: " << i + 1 - fNumPadsX;
         }
         for (Int_t j = 0; j < fNumParamsFit; j++)
         {
-            cout << "FitParam(" << j << ") = " << fPadCalParams->GetAt(i * fNumParamsFit + j) << endl;
+            LOG(INFO) << "FitParam(" << j << ") = " << fPadCalParams->GetAt(i * fNumParamsFit + j);
         }
     }
 }
+
+ClassImp(R3BSofMwpc1CalPar)

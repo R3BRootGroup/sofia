@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------
 // -----                                                            -----
-// -----		 R3BSofMwpc2CalPar 			    -----
+// -----		 R3BSofMwpc2CalPar 			      -----
 // -----          Created 10/10/19  by J.L. Rodriguez-Sanchez       -----
 // ----------------------------------------------------------------------
 
@@ -19,9 +19,6 @@ class R3BSofMwpc2CalPar : public FairParGenericSet
 {
 
   public:
-    /** Default Constructor **/
-    R3BSofMwpc2CalPar();
-
     /** Standard constructor **/
     R3BSofMwpc2CalPar(const char* name = "mwpc2CalPar",
                       const char* title = "Mwpc2 Cal Parameters",

@@ -38,7 +38,7 @@ void cal_offline()
     if (expId == 455)
     {
         // Input file
-        filename = "s455_map_data_offline_20210512_004757.root";
+        filename = "s455_map_data_offline_20210515_194151.root";
 
         TString outputpath = "/path/to/your/disk/";
         // outputFilename = outputpath + "s455_cal_data_offline_" + oss.str() + ".root";
@@ -94,14 +94,8 @@ void cal_offline()
 
     // Create source using root files for input ---------------------------------
     FairRunAna* run = new FairRunAna();
-    R3BEventHeader* r3bEvntHeader = new R3BEventHeader();
-    run->SetEventHeader(r3bEvntHeader);
-    FairFileSource* source = new FairFileSource(filename);
-    //run->SetRunId(fRunId);
-    run->SetSource(source);
     run->SetSink(new FairRootFileSink(outputFilename));
 
-    
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
@@ -117,10 +111,41 @@ void cal_offline()
     }
     if (fAms)
         parList1->Add(new TObjString(amscalfilename));
-
+     rtdb->addRun(fRunId);
     parIo1->open(parList1);
     rtdb->setFirstInput(parIo1);
     rtdb->print();
+    
+  /*
+  FairParRootFileIo* parIo1 = new FairParRootFileIo();
+  //parIo1->open("Cal1.root","in");
+  //rtdb->setFirstInput(parIo1);
+  
+      TList* parList1 = new TList();
+    parList1->Add(new TObjString("Cal1.root"));
+       // parList1->Add(new TObjString("Cal2.root"));
+      parIo1->open(parList1);
+    rtdb->setFirstInput(parIo1);
+  
+     rtdb->addRun(fRunId);
+                    rtdb->getContainer("twimHitPar");
+                    rtdb->setInputVersion(fRunId, (char*)"twimHitPar", 1, 1);
+
+rtdb->initContainers(1);
+   rtdb->addRun(2);
+                    rtdb->getContainer("twimHitPar");
+                    rtdb->setInputVersion(2, (char*)"twimHitPar", 1, 1);
+                   rtdb->initContainers(2);
+                    */
+                   
+    R3BFileSource* source = new R3BFileSource(filename);
+    // source->SetInputFileName("./parameters/setup_runid.par");
+    source->SetRunId(fRunId);
+    run->SetSource(source);
+
+    // Add RunId Reader  --------------------------------------------------------
+    //R3BRunIdReader* RunIdTask = new R3BRunIdReader();
+    //run->AddTask(RunIdTask);
 
     // Add analysis task --------------------------------------------------------
     // MWPC0
@@ -277,12 +302,20 @@ void cal_offline()
     // Initialize -------------------------------------------
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
-
+  /*
+  Bool_t kParameterMerged = kTRUE;
+  FairParRootFileIo* parOut = new FairParRootFileIo(kParameterMerged);
+  parOut->open("Cal1.root");
+  rtdb->setOutput(parOut);
+*/
     // Run --------------------------------------------------
     if (nev > -1)
         run->Run(nev);
     else
         run->Run();    
+        
+    // Save parameters (if needed) --------------------------
+    //rtdb->saveOutput();     
 
     // Finish -----------------------------------------------
     timer.Stop();
