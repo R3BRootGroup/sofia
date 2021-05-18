@@ -20,7 +20,7 @@ R3BSofMwpc2CalPar::R3BSofMwpc2CalPar(const char* name, const char* title, const 
     , fNumPadsY(40)
     , fNumParamsFit(1)
 {
-    fPadCalParams = new TArrayI((fNumPadsX + fNumPadsY) * fNumParamsFit);
+    fPadCalParams = new TArrayF((fNumPadsX + fNumPadsY) * fNumParamsFit);
 }
 
 // ----  Destructor ------------------------------------------------------------

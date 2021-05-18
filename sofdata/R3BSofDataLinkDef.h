@@ -38,7 +38,6 @@
 #pragma link C++ class R3BSofTwimMappedData + ;
 #pragma link C++ class R3BSofTwimCalData + ;
 #pragma link C++ class R3BSofTwimHitData + ;
-#pragma link C++ class R3BSofFrsData + ;
 #pragma link C++ class R3BSofTrackingData + ;
 
 #pragma link C++ class R3BSofScalersMappedData + ;

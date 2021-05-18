@@ -55,7 +55,7 @@ class R3BSofMwpc0Mapped2Cal : public FairTask
     Int_t NumPadX;
     Int_t NumPadY;
     Int_t NumParams;
-    TArrayI* CalParams;
+    TArrayF* CalParams;
 
     Bool_t fOnline; // Don't store data for online
 

@@ -25,7 +25,7 @@
 
 // SOFIA headers
 #include "R3BSofFrsAnaPar.h"
-#include "R3BSofFrsData.h"
+#include "R3BFrsData.h"
 #include "R3BSofSciSingleTcalData.h"
 
 class TClonesArray;
@@ -117,7 +117,7 @@ class R3BSofFrsAnalysis : public FairTask
 
     /** Private method FrsData **/
     //** Adds a FrsData to the analysis
-    R3BSofFrsData* AddData(Int_t StaId,
+    R3BFrsData* AddData(Int_t StaId,
                            Int_t StoId,
                            Double_t z,
                            Double_t aq,

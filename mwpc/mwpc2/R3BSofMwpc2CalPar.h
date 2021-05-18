@@ -8,7 +8,7 @@
 #define R3BSofMwpc2CalPar_H
 
 #include "FairParGenericSet.h"
-#include "TArrayI.h"
+#include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
 #include <TObjString.h>
@@ -44,7 +44,7 @@ class R3BSofMwpc2CalPar : public FairParGenericSet
     const Int_t GetNumPadsY() { return fNumPadsY; }
     const Int_t GetNumParametersFit() { return fNumParamsFit; }
 
-    TArrayI* GetPadCalParams() { return fPadCalParams; }
+    TArrayF* GetPadCalParams() { return fPadCalParams; }
 
     void SetNumPadsX(Int_t numberPadsX) { fNumPadsX = numberPadsX; }
     void SetNumPadsY(Int_t numberPadsY) { fNumPadsY = numberPadsY; }
@@ -54,7 +54,7 @@ class R3BSofMwpc2CalPar : public FairParGenericSet
     /** Create more Methods if you need them! **/
 
   private:
-    TArrayI* fPadCalParams;
+    TArrayF* fPadCalParams;
     Int_t fNumPadsX;
     Int_t fNumPadsY;
     Int_t fNumParamsFit;
