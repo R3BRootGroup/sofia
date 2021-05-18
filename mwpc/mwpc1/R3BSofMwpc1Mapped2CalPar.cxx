@@ -178,7 +178,7 @@ void R3BSofMwpc1Mapped2CalPar::SearchPedestals()
         nbpad = i * fNumParams;
         if (fh_Map_q_pad[i]->GetEntries() > fMinStadistics)
         {
-            Int_t tmp = fh_Map_q_pad[i]->GetMaximumBin() * 10;
+            Int_t tmp = fh_Map_q_pad[i]->GetMaximumBin();
             TF1* f1 = new TF1("f1", "gaus", fMapHistos_left, fMapHistos_right);
             fh_Map_q_pad[i]->Fit("f1", "QON", "", tmp - 80, tmp + 80);
             fPad_Par->SetPadCalParams(f1->GetParameter(1), nbpad);
