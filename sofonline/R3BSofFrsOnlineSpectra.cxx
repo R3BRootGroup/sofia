@@ -10,7 +10,7 @@
 
 #include "R3BSofFrsOnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BSofFrsData.h"
+#include "R3BFrsData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -195,7 +195,7 @@ void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
         Int_t nHits = fHitItemsFrs->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BSofFrsData* hit = (R3BSofFrsData*)fHitItemsFrs->At(ihit);
+            R3BFrsData* hit = (R3BFrsData*)fHitItemsFrs->At(ihit);
             if (!hit)
                 continue;
             fh1_beta->Fill(hit->GetBeta());

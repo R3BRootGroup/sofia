@@ -93,7 +93,7 @@ void R3BSofMwpc3Mapped2Cal::SetParameter()
     LOG(INFO) << "R3BSofMwpc3Mapped2Cal: NumPadY: " << NumPadY;
     LOG(INFO) << "R3BSofMwpc3Mapped2Cal: Number of fit parameters: " << NumParams;
 
-    CalParams = new TArrayI();
+    CalParams = new TArrayF();
     Int_t array_size = (NumPadX + NumPadY) * NumParams;
     CalParams->Set(array_size);
     CalParams = fCal_Par->GetPadCalParams(); // Array with the Cal parameters

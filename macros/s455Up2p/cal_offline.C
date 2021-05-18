@@ -76,7 +76,7 @@ void cal_offline()
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
     // --- Traking ----------------------------------------------------------------------
-    Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
+    Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files for SOFIA ----------------------------------------------
     TString sofiacalfilename = sofiacaldir + "CalibParam.par";
@@ -297,6 +297,14 @@ rtdb->initContainers(1);
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
         TwimCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(TwimCal2Hit);
+    }
+    
+    // Tracking
+    if (fMwpc2 && fMwpc3 && fTofW && fTwim && fSci && fTracking)
+    {
+        R3BSofFissionAnalysis* TrackingAna = new R3BSofFissionAnalysis();
+        TrackingAna->SetOnline(NOTstorehitdata);
+        run->AddTask(TrackingAna);
     }
 
     // Initialize -------------------------------------------

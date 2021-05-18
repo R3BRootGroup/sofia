@@ -574,7 +574,7 @@ void main_online()
         R3BSofTrimOnlineSpectra* trimonline = new R3BSofTrimOnlineSpectra();
         run->AddTask(trimonline);
     }
-/*
+
     if (fSci)
     {
         R3BSofSciOnlineSpectra* scionline = new R3BSofSciOnlineSpectra();
@@ -609,7 +609,7 @@ void main_online()
             run->AddTask(scivsmw0online);
         }
     }
-*/
+
     if (fAt)
     {
         TCutG* cutSet12 = new TCutG("cutSet12", 5);
