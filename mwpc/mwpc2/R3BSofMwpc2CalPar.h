@@ -49,7 +49,7 @@ class R3BSofMwpc2CalPar : public FairParGenericSet
     void SetNumPadsX(Int_t numberPadsX) { fNumPadsX = numberPadsX; }
     void SetNumPadsY(Int_t numberPadsY) { fNumPadsY = numberPadsY; }
     void SetNumParametersFit(Int_t numberParams) { fNumParamsFit = numberParams; }
-    void SetPadCalParams(Int_t cc, Int_t ii) { fPadCalParams->AddAt(cc, ii); }
+    void SetPadCalParams(Float_t cc, Int_t ii) { fPadCalParams->AddAt(cc, ii); }
 
     /** Create more Methods if you need them! **/
 
