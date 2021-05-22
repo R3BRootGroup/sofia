@@ -23,16 +23,15 @@ void runsim(Int_t nEvents = 0)
     Bool_t fR3BMagnet = false;      // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
     Bool_t fCalifaHitFinder = true; // Apply hit finder task
-    Bool_t fSofiaDigitizer = true; // Apply hit digitizer task
+    Bool_t fSofiaDigitizer = true;  // Apply hit digitizer task
 
     // MonteCarlo engine: TGeant3, TGeant4, TFluka
     TString fMC = "TGeant4";
 
-    // Event generator type: box, gammas, r3b, ion, ascii
+    // Event generator type: box for particles or ascii for p2p-fission
     TString generator1 = "box";
     TString generator2 = "ascii";
-    TString generator3 = "r3b";
-    TString fGenerator = generator1;
+    TString fGenerator = generator2;
 
     // Input event file in the case of ascii generator
     // TString fEventFile = "p2p_238U.txt";
@@ -40,7 +39,7 @@ void runsim(Int_t nEvents = 0)
 
     Int_t fFieldMap = -1;          // Magentic field map selector
     Double_t fMeasCurrent = 2000.; // Magnetic field current
-    Float_t fFieldScale = -0.82;     // Magnetic field scale factor
+    Float_t fFieldScale = -0.82;   // Magnetic field scale factor
 
     // ---------------  Detector selection: true - false ----------------------
     // ---- R3B and SOFIA detectors as well as passive elements
@@ -57,7 +56,9 @@ void runsim(Int_t nEvents = 0)
     Bool_t fCalifa = true; // Califa Calorimeter
     TString fCalifaGeo = "califa_2020.geo.root";
     Int_t fCalifaGeoVer = 2020;
-    Double_t fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
+    Double_t fCalifaCryTh = 0.000080;  // In GeV: 0.000080 means 80 keV per crystal
+    Double_t fCalifaHitEnergyTh = 0.0; // Threshold in GeV per cluster hit
+    Double_t fCalifaNonU = 0.5;        // Non-uniformity: 1 means +-1% max deviation
 
     Bool_t fMwpc1 = true; // MWPC1 Detector
     TString fMwpc1Geo = "mwpc_1.geo.root";
@@ -171,7 +172,8 @@ void runsim(Int_t nEvents = 0)
         else
             run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -190. }));
         R3BSofMwpcDigitizer* mw0_digitizer = new R3BSofMwpcDigitizer("Mwpc0", 1);
-        if(fSofiaDigitizer)run->AddTask(mw0_digitizer);
+        if (fSofiaDigitizer)
+            run->AddTask(mw0_digitizer);
     }
 
     // Tracker, vacuum chamber and LH2 target definitions
@@ -237,7 +239,8 @@ void runsim(Int_t nEvents = 0)
         else
             run->AddModule(new R3BSofMwpc1(fMwpc1Geo, { 0., 0., 42. }));
         R3BSofMwpcDigitizer* mw1_digitizer = new R3BSofMwpcDigitizer("Mwpc1", 1);
-        if(fSofiaDigitizer)run->AddTask(mw1_digitizer);
+        if (fSofiaDigitizer)
+            run->AddTask(mw1_digitizer);
     }
 
     // Twim definition
@@ -256,7 +259,8 @@ void runsim(Int_t nEvents = 0)
         else
             run->AddModule(new R3BSofTwim(fTwimGeo, { 0., 0., 69. }));
         R3BSofTwimDigitizer* twim_digitizer = new R3BSofTwimDigitizer("Twim", 1);
-        if(fSofiaDigitizer)run->AddTask(twim_digitizer);
+        if (fSofiaDigitizer)
+            run->AddTask(twim_digitizer);
     }
 
     // MWPC2 definition
@@ -275,7 +279,8 @@ void runsim(Int_t nEvents = 0)
         else
             run->AddModule(new R3BSofMwpc2(fMwpc2Geo, { 0., 0., 100. }));
         R3BSofMwpcDigitizer* mw2_digitizer = new R3BSofMwpcDigitizer("Mwpc2", 1);
-        if(fSofiaDigitizer)run->AddTask(mw2_digitizer);
+        if (fSofiaDigitizer)
+            run->AddTask(mw2_digitizer);
     }
 
     // Aladin Magnet definition
@@ -313,7 +318,8 @@ void runsim(Int_t nEvents = 0)
             run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -300., 0., 749., rmwpc3 }));
         }
         R3BSofMwpcDigitizer* mw3_digitizer = new R3BSofMwpcDigitizer("Mwpc3", 1);
-        if(fSofiaDigitizer)run->AddTask(mw3_digitizer);
+        if (fSofiaDigitizer)
+            run->AddTask(mw3_digitizer);
     }
 
     // Sofia ToF-Wall definition
@@ -335,7 +341,8 @@ void runsim(Int_t nEvents = 0)
             run->AddModule(new R3BSofTofW(fSofTofWallGeo, { -330., 0., 817., rtof }));
         }
         R3BSofTofWDigitizer* tofw_digitizer = new R3BSofTofWDigitizer();
-        if(fSofiaDigitizer)run->AddTask(tofw_digitizer);
+        if (fSofiaDigitizer)
+            run->AddTask(tofw_digitizer);
     }
 
     // NeuLand Scintillator Detector
@@ -391,8 +398,8 @@ void runsim(Int_t nEvents = 0)
 
     if (fGenerator.CompareTo("box") == 0)
     {
-        // 2- Define the BOX generator
-        /*Int_t pdgId = 2212;      // proton beam
+        // Define the BOX generator
+        Int_t pdgId = 2212;      // proton beam
         Double32_t theta1 = 22.; // polar angle distribution
         Double32_t theta2 = 90.;
         Double32_t momentum = 0.8;
@@ -401,20 +408,11 @@ void runsim(Int_t nEvents = 0)
         boxGen->SetPRange(momentum, 2.0 * momentum);
         boxGen->SetPhiRange(0., 360.);
         boxGen->SetXYZ(0.0, 0.0, -65.0);
-        primGen->AddGenerator(boxGen);
-        */
+        // primGen->AddGenerator(boxGen);
+
         // 208-Pb fragment
         FairIonGenerator* ionGen = new FairIonGenerator(82, 208, 82, 1, 0., 0., 1.09, 0., 0., -75.);
         primGen->AddGenerator(ionGen);
-
-                // neutrons
-              /*  FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);
-                boxGen_n->SetThetaRange(theta1, theta2);
-                boxGen_n->SetPRange(momentum, momentum * 1.2);
-                boxGen_n->SetPhiRange(0, 360);
-                boxGen_n->SetXYZ(0.0, 0.0, -1.5);*/
-                // primGen->AddGenerator(boxGen_n);
-                
     }
 
     if (fGenerator.CompareTo("ascii") == 0)
@@ -423,59 +421,6 @@ void runsim(Int_t nEvents = 0)
         gen->SetXYZ(targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ());
         gen->SetDxDyDz(0., 0., 0.);
         primGen->AddGenerator(gen);
-    }
-
-    if (fGenerator.CompareTo("r3b") == 0)
-    {
-        Int_t pdg = 2212;
-        Float_t beamEnergy = 1.;
-        R3BSpecificGenerator* pR3bGen = new R3BSpecificGenerator(pdg, beamEnergy);
-
-        // R3bGen properties
-        pR3bGen->SetBeamInteractionFlag("off");
-        pR3bGen->SetBeamInteractionFlag("off");
-        pR3bGen->SetRndmFlag("off");
-        pR3bGen->SetRndmEneFlag("off");
-        pR3bGen->SetBoostFlag("off");
-        pR3bGen->SetReactionFlag("on");
-        pR3bGen->SetGammasFlag("off");
-        pR3bGen->SetDecaySchemeFlag("off");
-        pR3bGen->SetDissociationFlag("off");
-        pR3bGen->SetBackTrackingFlag("off");
-        pR3bGen->SetSimEmittanceFlag("off");
-
-        // R3bGen Parameters
-        pR3bGen->SetSigmaBeamEnergy(1.e-03); // Sigma(Ebeam) GeV
-        pR3bGen->SetEnergyPrim(0.3);         // Particle Energy in MeV
-        Int_t fMultiplicity = 50;
-        pR3bGen->SetNumberOfParticles(fMultiplicity); // Mult.
-
-        // Reaction type
-        //        1: "Elas"
-        //        2: "iso"
-        //        3: "Trans"
-        pR3bGen->SetReactionType("Elas");
-
-        // Target  type
-        //        1: "LeadTarget"
-        //        2: "Parafin0Deg"
-        //        3: "Parafin45Deg"
-        //        4: "LiH"
-
-        TString fTargetType = "LiH"; // Target selection: LeadTarget, Para, Para45, LiH
-
-        pR3bGen->SetTargetType(fTargetType.Data());
-        Double_t thickness = (0.11 / 2.) / 10.;         // cm
-        pR3bGen->SetTargetHalfThicknessPara(thickness); // cm
-        pR3bGen->SetTargetThicknessLiH(3.5);            // cm
-        pR3bGen->SetTargetRadius(1.);                   // cm
-
-        pR3bGen->SetSigmaXInEmittance(1.);          // cm
-        pR3bGen->SetSigmaXPrimeInEmittance(0.0001); // cm
-
-        // Dump the User settings
-        pR3bGen->PrintParameters();
-        primGen->AddGenerator(pR3bGen);
     }
 
     run->SetGenerator(primGen);
@@ -490,9 +435,9 @@ void runsim(Int_t nEvents = 0)
     {
         R3BCalifaDigitizer* califaDig = new R3BCalifaDigitizer();
         califaDig->SetNonUniformity(fCalifaNonU);
-        califaDig->SetExpEnergyRes(6.); // 5. means 5% at 1 MeV
-        califaDig->SetComponentRes(6.);
-        califaDig->SetDetectionThreshold(0.0); // in GeV!! 0.000010 means 10 keV
+        califaDig->SetExpEnergyRes(5.0); // 5. means 5% at 1 MeV
+        califaDig->SetComponentRes(5.0);
+        califaDig->SetDetectionThreshold(fCalifaHitEnergyTh);
         run->AddTask(califaDig);
     }
 
@@ -500,15 +445,16 @@ void runsim(Int_t nEvents = 0)
     if (fCalifa && fCalifaHitFinder)
     {
         R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
-        califaHF->SetCrystalThreshold(0.030000);  // in GeV!! 0.000010 means 10 KeV
+        califaHF->SetCrystalThreshold(fCalifaCryTh);
         califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
         run->AddTask(califaHF);
     }
-    
-    
-    R3BSofFissionAnalysis* fissiontracking = new R3BSofFissionAnalysis();
-    run->AddTask(fissiontracking);
-    
+
+    if (fSofiaDigitizer)
+    {
+        R3BSofFissionAnalysis* fissiontracking = new R3BSofFissionAnalysis();
+        run->AddTask(fissiontracking);
+    }
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();
@@ -537,4 +483,5 @@ void runsim(Int_t nEvents = 0)
 
     cout << " Test passed" << endl;
     cout << " All ok " << endl;
+    gApplication->Terminate();
 }

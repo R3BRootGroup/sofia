@@ -5,6 +5,7 @@
 
 #include "R3BSofTwimCalPar.h"
 
+#include "FairDetParIo.h"
 #include "FairLogger.h"
 #include "FairParamList.h"
 
@@ -135,6 +136,9 @@ Bool_t R3BSofTwimCalPar::getParams(FairParamList* list)
     return kTRUE;
 }
 
+// ----  Method print ----------------------------------------------------------
+void R3BSofTwimCalPar::print() { printParams(); }
+
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTwimCalPar::printParams()
 {
@@ -171,3 +175,5 @@ void R3BSofTwimCalPar::printParams()
         }
     }
 }
+
+ClassImp(R3BSofTwimCalPar)

@@ -210,14 +210,7 @@ InitStatus R3BSofFissionAnalysis::Init()
 
     // OUTPUT DATA
     fTrackingDataCA = new TClonesArray("R3BSofTrackingData", 2);
-    if (!fOnline)
-    {
-        rootManager->Register("SofTrackingData", "GLAD Tracking Analysis", fTrackingDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("SofTrackingData", "GLAD Tracking Analysis", fTrackingDataCA, kFALSE);
-    }
+    rootManager->Register("SofTrackingData", "GLAD Tracking Analysis", fTrackingDataCA, !fOnline);
 
     SetParameter();
     return kSUCCESS;
@@ -236,6 +229,7 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
 {
     // Reset entries in output arrays, local arrays
     Reset();
+
     double Length = 0.;
     double Brho = 0.;
     int pdid[2] = { 0, 0 };
@@ -348,7 +342,7 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
         }
     }
 
-    if (tof[0] > 1.0 && zf[0] > 1. && pos1[0].X() > -100. && pos2[0].X() > -100 && pos3[0].X() > -451.)
+    if (tof[0] > 2.0 && zf[0] > 5. && pos1[0].X() > -100. && pos2[0].X() > -100. && pos3[0].X() > -451.)
     {
         Length = GetLength(pos1[0].X() / 10., pos2[0].X() / 10., pos3[0].X() / 10.);
         Brho = GetBrho(pos1[0].X() / 10., pos2[0].X() / 10., pos3[0].X() / 10.);

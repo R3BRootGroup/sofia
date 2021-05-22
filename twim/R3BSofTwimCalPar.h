@@ -6,12 +6,12 @@
 #ifndef R3BSofTwimCalPar_H
 #define R3BSofTwimCalPar_H
 
-#include "FairParGenericSet.h" // for FairParGenericSet
+#include "FairParGenericSet.h"
+#include "TObject.h"
 
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TObjArray.h"
-#include "TObject.h"
 #include <TObjString.h>
 
 class FairParamList;
@@ -38,6 +38,7 @@ class R3BSofTwimCalPar : public FairParGenericSet
     Bool_t getParams(FairParamList* list);
 
     /** Method to print values of parameters to the standard output **/
+    virtual void print();
     void printParams();
 
     /** Accessor functions **/
@@ -69,11 +70,10 @@ class R3BSofTwimCalPar : public FairParGenericSet
                                 gaus: A_fit & B_fit & C_fit*/
     Int_t fNumParamsPosFit;   // number of parameters for position calibration
 
-    const R3BSofTwimCalPar& operator=(const R3BSofTwimCalPar&); /*< an assignment operator>*/
-
-    R3BSofTwimCalPar(const R3BSofTwimCalPar&); /*< a copy constructor >*/
+    const R3BSofTwimCalPar& operator=(const R3BSofTwimCalPar&);
+    R3BSofTwimCalPar(const R3BSofTwimCalPar&);
 
     ClassDef(R3BSofTwimCalPar, 1);
 };
 
-#endif
+#endif /* R3BSofTwimCalPar_H */

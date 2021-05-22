@@ -5,6 +5,7 @@
 
 #include "R3BSofTwimHitPar.h"
 
+#include "FairDetParIo.h"
 #include "FairLogger.h"
 #include "FairParamList.h"
 
@@ -17,9 +18,9 @@
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofTwimHitPar::R3BSofTwimHitPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
-    , fNumParamsZFit(2)
+    , fNumParamsZFit(3)
     , fNumAnodes(16)
-    , fNumSec(1)
+    , fNumSec(4)
 {
     fDetZHitParams = new TArrayF(fNumSec * fNumParamsZFit); // 2 Parameters for Z (Linear fits)
     fIn_use = new TArrayI(fNumAnodes * fNumSec);
@@ -137,6 +138,9 @@ Bool_t R3BSofTwimHitPar::getParams(FairParamList* list)
     return kTRUE;
 }
 
+// ----  Method print ----------------------------------------------------------
+void R3BSofTwimHitPar::print() { printParams(); }
+
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTwimHitPar::printParams()
 {
@@ -175,3 +179,5 @@ void R3BSofTwimHitPar::printParams()
             }
         }
 }
+
+ClassImp(R3BSofTwimHitPar)
