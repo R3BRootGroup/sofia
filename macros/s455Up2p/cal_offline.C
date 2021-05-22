@@ -38,7 +38,7 @@ void cal_offline()
     if (expId == 455)
     {
         // Input file
-        filename = "s455_map_data_offline_20210515_194151.root";
+        filename = "s455_map_data_offline_20210522_230024.root";
 
         TString outputpath = "/path/to/your/disk/";
         // outputFilename = outputpath + "s455_cal_data_offline_" + oss.str() + ".root";
@@ -92,14 +92,15 @@ void cal_offline()
     TString amscalfilename = sofiacaldir + "Ams_CalPar_20210312.par";
     amscalfilename.ReplaceAll("//", "/");
 
-    // Create source using root files for input ---------------------------------
+    // Create run  --------------------------------------------------------------
     FairRunAna* run = new FairRunAna();
     run->SetSink(new FairRootFileSink(outputFilename));
 
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
-    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii
+    // Ascii file with parameters
+    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();
     TList* parList1 = new TList();
     parList1->Add(new TObjString(sofiacalfilename));
     if (fCalifa)
@@ -115,37 +116,21 @@ void cal_offline()
     parIo1->open(parList1);
     rtdb->setFirstInput(parIo1);
     rtdb->print();
-    
-  /*
-  FairParRootFileIo* parIo1 = new FairParRootFileIo();
-  //parIo1->open("Cal1.root","in");
-  //rtdb->setFirstInput(parIo1);
-  
-      TList* parList1 = new TList();
-    parList1->Add(new TObjString("Cal1.root"));
-       // parList1->Add(new TObjString("Cal2.root"));
-      parIo1->open(parList1);
-    rtdb->setFirstInput(parIo1);
-  
-     rtdb->addRun(fRunId);
-                    rtdb->getContainer("twimHitPar");
-                    rtdb->setInputVersion(fRunId, (char*)"twimHitPar", 1, 1);
 
-rtdb->initContainers(1);
-   rtdb->addRun(2);
-                    rtdb->getContainer("twimHitPar");
-                    rtdb->setInputVersion(2, (char*)"twimHitPar", 1, 1);
-                   rtdb->initContainers(2);
-                    */
-                   
+    // Create source using root files for input ---------------------------------                   
     R3BFileSource* source = new R3BFileSource(filename);
     // source->SetInputFileName("./parameters/setup_runid.par");
     source->SetRunId(fRunId);
+    // source->SetEvtHeaderNew(true);
     run->SetSource(source);
+    
+    // Set up R3BHeader  --------------------------------------------------------              
+    R3BEventHeader* EvntHeader = new R3BEventHeader();
+    run->SetEventHeader(EvntHeader);
 
-    // Add RunId Reader  --------------------------------------------------------
-    //R3BRunIdReader* RunIdTask = new R3BRunIdReader();
-    //run->AddTask(RunIdTask);
+    // Add Header copy   --------------------------------------------------------
+    R3BEventHeaderCal2Hit* RunIdTask = new R3BEventHeaderCal2Hit();
+    run->AddTask(RunIdTask);
 
     // Add analysis task --------------------------------------------------------
     // MWPC0
@@ -310,20 +295,12 @@ rtdb->initContainers(1);
     // Initialize -------------------------------------------
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
-  /*
-  Bool_t kParameterMerged = kTRUE;
-  FairParRootFileIo* parOut = new FairParRootFileIo(kParameterMerged);
-  parOut->open("Cal1.root");
-  rtdb->setOutput(parOut);
-*/
+
     // Run --------------------------------------------------
     if (nev > -1)
         run->Run(nev);
     else
-        run->Run();    
-        
-    // Save parameters (if needed) --------------------------
-    //rtdb->saveOutput();     
+        run->Run(); 
 
     // Finish -----------------------------------------------
     timer.Stop();

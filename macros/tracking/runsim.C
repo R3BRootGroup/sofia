@@ -49,8 +49,7 @@ void runsim(Int_t nEvents = 0)
 
     Bool_t fCalifa = false; // Califa Calorimeter
     TString fCalifaGeo = "califa_2020.geo.root";
-    Int_t fCalifaGeoVer = 10;
-    Double_t fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
+    Int_t fCalifaGeoVer = 2020;
 
     Bool_t fMwpc1 = true; // MWPC1 Detector
     TString fMwpc1Geo = "mwpc_1.geo.root";
@@ -107,6 +106,23 @@ void runsim(Int_t nEvents = 0)
     run->SetName(fMC);                           // Transport engine
     run->SetSink(new FairRootFileSink(OutFile)); // Output file
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
+    
+    // -----   Load detector parameters    ------------------------------------
+    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();
+    parIo1->open("s455_setup.par", "in");
+    rtdb->setFirstInput(parIo1);
+    rtdb->print();
+    // ----- Containers
+    R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
+    R3BTGeoPar* targetPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
+    R3BTGeoPar* califaPar = (R3BTGeoPar*)rtdb->getContainer("CalifaGeoPar");
+    R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
+    R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("TwimGeoPar");
+    R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc2GeoPar");
+    R3BTGeoPar* mwpc3Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc3GeoPar");
+    R3BTGeoPar* tofwPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
+    UInt_t runId = 1;
+    rtdb->initContainers(runId);
 
     //  R3B Special Physics List in G4 case
     if ((fUserPList) && (fMC.CompareTo("TGeant4") == 0))
@@ -134,42 +150,116 @@ void runsim(Int_t nEvents = 0)
     // MWPC0 definition
     if (fMwpc0)
     {
-        run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -110. }));
+        if (mwpc0Par)
+        {
+            mwpc0Par->printParams();
+            TGeoRotation* rmwpc0 = new TGeoRotation("Mwpc0rot");
+            rmwpc0->RotateX(mwpc0Par->GetRotX());
+            rmwpc0->RotateY(mwpc0Par->GetRotY());
+            rmwpc0->RotateZ(mwpc0Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc0(fMwpc0Geo, { mwpc0Par->GetPosX(), mwpc0Par->GetPosY(), mwpc0Par->GetPosZ(), rmwpc0 }));
+        }
+        else
+            run->AddModule(new R3BSofMwpc0(fMwpc0Geo, { 0., 0., -190. }));
     }
 
     // Tracker, vacuum chamber and LH2 target definitions
     if (fTracker)
     {
-        R3BTra* tra = new R3BTra(fTrackerGeo, { 0., 0., -65.5 });
-        tra->SetEnergyCut(1e-6); // 1 keV
-        run->AddModule(tra);
+        if (targetPar)
+        {
+            targetPar->printParams();
+            TGeoRotation* rtarget = new TGeoRotation("Targetrot");
+            rtarget->RotateX(targetPar->GetRotX());
+            rtarget->RotateY(targetPar->GetRotY());
+            rtarget->RotateZ(targetPar->GetRotZ());
+            R3BTra* tra =
+                new R3BTra(fTrackerGeo, { targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ(), rtarget });
+            tra->SetEnergyCut(1e-6); // 1 keV
+            run->AddModule(tra);
+        }
+        else
+        {
+            R3BTra* tra = new R3BTra(fTrackerGeo, { 0., 0., -0.75 - 65. });
+            tra->SetEnergyCut(1e-6); // 1 keV
+            run->AddModule(tra);
+        }
     }
 
     // CALIFA Calorimeter
     if (fCalifa)
     {
-        R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -66.5 });
-        califa->SelectGeometryVersion(fCalifaGeoVer);
-        califa->SetNonUniformity(fCalifaNonU);
-        run->AddModule(califa);
+        if (califaPar)
+        {
+            califaPar->printParams();
+            TGeoRotation* rcalifa = new TGeoRotation("Califarot");
+            rcalifa->RotateX(mwpc0Par->GetRotX());
+            rcalifa->RotateY(mwpc0Par->GetRotY());
+            rcalifa->RotateZ(mwpc0Par->GetRotZ());
+            R3BCalifa* califa = new R3BCalifa(
+                fCalifaGeo, { califaPar->GetPosX(), califaPar->GetPosY(), califaPar->GetPosZ(), rcalifa });
+            califa->SelectGeometryVersion(fCalifaGeoVer);
+            run->AddModule(califa);
+        }
+        else
+        {
+
+            R3BCalifa* califa = new R3BCalifa(fCalifaGeo, { 0., 0., -65. });
+            califa->SelectGeometryVersion(fCalifaGeoVer);
+            run->AddModule(califa);
+        }
     }
 
     // MWPC1 definition
     if (fMwpc1)
     {
-        run->AddModule(new R3BSofMwpc1(fMwpc1Geo, { 0., 0., 16. }));
+        if (mwpc1Par)
+        {
+            mwpc1Par->printParams();
+            TGeoRotation* rmwpc1 = new TGeoRotation("Mwpc1rot");
+            rmwpc1->RotateX(mwpc1Par->GetRotX());
+            rmwpc1->RotateY(mwpc1Par->GetRotY());
+            rmwpc1->RotateZ(mwpc1Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc1(fMwpc1Geo, { mwpc1Par->GetPosX(), mwpc1Par->GetPosY(), mwpc1Par->GetPosZ(), rmwpc1 }));
+        }
+        else
+            run->AddModule(new R3BSofMwpc1(fMwpc1Geo, { 0., 0., 42. }));
     }
 
     // Twim definition
     if (fTwim)
     {
-        run->AddModule(new R3BSofTWIM(fTwimGeo, { 2., 0., 50. }));
+        if (twimPar)
+        {
+            twimPar->printParams();
+            TGeoRotation* rtwim = new TGeoRotation("Twimrot");
+            rtwim->RotateX(twimPar->GetRotX());
+            rtwim->RotateY(twimPar->GetRotY());
+            rtwim->RotateZ(twimPar->GetRotZ());
+            run->AddModule(
+                new R3BSofTwim(fTwimGeo, { twimPar->GetPosX(), twimPar->GetPosY(), twimPar->GetPosZ(), rtwim }));
+        }
+        else
+            run->AddModule(new R3BSofTwim(fTwimGeo, { 0., 0., 69. }));
     }
 
     // MWPC2 definition
     if (fMwpc2)
     {
-        run->AddModule(new R3BSofMwpc2(fMwpc2Geo, { 0., 0., 95. }));
+        if (mwpc2Par)
+        {
+            mwpc2Par->printParams();
+            TGeoRotation* rmwpc2 = new TGeoRotation("Mwpc2rot");
+            rmwpc2->RotateX(mwpc2Par->GetRotX());
+            rmwpc2->RotateY(mwpc2Par->GetRotY());
+            rmwpc2->RotateZ(mwpc2Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc2(fMwpc2Geo, { mwpc2Par->GetPosX(), mwpc2Par->GetPosY(), mwpc2Par->GetPosZ(), rmwpc2 }));
+        }
+        else
+            run->AddModule(new R3BSofMwpc2(fMwpc2Geo, { 0., 0., 100. }));
     }
 
     // Aladin Magnet definition
@@ -189,17 +279,41 @@ void runsim(Int_t nEvents = 0)
     // MWPC3 definition
     if (fMwpc3)
     {
-        TGeoRotation* rmw3 = new TGeoRotation("Mwpc3rot");
-        rmw3->RotateY(-29.0);
-        run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -243., 0., 689., rmw3 }));
+        TGeoRotation* rmwpc3 = new TGeoRotation("Mwpc3rot");
+        if (mwpc3Par)
+        {
+            mwpc3Par->printParams();
+            rmwpc3->RotateX(mwpc3Par->GetRotX());
+            rmwpc3->RotateY(mwpc3Par->GetRotY());
+            rmwpc3->RotateZ(mwpc3Par->GetRotZ());
+            run->AddModule(
+                new R3BSofMwpc3(fMwpc3Geo, { mwpc3Par->GetPosX(), mwpc3Par->GetPosY(), mwpc3Par->GetPosZ(), rmwpc3 }));
+        }
+        else
+        {
+            rmwpc3->RotateY(-18.);
+            run->AddModule(new R3BSofMwpc3(fMwpc3Geo, { -300., 0., 749., rmwpc3 }));
+        }
     }
 
     // Sofia ToF-Wall definition
     if (fSofTofWall)
     {
         TGeoRotation* rtof = new TGeoRotation("Tofrot");
-        rtof->RotateY(-29.0);
-        run->AddModule(new R3BSofTofWall(fSofTofWallGeo, { -257., 0., 710., rtof }));
+        if (tofwPar)
+        {
+            tofwPar->printParams();
+            rtof->RotateX(tofwPar->GetRotX());
+            rtof->RotateY(tofwPar->GetRotY());
+            rtof->RotateZ(tofwPar->GetRotZ());
+            run->AddModule(
+                new R3BSofTofW(fSofTofWallGeo, { tofwPar->GetPosX(), tofwPar->GetPosY(), tofwPar->GetPosZ(), rtof }));
+        }
+        else
+        {
+            rtof->RotateY(-18.);
+            run->AddModule(new R3BSofTofW(fSofTofWallGeo, { -330., 0., 817., rtof }));
+        }
     }
 
     // NeuLand Scintillator Detector
@@ -265,20 +379,20 @@ void runsim(Int_t nEvents = 0)
         boxGen->SetPRange(momentum, momentum * 1.2);
         boxGen->SetPhiRange(0, 360);
         boxGen->SetXYZ(0.0, 0.0, -1.5);
-        // primGen->AddGenerator(boxGen);
+        primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 132, 50, 1, 0.0, 0., 0.951);
-        ionGen->SetSpotRadius(0.0, -65.5, 0.);
-        primGen->AddGenerator(ionGen);
+        //R3BIonGenerator* ionGen = new R3BIonGenerator(50, 132, 50, 1, 0.0, 0., 0.951);
+        //ionGen->SetSpotRadius(0.0, -65.5, 0.);
+        //primGen->AddGenerator(ionGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen1 = new R3BIonGenerator(18, 39, 18, 1, 0., 0., 0.951);
-        ionGen1->SetSpotRadius(0.0, -65.5, 0.);
+        //R3BIonGenerator* ionGen1 = new R3BIonGenerator(18, 39, 18, 1, 0., 0., 0.951);
+        //ionGen1->SetSpotRadius(0.0, -65.5, 0.);
         //primGen->AddGenerator(ionGen1);
 
-        R3BIonGenerator* ionGen2 = new R3BIonGenerator(17, 39, 17, 1, -0.05, 0., 0.951);
-        ionGen2->SetSpotRadius(0.0, -65.5, 0.);
+        //R3BIonGenerator* ionGen2 = new R3BIonGenerator(17, 39, 17, 1, -0.05, 0., 0.951);
+        //ionGen2->SetSpotRadius(0.0, -65.5, 0.);
         //primGen->AddGenerator(ionGen2);
 
         // neutrons
@@ -293,6 +407,8 @@ void runsim(Int_t nEvents = 0)
     if (fGenerator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + fEventFile).Data());
+        gen->SetXYZ(targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ());
+        gen->SetDxDyDz(0., 0., 0.);
         primGen->AddGenerator(gen);
     }
 

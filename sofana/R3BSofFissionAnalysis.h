@@ -110,8 +110,7 @@ class R3BSofFissionAnalysis : public FairTask
     TClonesArray* fTofWHitDataCA;  /**< Array with ToF Hit-input data. >*/
     TClonesArray* fTrackingDataCA; /**< Array with Tracking-output data. >*/
 
-    /** Private method TrackingData **/
-    //** Adds a TrackingData to the analysis
+    // Private method TrackingData
     R3BSofTrackingData* AddData(Double_t z, Double_t aq, Double_t beta, Double_t length, Double_t brho, Int_t paddle);
 
   public:
@@ -119,4 +118,4 @@ class R3BSofFissionAnalysis : public FairTask
     ClassDef(R3BSofFissionAnalysis, 1)
 };
 
-#endif
+#endif /* R3BSofFissionAnalysis_H */

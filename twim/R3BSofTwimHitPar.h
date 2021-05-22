@@ -6,12 +6,12 @@
 #ifndef R3BSofTwimHitPar_H
 #define R3BSofTwimHitPar_H
 
-#include "FairParGenericSet.h" // for FairParGenericSet
+#include "FairParGenericSet.h"
+#include "TObject.h"
 
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TObjArray.h"
-#include "TObject.h"
 #include <TObjString.h>
 
 class FairParamList;
@@ -38,6 +38,7 @@ class R3BSofTwimHitPar : public FairParGenericSet
     Bool_t getParams(FairParamList* list);
 
     /** Method to print values of parameters to the standard output **/
+    virtual void print();
     void printParams();
 
     /** Accessor functions **/
@@ -73,7 +74,7 @@ class R3BSofTwimHitPar : public FairParGenericSet
     void SetNumSec(Int_t nbsec) { fNumSec = nbsec; }
     void SetNumAnodes(Int_t nbAnodes) { fNumAnodes = nbAnodes; }
     void SetNumParZFit(Int_t nbParams) { fNumParamsZFit = nbParams; }
-    void SetInUse(Int_t value, Int_t anode) { fIn_use->AddAt(value, anode - 1); }
+    void SetInUse(Int_t value, Int_t sec, Int_t anode) { fIn_use->AddAt(value, (sec - 1) * 16 + anode - 1); }
     void SetZHitPar(Double_t cc, Int_t ii) { fDetZHitParams->AddAt(cc, ii); }
     void SetZTofHitPar(Double_t cc, Int_t ii) { fTofHitParams->AddAt(cc, ii); }
     void SetAnodePos(Float_t value, Int_t anode) { fAnode_pos->AddAt(value, anode - 1); }
