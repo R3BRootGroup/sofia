@@ -10,7 +10,7 @@ class R3BSofMwpcMappedData : public TObject
     R3BSofMwpcMappedData();
 
     /** Constructor with arguments
-     *@param plane   1 for Xdown, 2 for Xup, and 3 for Y
+     *@param plane   1 for Xup, 2 for Xdown, and 3 for Y
      *@param pad     Pad number
      *@param charge  Charge of each pad [channels]
      **/

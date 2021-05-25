@@ -105,7 +105,7 @@ Bool_t R3BSofMwpcReader::Read()
             uint32_t numberOfPadsPerPlane = data->SOFMWPC[d].Plane[p].Q;
             for (int mult = 0; mult < numberOfPadsPerPlane; mult++)
             {
-                uint16_t pad = data->SOFMWPC[d].Plane[p].QI[mult] - 1;
+                uint16_t pad = data->SOFMWPC[d].Plane[p].QI[mult];
                 uint16_t qval = data->SOFMWPC[d].Plane[p].Qv[mult];
                 switch (d)
                 {
@@ -127,6 +127,7 @@ Bool_t R3BSofMwpcReader::Read()
             }
         }
     }
+
     return kTRUE;
 }
 

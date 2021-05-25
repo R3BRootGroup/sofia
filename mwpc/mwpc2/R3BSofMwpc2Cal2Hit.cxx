@@ -108,8 +108,8 @@ void R3BSofMwpc2Cal2Hit::Exec(Option_t* option)
     Int_t planeId;
     Int_t padId;
     Int_t padmx = -1, padmxu = -1, padmxd = -1, padmy = -1;
-    Double_t q = 0, qmxu = 0, qmxd = 0, qleft = 0, qright = 0;
-    Double_t qmx = 0, qmy = 0, qdown = 0, qup = 0;
+    Double_t q = 0., qmxu = 0., qmxd = 0., qleft = 0., qright = 0.;
+    Double_t qmx = 0., qmy = 0., qdown = 0., qup = 0.;
     Double_t x = -1000., y = -1000.;
 
     for (Int_t i = 0; i < Mw2PadsX; i++)
@@ -121,7 +121,7 @@ void R3BSofMwpc2Cal2Hit::Exec(Option_t* option)
     {
         calData[i] = (R3BSofMwpcCalData*)(fMwpcCalDataCA->At(i));
         planeId = calData[i]->GetPlane();
-        padId = calData[i]->GetPad(); // From 0 to 63 for X down and up
+        padId = calData[i]->GetPad() - 1; // From 0 to 63 for X down and up
         q = calData[i]->GetQ();
 
         // FIXME: in November this should be OK!
