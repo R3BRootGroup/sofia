@@ -9,9 +9,11 @@
  *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
  *  @since May 4th, 2021
  *
+ *
+ *  const Int_t nev = -1; number of events to read, -1 - until CTRL+C
  */
 
-void cal_offline()
+void cal_offline(const Int_t nev = -1)
 {
     TStopwatch timer;
     timer.Start();
@@ -21,8 +23,7 @@ void cal_offline()
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
 
-    // const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
-    const Int_t nev = -1; // Only nev events to read
+    // Initial run ID number
     const Int_t fRunId = 1;
 
     // *********************************** //
@@ -38,11 +39,13 @@ void cal_offline()
     if (expId == 455)
     {
         // Input file
-        filename = "s455_map_data_offline_20210522_230024.root";
+         filename = "s455_map_data_offline_20210526_213038.root";
+        //filename = "/media/joseluis/data1/lmd/s455/s455_map_data_offline_20210524_221642.root";
 
         TString outputpath = "/path/to/your/disk/";
         // outputFilename = outputpath + "s455_cal_data_offline_" + oss.str() + ".root";
         outputFilename = "s455_cal_data_offline_" + oss.str() + ".root";
+        //outputFilename = "/media/joseluis/data1/lmd/s455/s455_cal_data_offline_" + oss.str() + ".root";
 
         sofiacaldir = dir + "/sofia/macros/s455Up2p/parameters/";
     }
@@ -94,6 +97,10 @@ void cal_offline()
 
     // Create run  --------------------------------------------------------------
     FairRunAna* run = new FairRunAna();
+    // Set up R3BHeader  --------------------------------------------------------              
+    R3BEventHeader* EvntHeader = new R3BEventHeader();
+    run->SetEventHeader(EvntHeader);
+    //run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
 
     // Runtime data base ------------------------------------
@@ -112,21 +119,15 @@ void cal_offline()
     }
     if (fAms)
         parList1->Add(new TObjString(amscalfilename));
-     rtdb->addRun(fRunId);
     parIo1->open(parList1);
     rtdb->setFirstInput(parIo1);
     rtdb->print();
 
     // Create source using root files for input ---------------------------------                   
     R3BFileSource* source = new R3BFileSource(filename);
-    // source->SetInputFileName("./parameters/setup_runid.par");
+    source->SetInputFileName("./parameters/setup_runid.par");
     source->SetRunId(fRunId);
-    // source->SetEvtHeaderNew(true);
     run->SetSource(source);
-    
-    // Set up R3BHeader  --------------------------------------------------------              
-    R3BEventHeader* EvntHeader = new R3BEventHeader();
-    run->SetEventHeader(EvntHeader);
 
     // Add Header copy   --------------------------------------------------------
     R3BEventHeaderCal2Hit* RunIdTask = new R3BEventHeaderCal2Hit();

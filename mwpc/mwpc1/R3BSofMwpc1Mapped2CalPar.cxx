@@ -132,7 +132,7 @@ void R3BSofMwpc1Mapped2CalPar::Exec(Option_t* opt)
     {
         MapHit = (R3BSofMwpcMappedData*)(fMwpcMappedDataCA->At(i));
         planeid = MapHit->GetPlane();
-        padid = MapHit->GetPad();
+        padid = MapHit->GetPad() - 1;
 
         // Fill Histos
         if (planeid == 1) // plane X down

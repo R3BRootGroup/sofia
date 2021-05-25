@@ -119,7 +119,7 @@ InitStatus R3BSofMwpc0Mapped2CalPar::ReInit() { return kSUCCESS; }
 void R3BSofMwpc0Mapped2CalPar::Exec(Option_t* opt)
 {
 
-    Int_t nHits = fMwpcMappedDataCA->GetEntries();    
+    Int_t nHits = fMwpcMappedDataCA->GetEntries();
     if (!nHits)
         return;
 
@@ -130,7 +130,7 @@ void R3BSofMwpc0Mapped2CalPar::Exec(Option_t* opt)
     {
         MapHit = (R3BSofMwpcMappedData*)(fMwpcMappedDataCA->At(i));
         planeid = MapHit->GetPlane();
-        padid = MapHit->GetPad();
+        padid = MapHit->GetPad() - 1;
 
         // Fill Histos
         if (planeid == 1) // plane X

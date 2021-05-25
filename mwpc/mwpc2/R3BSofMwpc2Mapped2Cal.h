@@ -65,7 +65,7 @@ class R3BSofMwpc2Mapped2Cal : public FairTask
 
     /** Private method AddCalData **/
     // Adds a SofMwpcCalData to the MwpcCalCollection
-    R3BSofMwpcCalData* AddCalData(Int_t plane, Int_t pad, Int_t charge);
+    R3BSofMwpcCalData* AddCalData(Int_t plane, Int_t pad, Float_t charge);
 
   public:
     // Class definition

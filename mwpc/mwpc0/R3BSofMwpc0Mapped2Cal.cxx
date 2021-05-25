@@ -163,17 +163,17 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
 
     R3BSofMwpcMappedData** mappedData;
     mappedData = new R3BSofMwpcMappedData*[nHits];
-    Int_t planeId;
-    Int_t padId;
-    Int_t charge;
-    Int_t pedestal = 0;
+    Int_t planeId = 0;
+    Int_t padId = 0;
+    Float_t charge = 0.0;
+    Float_t pedestal = 0.0;
     Int_t nbpad = 0;
 
     for (Int_t i = 0; i < nHits; i++)
     {
         mappedData[i] = (R3BSofMwpcMappedData*)(fMwpcMappedDataCA->At(i));
         planeId = mappedData[i]->GetPlane();
-        padId = mappedData[i]->GetPad();
+        padId = mappedData[i]->GetPad() - 1;
         if (planeId == 1)
             nbpad = padId * NumParams;
         else if (planeId == 3)
@@ -187,7 +187,7 @@ void R3BSofMwpc0Mapped2Cal::Exec(Option_t* option)
         // We accept the hit if the charge is larger than zero
         if (charge > 0)
         {
-            AddCalData(planeId, padId, charge);
+            AddCalData(planeId, padId + 1, charge);
         }
     }
     if (mappedData)
@@ -207,7 +207,7 @@ void R3BSofMwpc0Mapped2Cal::Reset()
 }
 
 // -----   Private method AddCalData  --------------------------------------------
-R3BSofMwpcCalData* R3BSofMwpc0Mapped2Cal::AddCalData(Int_t plane, Int_t pad, Int_t charge)
+R3BSofMwpcCalData* R3BSofMwpc0Mapped2Cal::AddCalData(Int_t plane, Int_t pad, Float_t charge)
 {
     // It fills the R3BSofMwpcCalData
     TClonesArray& clref = *fMwpcCalDataCA;

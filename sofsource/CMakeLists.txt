@@ -10,6 +10,7 @@ ${R3BROOT_SOURCE_DIR}/r3bsource
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata/wrData
 ${R3BSOF_SOURCE_DIR}/sofsource
+${R3BSOF_SOURCE_DIR}/sofsource/ext
 ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
@@ -41,16 +42,16 @@ R3BSofCorrvReader.cxx
 )
 
 Set(STRUCT_HEADERS
-ext_h101_wrsofia.h
-ext_h101_sofsci.h
-ext_h101_softofw.h
-ext_h101_softwim.h
-ext_h101_softrim.h
-ext_h101_sofmwpc.h
-ext_h101_sofscalers.h
-ext_h101_sofat.h
-ext_h101_sofcorrm.h
-ext_h101_sofcorrv.h
+ext/ext_h101_wrsofia.h
+ext/ext_h101_sofsci.h
+ext/ext_h101_softofw.h
+ext/ext_h101_softwim.h
+ext/ext_h101_softrim.h
+ext/ext_h101_sofmwpc.h
+ext/ext_h101_sofscalers.h
+ext/ext_h101_sofat.h
+ext/ext_h101_sofcorrm.h
+ext/ext_h101_sofcorrv.h
 )
 
 # fill list of header files from list of source files

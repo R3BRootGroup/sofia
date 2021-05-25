@@ -137,7 +137,7 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
         Int_t planeId;
         Int_t padId;
         Int_t padmx = -1, padmy = -1;
-        Double_t q = 0, qmx = 0, qmy = 0, qleft = 0, qright = 0, qdown = 0, qup = 0;
+        Double_t q = 0., qmx = 0., qmy = 0., qleft = 0., qright = 0., qdown = 0., qup = 0.;
         Double_t x = -1000., y = -1000.;
 
         vector<double> vQX, vQY;
@@ -156,7 +156,7 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
         {
             calData[i] = (R3BSofMwpcCalData*)(fMwpcCalDataCA->At(i));
             planeId = calData[i]->GetPlane();
-            padId = calData[i]->GetPad();
+            padId = calData[i]->GetPad() - 1;
             q = calData[i]->GetQ();
             if (planeId == 1)
             {
@@ -306,7 +306,7 @@ void R3BSofMwpc3Cal2Hit::ReconstructHitWithTofWallMatching()
     {
         calData[i] = (R3BSofMwpcCalData*)(fMwpcCalDataCA->At(i));
         planeId = calData[i]->GetPlane();
-        padId = calData[i]->GetPad();
+        padId = calData[i]->GetPad() - 1;
         q = calData[i]->GetQ();
         pair<Int_t, Int_t> hit_pair = make_pair(padId, q);
         if (planeId == 1)

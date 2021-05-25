@@ -38,8 +38,13 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRS2_t wrs2;
 } EXT_STR_h101;
 
-void unpack_offline()
+//  const Int_t nev = -1; number of events to read, -1 - until CTRL+C
+
+void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
 {
+
+    TString cRunId =Form ("%04d", fRunId);
+
     TStopwatch timer;
     timer.Start();
 
@@ -47,10 +52,6 @@ void unpack_offline()
     auto tm = *std::localtime(&t);
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
-
-    // const Int_t nev = -1; // number of events to read, -1 - until CTRL+C
-    const Int_t nev = -1; // Only nev events to read
-    const Int_t fRunId = 1;
 
     // *********************************** //
     // PLEASE CHANGE THE EXPERIMENT NUMBER //
