@@ -159,7 +159,7 @@ R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
 
 InitStatus R3BSofOnlineSpectra::Init()
 {
-    LOG(INFO) << "R3BSofOnlineSpectra::Init ";
+    LOG(INFO) << "R3BSofOnlineSpectra::Init()";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.

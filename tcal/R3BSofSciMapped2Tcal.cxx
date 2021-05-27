@@ -188,10 +188,10 @@ Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt
 {
     UInt_t rank = iTf + fTcalPar->GetNumTcalParsPerSignal() * ((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
     Double_t iPar = (Double_t)fTcalPar->GetSignalTcalParams(rank);
-    Double_t iDeltaClock = (Double_t)fTcalPar->GetClockOffset((iDet-1)*fTcalPar->GetNumChannels()+(iCh -1));
-		Double_t r = (Double_t)rand.Rndm() - 0.5;
+    Double_t iDeltaClock = (Double_t)fTcalPar->GetClockOffset((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
+    Double_t r = (Double_t)rand.Rndm() - 0.5;
     Double_t iTf_ns;
-    Double_t iTc_ns = ((Double_t)iTc-iDeltaClock) * 5.;
+    Double_t iTc_ns = ((Double_t)iTc - iDeltaClock) * 5.;
     //  std::cout << "R3BSofSciMapped2Tcal::CalculateTimeNs : iDet=" << iDet << ", iCh=" << iCh << ", iTf=" << iTf << ",
     //  rank=" << rank  << std::endl;
 

@@ -321,13 +321,13 @@ void R3BSofFrsAnalysis::Reset()
 
 // -----   Private method AddData  --------------------------------------------
 R3BFrsData* R3BSofFrsAnalysis::AddData(Int_t StaId,
-                                          Int_t StoId,
-                                          Double_t z,
-                                          Double_t aq,
-                                          Double_t beta,
-                                          Double_t brho,
-                                          Double_t xs2,
-                                          Double_t xc)
+                                       Int_t StoId,
+                                       Double_t z,
+                                       Double_t aq,
+                                       Double_t beta,
+                                       Double_t brho,
+                                       Double_t xs2,
+                                       Double_t xc)
 {
     // It fills the R3BSofFrsData
     TClonesArray& clref = *fFrsDataCA;
