@@ -91,7 +91,7 @@ void tcal_VFTX()
   R3BSofSciMapped2TcalPar* sciTcalibrator = new R3BSofSciMapped2TcalPar("R3BSofSciMapped2TcalPar");
   sciTcalibrator->SetNumSci(NumSofSci); 
   sciTcalibrator->SetNumChannels(3);
-  sciTcalibrator->SetNumSignals(NumSofSci,3);
+  //sciTcalibrator->SetNumSignals(NumSofSci,3);
   //sciTcalibrator->SetMinStatistics(1000000);
   sciTcalibrator->SetMinStatistics(250000);
   run->AddTask(sciTcalibrator);

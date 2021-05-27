@@ -81,7 +81,7 @@ class R3BSofCorrOnlineSpectra : public FairTask
 
     void SetFirstXCorrv(Int_t x) { fFirstX_Corrv = x; }
     void SetLastXCorrv(Int_t x) { fLastX_Corrv = x; }
-    void SetNsPerBin_Corrv() { fNsPerBin_Corrv = 5. / ((Double_t)fLastX_Corrv - (Double_t)fFirstX_Corrv) ; }
+    void SetNsPerBin_Corrv() { fNsPerBin_Corrv = 5. / ((Double_t)fLastX_Corrv - (Double_t)fFirstX_Corrv); }
     void SetTrefId_Corrv(Int_t id) { fTrefId_Corrv = id; }
 
   private:

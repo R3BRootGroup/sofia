@@ -95,11 +95,8 @@ class R3BSofTrackingFissionOnlineSpectra : public FairTask
         fZ_min = minz;
         fZ_max = maxz;
     }
-    
-    inline void Set_TargetPos(Float_t pos)
-    {
-        fPosTarget = pos;
-    } 
+
+    inline void Set_TargetPos(Float_t pos) { fPosTarget = pos; }
 
   private:
     TClonesArray* fMwpc0HitDataCA; /**< Array with Mwpc0 Hit-input data. >*/

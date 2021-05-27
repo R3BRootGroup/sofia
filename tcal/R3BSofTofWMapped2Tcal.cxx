@@ -94,8 +94,8 @@ void R3BSofTofWMapped2Tcal::SetParContainers()
         return;
     }
     else
-        LOG(INFO) << "R3BSofTofWMapped2Tcal::SetParContainers() : SofTofWTcalPar-Container found with " 
-									<< fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
+        LOG(INFO) << "R3BSofTofWMapped2Tcal::SetParContainers() : SofTofWTcalPar-Container found with "
+                  << fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
 }
 
 InitStatus R3BSofTofWMapped2Tcal::ReInit()
@@ -158,10 +158,10 @@ Double_t R3BSofTofWMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UIn
 {
     UInt_t rank = iTf + fTcalPar->GetNumTcalParsPerSignal() * ((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
     Double_t iPar = (Double_t)fTcalPar->GetSignalTcalParams(rank);
-    Double_t iClock = (Double_t)fTcalPar->GetClockOffset((iDet-1)*fTcalPar->GetNumChannels() + (iCh -1));
-		Double_t r = (Double_t)rand.Rndm() - 0.5;
+    Double_t iClock = (Double_t)fTcalPar->GetClockOffset((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
+    Double_t r = (Double_t)rand.Rndm() - 0.5;
     Double_t iTf_ns;
-    Double_t iTc_ns = ((Double_t)iTc-iClock) * 5.;
+    Double_t iTc_ns = ((Double_t)iTc - iClock) * 5.;
 
     if (r < 0)
     {

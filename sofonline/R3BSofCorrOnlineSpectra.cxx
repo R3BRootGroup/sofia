@@ -123,7 +123,7 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     if (fCorrvMapped && fSciTcal && fCorrmMapped)
     {
         cMap_CorrV = new TCanvas("sofia_vftx", "sofia_vftx", 10, 10, 800, 700);
-        cMap_CorrV->Divide(2,3);
+        cMap_CorrV->Divide(2, 3);
 
         fh1_FineTime_CorrV = new TH1D("FineTime_CorrV", "FineTime_CorrV", 1000, 1, 1001);
         fh1_FineTime_CorrV->GetXaxis()->SetTitle("FineTime");
@@ -298,8 +298,8 @@ void R3BSofCorrOnlineSpectra::Exec(Option_t* option)
     if (NULL == mgr)
         LOG(FATAL) << "R3BSofCorrOnlineSpectra::Exec FairRootManager not found";
 
-		Double_t CoarseCorrV  = -1000000000.;
-		Double_t FineCorrV    = -1000000000.;
+    Double_t CoarseCorrV = -1000000000.;
+    Double_t FineCorrV = -1000000000.;
     Double_t TimeCorrV_Ns = -1000000000.;
     Double_t DeltaT_CorrV = -1000000000.;
     if (fCorrvMapped && fCorrvMapped->GetEntriesFast() > 0)
@@ -309,13 +309,13 @@ void R3BSofCorrOnlineSpectra::Exec(Option_t* option)
             R3BSofCorrvMappedData* corrvmap = (R3BSofCorrvMappedData*)fCorrvMapped->At(entry1);
             if (!corrvmap)
                 continue;
-						FineCorrV    = (Double_t)corrvmap->GetFineTimeCorr();
-						CoarseCorrV  = (Double_t)corrvmap->GetCoarseTimeCorr();
-						TimeCorrV_Ns = 5.* CoarseCorrV - fNsPerBin_Corrv*(FineCorrV-(Double_t)fFirstX_Corrv);
+            FineCorrV = (Double_t)corrvmap->GetFineTimeCorr();
+            CoarseCorrV = (Double_t)corrvmap->GetCoarseTimeCorr();
+            TimeCorrV_Ns = 5. * CoarseCorrV - fNsPerBin_Corrv * (FineCorrV - (Double_t)fFirstX_Corrv);
 
             fh1_FineTime_CorrV->Fill(FineCorrV);
             fh1_CoarseTime_CorrV->Fill(CoarseCorrV);
-						fh1_RawTime_CorrV->Fill(TimeCorrV_Ns);
+            fh1_RawTime_CorrV->Fill(TimeCorrV_Ns);
 
             if (fSciTcal && fSciTcal->GetEntriesFast())
             {
