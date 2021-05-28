@@ -81,6 +81,7 @@ void R3BSofMwpc1Mapped2Cal::SetParContainers()
     {
         LOG(INFO) << "R3BSofMwpc1Mapped2Cal:: mwpc1CalPar container open";
     }
+    return;
 }
 
 void R3BSofMwpc1Mapped2Cal::SetParameter()
@@ -99,12 +100,13 @@ void R3BSofMwpc1Mapped2Cal::SetParameter()
     Int_t array_size = (NumPadX + NumPadY) * NumParams;
     CalParams->Set(array_size);
     CalParams = fCal_Par->GetPadCalParams(); // Array with the Cal parameters
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofMwpc1Mapped2Cal::Init()
 {
-    LOG(INFO) << "R3BSofMwpc1Mapped2Cal: Init";
+    LOG(INFO) << "R3BSofMwpc1Mapped2Cal::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -122,15 +124,7 @@ InitStatus R3BSofMwpc1Mapped2Cal::Init()
     // OUTPUT DATA
     // Calibrated data
     fMwpcCalDataCA = new TClonesArray("R3BSofMwpcCalData", 10);
-
-    if (!fOnline)
-    {
-        rootManager->Register("Mwpc1CalData", "MWPC1 Cal", fMwpcCalDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("Mwpc1CalData", "MWPC1 Cal", fMwpcCalDataCA, kFALSE);
-    }
+    rootManager->Register("Mwpc1CalData", "MWPC1 Cal", fMwpcCalDataCA, !fOnline);
 
     SetParameter();
     return kSUCCESS;

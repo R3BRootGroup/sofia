@@ -97,12 +97,13 @@ void R3BSofTrimCal2Hit::SetParContainers()
         }
         LOG(INFO) << "R3BSofTrimCal2Hit:: trimHitPar container open ";
     }
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTrimCal2Hit::Init()
 {
-    LOG(INFO) << "R3BSofTrimCal2Hit: Init";
+    LOG(INFO) << "R3BSofTrimCal2Hit::Init()";
 
     FairRootManager* rootManager = FairRootManager::Instance();
     if (!rootManager)
@@ -132,15 +133,7 @@ InitStatus R3BSofTrimCal2Hit::Init()
     // --- OUTPUT HIT DATA --- //
     // --- --------------- --- //
     fTrimHitData = new TClonesArray("R3BSofTrimHitData", fNumSections);
-
-    if (!fOnline)
-    {
-        rootManager->Register("TrimHitData", "Trim Hit", fTrimHitData, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("TrimHitData", "Trim Hit", fTrimHitData, kFALSE);
-    }
+    rootManager->Register("TrimHitData", "Trim Hit", fTrimHitData, !fOnline);
 
     return kSUCCESS;
 }
@@ -169,15 +162,10 @@ void R3BSofTrimCal2Hit::S455_Coulex()
     // Reset entries in output arrays, local arrays
     Reset();
 
-    if (!fTrimHitData)
-    {
-        return;
-    }
-
     // Get the parameters
     if (!fTrimHitPar)
     {
-        LOG(ERROR) << "R3BSofTrimCal2Hit::Exec() --->  no TrimHitPar Container found";
+        LOG(ERROR) << "R3BSofTrimCal2Hit::Exec() TrimHitPar Container not found";
     }
 
     // Local variables at Cal Level
@@ -366,15 +354,10 @@ void R3BSofTrimCal2Hit::S455_P2p()
     // Reset entries in output arrays, local arrays
     Reset();
 
-    if (!fTrimHitData)
-    {
-        return;
-    }
-
     // Get the parameters
     if (!fTrimHitPar)
     {
-        LOG(ERROR) << "R3BSofTrimCal2Hit::Exec() --->  no TrimHitPar Container found";
+        LOG(ERROR) << "R3BSofTrimCal2Hit::Exec() TrimHitPar Container not found";
     }
 
     // Local variables at Cal Level

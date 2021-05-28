@@ -58,7 +58,7 @@ R3BSofMwpc1Cal2Hit::~R3BSofMwpc1Cal2Hit()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofMwpc1Cal2Hit::Init()
 {
-    LOG(INFO) << "R3BSofMwpc1Cal2Hit: Init";
+    LOG(INFO) << "R3BSofMwpc1Cal2Hit::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -76,15 +76,7 @@ InitStatus R3BSofMwpc1Cal2Hit::Init()
     // OUTPUT DATA
     // Hit data
     fMwpcHitDataCA = new TClonesArray("R3BSofMwpcHitData", 10);
-
-    if (!fOnline)
-    {
-        rootManager->Register("Mwpc1HitData", "MWPC1 Hit", fMwpcHitDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("Mwpc1HitData", "MWPC1 Hit", fMwpcHitDataCA, kFALSE);
-    }
+    rootManager->Register("Mwpc1HitData", "MWPC1 Hit", fMwpcHitDataCA, !fOnline);
 
     return kSUCCESS;
 }

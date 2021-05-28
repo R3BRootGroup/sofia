@@ -6,11 +6,9 @@
 
 class TClonesArray;
 class R3BSofTcalPar;
-class R3BEventHeader;
 
 class R3BSofSciMapped2TcalPar : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofSciMapped2TcalPar();
@@ -54,7 +52,7 @@ class R3BSofSciMapped2TcalPar : public FairTask
     void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) { fNumTcalParsPerSignal = NumberOfTcalParsPerSignal; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
-  protected:
+  private:
     UShort_t fNumSci;            // Number of detectors (=1 if cave C only, 2 or more if FRS in used)
     UShort_t fNumChannels;       // Number of channels  (=2 if cave C only, 3 if FRS in used: LEFT, RIGHT, Tref)
     Int_t fNumTcalParsPerSignal; // =1000 for each signal

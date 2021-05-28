@@ -73,7 +73,7 @@ R3BSofMwpc3Cal2Hit::~R3BSofMwpc3Cal2Hit()
 /* ---- Public method Init   ---- */
 InitStatus R3BSofMwpc3Cal2Hit::Init()
 {
-    LOG(INFO) << "R3BSofMwpc3Cal2Hit: Init";
+    LOG(INFO) << "R3BSofMwpc3Cal2Hit::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -99,15 +99,7 @@ InitStatus R3BSofMwpc3Cal2Hit::Init()
     // OUTPUT DATA
     // Hit data
     fMwpcHitDataCA = new TClonesArray("R3BSofMwpcHitData", 10);
-
-    if (!fOnline)
-    {
-        rootManager->Register("Mwpc3HitData", "MWPC3 Hit", fMwpcHitDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("Mwpc3HitData", "MWPC3 Hit", fMwpcHitDataCA, kFALSE);
-    }
+    rootManager->Register("Mwpc3HitData", "MWPC3 Hit", fMwpcHitDataCA, !fOnline);
 
     return kSUCCESS;
 }
@@ -132,10 +124,9 @@ void R3BSofMwpc3Cal2Hit::Exec(Option_t* option)
             return;
 
         // Data from cal level
-        R3BSofMwpcCalData** calData;
-        calData = new R3BSofMwpcCalData*[nHits];
-        Int_t planeId;
-        Int_t padId;
+        R3BSofMwpcCalData** calData = new R3BSofMwpcCalData*[nHits];
+        Int_t planeId = 0;
+        Int_t padId = 0;
         Int_t padmx = -1, padmy = -1;
         Double_t q = 0., qmx = 0., qmy = 0., qleft = 0., qright = 0., qdown = 0., qup = 0.;
         Double_t x = -1000., y = -1000.;

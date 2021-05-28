@@ -1,25 +1,28 @@
-#ifndef __R3BSOFTCALCONTFACT_H__
-#define __R3BSOFTCALCONTFACT_H__
+// -------------------------------------------------------------------
+//								   -----
+//  Factory for the parameter containers in libR3BSofTcal        -----
+//								   -----
+// -------------------------------------------------------------------
+
+#ifndef R3BSOFTCALCONTFACT_H
+#define R3BSOFTCALCONTFACT_H
 
 #include "FairContFact.h"
 
-// --- ------------------------------------- --- //
-// --- Factory for tcal parameter containers --- //
-// --- ------------------------------------- --- //
-
-class FairContainer;
+class FairParSet;
 
 class R3BSofTcalContFact : public FairContFact
 {
-  private:
-    void setAllContainers();
-
   public:
     R3BSofTcalContFact();
     ~R3BSofTcalContFact() {}
-    FairParSet* createContainer(FairContainer*);
-    void activateParIo(FairParIo* io);
-    ClassDef(R3BSofTcalContFact, 1)
+
+    FairParSet* createContainer(FairContainer* c);
+
+  private:
+    void setAllContainers();
+
+    ClassDef(R3BSofTcalContFact, 1);
 };
 
 #endif // R3BTCALCONTFACT_H

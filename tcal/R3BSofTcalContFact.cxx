@@ -1,23 +1,19 @@
-// ----------------------------------------------------------------------
-// -----          R3BFrsContFact source file                        -----
-// -----             Created 22/09/18  by J.L. Rodriguez-Sanchez    -----
-// ----------------------------------------------------------------------
+// ----------------------------------------------------------------
+// -----        R3BSofTcalContFact source file                -----
+// -----    Created 22/09/18  by J.L. Rodriguez-Sanchez       -----
+// ----------------------------------------------------------------
 //
-//  R3BFrsContFact
+//  R3BSofTcalContFact
 //
-//  Factory for the parameter containers in libR3BFrs
+//  Factory for the parameter containers
 //
 
 #include "R3BSofTcalContFact.h"
 
 #include "FairLogger.h"
-#include "FairParAsciiFileIo.h"
-#include "FairParRootFileIo.h"
-#include "FairRuntimeDb.h"
-
+#include "FairParSet.h"    // for FairParSet
+#include "FairRuntimeDb.h" // for FairRuntimeDb
 #include "R3BSofTcalPar.h"
-
-#include "TClass.h"
 
 static R3BSofTcalContFact gR3BSofTcalContFact;
 
@@ -27,7 +23,6 @@ R3BSofTcalContFact::R3BSofTcalContFact()
     fName = "R3BSofTcalContFact";
     fTitle = "Factory for Tcal parameter containers in libR3BSofTcal";
     setAllContainers();
-    LOG(INFO) << "Enter in the R3BSofTcalContFact constructor";
     FairRuntimeDb::instance()->addContFactory(this);
 }
 
@@ -79,26 +74,23 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+
     if (strcmp(name, "SofTofWTcalPar") == 0)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+
     if (strcmp(name, "SofSciClockOffsetPar") == 0)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
+
     if (strcmp(name, "SofTofWClockOffsetPar") == 0)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
     return p;
-}
-
-void R3BSofTcalContFact::activateParIo(FairParIo* io)
-{
-    // activates the input/output class for the parameters
-    // needed by the Sts
 }
 
 ClassImp(R3BSofTcalContFact)

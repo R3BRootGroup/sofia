@@ -49,9 +49,17 @@ class R3BSofTwimCal2Hit : public FairTask
 
     /** Method to select online mode **/
     void SetOnline(Bool_t option) { fOnline = option; }
+    void SetExpId(Int_t exp) { fExpId = exp; }
 
   private:
     void SetParameter();
+    /** Private method Experiment s455 **/
+    virtual void S455();
+    /** Private method Experiment s467 **/
+    virtual void S467();
+
+    Bool_t fOnline; // Don't store data for online
+    Int_t fExpId;
 
     Int_t fNumSec; // Number of sections
     Int_t fNumAnodes;
@@ -63,8 +71,6 @@ class R3BSofTwimCal2Hit : public FairTask
     TArrayF* CalZTofParams;
     TArrayF* CalZParams;
     TVectorD fPosZ;
-
-    Bool_t fOnline; // Don't store data for online
 
     R3BSofTwimHitPar* fCal_Par;   /**< Parameter container. >*/
     TClonesArray* fTwimCalDataCA; /**< Array with Twim Cal-input data. >*/

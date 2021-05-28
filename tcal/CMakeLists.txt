@@ -8,7 +8,6 @@ set(INCLUDE_DIRECTORIES
 #put here all directories where header files are located
 ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/neuland/shared
-${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/tcal
@@ -24,10 +23,6 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 R3BSofTcalContFact.cxx
 R3BSofTcalPar.cxx
-R3BSofSciMapped2TcalPar.cxx
-R3BSofTofWMapped2TcalPar.cxx
-R3BSofSciMapped2Tcal.cxx
-R3BSofTofWMapped2Tcal.cxx
 R3BSofiaProvideTStart.cxx
 )
 

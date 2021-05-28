@@ -75,15 +75,7 @@ InitStatus R3BSofMwpc0Cal2Hit::Init()
     // OUTPUT DATA
     // Hit data
     fMwpcHitDataCA = new TClonesArray("R3BSofMwpcHitData", 10);
-
-    if (!fOnline)
-    {
-        rootManager->Register("Mwpc0HitData", "MWPC0 Hit", fMwpcHitDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("Mwpc0HitData", "MWPC0 Hit", fMwpcHitDataCA, kFALSE);
-    }
+    rootManager->Register("Mwpc0HitData", "MWPC0 Hit", fMwpcHitDataCA, !fOnline);
 
     return kSUCCESS;
 }

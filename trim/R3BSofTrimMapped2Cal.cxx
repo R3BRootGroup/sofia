@@ -80,12 +80,13 @@ void R3BSofTrimMapped2Cal::SetParContainers()
                       << fCal_Par->GetNumAnodes();
         LOG(INFO) << "R3BSofTrimMapped2CalPar:: trimCalPar container open";
     }
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTrimMapped2Cal::Init()
 {
-    LOG(INFO) << "R3BSofTrimMapped2Cal: Init";
+    LOG(INFO) << "R3BSofTrimMapped2Cal::Init()";
 
     FairRootManager* rootManager = FairRootManager::Instance();
     if (!rootManager)
@@ -106,15 +107,7 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     // --- OUTPUT CAL DATA --- //
     // --- --------------- --- //
     fTrimCalData = new TClonesArray("R3BSofTrimCalData", MAX_MULT_TRIM_CAL * 8);
-
-    if (!fOnline)
-    {
-        rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, kFALSE);
-    }
+    rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, !fOnline);
 
     return kSUCCESS;
 }

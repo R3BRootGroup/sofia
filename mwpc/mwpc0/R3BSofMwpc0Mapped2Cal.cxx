@@ -80,11 +80,11 @@ void R3BSofMwpc0Mapped2Cal::SetParContainers()
     {
         LOG(INFO) << "R3BSofMwpc0Mapped2Cal:: mwpc0CalPar container open";
     }
+    return;
 }
 
 void R3BSofMwpc0Mapped2Cal::SetParameter()
 {
-
     //--- Parameter Container ---
     NumPadX = fCal_Par->GetNumPadsX();           // Number of Pads in X
     NumPadY = fCal_Par->GetNumPadsY();           // Number of Pads in Y
@@ -98,12 +98,13 @@ void R3BSofMwpc0Mapped2Cal::SetParameter()
     Int_t array_size = (NumPadX + NumPadY) * NumParams;
     CalParams->Set(array_size);
     CalParams = fCal_Par->GetPadCalParams(); // Array with the Cal parameters
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofMwpc0Mapped2Cal::Init()
 {
-    LOG(INFO) << "R3BSofMwpc0Mapped2Cal: Init";
+    LOG(INFO) << "R3BSofMwpc0Mapped2Cal::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -121,15 +122,7 @@ InitStatus R3BSofMwpc0Mapped2Cal::Init()
     // OUTPUT DATA
     // Calibrated data
     fMwpcCalDataCA = new TClonesArray("R3BSofMwpcCalData", 10);
-
-    if (!fOnline)
-    {
-        rootManager->Register("Mwpc0CalData", "MWPC0 Cal", fMwpcCalDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("Mwpc0CalData", "MWPC0 Cal", fMwpcCalDataCA, kFALSE);
-    }
+    rootManager->Register("Mwpc0CalData", "MWPC0 Cal", fMwpcCalDataCA, !fOnline);
 
     SetParameter();
     return kSUCCESS;

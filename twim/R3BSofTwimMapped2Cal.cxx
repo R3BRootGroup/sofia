@@ -89,11 +89,11 @@ void R3BSofTwimMapped2Cal::SetParContainers()
     {
         LOG(INFO) << "R3BSofTwimMapped2CalPar:: twimCalPar container open";
     }
+    return;
 }
 
 void R3BSofTwimMapped2Cal::SetParameter()
 {
-
     //--- Parameter Container ---
     fNumSec = fCal_Par->GetNumSec();           // Number of sections
     fNumAnodes = fCal_Par->GetNumAnodes();     // Number of anodes per section
@@ -137,12 +137,13 @@ void R3BSofTwimMapped2Cal::SetParameter()
                 numdeadanodes++;
         LOG(INFO) << "R3BSofTwimMapped2Cal::Nb of dead anodes : " << numdeadanodes;
     }
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTwimMapped2Cal::Init()
 {
-    LOG(INFO) << "R3BSofTwimMapped2Cal: Init";
+    LOG(INFO) << "R3BSofTwimMapped2Cal::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -188,20 +189,12 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     // Reset entries in output arrays, local arrays
     Reset();
 
-    if (!fCal_Par)
-    {
-        LOG(ERROR) << "R3BSofTwimMapped2Cal: NOT Container Parameter!!";
-    }
-
     // Reading the Input -- Mapped Data --
     Int_t nHits = fTwimMappedDataCA->GetEntries();
-    // if (nHits != (NumSec * NumAnodes) && nHits > 0)
-    //     LOG(WARNING) << "R3BSofTwimMapped2Cal: nHits!=NumSec*NumAnodes";
     if (!nHits)
         return;
 
-    R3BSofTwimMappedData** mappedData;
-    mappedData = new R3BSofTwimMappedData*[nHits];
+    R3BSofTwimMappedData** mappedData = new R3BSofTwimMappedData*[nHits];
     Int_t secId = 0;
     Int_t anodeId = 0;
     Double_t pedestal = 0.;

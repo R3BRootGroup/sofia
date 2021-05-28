@@ -1,19 +1,18 @@
-// ----------------------------------------------------------------------
+// --------------------------------------------------------------------
 //								    -----
-//  Factory for the parameter containers in libR3BSofTofW           -----
-//         Created 03/11/19  by J.L. Rodriguez-Sanchez              -----
+//  Factory for the parameter containers in libR3BSofTofW         -----
+//         Created 03/11/19  by J.L. Rodriguez-Sanchez            -----
 //								    -----
-// ----------------------------------------------------------------------
+// --------------------------------------------------------------------
 
 #include "R3BSofTofWContFact.h"
+#include "R3BSofTcalPar.h"
 #include "R3BSofTofWHitPar.h"
 #include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
-#include "FairParAsciiFileIo.h"
-#include "FairParRootFileIo.h"
-#include "FairRuntimeDb.h"
-#include "TClass.h"
+#include "FairParSet.h"    // for FairParSet
+#include "FairRuntimeDb.h" // for FairRuntimeDb
 
 static R3BSofTofWContFact gR3BSofTofWContFact;
 
@@ -23,7 +22,6 @@ R3BSofTofWContFact::R3BSofTofWContFact()
     fName = "R3BSofTofWContFact";
     fTitle = "Factory for parameter containers in libR3BSofTofW";
     setAllContainers();
-    // LOG(INFO) << "Enter in the R3BSofTofWContFact constructor";
     FairRuntimeDb::instance()->addContFactory(this);
 }
 
@@ -34,18 +32,19 @@ void R3BSofTofWContFact::setAllContainers()
 
     FairContainer* p1 = new FairContainer("TofwGeoPar", "TofW geometry parameters", "GeometryParameterContext");
     p1->addContext("GeometryParameterContext");
-
     containers->Add(p1);
 
     FairContainer* p2 = new FairContainer("tofwCalPar", "TofW Cal Parameters", "TofWCalParContext");
     p2->addContext("TofWCalParContext");
-
     containers->Add(p2);
 
     FairContainer* p3 = new FairContainer("tofwHitPar", "TofW Hit Parameters", "TTofWHitParContext");
     p3->addContext("TofWHitParContext");
-
     containers->Add(p3);
+
+    FairContainer* p4 = new FairContainer("SofTofWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
+    p4->addContext("SofTcalParContext");
+    containers->Add(p4);
 }
 
 FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
@@ -64,7 +63,7 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
 
     if (strcmp(name, "tofwHitPar") == 0)
     {
-        p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext()); // FIXME
+        p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
     if (strcmp(name, "TofwGeoPar") == 0)
@@ -72,13 +71,12 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
-    return p;
-}
+    if (strcmp(name, "SofTofWTcalPar") == 0)
+    {
+        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
 
-void R3BSofTofWContFact::activateParIo(FairParIo* io)
-{
-    // activates the input/output class for the parameters
-    // needed by the tofw
+    return p;
 }
 
 ClassImp(R3BSofTofWContFact)

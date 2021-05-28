@@ -40,6 +40,7 @@ R3BSofTwimCal2Hit::R3BSofTwimCal2Hit()
     , fTwimCalDataCA(NULL)
     , fHitItemsTofW(NULL)
     , fOnline(kFALSE)
+    , fExpId(467)
 {
 }
 
@@ -57,6 +58,7 @@ R3BSofTwimCal2Hit::R3BSofTwimCal2Hit(const char* name, Int_t iVerbose)
     , fTwimCalDataCA(NULL)
     , fHitItemsTofW(NULL)
     , fOnline(kFALSE)
+    , fExpId(467)
 {
 }
 
@@ -74,7 +76,6 @@ R3BSofTwimCal2Hit::~R3BSofTwimCal2Hit()
 
 void R3BSofTwimCal2Hit::SetParContainers()
 {
-
     // Parameter Container
     // Reading TwimCalPar from FairRuntimeDb
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
@@ -92,6 +93,7 @@ void R3BSofTwimCal2Hit::SetParContainers()
     {
         LOG(INFO) << "R3BSofTwimCal2HitPar:: twimHitPar container open";
     }
+    return;
 }
 
 void R3BSofTwimCal2Hit::SetParameter()
@@ -151,6 +153,7 @@ void R3BSofTwimCal2Hit::SetParameter()
         else
             LOG(INFO) << "R3BSofTwimCal2Hit parameters for charge-Z cannot be used here, number of parameters: "
                       << fNumParams;
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
@@ -204,6 +207,19 @@ InitStatus R3BSofTwimCal2Hit::ReInit()
 // -----   Public method Execution   --------------------------------------------
 void R3BSofTwimCal2Hit::Exec(Option_t* option)
 {
+    // At the moment we will use the expid to select the reconstruction
+    // this should be changed in the future because expid is not necessary
+    if (fExpId == 467 || fExpId == 444)
+        S467();
+    else if (fExpId == 455)
+        S455();
+
+    return;
+}
+
+// -----   Private method s455       --------------------------------------------
+void R3BSofTwimCal2Hit::S455()
+{
     // Reset entries in output arrays, local arrays
     Reset();
 
@@ -216,19 +232,18 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
     if (!nHits)
         return;
 
-    // R3BSofTwimCalData* CalDat;
     R3BSofTwimCalData** CalDat = new R3BSofTwimCalData*[nHits];
 
-    Int_t secId, anodeId;
-    Double_t energyperanode[4][fNumAnodes];
-    Double_t dt[4][fNumAnodes];
+    Int_t secId = 0, anodeId = 0;
+    Double_t energyperanode[fNumSec][fNumAnodes];
+    Double_t dt[fNumSec][fNumAnodes];
     Double_t good_dt[fNumAnodes];
     Int_t nbdet = 0;
 
     for (Int_t j = 0; j < fNumAnodes; j++)
     {
         good_dt[j] = 0.;
-        for (Int_t i = 0; i < 4; i++)
+        for (Int_t i = 0; i < fNumSec; i++)
         {
             energyperanode[i][j] = 0.;
             dt[i][j] = 0.;
@@ -364,6 +379,93 @@ void R3BSofTwimCal2Hit::Exec(Option_t* option)
             }
         }
         // i = i + 2;
+    }
+
+    if (CalDat)
+        delete CalDat;
+    return;
+}
+
+// -----   Private method s467       --------------------------------------------
+void R3BSofTwimCal2Hit::S467()
+{
+    // Reset entries in output arrays, local arrays
+    Reset();
+
+    if (!fCal_Par)
+    {
+        LOG(ERROR) << "NO Container Parameter!!";
+    }
+
+    Int_t nHits = fTwimCalDataCA->GetEntries();
+    if (!nHits)
+        return;
+
+    // R3BSofTwimCalData* CalDat;
+    R3BSofTwimCalData** CalDat = new R3BSofTwimCalData*[nHits];
+
+    Int_t secId, anodeId;
+    Double_t energyperanode[fNumSec][fNumAnodes];
+    Double_t dt[fNumSec][fNumAnodes];
+    Double_t good_dt[fNumAnodes];
+    Int_t nbdet = 0;
+
+    for (Int_t j = 0; j < fNumAnodes; j++)
+    {
+        good_dt[j] = 0.;
+        for (Int_t i = 0; i < fNumSec; i++)
+        {
+            energyperanode[i][j] = 0;
+            dt[i][j] = 0.;
+        }
+    }
+
+    for (Int_t i = 0; i < nHits; i++)
+    {
+        CalDat[i] = (R3BSofTwimCalData*)(fTwimCalDataCA->At(i));
+        secId = CalDat[i]->GetSecID();
+        anodeId = CalDat[i]->GetAnodeID();
+        energyperanode[secId][anodeId] = CalDat[i]->GetEnergy();
+        dt[secId][anodeId] = CalDat[i]->GetDTime();
+    }
+
+    Double_t nba = 0, theta = -5000., Esum = 0.;
+    // calculate truncated dE from 16 anodes, Twim-MUSIC
+    for (Int_t i = 0; i < fNumSec; i++)
+    {
+        fNumAnodesAngleFit = 0;
+        for (Int_t j = 0; j < fNumAnodes; j++)
+        {
+            if (energyperanode[i][j] > 0 && energyperanode[i][j] < 8192 && StatusAnodes[i][j] == 1)
+            {
+                Esum = Esum + energyperanode[i][j];
+                good_dt[fNumAnodesAngleFit] = dt[i][j];
+                fPosAnodes[fNumAnodesAngleFit] = fCal_Par->GetAnodePos(j + 1);
+                fNumAnodesAngleFit++;
+                nba++;
+            }
+        }
+
+        if (nba > 0 && (Esum / nba) > 0.)
+        {
+            if (fNumAnodesAngleFit > 4)
+            {
+                fPosZ.Use(fNumAnodesAngleFit, fPosAnodes);
+                TMatrixD A(fNumAnodesAngleFit, 2);
+                TMatrixDColumn(A, 0) = 1.0;
+                TMatrixDColumn(A, 1) = fPosZ;
+                TDecompSVD svd(A);
+                Bool_t ok;
+                TVectorD dt_r;
+                dt_r.Use(fNumAnodesAngleFit, good_dt);
+                TVectorD c_svd_r = svd.Solve(dt_r, ok);
+                theta = c_svd_r[1];
+            }
+            Double_t zhit =
+                fZ0[i] + fZ1[i] * TMath::Sqrt(Esum / nba) + fZ2[i] * TMath::Sqrt(Esum / nba) * TMath::Sqrt(Esum / nba);
+            if (zhit > 0 && theta > -5000.)
+                AddHitData(i, theta, zhit, Esum / nba);
+        }
     }
 
     if (CalDat)

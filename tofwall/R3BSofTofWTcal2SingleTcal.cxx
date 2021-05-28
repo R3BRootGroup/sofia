@@ -60,11 +60,11 @@ void R3BSofTofWTcal2SingleTcal::SetParContainers()
     else
         LOG(INFO) << "R3BSofTofWTcal2SingleTcal::SetParContainers() : SofSciRawTofPar-Container found with "
                   << fSciRawTofPar->GetNumSignals() << " signals";
+    return;
 }
 
 InitStatus R3BSofTofWTcal2SingleTcal::Init()
 {
-
     LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
@@ -102,17 +102,7 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
 
     // Register output array in tree
     fTofWSingleTcal = new TClonesArray("R3BSofTofWSingleTcalData", 10);
-
-    if (!fOnline)
-    {
-        rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, kTRUE);
-    }
-    else
-    {
-        rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, kFALSE);
-    }
-
-    LOG(INFO) << "R3BSofTofWTcal2SingleTcal::Init DONE";
+    rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, !fOnline);
 
     return kSUCCESS;
 }
@@ -201,6 +191,7 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
             ++fNevent;
         }
     }
+    return;
 }
 
 // -----   Public method Reset   ------------------------------------------------

@@ -1,11 +1,12 @@
-#include "R3BSofTofWMapped2Tcal.h"
-#include "R3BSofTofWMappedData.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
-#include "FairRunAna.h"
-#include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+
+#include "R3BSofTcalPar.h"
+#include "R3BSofTofWMapped2Tcal.h"
+#include "R3BSofTofWMappedData.h"
+#include "R3BSofTofWTcalData.h"
 
 R3BSofTofWMapped2Tcal::R3BSofTofWMapped2Tcal()
     : FairTask("R3BSofTofWMapped2Tcal", 1)
@@ -28,7 +29,7 @@ R3BSofTofWMapped2Tcal::~R3BSofTofWMapped2Tcal()
 
 InitStatus R3BSofTofWMapped2Tcal::Init()
 {
-    LOG(INFO) << "R3BSofTofWMapped2Tcal: Init";
+    LOG(INFO) << "R3BSofTofWMapped2Tcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
@@ -37,12 +38,8 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
         return kFATAL;
     }
 
-    // --- ----------------- --- //
-    // --- INPUT MAPPED DATA --- //
-    // --- ----------------- --- //
-
     // scintillator at S2 and cave C
-    fMapped = (TClonesArray*)rm->GetObject("SofTofWMappedData"); // see Instance->Register() in R3BSofTofWReader.cxx
+    fMapped = (TClonesArray*)rm->GetObject("SofTofWMappedData");
     if (!fMapped)
     {
         LOG(ERROR) << "R3BSofTofWMapped2Tcal::Init() Couldn't get handle on SofTofWMappedData container";
@@ -51,43 +48,22 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
     else
         LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() SofTofWMappedData items found";
 
-    // --- -------------------------- --- //
-    // --- CHECK THE TCALPAR VALIDITY --- //
-    // --- -------------------------- --- //
-    if (fTcalPar->GetNumDetectors() == 0)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2Tcal::Init There are no Tcal parameters for SofTofW";
-        return kFATAL;
-    }
-    else
-    {
-        LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() : fNumDetectors=" << fTcalPar->GetNumDetectors();
-        LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() : fNumChannels=" << fTcalPar->GetNumChannels();
-    }
-
-    // --- ---------------- --- //
-    // --- OUTPUT TCAL DATA --- //
-    // --- ---------------- --- //
-
     // Register output array in tree
     fTcal = new TClonesArray("R3BSofTofWTcalData", 10);
-    if (!fOnline)
-    {
-        rm->Register("SofTofWTcalData", "SofTofW", fTcal, kTRUE);
-    }
-    else
-    {
-        rm->Register("SofTofWTcalData", "SofTofW", fTcal, kFALSE);
-    }
-
-    LOG(INFO) << "R3BSofTofWMapped2Tcal: Init DONE !";
+    rm->Register("SofTofWTcalData", "SofTofW", fTcal, !fOnline);
 
     return kSUCCESS;
 }
 
 void R3BSofTofWMapped2Tcal::SetParContainers()
 {
-    fTcalPar = (R3BSofTcalPar*)FairRuntimeDb::instance()->getContainer("SofTofWTcalPar");
+    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    if (!rtdb)
+    {
+        LOG(ERROR) << "FairRuntimeDb not opened!";
+    }
+
+    fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofTofWTcalPar");
     if (!fTcalPar)
     {
         LOG(ERROR) << "R3BSofTofWMapped2Tcal::SetParContainers() : Could not get access to SofTofWTcalPar-Container.";
@@ -96,6 +72,7 @@ void R3BSofTofWMapped2Tcal::SetParContainers()
     else
         LOG(INFO) << "R3BSofTofWMapped2Tcal::SetParContainers() : SofTofWTcalPar-Container found with "
                   << fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
+    return;
 }
 
 InitStatus R3BSofTofWMapped2Tcal::ReInit()
@@ -113,7 +90,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
     UShort_t iCh;
     UInt_t iTf;
     UInt_t iTc;
-    Double_t tns;
+    Double_t tns = 0.0;
 
     Int_t nHitsPerEvent_SofTofW = fMapped->GetEntries();
     for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
@@ -125,6 +102,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
         iCh = hit->GetPmt();
         iTf = hit->GetTimeFine();
         iTc = hit->GetTimeCoarse();
+
         if ((iDet < 1) || (iDet > fTcalPar->GetNumDetectors()))
         {
             LOG(INFO) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iDet = " << iDet
@@ -142,6 +120,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
     }
 
     ++fNevent;
+    return;
 }
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTofWMapped2Tcal::Reset()
@@ -154,6 +133,7 @@ void R3BSofTofWMapped2Tcal::Reset()
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofTofWMapped2Tcal::Finish() {}
 
+// -----   Private method to calculate the time in ns  --------------------------
 Double_t R3BSofTofWMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt_t iTf, UInt_t iTc)
 {
     UInt_t rank = iTf + fTcalPar->GetNumTcalParsPerSignal() * ((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));

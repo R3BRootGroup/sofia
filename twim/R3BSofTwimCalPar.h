@@ -73,6 +73,7 @@ class R3BSofTwimCalPar : public FairParGenericSet
     const R3BSofTwimCalPar& operator=(const R3BSofTwimCalPar&);
     R3BSofTwimCalPar(const R3BSofTwimCalPar&);
 
+  public:
     ClassDef(R3BSofTwimCalPar, 1);
 };
 

@@ -3,22 +3,16 @@
 #include "R3BSofTcalPar.h"
 #include "R3BSofTofWMappedData.h"
 
-#include "R3BEventHeader.h"
-
 #include "FairLogger.h"
 #include "FairRootManager.h"
-#include "FairRunAna.h"
 #include "FairRuntimeDb.h"
-#include "TGeoManager.h"
 
 #include "TClonesArray.h"
 #include "TF1.h"
-#include "TGeoMatrix.h"
 #include "TH1F.h"
 #include "TMath.h"
 #include "TObjArray.h"
 #include "TRandom.h"
-#include "TVector3.h"
 
 #include <iostream>
 #include <stdlib.h>
@@ -34,7 +28,6 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar()
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 {
-    // fNumSignals = fNumDetectors * fNumChannels;
 }
 
 // R3BSofTofWMapped2TcalPar: Standard Constructor --------------------------
@@ -49,7 +42,6 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerb
     , fOutputFile(NULL)
 
 {
-    // fNumSignals = fNumDetectors * fNumChannels;
 }
 
 // R3BSofTofWMapped2TcalPar: Destructor ----------------------------------------
@@ -62,8 +54,7 @@ R3BSofTofWMapped2TcalPar::~R3BSofTofWMapped2TcalPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTofWMapped2TcalPar::Init()
 {
-
-    LOG(INFO) << "R3BSofTofWMapped2TcalPar: Init";
+    LOG(INFO) << "R3BSofTofWMapped2TcalPar::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
@@ -210,6 +201,7 @@ void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
                 fh_TimeFineNs[sig]->SetBinContent(bin + 1, Bin2Ns[bin]);
                 fTcalPar->SetSignalTcalParams(Bin2Ns[bin], sig * fNumTcalParsPerSignal + bin);
             }
+            fTcalPar->SetClockOffset(0.0, sig);
         }
         fh_TimeFineNs[sig]->Write(); // will be empty if fh_TimeFineBin[sig]->GetEntries()<fMinStatistics
         fh_TimeFineBin[sig]->Write();

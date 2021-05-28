@@ -708,6 +708,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         }
     }
     fNEvents += 1;
+    return;
 }
 
 void R3BSofOnlineSpectra::FinishEvent()
