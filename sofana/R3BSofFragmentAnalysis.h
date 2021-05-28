@@ -27,13 +27,10 @@
 
 // SOFIA headers
 #include "R3BSofFragmentAnaPar.h"
-#include "R3BSofMwpcHitData.h"
-#include "R3BSofTofWHitData.h"
-#include "R3BSofTrackingData.h"
-#include "R3BSofTwimHitData.h"
 #include "R3BSofTwimHitPar.h"
 
 class TClonesArray;
+class R3BSofTrackingData;
 
 class R3BSofFragmentAnalysis : public FairTask
 {
@@ -102,13 +99,6 @@ class R3BSofFragmentAnalysis : public FairTask
     TClonesArray* fTwimHitDataCA;  /**< Array with Twim Hit-input data. >*/
     TClonesArray* fTofWHitDataCA;  /**< Array with ToF Hit-input data. >*/
     TClonesArray* fTrackingDataCA; /**< Array with Tracking-output data. >*/
-
-    R3BSofTofWHitData** HitTofW;
-    R3BSofTwimHitData** HitTwim;
-    R3BSofMwpcHitData** HitMwpc0;
-    R3BSofMwpcHitData** HitMwpc1;
-    R3BSofMwpcHitData** HitMwpc2;
-    R3BSofMwpcHitData** HitMwpc3;
 
     /** Private method TrackingData **/
     //** Adds a TrackingData to the analysis

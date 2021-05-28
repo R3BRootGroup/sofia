@@ -34,14 +34,16 @@ set(SRCS
 R3BSofSciContFact.cxx
 R3BSofSciRawPosPar.cxx
 R3BSofSciRawTofPar.cxx
+R3BSofSciMapped2TcalPar.cxx
 R3BSofSciTcal2RawPosPar.cxx
 R3BSofSciTcal2RawTofPar.cxx
-R3BSofSciTcal2SingleTcal.cxx
-R3BSofSciSingleTcal2Hit.cxx
 R3BSofSciCalPosPar.cxx
 R3BSofSciCalTofPar.cxx
 R3BSofSciSingleTcal2CalPosCaveCPar.cxx
+R3BSofSciMapped2Tcal.cxx
+R3BSofSciTcal2SingleTcal.cxx
 R3BSofSciSingleTcal2Cal.cxx
+R3BSofSciSingleTcal2Hit.cxx
 )
 
 # fill list of header files from list of source files
@@ -51,11 +53,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofSciLinkDef.h)
 set(LIBRARY_NAME R3BSofSci)
 set(DEPENDENCIES
-  R3Bbase R3BSofData R3BSofTcal R3BTracking)
-
-if(FAIRDB_FOUND)
-set(DEPENDENCIES
-    ${DEPENDENCIES} FairDB)
-endif(FAIRDB_FOUND)
+    R3BData R3BSofTcal R3BSofData R3BTracking)
 
 GENERATE_LIBRARY()

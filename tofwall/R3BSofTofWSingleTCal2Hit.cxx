@@ -61,12 +61,13 @@ void R3BSofTofWSingleTCal2Hit::SetParContainers()
     }
     else
         LOG(INFO) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container TofwGeoPar found.";
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTofWSingleTCal2Hit::Init()
 {
-    LOG(INFO) << "R3BSofTofWSingleTCal2Hit: Init";
+    LOG(INFO) << "R3BSofTofWSingleTCal2Hit::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -84,16 +85,8 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
     // OUTPUT DATA
     // Hit data
     fHitDataCA = new TClonesArray("R3BSofTofWHitData", 10);
+    rootManager->Register("TofWHitData", "TofW-Hit", fHitDataCA, !fOnline);
 
-    if (!fOnline)
-    {
-        rootManager->Register("TofWHitData", "TofW-Hit", fHitDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("TofWHitData", "TofW-Hit", fHitDataCA, kFALSE);
-    }
-    // fTofWHitPar->printParams();
     return kSUCCESS;
 }
 
@@ -117,7 +110,7 @@ void R3BSofTofWSingleTCal2Hit::Exec(Option_t* option)
     return;
 }
 
-// -----   Public method Experiment S455   --------------------------------------
+// -----   Private method Experiment S455   -------------------------------------
 void R3BSofTofWSingleTCal2Hit::S455()
 {
     // Reset entries in output arrays, local arrays
@@ -148,9 +141,10 @@ void R3BSofTofWSingleTCal2Hit::S455()
     }
     if (calDat)
         delete calDat;
+    return;
 }
 
-// -----   Public method Experiment S467   --------------------------------------
+// -----   Private method Experiment S467   -------------------------------------
 void R3BSofTofWSingleTCal2Hit::S467()
 {
     // Reset entries in output arrays, local arrays
@@ -189,6 +183,7 @@ void R3BSofTofWSingleTCal2Hit::S467()
     }
     if (calDat)
         delete calDat;
+    return;
 }
 
 // -----   Public method Finish  ------------------------------------------------

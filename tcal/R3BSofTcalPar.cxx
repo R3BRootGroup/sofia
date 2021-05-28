@@ -62,10 +62,10 @@ void R3BSofTcalPar::putParams(FairParamList* list)
     fAllClockOffsets->Set(array_size);
 
     list->add("TcalPar", *fAllSignalsTcalParams);
+    list->add("ClockOffsets", *fAllClockOffsets);
     list->add("nDetectorsTcalPar", fNumDetectors);
     list->add("nChannelsTcalPar", fNumChannels);
     list->add("nTcalParsPerSignal", fNumTcalParsPerSignal);
-    list->add("ClockOffsets", fAllClockOffsets);
 }
 
 // ----  Method getParams ------------------------------------------------------

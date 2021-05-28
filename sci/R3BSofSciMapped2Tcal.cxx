@@ -1,4 +1,14 @@
+
+#include "FairLogger.h"
+#include "FairRootManager.h"
+#include "FairRuntimeDb.h"
+
+// SofSci headers
 #include "R3BSofSciMapped2Tcal.h"
+#include "R3BSofSciMappedData.h"
+#include "R3BSofSciTcalData.h"
+#include "R3BSofTcalPar.h"
+
 #include <iomanip>
 
 // --- Default Constructor
@@ -61,8 +71,7 @@ void R3BSofSciMapped2Tcal::SetParContainers()
 
 InitStatus R3BSofSciMapped2Tcal::Init()
 {
-
-    LOG(INFO) << "R3BSofSciMapped2Tcal: Init";
+    LOG(INFO) << "R3BSofSciMapped2Tcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
@@ -71,9 +80,7 @@ InitStatus R3BSofSciMapped2Tcal::Init()
         return kFATAL;
     }
 
-    // --- ----------------- --- //
-    // --- INPUT MAPPED DATA --- //
-    // --- ----------------- --- //
+    // Input data
     fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData");
     if (!fMapped)
     {
@@ -83,9 +90,7 @@ InitStatus R3BSofSciMapped2Tcal::Init()
     else
         LOG(INFO) << "R3BSofSciMapped2Tcal::Init() SofSciMappedData items found";
 
-    // --- ---------------- --- //
-    // --- OUTPUT TCAL DATA --- //
-    // --- ---------------- --- //
+    // Register output array in tree
     fTcal = new TClonesArray("R3BSofSciTcalData", 25);
     if (!fOnline)
     {
@@ -96,21 +101,6 @@ InitStatus R3BSofSciMapped2Tcal::Init()
         rm->Register("SofSciTcalData", "SofSci", fTcal, kFALSE);
     }
 
-    LOG(INFO) << "R3BSofSciMapped2Tcal::Init() output R3BSofSciTcalData ";
-
-    // --- -------------------------- --- //
-    // --- CHECK THE TCALPAR VALIDITY --- //
-    // --- -------------------------- --- //
-    if (fTcalPar->GetNumDetectors() == 0)
-    {
-        LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() : There are no Tcal parameters for SofSci";
-        return kFATAL;
-    }
-    else
-    {
-        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of SofSci =" << fTcalPar->GetNumDetectors();
-        LOG(INFO) << "R3BSofSciMapped2Tcal::Init(): Number of Channel per SofSci =" << fTcalPar->GetNumChannels();
-    }
     return kSUCCESS;
 }
 
@@ -126,7 +116,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
     UInt_t ch;
     UInt_t tf;
     UInt_t tc;
-    Double_t tns;
+    Double_t tns = 0.0;
 
     // Reset entries in output arrays, local arrays
     Reset();
@@ -142,6 +132,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
         ch = hit->GetPmt();
         tf = hit->GetTimeFine();
         tc = hit->GetTimeCoarse();
+
         if ((det < 1) || (det > fTcalPar->GetNumDetectors()))
         {
             LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << det
@@ -162,6 +153,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
         LOG(WARNING) << "R3BSofSciMapped2Tcal::Exec() mismatch between TClonesArray entries ";
 
     ++fNevent;
+    return;
 }
 
 // -----   Public method Reset   ------------------------------------------------
@@ -175,15 +167,7 @@ void R3BSofSciMapped2Tcal::Reset()
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciMapped2Tcal::Finish() {}
 
-// -----   Private method AddCalData  --------------------------------------------
-R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddTcalData(Int_t det, Int_t ch, Double_t tns, UInt_t clock)
-{
-    // It fills the R3BSofSciTcalData
-    TClonesArray& clref = *fTcal;
-    Int_t size = clref.GetEntriesFast();
-    return new (clref[size]) R3BSofSciTcalData(det, ch, tns, clock);
-}
-
+// -----   Private method to calculate the time in ns  --------------------------
 Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt_t iTf, UInt_t iTc)
 {
     UInt_t rank = iTf + fTcalPar->GetNumTcalParsPerSignal() * ((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
@@ -208,6 +192,15 @@ Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt
 
     // std::cout << "Tf_ns=" << iTf_ns << ", iTc_ns=" << iTc_ns << " : TimeNs = " << 5.*iTc_ns - iTf_ns << std::endl;
     return (iTc_ns - iTf_ns);
+}
+
+// -----   Private method AddCalData  --------------------------------------------
+R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddTcalData(Int_t det, Int_t ch, Double_t tns, UInt_t clock)
+{
+    // It fills the R3BSofSciTcalData
+    TClonesArray& clref = *fTcal;
+    Int_t size = clref.GetEntriesFast();
+    return new (clref[size]) R3BSofSciTcalData(det, ch, tns, clock);
 }
 
 ClassImp(R3BSofSciMapped2Tcal)

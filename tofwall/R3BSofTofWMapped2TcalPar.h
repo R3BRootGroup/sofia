@@ -1,16 +1,14 @@
-#ifndef __R3BSOFTOFWMAPPED2TCALPAR_H__
-#define __R3BSOFTOFWMAPPED2TCALPAR_H__
+#ifndef R3BSOFTOFWMAPPED2TCALPAR_H
+#define R3BSOFTOFWMAPPED2TCALPAR_H
 
 #include "FairTask.h"
 #include "TH1F.h"
 
 class TClonesArray;
 class R3BSofTcalPar;
-class R3BEventHeader;
 
 class R3BSofTofWMapped2TcalPar : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTofWMapped2TcalPar();
@@ -54,7 +52,7 @@ class R3BSofTofWMapped2TcalPar : public FairTask
     void SetNumTcalParsPerSignal(Int_t NumberOfTcalParsPerSignal) { fNumTcalParsPerSignal = NumberOfTcalParsPerSignal; }
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
-  protected:
+  private:
     Int_t fNumDetectors; // number of detectors (=28 for TofW)
     Int_t fNumChannels;  // number of channels  (=2 for TofW)
     Int_t fNumTcalParsPerSignal;
@@ -75,4 +73,4 @@ class R3BSofTofWMapped2TcalPar : public FairTask
     ClassDef(R3BSofTofWMapped2TcalPar, 0);
 };
 
-#endif //__R3BSOFTOFWMAPPED2TCALPAR_H__
+#endif // R3BSOFTOFWMAPPED2TCALPAR_H

@@ -29,6 +29,8 @@ set(SRCS
 R3BSofTofW.cxx
 R3BSofTofWDigitizer.cxx
 R3BSofTofWContFact.cxx
+R3BSofTofWMapped2Tcal.cxx
+R3BSofTofWMapped2TcalPar.cxx
 R3BSofTofWTcal2SingleTcal.cxx
 R3BSofTofWSingleTCal2HitPar.cxx
 R3BSofTofWSingleTCal2Hit.cxx
@@ -42,6 +44,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofTofWLinkDef.h)
 set(LIBRARY_NAME R3BSofTofW)
 set(DEPENDENCIES
-    Base R3Bbase R3BData R3BSofData R3BSofTcal R3BTracking)
+    R3BData R3BSofTcal R3BSofData R3BTracking)
 
 GENERATE_LIBRARY()

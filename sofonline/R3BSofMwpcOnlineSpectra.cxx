@@ -540,6 +540,7 @@ void R3BSofMwpcOnlineSpectra::Exec(Option_t* option)
     }
 
     fNEvents += 1;
+    return;
 }
 
 void R3BSofMwpcOnlineSpectra::FinishEvent()

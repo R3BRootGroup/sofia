@@ -45,12 +45,6 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
 
-    /** Public method Experiment s455 **/
-    virtual void S455();
-
-    /** Public method Experiment s467 **/
-    virtual void S467();
-
     /** Virtual method Reset **/
     virtual void Reset();
 
@@ -74,6 +68,11 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     Double_t GetTofLISE() { return fTof_lise; }
 
   private:
+    /** Private method Experiment s455 **/
+    virtual void S455();
+    /** Private method Experiment s467 **/
+    virtual void S467();
+
     Bool_t fOnline; // Don't store data for online
     Int_t fExpId;
 

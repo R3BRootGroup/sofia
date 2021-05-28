@@ -36,93 +36,26 @@ cmake ../R3BRoot/
 make -j4
 ~~~
 
-# Simulations (ongoing work)
-
-~~~bash
-cd %BUILD_DIRECTORY_FOR_SOFIA%
-. ./config.sh
-cd ../sofia/macros/coulexsim/
-root -l 
-.L run_sim.C
-run_sim(100)
-~~~
-where 100 is the number of events.
-
-This will create output file `sim.root` with the simulation results and parameter file `par.root` with geometry and magnetic field parameters.
-
-After the simulation run:
-
-1. To start an event display:
-
-~~~bash
-root -l eventDisplay.C
-~~~
-
-2. To perform a quick analysis with GUI:
-
-~~~bash
-root -l sim.root
-[] evt->StartViewer();
-~~~
-
-3. To convert the MC results into detector-like signals and open the output file: (not yet!)
-
-~~~bash
-root -l run_digi.C
-[] .q
-root -l sofiahits.root
-[] evt->StartViewer();
-~~~
-
-# Data Analysis (ongoing work)
-
-Data analysis is included inside the sofia directory. You can find the subdirectories :
-
-### sofdata
-
-This directory contains all the data containers for the different levels of the detection system.
-
-### sofsource
-
-This directory contains all the readers related to SOFIA detectors :
-
-- R3BSofMwpcReader for the MWPC tracking detectors
-- R3BSofTrimReader for the triple ionization chamber
-- R3BSofSciReader for the plastic scintillator located at the FRS and at the entrance of Cave-C (Start)
-- R3BSofTwimReader for the double ionization chamber located in front of target
-- R3BSofToFWReader for the large area ToF-Wall located behind GLAD
-
-and UCESB data structures :
-- ext_h101_sofmwpc.h
-- ext_h101_softrim.h
-- ext_h101_sofsci.h
-- ext_h101_softwim.h
-- ext_h101_softofw.h
-
-that allow to get data at mapped level (raw data of each detector).
-
-### some details of the sofia set-up
+### Some details of the sofia set-up
 
 - Active target (SofAT)
 The active target is a gaseous detector which can be seen as a stack of ionisation chambers.
-Four targets are mounted as cathode, and signal are readout on 5 anodes.
-Each event, there will always be 5 energies collected (one per anode).
+Three targets are mounted as cathode, and signal are readout on four anodes.
+Each event, there will always be four energies collected (one per anode).
 The comparison of the energy losses collected on two following anodes give the layer (anode or cathode) where the fission occures
-AT in the October 2014 beam time :
+AT configuration in the April 2021 beam time :
 ---
        ANODE 1  :   ALUMINIUM
-      CATHODE 1 :   URANIUM 238
+      CATHODE 1 :   LEAD
        ANODE 2  :   ALUMINIUM
-      CATHODE 2 :   URANIUM 238
+      CATHODE 2 :   LEAD
        ANODE 3  :   ALUMINIUM
-      CATHODE 3 :   ALUMINIUM 
+      CATHODE 3 :   LEAD 
        ANODE 4  :   ALUMINIUM
-      CATHODE 4 :   LEAD
-       ANODE 5  :   ALUMINIUM
 ---
 
 - Single scintillators (SofSci)
-There are one scintillators at S2 and one at cave C.
+There are one scintillators at S2 and one at cave C. Another scintillator could be inserted at S8 to study the FRS transmission.
 Each scintillator is read out by two PMTs: right and left.
 At S2, the scintillator gives the position of the beam and make the start of the time of flight of the beam.
 At cave C, the scintillator make the stop of the beam, and the start for the times of flight of the fission fragments.
@@ -152,10 +85,205 @@ This defines 4 different detection volumes.
 With this geometry, we can simultaneously measure both fission fragments in coincidence, as long as each fragment are going through the SofTwiM in two different detection volumes
 
 - MWPC (SofMWPC)
-There are 3 MWMPCs. 
-The first is coupled to SofTriM, to get the (x,y) position of the beam. In x, there are 64 vertical pads and in y, 40 horizontal pads.
-The second is located before the SofTwiM to get the (x,y) position of each fission fragment before the magnet. This second MWPC is vertically segmented into to. Therefore, in x, there are 64 down pads and 64 up pads, and in y, there are 40 vertically pads.
-The third is located after the magnet and just before the SofToFW. In x, there are 288 vertical pads and in y, 120 horizontal pads.
+There are 3 types of MWMPCs. 
+The first type (MWPC0) is coupled to SofTriM, to get the (x,y) position of the beam. In x, there are 64 vertical pads and in y, 64 horizontal pads.
+The second type is located before and after the SofTwiM detector to get the (x,y) position of each fission fragment before the magnet. This second kind of MWPC is vertically segmented into two sections. Therefore, in x, there are 64 down pads and 64 up pads, and in y, there are 40 vertically pads.
+The third type is located after the magnet and just before the SofToFW. In x, there are 288 vertical pads and in y, 120 horizontal pads.
+
+# Simulations (ongoing work)
+
+Some simulations of two experimental configurations are included inside the sofia directory. You can find the subdirectories :
+
+### geometry
+
+This directory contains all the detector geometries generated from the macros located at ./sofia/macros/geo. The existing geometries are :
+
+- sof_at_v19a.geo.root for the Active target detector
+- mwpc_0.geo.root for the MWPC0 detector
+- targetvacuumchamber_ams_s455.geo.root for the vacuum chamber and AMS silicon detectors
+- mwpc_1.geo.root for the MWPC1 detector
+- twinmusic_v19a.geo.root for the twin-Music detector
+- mwpc_2.geo.root for the MWPC2 detector
+- mwpc_3.geo.root for the MWPC3 detector
+- glad_s455.geo.root for GLAD magnet
+- sof_tof_v19.geo.root for the ToF-Wall detector
+
+### sofia/macros/coulexsim
+
+This directory contains the macros to simulate the coulex experiment. 
+
+~~~bash
+cd %BUILD_DIRECTORY_FOR_R3BROOT%
+. ./config.sh
+cd ./sofia/macros/coulexsim/
+root -l 
+.L runsim.C
+runsim(100)
+~~~
+where 100 is the number of events.
+
+This will create an output file `sim.root` with the simulation results and a parameter file `par.root` with geometry and magnetic field parameters.
+
+After the simulation :
+
+1. To start an event display:
+
+~~~bash
+root -l eventDisplay.C
+~~~
+
+2. To perform a quick analysis with GUI :
+
+~~~bash
+root -l sim.root
+[] evt->StartViewer();
+~~~
+
+### sofia/macros/p2psim
+
+This directory contains the macros to simulate the (p,2p)-fission experiment. 
+
+~~~bash
+cd %BUILD_DIRECTORY_FOR_R3BROOT%
+. ./config.sh
+~~~
+Execute the (p,2p)-fission simulation as follows. First one must go into the folder
+
+~~~bash
+cd ./sofia/macros/p2psim/
+~~~
+and then :
+
+~~~bash
+root -l 'runsim.C(1000)'
+~~~
+where 1000 is the number of events.
+
+This will create an output file `sim.root` with the simulation results and a parameter file `par.root` with geometry and magnetic field parameters.
+
+After the simulation :
+
+1. To start an event display :
+
+~~~bash
+root -l eventDisplay.C
+~~~
+
+2. To perform a quick analysis with GUI :
+
+~~~bash
+root -l sim.root
+[] evt->StartViewer();
+~~~
+
+# Data Analysis (ongoing work)
+
+Data analysis is included inside the sofia directory. You can find the subdirectories :
+
+### sofdata
+
+This directory contains all the data TCloneArray structures for the different levels of the detection system.
+
+### sofsource
+
+This directory contains all the readers related to SOFIA detectors :
+
+- R3BSofAtReader for the Active target detector
+- R3BSofMwpcReader for the MWPC tracking detectors
+- R3BSofTrimReader for the triple ionization chamber
+- R3BSofSciReader for the plastic scintillator located at the FRS and at the entrance of Cave-C (Start)
+- R3BSofTwimReader for the double ionization chamber located in front of target
+- R3BSofToFWReader for the large area ToF-Wall located behind GLAD
+- R3BSofScalersReader for the scalers
+- R3BSofCorrvReader for time correlations of DAQ sub-systems
+
+and UCESB data structures are located at sofsource/ext :
+
+- ext_h101_sofat.h
+- ext_h101_sofmwpc.h
+- ext_h101_softrim.h
+- ext_h101_sofsci.h
+- ext_h101_softwim.h
+- ext_h101_softofw.h
+- ext_h101_sofscalers.h
+- ext_h101_sofcorrv.h
+
+this allows to get data at mapped level (raw data of each detector).
+
+### sci
+
+This directory contains all the classes to analyse the single scintillator data and move the raw data into cal and hit data levels.
+
+### tcal
+
+This directory contains some classes to obtain the calibration parameters of the VFTX channels, this will allow to get the time in ns.
+
+### at
+
+This directory contains all the classes to analyse the active target data and move the raw data into cal and hit data levels.
+
+### trim
+
+This directory contains all the classes to analyse the triple-Music data and move the raw data into cal and hit data levels.
+
+### mwpc
+
+This directory contains all the classes to analyse the MWPC data and move the raw data into cal and hit data levels.
+
+### twim
+
+This directory contains all the classes to analyse the twin-Music data and move the raw data into cal and hit data levels.
+
+### tofwall
+
+This directory contains all the classes to analyse the ToF-Wall data and move the raw data into cal and hit data levels.
+
+### sofonline
+
+This directory contains all the online analysis classes to correlate the data collected by the SOFIA detectors.
+
+### sofana
+
+This directory contains all the analysis classes to correlate the data collected by the SOFIA detectors.
 
 
+### macros/s455Up2p
 
+This directory contains all the macros for online and offline analysis of the (p,2p)-fission experiment.
+
+#### macros/s455Up2p/online
+
+This directory contains the online macro for the analysis of the (p,2p)-fission experiment. Execute it as:
+
+~~~bash
+root -b main_online.C
+~~~
+after defining the stream data server and the port number for data visualization.
+
+#### macros/s455Up2p/unpack
+
+This directory contains the offline macros for the analysis of the (p,2p)-fission experiment. There are two macros:
+
+- unpack_offline.C for producing a root file with the mapped/raw data of all the detectors
+- cal_offline.C for producing a root file with the cal and hit data levels of all the detectors
+
+After defining the paths to the input files of each macro, one can execute it as follows:
+
+~~~bash
+1) If all the parameters are right by default
+   root -l unpack_offline.C
+2) If one wants to select a RunId, for instance 'RunId = 273'
+   root -l 'unpack_offline.C(273)'
+3) If one wants to select a RunId and max number of events, for instance 'RunId = 273' and 'nev = 200'
+   root -l 'unpack_offline.C(273,200)'
+~~~
+or
+
+~~~bash
+1) If all the parameters are right by default
+   root -l cal_offline.C
+2) If one wants to select a RunId, for instance 'RunId = 273'
+   root -l 'cal_offline.C(273)'
+3) If one wants to select a RunId and max number of events, for instance 'RunId = 273' and 'nev = 200'
+   root -l 'cal_offline.C(273,200)'
+~~~

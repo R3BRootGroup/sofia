@@ -41,6 +41,7 @@ class R3BSofTrackingData : public TObject
     Double_t fZ, fAq; // ID
     Double_t fBeta, fBrho, fLength;
     Int_t fPaddle;
+
   public:
     ClassDef(R3BSofTrackingData, 1)
 };

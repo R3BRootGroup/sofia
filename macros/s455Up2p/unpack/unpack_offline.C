@@ -1,17 +1,17 @@
-/*
- *  Macro to run the offline for all the detectors simultaneously
- *
- *  One needs to set up the Phase0 experiments: s444, s467, or s455
- *
- *  at $UCESB_DIR/../upexps/yyyymm_s4xx
- *
- *  This macro generates a root file with all the data at mapped level using
- *  a lmd file as input
- *
- *  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
- *  @since May 4th, 2021
- *
- */
+/**
+ **  Macro to run the offline for all the detectors simultaneously
+ **
+ **  One needs to set up the Phase0 experiments: s444, s467, or s455
+ **
+ **  at $UCESB_DIR/../upexps/yyyymm_s4xx
+ **
+ **  This macro generates a root file with all the data at mapped level using
+ **  a lmd file as input
+ **
+ **  Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
+ **  @since May 4th, 2021
+ **
+ **/
 
 typedef struct EXT_STR_h101_t
 {
@@ -38,26 +38,35 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRS2_t wrs2;
 } EXT_STR_h101;
 
-//  const Int_t nev = -1; number of events to read, -1 - until CTRL+C
+/**
+ **  const Int_t nev = -1; number of events to read, -1 - until CTRL+C
+ **  Select experiment ID: 444, 467 or 455
+ **
+ **  After defining the input file (filename), execute the macro
+ **  1) if all the parameters are right by default
+ **     root -l unpack_offline.C
+ **  2) if one wants to select a RunId, for instance 'RunId = 273'
+ **     root -l 'unpack_offline.C(273)'
+ **  3) if one wants to select a RunId and max number of events,
+ **     for instance 'RunId = 273' and 'nev = 200'
+ **     root -l 'unpack_offline.C(273,200)'
+ **  4) if one wants to select a RunId, max number of events and ExpId,
+ **     for instance 'RunId = 273', 'nev = 200', and 'ExpId = 444'
+ **     root -l 'unpack_offline.C(273,200,444)'
+ **
+ **/
 
-void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
+void unpack_offline(const Int_t fRunId = 273, const Int_t nev = -1, const Int_t fExpId = 455)
 {
-
-    TString cRunId =Form ("%04d", fRunId);
+    TString cRunId = Form("%04d", fRunId);
+    TString cExpId = Form("%03d", fExpId);
 
     TStopwatch timer;
-    timer.Start();
 
     auto t = std::time(nullptr);
     auto tm = *std::localtime(&t);
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
-
-    // *********************************** //
-    // PLEASE CHANGE THE EXPERIMENT NUMBER //
-    // *********************************** //
-    const Int_t expId = 455; // select experiment: 444, 467 or 455
-    // *********************************** //
 
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2;
@@ -67,7 +76,7 @@ void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
-    if (expId == 455)
+    if (fExpId == 455)
     {
         NumSofSci = 1;
         IdS2 = 0;
@@ -75,11 +84,11 @@ void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
         sofiaWR_ME = 0xf00;
 
         // Input file
-        filename = "~/lmd/s455/main0273_0010_stitched.lmd";
+        filename = "~/lmd/s455/main" + cRunId + "_*_stitched.lmd";
 
         TString outputpath = "/path/to/your/disk/";
-        // outputFilename = outputpath + "s455_map_data_offline_" + oss.str() + ".root";
-        outputFilename = "s455_map_data_offline_" + oss.str() + ".root";
+        // outputFilename = outputpath + "s"+cExpId+"_map_data_offline_" + oss.str() + ".root";
+        outputFilename = "s" + cExpId + "_map_data_offline_" + oss.str() + ".root";
 
         upexps_dir = ucesb_dir + "/../upexps"; // for local computers
         // upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
@@ -117,23 +126,9 @@ void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
 
-    // Calibration files for SOFIA ----------------------------------------------
-    TString sofiacalfilename = sofiacaldir + "CalibParam.par";
-    sofiacalfilename.ReplaceAll("//", "/");
-    // Parameters for CALIFA mapping  -------------------------------------------
-    TString califadir = dir + "/macros/r3b/unpack/s455/califa/parameters/";
-    TString califamapfilename = califadir + "Califa_Mapping_3March2021.par";
-    califamapfilename.ReplaceAll("//", "/");
-    // Parameters for CALIFA calibration in keV  --------------------------------
-    TString califacalfilename = califadir + "Califa_CalPar_4March2021.par";
-    califacalfilename.ReplaceAll("//", "/");
-    // Parameters for AMS   -----------------------------------------------------
-    TString amscalfilename = sofiacaldir + "Ams_CalPar_20210312.par";
-    amscalfilename.ReplaceAll("//", "/");
-
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
-    
+
     // Create online run ------------------------------------
     FairRunOnline* run = new FairRunOnline();
     R3BEventHeader* EvntHeader = new R3BEventHeader();
@@ -164,7 +159,7 @@ void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
     R3BSofWhiterabbitReader* unpackWRSofia;
     R3BWhiterabbitNeulandReader* unpackWRNeuland;
 
-   // Add readers ------------------------------------------
+    // Add readers ------------------------------------------
     source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
     source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
 
@@ -289,6 +284,7 @@ void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
     run->SetSource(source);
 
     // Initialize -------------------------------------------
+    timer.Start();
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("INFO");
 
@@ -297,11 +293,11 @@ void unpack_offline(const Int_t nev = -1, const Int_t fRunId = 1)
 
     // Finish -----------------------------------------------
     timer.Stop();
-    Double_t rtime = timer.RealTime();
-    Double_t ctime = timer.CpuTime();
+    Double_t rtime = timer.RealTime() / 60.;
+    Double_t ctime = timer.CpuTime() / 60.;
     std::cout << std::endl << std::endl;
     std::cout << "Macro finished succesfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
-    std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
+    std::cout << "Real time " << rtime << " min, CPU time " << ctime << " min" << std::endl << std::endl;
     gApplication->Terminate();
 }

@@ -5,9 +5,12 @@
 // ----------------------------------------------------------------------
 
 #include "R3BSofFragmentAnalysis.h"
+#include "R3BSofMwpcHitData.h"
+#include "R3BSofTofWHitData.h"
+#include "R3BSofTrackingData.h"
+#include "R3BSofTwimHitData.h"
 
 Double_t const c = 29.9792458;
-TVector3 v1;
 
 // R3BSofFragmentAnalysis: Default Constructor --------------------------
 R3BSofFragmentAnalysis::R3BSofFragmentAnalysis()
@@ -225,11 +228,7 @@ InitStatus R3BSofFragmentAnalysis::ReInit()
 void R3BSofFragmentAnalysis::Exec(Option_t* option)
 {
     // Reset entries in output arrays, local arrays
-    Double_t fZ = 0., fE = 0., fAq = 0.;
-    Double_t Beta = 0., Brho_Cave = 0., Length = 0.;
-    Double_t ToF_Cave = 0.;
-    Double_t mw[4][4] = { { -5000. } }; // mwpc[ID:0-4][x,y,a,b]
-    Int_t Paddle = 0;
+    Reset();
 
     Int_t nHitMwpc0 = fMwpc0HitDataCA->GetEntries();
     Int_t nHitMwpc1 = fMwpc1HitDataCA->GetEntries();
@@ -237,16 +236,22 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     Int_t nHitMwpc3 = fMwpc3HitDataCA->GetEntries();
     Int_t nHitTofW = fTofWHitDataCA->GetEntries();
     Int_t nHitTwim = fTwimHitDataCA->GetEntries();
-    HitTofW = new R3BSofTofWHitData*[nHitTofW];
-    HitTwim = new R3BSofTwimHitData*[nHitTwim];
-    HitMwpc0 = new R3BSofMwpcHitData*[nHitMwpc0];
-    HitMwpc1 = new R3BSofMwpcHitData*[nHitMwpc1];
-    HitMwpc2 = new R3BSofMwpcHitData*[nHitMwpc2];
-    HitMwpc3 = new R3BSofMwpcHitData*[nHitMwpc3];
 
     if (nHitMwpc0 < 1 || nHitMwpc1 < 1 || nHitMwpc2 < 1 || nHitMwpc3 < 1 || nHitTofW < 1 || nHitTwim < 1)
         return;
-    // LOG(INFO) << "R3BSofFragmentAnalysis: nTwim: "<< nHitTwim << ", nTofW: " << nHitTofW << ", nMwpc: " << nHitMwpc ;
+
+    Double_t fZ = 0., fE = 0., fAq = 0.;
+    Double_t Beta = 0., Brho_Cave = 0., Length = 0.;
+    Double_t ToF_Cave = 0.;
+    Double_t mw[4][4] = { { -5000. } }; // mwpc[ID:0-4][x,y,a,b]
+    Int_t Paddle = 0;
+
+    R3BSofTofWHitData** HitTofW = new R3BSofTofWHitData*[nHitTofW];
+    R3BSofTwimHitData** HitTwim = new R3BSofTwimHitData*[nHitTwim];
+    R3BSofMwpcHitData** HitMwpc0 = new R3BSofMwpcHitData*[nHitMwpc0];
+    R3BSofMwpcHitData** HitMwpc1 = new R3BSofMwpcHitData*[nHitMwpc1];
+    R3BSofMwpcHitData** HitMwpc2 = new R3BSofMwpcHitData*[nHitMwpc2];
+    R3BSofMwpcHitData** HitMwpc3 = new R3BSofMwpcHitData*[nHitMwpc3];
 
     for (Int_t i = 0; i < nHitMwpc1; i++)
     {
@@ -315,16 +320,6 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     // Fill the data
     if (true) // if (fZ > 1 && fAq > 1. && Brho_Cave > 0. && Beta > 0.)
         AddData(fZ + fOffsetZ, fAq + fOffsetAq, Beta, Length, Brho_Cave, Paddle);
-    return;
-}
-
-// -----   Protected method Finish   --------------------------------------------
-void R3BSofFragmentAnalysis::Finish() {}
-
-// -----   Public method Reset also called by FinishEvent()   -------------------
-void R3BSofFragmentAnalysis::Reset()
-{
-    LOG(DEBUG) << "Clearing SofTrackingData Structure";
 
     if (HitTofW)
         delete HitTofW;
@@ -339,6 +334,16 @@ void R3BSofFragmentAnalysis::Reset()
     if (HitTwim)
         delete HitTwim;
 
+    return;
+}
+
+// -----   Protected method Finish   --------------------------------------------
+void R3BSofFragmentAnalysis::Finish() {}
+
+// -----   Public method Reset also called by FinishEvent()   -------------------
+void R3BSofFragmentAnalysis::Reset()
+{
+    LOG(DEBUG) << "Clearing SofTrackingData Structure";
     if (fTrackingDataCA)
         fTrackingDataCA->Clear();
 }

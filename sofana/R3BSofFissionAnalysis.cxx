@@ -94,7 +94,7 @@ void R3BSofFissionAnalysis::SetParContainers()
     fGladPar = (R3BSofGladFieldPar*)rtdb->getContainer("GladFieldPar");
     if (!fGladPar)
     {
-        LOG(ERROR) << "R3BSofFragmentAnaPar::Init() Couldn't get handle on GladFieldPar container";
+        LOG(ERROR) << "R3BSofFissionAnalysis::SetParContainers() Couldn't get handle on GladFieldPar container";
     }
 
     fMw0GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
@@ -149,62 +149,70 @@ void R3BSofFissionAnalysis::SetParContainers()
     }
     else
         LOG(INFO) << "R3BSofFissionAnalysis::SetParContainers() : Container TofwGeoPar found.";
+    return;
 }
 
 // -----   Private method SetParameter   -----------------------------------
 void R3BSofFissionAnalysis::SetParameter()
 {
-
     fFieldCentre = fGladPar->GetFieldCentre();
     fEffLength = fGladPar->GetEffectiveLength();
     fBfield_Glad = fGladPar->GetMagneticField();
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofFissionAnalysis::Init()
 {
-    LOG(INFO) << "R3BSofFissionAnalysis: Init tracking analysis at Cave-C";
+    LOG(INFO) << "R3BSofFissionAnalysis::Init() tracking analysis at Cave-C";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
     if (!rootManager)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() FairRootManager not found";
         return kFATAL;
     }
 
     fMwpc0HitDataCA = (TClonesArray*)rootManager->GetObject("Mwpc0HitData");
     if (!fMwpc0HitDataCA)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() Mwpc0HitData not found";
         return kFATAL;
     }
 
     fTwimHitDataCA = (TClonesArray*)rootManager->GetObject("TwimHitData");
     if (!fTwimHitDataCA)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() TwimHitData not found";
         return kFATAL;
     }
 
     fMwpc1HitDataCA = (TClonesArray*)rootManager->GetObject("Mwpc1HitData");
     if (!fMwpc1HitDataCA)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() Mwpc1HitData not found";
         return kFATAL;
     }
 
     fMwpc2HitDataCA = (TClonesArray*)rootManager->GetObject("Mwpc2HitData");
     if (!fMwpc2HitDataCA)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() Mwpc2HitData not found";
         return kFATAL;
     }
 
     fMwpc3HitDataCA = (TClonesArray*)rootManager->GetObject("Mwpc3HitData");
     if (!fMwpc3HitDataCA)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() Mwpc3HitData not found";
         return kFATAL;
     }
 
     fTofWHitDataCA = (TClonesArray*)rootManager->GetObject("TofWHitData");
     if (!fTofWHitDataCA)
     {
+        LOG(FATAL) << "R3BSofFissionAnalysis::Init() TofWHitData not found";
         return kFATAL;
     }
 
@@ -230,18 +238,28 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
     // Reset entries in output arrays, local arrays
     Reset();
 
-    double Length = 0.;
-    double Brho = 0.;
-    int pdid[2] = { 0, 0 };
-    double tof[2] = { 0., 0. };
-    double zf[2] = { 0., 0. };
-
     Int_t nHitMwpc0 = fMwpc0HitDataCA->GetEntries();
     Int_t nHitTwim = fTwimHitDataCA->GetEntries();
     Int_t nHitMwpc1 = fMwpc1HitDataCA->GetEntries();
     Int_t nHitMwpc2 = fMwpc2HitDataCA->GetEntries();
     Int_t nHitMwpc3 = fMwpc3HitDataCA->GetEntries();
     Int_t nHitTofW = fTofWHitDataCA->GetEntries();
+
+    if (nHitTwim == 0 || nHitTofW == 0 || nHitMwpc1 == 0 || nHitMwpc2 == 0 || nHitMwpc3 == 0)
+        return;
+
+    Double_t Length = 0.;
+    Double_t Brho = 0.;
+    Int_t pdid[2];
+    Double_t tof[2];
+    Double_t zf[2];
+
+    for (Int_t j = 0; j < 2; j++)
+    {
+        pdid[j] = 0;
+        tof[j] = 0.;
+        zf[j] = 0.;
+    }
 
     R3BSofMwpcHitData** HitMwpc0 = new R3BSofMwpcHitData*[nHitMwpc0];
     R3BSofTwimHitData** HitTwim = new R3BSofTwimHitData*[nHitTwim];
@@ -348,8 +366,8 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
         Brho = GetBrho(pos1[0].X() / 10., pos2[0].X() / 10., pos3[0].X() / 10.);
         // Length = sqrt(Length*Length + pos3.Y()*pos3.Y()/100.);
         // std::cout<<"1: "<<Length<<" "<< Brho<<" "<< tof[0] <<std::endl;
-        double v = Length / tof[0] / c;
-        double gamma = 1. / sqrt(1. - v * v);
+        Double_t v = Length / tof[0] / c;
+        Double_t gamma = 1. / sqrt(1. - v * v);
         AddData(zf[0], Brho / v / gamma / 3.107, v, Length, Brho, pdid[0]);
     }
 
@@ -358,11 +376,13 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
         Length = GetLength(pos1[1].X() / 10., pos2[1].X() / 10., pos3[1].X() / 10.);
         Brho = GetBrho(pos1[1].X() / 10., pos2[1].X() / 10., pos3[1].X() / 10.);
         // Length = sqrt(Length*Length + pos3.Y()*pos3.Y()/100.);
-        double v = Length / tof[1] / c;
-        double gamma = 1. / sqrt(1. - v * v);
+        Double_t v = Length / tof[1] / c;
+        Double_t gamma = 1. / sqrt(1. - v * v);
         AddData(zf[1], Brho / v / gamma / 3.107, v, Length, Brho, pdid[1]);
     }
 
+    if (HitTwim)
+        delete HitTwim;
     if (HitMwpc0)
         delete HitMwpc0;
     if (HitMwpc1)
@@ -371,6 +391,8 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
         delete HitMwpc2;
     if (HitMwpc3)
         delete HitMwpc3;
+    if (HitTofW)
+        delete HitTofW;
     return;
 }
 
@@ -378,24 +400,24 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
 Double_t R3BSofFissionAnalysis::GetLength(Double_t mw1, Double_t mw2, Double_t mw3)
 {
     Double_t length = 0.;
-    double L = fEffLength; // cm
-    double alpha = -14. * TMath::DegToRad();
-    double beta = -20. * TMath::DegToRad();
+    Double_t L = fEffLength; // cm
+    Double_t alpha = -14. * TMath::DegToRad();
+    Double_t beta = -20. * TMath::DegToRad();
 
-    double theta = atan((mw2 - mw1) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()));
+    Double_t theta = atan((mw2 - mw1) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()));
 
     // std::cout<<mw1<<" "<<mw2<<" "<<fMw1GeoPar->GetPosZ()<<" "<<fMw2GeoPar->GetPosZ()<<std::endl;
     // std::cout<<alpha<<" "<<theta<<std::endl;
 
-    double xc = 1. / (1. + tan(alpha) * tan(theta)) * (mw1 + (fFieldCentre - fMw1GeoPar->GetPosZ()) * tan(theta));
-    double zc = fFieldCentre - xc * tan(alpha);
+    Double_t xc = 1. / (1. + tan(alpha) * tan(theta)) * (mw1 + (fFieldCentre - fMw1GeoPar->GetPosZ()) * tan(theta));
+    Double_t zc = fFieldCentre - xc * tan(alpha);
 
     TVector3 posc = { xc, 0., zc };
 
     // std::cout<<"c: "<<xc<<" "<<zc<<std::endl;
 
-    double xb = xc - L / 2. * sin(theta) / cos(theta - alpha);
-    double zb = zc - L / 2. * cos(theta) / cos(theta - alpha);
+    Double_t xb = xc - L / 2. * sin(theta) / cos(theta - alpha);
+    Double_t zb = zc - L / 2. * cos(theta) / cos(theta - alpha);
 
     TVector3 posb = { xb, 0., zb };
 
@@ -415,19 +437,19 @@ Double_t R3BSofFissionAnalysis::GetLength(Double_t mw1, Double_t mw2, Double_t m
 
     auto pos3 = pos2 - posc;
 
-    double eta = atan(pos3.X() / pos3.Z());
+    Double_t eta = atan(pos3.X() / pos3.Z());
 
     // std::cout<<eta<<std::endl;
 
-    double xd = xc + L / 2. * sin(eta) / cos(eta + alpha);
-    double zd = zc + L / 2. * cos(eta) / cos(eta + alpha);
+    Double_t xd = xc + L / 2. * sin(eta) / cos(eta + alpha);
+    Double_t zd = zc + L / 2. * cos(eta) / cos(eta + alpha);
 
     TVector3 posd = { xd, 0., zd };
 
     // std::cout<<"d: "<<xd<<" "<<zd<<std::endl;
 
-    double xf = pos2.X() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * sin(eta) / cos(eta - beta);
-    double zf = pos2.Z() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * cos(eta) / cos(eta - beta);
+    Double_t xf = pos2.X() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * sin(eta) / cos(eta - beta);
+    Double_t zf = pos2.Z() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * cos(eta) / cos(eta - beta);
 
     TVector3 posf = { xf, 0., zf };
 
@@ -435,12 +457,12 @@ Double_t R3BSofFissionAnalysis::GetLength(Double_t mw1, Double_t mw2, Double_t m
 
     // double rho = -0.5*L/sin((eta-theta)/2.0)/cos(alpha-(theta+eta)/2.0);
 
-    double rho = 0.5 * L / sin((theta - eta) / 2.0);
+    Double_t rho = 0.5 * L / sin((theta - eta) / 2.0);
 
     // double omega = 2.0/sin(sqrt( (posd.Z()-posb.Z())*(posd.Z()-posb.Z()) + (posd.X()-posb.X())*(posd.X()-posb.X())
     // )/2.0/rho);
 
-    double omega =
+    Double_t omega =
         2.0 * asin(sqrt((posd.Z() - posb.Z()) * (posd.Z() - posb.Z()) + (posd.X() - posb.X()) * (posd.X() - posb.X())) /
                    2.0 / rho);
 
@@ -457,20 +479,20 @@ Double_t R3BSofFissionAnalysis::GetBrho(Double_t mw1, Double_t mw2, Double_t mw3
 {
     Double_t brho = 0.;
 
-    double L = fEffLength; // cm
-    double alpha = -14. * TMath::DegToRad();
-    double beta = -20. * TMath::DegToRad();
-    double theta = atan((mw2 - mw1) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()));
+    Double_t L = fEffLength; // cm
+    Double_t alpha = -14. * TMath::DegToRad();
+    Double_t beta = -20. * TMath::DegToRad();
+    Double_t theta = atan((mw2 - mw1) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()));
 
-    double xc = 1. / (1. + tan(alpha) * tan(theta)) * (mw1 + (fFieldCentre - fMw1GeoPar->GetPosZ()) * tan(theta));
-    double zc = fFieldCentre - xc * tan(alpha);
+    Double_t xc = 1. / (1. + tan(alpha) * tan(theta)) * (mw1 + (fFieldCentre - fMw1GeoPar->GetPosZ()) * tan(theta));
+    Double_t zc = fFieldCentre - xc * tan(alpha);
 
     TVector3 posc = { xc, 0., zc };
 
     // std::cout<<"c: "<<xc<<" "<<zc<<std::endl;
 
-    double xb = xc - L / 2. * sin(theta) / cos(theta - alpha);
-    double zb = zc - L / 2. * cos(theta) / cos(theta - alpha);
+    Double_t xb = xc - L / 2. * sin(theta) / cos(theta - alpha);
+    Double_t zb = zc - L / 2. * cos(theta) / cos(theta - alpha);
 
     TVector3 posb = { xb, 0., zb };
 
@@ -491,25 +513,25 @@ Double_t R3BSofFissionAnalysis::GetBrho(Double_t mw1, Double_t mw2, Double_t mw3
 
     auto pos3 = pos2 - posc;
 
-    double eta = atan(pos3.X() / pos3.Z());
+    Double_t eta = atan(pos3.X() / pos3.Z());
 
     // std::cout<<eta<<std::endl;
 
-    double xd = xc + L / 2. * sin(eta) / cos(eta + alpha);
-    double zd = zc + L / 2. * cos(eta) / cos(eta + alpha);
+    Double_t xd = xc + L / 2. * sin(eta) / cos(eta + alpha);
+    Double_t zd = zc + L / 2. * cos(eta) / cos(eta + alpha);
 
     TVector3 posd = { xd, 0., zd };
 
     // std::cout<<"d: "<<xd<<" "<<zd<<std::endl;
 
-    double xf = pos2.X() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * sin(eta) / cos(eta - beta);
-    double zf = pos2.Z() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * cos(eta) / cos(eta - beta);
+    Double_t xf = pos2.X() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * sin(eta) / cos(eta - beta);
+    Double_t zf = pos2.Z() + (fTofWGeoPar->GetPosZ() - fMw3GeoPar->GetPosZ()) * cos(eta) / cos(eta - beta);
 
     TVector3 posf = { xf, 0., zf };
 
     // std::cout<<"f: "<<xf<<" "<<zf<<std::endl;
 
-    double rho = 0.5 * L / sin((theta - eta) / 2.0);
+    Double_t rho = 0.5 * L / sin((theta - eta) / 2.0);
 
     brho = rho * fBfield_Glad;
 

@@ -64,7 +64,7 @@ corrData/R3BSofCorrvMappedData.cxx
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 SET(HEADERS ${HEADERS} ${R3BROOT_SOURCE_DIR}/r3bdata/R3BDetectorList.h )
 
-set(LINKDEF  R3BSofDataLinkDef.h)
+set(LINKDEF  SofDataLinkDef.h)
 set(LIBRARY_NAME R3BSofData)
 set(DEPENDENCIES
     Base FairTools R3Bbase R3BData Core m)

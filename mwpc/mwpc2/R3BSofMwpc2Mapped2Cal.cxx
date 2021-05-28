@@ -80,11 +80,11 @@ void R3BSofMwpc2Mapped2Cal::SetParContainers()
     {
         LOG(INFO) << "R3BSofMwpc2Mapped2Cal:: mwpc2CalPar container open";
     }
+    return;
 }
 
 void R3BSofMwpc2Mapped2Cal::SetParameter()
 {
-
     //--- Parameter Container ---
     NumPadX = fCal_Par->GetNumPadsX();           // Number of Pads in X
     NumPadY = fCal_Par->GetNumPadsY();           // Number of Pads in Y
@@ -98,12 +98,13 @@ void R3BSofMwpc2Mapped2Cal::SetParameter()
     Int_t array_size = (NumPadX + NumPadY) * NumParams;
     CalParams->Set(array_size);
     CalParams = fCal_Par->GetPadCalParams(); // Array with the Cal parameters
+    return;
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofMwpc2Mapped2Cal::Init()
 {
-    LOG(INFO) << "R3BSofMwpc2Mapped2Cal: Init";
+    LOG(INFO) << "R3BSofMwpc2Mapped2Cal::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -121,15 +122,7 @@ InitStatus R3BSofMwpc2Mapped2Cal::Init()
     // OUTPUT DATA
     // Calibrated data
     fMwpcCalDataCA = new TClonesArray("R3BSofMwpcCalData", 10);
-
-    if (!fOnline)
-    {
-        rootManager->Register("Mwpc2CalData", "MWPC2 Cal", fMwpcCalDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("Mwpc2CalData", "MWPC2 Cal", fMwpcCalDataCA, kFALSE);
-    }
+    rootManager->Register("Mwpc2CalData", "MWPC2 Cal", fMwpcCalDataCA, !fOnline);
 
     SetParameter();
     return kSUCCESS;
@@ -156,13 +149,12 @@ void R3BSofMwpc2Mapped2Cal::Exec(Option_t* option)
 
     // Reading the Input -- Mapped Data --
     Int_t nHits = fMwpcMappedDataCA->GetEntries();
-    if (nHits > (NumPadX + NumPadY) && nHits > 0)
+    if (nHits > (NumPadX + NumPadY))
         LOG(WARNING) << "R3BSofMwpc2Mapped2Cal: nHits>(NumPadX+NumPadY)";
     if (!nHits)
         return;
 
-    R3BSofMwpcMappedData** mappedData;
-    mappedData = new R3BSofMwpcMappedData*[nHits];
+    R3BSofMwpcMappedData** mappedData = new R3BSofMwpcMappedData*[nHits];
     Int_t planeId = 0;
     Int_t padId = 0;
     Float_t charge = 0.0;

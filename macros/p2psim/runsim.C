@@ -1,19 +1,23 @@
-//--------------------------------------------------------------------
-//
-// Define the SOFIA simulation setup for p2p-fission experiments
-// Author: <joseluis.rodriguez.sanchez@usc.es>
-//
-// Last Update: 26/12/19
-// Comments:
-//         - 29/10/19 : Initial setup
-//         - 26/12/19 : Added new califa tasks and mwpc0 geometry
-//         - 05/01/21 : Added container with detector parameters
-//
-//--------------------------------------------------------------------
+/** --------------------------------------------------------------------
+ **
+ **  Define the SOFIA simulation setup for p2p-fission experiments
+ **  Author: <joseluis.rodriguez.sanchez@usc.es>
+ **
+ **  Last Update: 26/12/19
+ **  Comments:
+ **         - 29/10/19 : Initial setup
+ **         - 26/12/19 : Added new califa tasks and mwpc0 geometry
+ **         - 05/01/21 : Added container with detector parameters
+ **
+ **  Execute it as follows:
+ **  root -l 'runsim.C(1000)'
+ **  where 1000 means the number of events
+ **
+ **/
 
 void runsim(Int_t nEvents = 0)
 {
-    // =========== Configuration area =============================
+    // ----------- Configuration area ----------------------------------
 
     TString OutFile = "sim.root"; // Output file for data
     TString ParFile = "par.root"; // Output file for params
@@ -25,7 +29,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fCalifaHitFinder = true; // Apply hit finder task
     Bool_t fSofiaDigitizer = true;  // Apply hit digitizer task
 
-    // MonteCarlo engine: TGeant3, TGeant4, TFluka
+    // MonteCarlo engine: TGeant3, TGeant4, TFluka  --------------------
     TString fMC = "TGeant4";
 
     // Event generator type: box for particles or ascii for p2p-fission
@@ -41,7 +45,7 @@ void runsim(Int_t nEvents = 0)
     Double_t fMeasCurrent = 2000.; // Magnetic field current
     Float_t fFieldScale = -0.82;   // Magnetic field scale factor
 
-    // ---------------  Detector selection: true - false ----------------------
+    // ---------  Detector selection: true - false ---------------------
     // ---- R3B and SOFIA detectors as well as passive elements
 
     Bool_t fR3BMusic = true; // R3B Music Detector
@@ -114,6 +118,8 @@ void runsim(Int_t nEvents = 0)
     FairRunSim* run = new FairRunSim();
     run->SetName(fMC);                           // Transport engine
     run->SetSink(new FairRootFileSink(OutFile)); // Output file
+    
+    // -----   Runtime data base   --------------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
     // -----   Load detector parameters    ------------------------------------
@@ -473,13 +479,13 @@ void runsim(Int_t nEvents = 0)
 
     // -----   Finish   -------------------------------------------------------
     timer.Stop();
-    Double_t rtime = timer.RealTime();
-    Double_t ctime = timer.CpuTime();
+    Double_t rtime = timer.RealTime() / 60.;
+    Double_t ctime = timer.CpuTime() / 60.;
     cout << endl << endl;
     cout << "Macro finished succesfully." << endl;
     cout << "Output file is " << OutFile << endl;
     cout << "Parameter file is " << ParFile << endl;
-    cout << "Real time " << rtime << " s, CPU time " << ctime << "s" << endl << endl;
+    cout << "Real time " << rtime << " min, CPU time " << ctime << " min" << endl << endl;
 
     cout << " Test passed" << endl;
     cout << " All ok " << endl;
