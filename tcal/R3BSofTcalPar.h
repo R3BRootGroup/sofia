@@ -1,11 +1,11 @@
-#ifndef __R3BSOFTCALPAR_H__
-#define __R3BSOFTCALPAR_H__
+#ifndef R3BSOFTCALPAR_H
+#define R3BSOFTCALPAR_H
 
-#include "FairParGenericSet.h" // for FairParGenericSet
+#include "FairParGenericSet.h"
+#include "TObject.h"
 
 #include "TArrayF.h"
 #include "TObjArray.h"
-#include "TObject.h"
 #include <TObjString.h>
 
 class FairParamList;
@@ -80,4 +80,4 @@ class R3BSofTcalPar : public FairParGenericSet
     ClassDef(R3BSofTcalPar, 1);
 };
 
-#endif //__R3BSOFTCALPAR_H__
+#endif // R3BSOFTCALPAR_H

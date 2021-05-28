@@ -147,3 +147,5 @@ void R3BSofTrimCalPar::printParams()
         }
     }
 }
+
+ClassImp(R3BSofTrimCalPar)

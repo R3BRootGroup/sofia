@@ -7,11 +7,13 @@
 
 #pragma link C++ class R3BSofTcalContFact+;
 #pragma link C++ class R3BSofTcalPar+;
-#pragma link C++ class R3BSofSciMapped2TcalPar+;
-#pragma link C++ class R3BSofSciMapped2Tcal+;
-#pragma link C++ class R3BSofTofWMapped2TcalPar+;
-#pragma link C++ class R3BSofTofWMapped2Tcal+;
-#pragma link C++ class R3BSofiaProvideTStart+;
 
+#pragma link C++ class R3BSofSciMapped2TcalPar+;
+#pragma link C++ class R3BSofTofWMapped2TcalPar+;
+
+#pragma link C++ class R3BSofSciMapped2Tcal+;
+#pragma link C++ class R3BSofTofWMapped2Tcal+;
+
+#pragma link C++ class R3BSofiaProvideTStart+;
 
 #endif
