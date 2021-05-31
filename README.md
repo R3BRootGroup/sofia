@@ -143,6 +143,12 @@ root -l sim.root
 
 This directory contains the macros to simulate the (p,2p)-fission experiment. 
 
+<p align="center">
+  <img src="/input/p2p_r3bsetup.jpg" width="650" title="(p,2p)-fission experiment">
+</p>
+
+First, load the environment variables
+
 ~~~bash
 cd %BUILD_DIRECTORY_FOR_R3BROOT%
 . ./config.sh

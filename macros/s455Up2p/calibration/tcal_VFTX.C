@@ -97,7 +97,7 @@ void tcal_VFTX(const Int_t nev = -1)
     R3BSofTofWMapped2TcalPar* tofwTcalibrator = new R3BSofTofWMapped2TcalPar("R3BSofTofWMapped2TcalPar");
     tofwTcalibrator->SetNumDetectors(28);
     tofwTcalibrator->SetNumChannels(2);
-    tofwTcalibrator->SetMinStatistics(10000);
+    tofwTcalibrator->SetMinStatistics(25000);
     run->AddTask(tofwTcalibrator);
 
     // Initialize -------------------------------------------
