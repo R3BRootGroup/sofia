@@ -27,6 +27,8 @@
  **
  **/
 
+TString lookforfile();
+
 void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpId = 455)
 {
     TString cRunId = Form("%04d", fRunId);
@@ -46,7 +48,10 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fExpId == 455)
     {
         // Input file
-        filename = "s455_map_data_offline_20210530_114634.root";
+        filename = "s455_map_data_offline_2021.root";
+
+        if (fRunId == 1 && nev == 100000) // This is for tests
+            filename = lookforfile();
 
         TString outputpath = "/path/to/your/disk/";
         // outputFilename = outputpath + "s" + cExpId + "_cal_data_offline_" + oss.str() + ".root";
@@ -62,9 +67,6 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
 
     // store data or not ------------------------------------
     Bool_t fCal_level_califa = false;  // set true if there exists a file with the calibration parameters
-    Bool_t NOTstoremappeddata = false; // if true, don't store mapped data in the root file
-    Bool_t NOTstorecaldata = false;    // if true, don't store cal data in the root file
-    Bool_t NOTstorehitdata = false;    // if true, don't store hit data in the root file
 
     // Setup: Selection of detectors ----------------------------------------------------
     // --- R3B standard -----------------------------------------------------------------
@@ -148,11 +150,9 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fMwpc0)
     {
         R3BSofMwpc0Mapped2Cal* MW0Map2Cal = new R3BSofMwpc0Mapped2Cal();
-        MW0Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW0Map2Cal);
 
         R3BSofMwpc0Cal2Hit* MW0Cal2Hit = new R3BSofMwpc0Cal2Hit();
-        MW0Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW0Cal2Hit);
     }
 
@@ -161,22 +161,18 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     {
         // --- Mapped 2 Tcal for SofSci
         R3BSofSciMapped2Tcal* SofSciMap2Tcal = new R3BSofSciMapped2Tcal();
-        SofSciMap2Tcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciMap2Tcal);
 
         // --- Tcal 2 SingleTcal for SofSci
         R3BSofSciTcal2SingleTcal* SofSciTcal2STcal = new R3BSofSciTcal2SingleTcal();
-        SofSciTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciTcal2STcal);
 
         // --- SingleTcal 2 Cal for SofSci
         R3BSofSciSingleTcal2Cal* SofSciSTcal2Cal = new R3BSofSciSingleTcal2Cal();
-        SofSciSTcal2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(SofSciSTcal2Cal);
 
         // --- SingleTcal 2 Hit for SofSci
         R3BSofSciSingleTcal2Hit* SofSciSTcal2Hit = new R3BSofSciSingleTcal2Hit();
-        SofSciSTcal2Hit->SetOnline(NOTstorehitdata);
         SofSciSTcal2Hit->SetCalParams(675., -1922.); // ToF calibration at Cave-C
         run->AddTask(SofSciSTcal2Hit);
     }
@@ -186,12 +182,10 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     {
         // --- Mapped 2 Cal
         R3BSofTrimMapped2Cal* SofTrimMap2Cal = new R3BSofTrimMapped2Cal();
-        SofTrimMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(SofTrimMap2Cal);
 
         // --- Cal 2 Hit
         R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
-        SofTrimCal2Hit->SetOnline(NOTstorehitdata);
         SofTrimCal2Hit->SetExpId(fExpId);
         SofTrimCal2Hit->SetCoulex(kFALSE);
         SofTrimCal2Hit->SetTriShape(kTRUE);
@@ -205,10 +199,8 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
         R3BWhiterabbitPropagator* wrams = new R3BWhiterabbitPropagator("AmsWhiterabbitPropagator", 1, "WRAms");
         run->AddTask(wrams);
         R3BAmsMapped2StripCal* AmsMap2Cal = new R3BAmsMapped2StripCal();
-        AmsMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(AmsMap2Cal);
         R3BAmsStripCal2Hit* AmsCal2Hit = new R3BAmsStripCal2Hit();
-        AmsCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(AmsCal2Hit);
     }
 
@@ -220,14 +212,12 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
         run->AddTask(wrcalifa);
         // R3BCalifaMapped2CrystalCal ---
         R3BCalifaMapped2CrystalCal* CalifaMap2Cal = new R3BCalifaMapped2CrystalCal();
-        CalifaMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(CalifaMap2Cal);
         // R3BCalifaCrystalCal2Hit ---
         R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
         CalifaCal2Hit->SetCrystalThreshold(350.); // 100keV
         CalifaCal2Hit->SetDRThreshold(20000.);    // 10MeV
         CalifaCal2Hit->SelectGeometryVersion(2021);
-        CalifaCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(CalifaCal2Hit);
     }
 
@@ -235,11 +225,9 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fMwpc1)
     {
         R3BSofMwpc1Mapped2Cal* MW1Map2Cal = new R3BSofMwpc1Mapped2Cal();
-        MW1Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW1Map2Cal);
 
         R3BSofMwpc1Cal2Hit* MW1Cal2Hit = new R3BSofMwpc1Cal2Hit();
-        MW1Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW1Cal2Hit);
     }
 
@@ -247,11 +235,9 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fMwpc2)
     {
         R3BSofMwpc2Mapped2Cal* MW2Map2Cal = new R3BSofMwpc2Mapped2Cal();
-        MW2Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW2Map2Cal);
 
         R3BSofMwpc2Cal2Hit* MW2Cal2Hit = new R3BSofMwpc2Cal2Hit();
-        MW2Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW2Cal2Hit);
     }
 
@@ -259,11 +245,9 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fMwpc3)
     {
         R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
-        MW3Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW3Map2Cal);
 
         R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
-        MW3Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW3Cal2Hit);
     }
 
@@ -272,17 +256,14 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     {
         // --- Mapped 2 Tcal for SofTofW
         R3BSofTofWMapped2Tcal* SofTofWMap2Tcal = new R3BSofTofWMapped2Tcal();
-        SofTofWMap2Tcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofTofWMap2Tcal);
 
         // --- Tcal 2 SingleTcal for SofTofW
         R3BSofTofWTcal2SingleTcal* SofTofWTcal2STcal = new R3BSofTofWTcal2SingleTcal();
-        SofTofWTcal2STcal->SetOnline(NOTstorecaldata);
         run->AddTask(SofTofWTcal2STcal);
 
         // --- SingleTcal 2 Hit for SofTofW
         R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
-        SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
         SofTofWSingleTcal2Hit->SetExpId(fExpId);
         SofTofWSingleTcal2Hit->SetTofLISE(33.);
         run->AddTask(SofTofWSingleTcal2Hit);
@@ -292,12 +273,10 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fTwim)
     {
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
-        TwimMap2Cal->SetOnline(NOTstorecaldata);
         TwimMap2Cal->SetExpId(fExpId);
         run->AddTask(TwimMap2Cal);
 
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
-        TwimCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(TwimCal2Hit);
     }
 
@@ -305,7 +284,6 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fMwpc2 && fMwpc3 && fTofW && fTwim && fSci && fTracking)
     {
         R3BSofFissionAnalysis* TrackingAna = new R3BSofFissionAnalysis();
-        TrackingAna->SetOnline(NOTstorehitdata);
         run->AddTask(TrackingAna);
     }
 
@@ -329,4 +307,31 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " min, CPU time " << ctime << " min" << std::endl << std::endl;
     gApplication->Terminate();
+}
+
+TString lookforfile()
+{
+    // This looks for root files in a directory defined below:
+    TString directory = "./";
+
+    TString filename;
+    TString base = "s455_map_data_offline_([0-9]+)_([0-9]*)\\.root";
+
+    TPRegexp regexp(base);
+
+    std::cout << "Base: " << base << std::endl;
+    std::cout << "Looking for datafiles in " << directory << std::endl;
+    void* dirp = gSystem->OpenDirectory(directory);
+    Char_t* afile;
+    while ((afile = const_cast<Char_t*>(gSystem->GetDirEntry(dirp))))
+    {
+        TObjArray* objArray = regexp.MatchS(afile);
+        if (objArray->At(0))
+        { // match
+            filename = directory + ((TObjString*)objArray->At(0))->GetString();
+            std::cout << "Filename: " << filename << std::endl;
+        }
+        delete objArray;
+    }
+    return filename;
 }
