@@ -13,7 +13,7 @@
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofTcalPar::R3BSofTcalPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
-    , fNumDetectors(1)
+    , fNumDetectors(30)
     , fNumChannels(3)
     , fNumTcalParsPerSignal(1000)
 {
@@ -128,13 +128,12 @@ void R3BSofTcalPar::printParams()
             LOG(INFO) << "---       detector " << d + 1;
             LOG(INFO) << "---       channel " << ch + 1;
             LOG(INFO) << "--- --------------------------------------------";
-            /*
-              for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
-              {
-              cout << "FineTime at Bin (" << bin << ") = " << fAllSignalsTcalParams->GetAt(sig * 1000 + bin)
-              << endl;
-              }
-            */
+
+            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
+            {
+                LOG(DEBUG) << "FineTime at Bin (" << bin
+                           << ") = " << fAllSignalsTcalParams->GetAt(sig * fNumTcalParsPerSignal + bin);
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar()
     , fNumDetectors(28)
     , fNumChannels(2)
     , fNumTcalParsPerSignal(1000)
-    , fMinStatistics(0)
+    , fMinStatistics(100)
     , fMappedTofW(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
@@ -36,7 +36,7 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerb
     , fNumDetectors(28)
     , fNumChannels(2)
     , fNumTcalParsPerSignal(1000)
-    , fMinStatistics(0)
+    , fMinStatistics(100)
     , fMappedTofW(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
@@ -47,6 +47,8 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerb
 // R3BSofTofWMapped2TcalPar: Destructor ----------------------------------------
 R3BSofTofWMapped2TcalPar::~R3BSofTofWMapped2TcalPar()
 {
+    if (fMappedTofW)
+        delete fMappedTofW;
     if (fTcalPar)
         delete fTcalPar;
 }
@@ -59,6 +61,7 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
     {
+        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() FairRootManager not found";
         return kFATAL;
     }
 
@@ -69,6 +72,7 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     fMappedTofW = (TClonesArray*)rm->GetObject("SofTofWMappedData"); // see Instance->Register in R3BSofTofWReader.cxx
     if (!fMappedTofW)
     {
+        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() SofTofWMappedData not found";
         return kFATAL;
     }
 
@@ -79,6 +83,7 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
+        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() FairRuntimeDb not found";
         return kFATAL;
     }
     fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofTofWTcalPar");
@@ -86,13 +91,6 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     {
         LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() Couldn't get handle on SofTofWTcalPar container";
         return kFATAL;
-    }
-    else
-    {
-        fTcalPar->SetNumDetectors(fNumDetectors);
-        fTcalPar->SetNumChannels(fNumChannels);
-        // fTcalPar->SetNumSignals(fNumDetectors, fNumChannels);
-        fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
     }
 
     // --- ---------------------- --- //
@@ -183,6 +181,10 @@ void R3BSofTofWMapped2TcalPar::FinishTask()
 void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
 {
     LOG(INFO) << "R3BSofTofWMapped2TcalPar: CalculateVftxTcalParams()";
+
+    fTcalPar->SetNumDetectors(fNumDetectors);
+    fTcalPar->SetNumChannels(fNumChannels);
+    fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
 
     UInt_t IntegralTot;
     UInt_t IntegralPartial;

@@ -33,6 +33,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 Set(LINKDEF SofTcalLinkDef.h)
 Set(LIBRARY_NAME R3BSofTcal)
 Set(DEPENDENCIES
-    R3Bbase R3BData R3BSofData)
+    R3Bbase R3BData)
 
 GENERATE_LIBRARY()

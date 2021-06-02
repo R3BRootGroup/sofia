@@ -17,15 +17,13 @@
 #include <iostream>
 #include <stdlib.h>
 
-// for the engineering run (fNumSci(1) instead of fNumSci(2)
-
 // R3BSofSciMapped2TcalPar: Default Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar()
     : FairTask("R3BSofSciMapped2TcalPar", 1)
     , fNumSci(2)
     , fNumChannels(3)
     , fNumTcalParsPerSignal(1000)
-    , fMinStatistics(0)
+    , fMinStatistics(100)
     , fMapped(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
@@ -38,7 +36,7 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbos
     , fNumSci(2)
     , fNumChannels(3)
     , fNumTcalParsPerSignal(1000)
-    , fMinStatistics(0)
+    , fMinStatistics(100)
     , fMapped(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
@@ -49,6 +47,8 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbos
 // R3BSofSciMapped2TcalPar: Destructor ----------------------------------------
 R3BSofSciMapped2TcalPar::~R3BSofSciMapped2TcalPar()
 {
+    if (fMapped)
+        delete fMapped;
     if (fTcalPar)
         delete fTcalPar;
 }
@@ -61,6 +61,7 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     FairRootManager* rm = FairRootManager::Instance();
     if (!rm)
     {
+        LOG(ERROR) << "R3BSofSciMapped2TcalPar::Init() FairRootManager not found";
         return kFATAL;
     }
 
@@ -72,7 +73,7 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData"); // see Instance->Register in R3BSofSciReader.cxx
     if (!fMapped)
     {
-        LOG(ERROR) << "R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciMappedData container";
+        LOG(ERROR) << "R3BSofSciMapped2TcalPar::Init() SofSciMappedData not found";
         return kFATAL;
     }
 
@@ -83,6 +84,7 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
+        LOG(ERROR) << "R3BSofSciMapped2TcalPar::Init() FairRuntimeDb not found";
         return kFATAL;
     }
 
@@ -91,13 +93,6 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     {
         LOG(ERROR) << "R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciTcalPar container";
         return kFATAL;
-    }
-    else
-    {
-        fTcalPar->SetNumDetectors(fNumSci);
-        fTcalPar->SetNumChannels(fNumChannels);
-        // fTcalPar->SetNumSignals(fNumSci, fNumChannels);
-        fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
     }
 
     // --- ---------------------- --- //
@@ -230,7 +225,11 @@ void R3BSofSciMapped2TcalPar::FinishTask()
 //------------------
 void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
 {
-    LOG(INFO) << "R3BSofSciMapped2TcalPar: CalculateVftxTcalParams()";
+    LOG(INFO) << "R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()";
+
+    fTcalPar->SetNumDetectors(fNumSci);
+    fTcalPar->SetNumChannels(fNumChannels);
+    fTcalPar->SetNumTcalParsPerSignal(fNumTcalParsPerSignal);
 
     UInt_t IntegralTot;
     UInt_t IntegralPartial;

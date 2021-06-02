@@ -56,10 +56,6 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
     const char* name = c->GetName();
     LOG(INFO) << "R3BSofTofWContFact: Create container name: " << name;
     FairParSet* p = 0;
-    if (strcmp(name, "tofwCalPar") == 0)
-    {
-        // p = new R3BSofTofWCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());//FIXME
-    }
 
     if (strcmp(name, "tofwHitPar") == 0)
     {

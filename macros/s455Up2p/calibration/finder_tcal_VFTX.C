@@ -19,7 +19,7 @@ typedef struct EXT_STR_h101_t
 } EXT_STR_h101;
 
 /* number of events to read, -1 - until CTRL+C */
-void tcal_VFTX(const Int_t nev = -1)
+void finder_tcal_VFTX(const Int_t nev = -1)
 {
     TStopwatch timer;
     timer.Start();
@@ -55,7 +55,7 @@ void tcal_VFTX(const Int_t nev = -1)
     ucesb_path.ReplaceAll("//", "/");
 
     // Output file ------------------------------------------
-    TString outputFileName = "tcaldata.root";
+    TString outputFileName = "data_tcal.root";
 
     // UCESB configuration ----------------------------------
     EXT_STR_h101 ucesb_struct;
@@ -97,7 +97,7 @@ void tcal_VFTX(const Int_t nev = -1)
     R3BSofTofWMapped2TcalPar* tofwTcalibrator = new R3BSofTofWMapped2TcalPar("R3BSofTofWMapped2TcalPar");
     tofwTcalibrator->SetNumDetectors(28);
     tofwTcalibrator->SetNumChannels(2);
-    tofwTcalibrator->SetMinStatistics(25000);
+    tofwTcalibrator->SetMinStatistics(200);
     run->AddTask(tofwTcalibrator);
 
     // Initialize -------------------------------------------
