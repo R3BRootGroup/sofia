@@ -45,6 +45,7 @@
 
 R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra()
     : FairTask("SofSciOnlineSpectra", 1)
+    , fEventHeader(nullptr)
     , fMapped(NULL)
     , fTcal(NULL)
     , fSingleTcal(NULL)
@@ -63,6 +64,7 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra()
 
 R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
+    , fEventHeader(nullptr)
     , fMapped(NULL)
     , fTcal(NULL)
     , fSingleTcal(NULL)
@@ -82,6 +84,8 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
 R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
 {
     LOG(INFO) << "R3BSofSciOnlineSpectra::Delete instance";
+    if (fEventHeader)
+        delete fEventHeader;
     if (fMapped)
         delete fMapped;
     if (fTcal)
@@ -95,7 +99,7 @@ R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
 InitStatus R3BSofSciOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofSciOnlineSpectra::Init ";
+    LOG(INFO) << "R3BSofSciOnlineSpectra::Init()";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -105,6 +109,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         LOG(FATAL) << "R3BSofSciOnlineSpectra::Init FairRootManager not found";
 
     fEventHeader = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
+    if (!fEventHeader)
+        fEventHeader = (R3BEventHeader*)mgr->GetObject("EventHeader.");
 
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);

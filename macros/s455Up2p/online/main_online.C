@@ -29,8 +29,6 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_SOFTOFW_onion_t tofw;
     EXT_STR_h101_SOFSCALERS_onion_t scalers;
 
-    EXT_STR_h101_FRS_t frs;
-
     EXT_STR_h101_WRMASTER_t wrmaster;
     EXT_STR_h101_WRCALIFA_t wrcalifa;
     EXT_STR_h101_WRNEULAND_t wrneuland;
@@ -163,8 +161,6 @@ void main_online()
     source->SetMaxEvents(nev);
 
     // Definition of reader ---------------------------------
-    R3BFrsReaderNov19* unpackfrs;
-
     R3BMusicReader* unpackmusic;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
@@ -188,9 +184,6 @@ void main_online()
     // Add readers ------------------------------------------
     source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
     source->AddReader(new R3BTrloiiTpatReader(&ucesb_struct.unpacktpat, offsetof(EXT_STR_h101, unpacktpat)));
-
-    if (fFrsTpcs)
-        unpackfrs = new R3BFrsReaderNov19((EXT_STR_h101_FRS*)&ucesb_struct.frs, offsetof(EXT_STR_h101, frs));
 
     if (fMusic)
         unpackmusic = new R3BMusicReader((EXT_STR_h101_MUSIC_t*)&ucesb_struct.music, offsetof(EXT_STR_h101, music));
@@ -249,13 +242,6 @@ void main_online()
 
         unpackWRNeuland = new R3BWhiterabbitNeulandReader(
             (EXT_STR_h101_WRNEULAND*)&ucesb_struct.wrneuland, offsetof(EXT_STR_h101, wrneuland), 0x900);
-    }
-
-
-    if (fFrsTpcs)
-    {
-        unpackfrs->SetOnline(NOTstoremappeddata);
-        source->AddReader(unpackfrs);
     }
 
     if (fMusic)
