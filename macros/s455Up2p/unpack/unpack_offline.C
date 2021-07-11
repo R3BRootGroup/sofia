@@ -86,8 +86,8 @@ void unpack_offline(const Int_t fRunId = 273, const Int_t nev = -1, const Int_t 
         // Input file
         filename = "~/lmd/s455/main" + cRunId + "_*_stitched.lmd";
 
-        TString outputpath = "/media/joseluis/data1/lmd/s455/";
-        outputFilename = outputpath + "s"+cExpId+"_map_data_offline_" + oss.str() + ".root";
+        TString outputpath = "/path/to/your/disk/";
+        // outputFilename = outputpath + "s"+cExpId+"_map_data_offline_" + oss.str() + ".root";
         outputFilename = "s" + cExpId + "_map_data_offline_" + oss.str() + ".root";
 
         upexps_dir = ucesb_dir + "/../upexps"; // for local computers

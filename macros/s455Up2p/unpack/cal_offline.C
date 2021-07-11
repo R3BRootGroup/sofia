@@ -48,13 +48,13 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fExpId == 455)
     {
         // Input file
-        filename = "/media/joseluis/data1/lmd/s455/s455_map_data_offline_20210611_193431.root";
+        filename = "s455_map_data_offline_2021.root";
 
         if (fRunId == 1 && nev == 100000) // This is for tests
             filename = lookforfile();
 
-        TString outputpath = "/media/joseluis/data1/lmd/s455/";
-        outputFilename = outputpath + "s" + cExpId + "_cal_data_offline_" + oss.str() + ".root";
+        TString outputpath = "/path/to/your/disk/";
+        // outputFilename = outputpath + "s" + cExpId + "_cal_data_offline_" + oss.str() + ".root";
         outputFilename = "s" + cExpId + "_cal_data_offline_" + oss.str() + ".root";
 
         sofiacaldir = dir + "/sofia/macros/s455Up2p/parameters/";
