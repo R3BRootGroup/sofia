@@ -63,20 +63,11 @@ Bool_t R3BSofMwpcReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("Mwpc0MappedData", "MWPC0", fArrayMwpc0, kTRUE);
-        FairRootManager::Instance()->Register("Mwpc1MappedData", "MWPC1", fArrayMwpc1, kTRUE);
-        FairRootManager::Instance()->Register("Mwpc2MappedData", "MWPC2", fArrayMwpc2, kTRUE);
-        FairRootManager::Instance()->Register("Mwpc3MappedData", "MWPC3", fArrayMwpc3, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("Mwpc0MappedData", "MWPC0", fArrayMwpc0, kFALSE);
-        FairRootManager::Instance()->Register("Mwpc1MappedData", "MWPC1", fArrayMwpc1, kFALSE);
-        FairRootManager::Instance()->Register("Mwpc2MappedData", "MWPC2", fArrayMwpc2, kFALSE);
-        FairRootManager::Instance()->Register("Mwpc3MappedData", "MWPC3", fArrayMwpc3, kFALSE);
-    }
+    FairRootManager::Instance()->Register("Mwpc0MappedData", "MWPC0", fArrayMwpc0, !fOnline);
+    FairRootManager::Instance()->Register("Mwpc1MappedData", "MWPC1", fArrayMwpc1, !fOnline);
+    FairRootManager::Instance()->Register("Mwpc2MappedData", "MWPC2", fArrayMwpc2, !fOnline);
+    FairRootManager::Instance()->Register("Mwpc3MappedData", "MWPC3", fArrayMwpc3, !fOnline);
+
     fArrayMwpc0->Clear();
     fArrayMwpc1->Clear();
     fArrayMwpc2->Clear();

@@ -81,14 +81,7 @@ InitStatus R3BSofSciTcal2SingleTcal::Init()
 
     // Register output array in tree
     fSingleTcal = new TClonesArray("R3BSofSciSingleTcalData", 5);
-    if (!fOnline)
-    {
-        rm->Register("SofSciSingleTcalData", "SofSci SingleTcal", fSingleTcal, kTRUE);
-    }
-    else
-    {
-        rm->Register("SofSciSingleTcalData", "SofSci SingleTcal", fSingleTcal, kFALSE);
-    }
+    rm->Register("SofSciSingleTcalData", "SofSci SingleTcal", fSingleTcal, !fOnline);
 
     LOG(INFO) << "R3BSofSciTcal2SingleTcal::SofSciSingleTcalData items created";
 

@@ -11,15 +11,39 @@
  * or submit itself to any jurisdiction.                                      *
  ******************************************************************************/
 
-#include "R3BSofiaProvideTStart.h"
+#include "FairLogger.h"
 #include "FairRootManager.h"
+#include "FairRuntimeDb.h"
+
 #include "R3BEventHeader.h"
+#include "R3BSofSciRawTofPar.h"
+#include "R3BSofiaProvideTStart.h"
 
 R3BSofiaProvideTStart::R3BSofiaProvideTStart()
     : FairTask("R3BSofiaProvideTStart", 0)
     , fSofSciCalData("SofSciTcalData")
+    , fRawTofPar(NULL)
+    , fStartId(1)
     , fEventHeader(nullptr)
 {
+}
+
+void R3BSofiaProvideTStart::SetParContainers()
+{
+    fRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
+    if (!fRawTofPar)
+    {
+        LOG(ERROR) << "R3BSofiaProvideTStart::SetParContainers() : SofSciRawTofPar-Container not found.";
+        return;
+    }
+}
+
+void R3BSofiaProvideTStart::SetParameter()
+{
+    if (!fRawTofPar)
+        LOG(FATAL) << "R3BSofiaProvideTStart::SetParameter() : fRawTofPar not found.";
+    fStartId = fRawTofPar->GetDetIdCaveC();
+    return;
 }
 
 InitStatus R3BSofiaProvideTStart::Init()
@@ -37,6 +61,16 @@ InitStatus R3BSofiaProvideTStart::Init()
     {
         throw std::runtime_error("R3BSofiaProvideTStart: No R3BEventHeader");
     }
+
+    SetParameter();
+
+    return kSUCCESS;
+}
+
+InitStatus R3BSofiaProvideTStart::ReInit()
+{
+    SetParContainers();
+    SetParameter();
     return kSUCCESS;
 }
 
@@ -52,15 +86,15 @@ Double_t R3BSofiaProvideTStart::GetTStart() const
     }
 
     Double_t ts = 0.;
-    int ns = 0;
+    Int_t ns = 0;
     for (const auto& sof : sofsci)
     {
-        if (sof->GetDetector() == 2)
+        if (sof->GetDetector() == fStartId)
         {
             if (sof->GetPmt() == 1 || sof->GetPmt() == 2)
             {
                 ts = ts + sof->GetRawTimeNs();
-                ns = ns + 1;
+                ns++;
             }
         }
     }

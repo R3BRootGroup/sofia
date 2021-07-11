@@ -58,14 +58,8 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("SofSciMappedData", "SofSci", fArray, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("SofSciMappedData", "SofSci", fArray, kFALSE);
-    }
+    FairRootManager::Instance()->Register("SofSciMappedData", "SofSci", fArray, !fOnline);
+
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that

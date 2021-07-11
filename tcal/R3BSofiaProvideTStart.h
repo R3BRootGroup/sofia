@@ -19,6 +19,7 @@
 #include "TCAConnector.h"
 
 class R3BEventHeader;
+class R3BSofSciRawTofPar;
 
 class R3BSofiaProvideTStart : public FairTask
 {
@@ -26,11 +27,16 @@ class R3BSofiaProvideTStart : public FairTask
     R3BSofiaProvideTStart();
 
     InitStatus Init() override;
+    InitStatus ReInit() override;
     void Exec(Option_t*) override;
+    void SetParContainers() override;
 
   private:
+    void SetParameter();
     TCAInputConnector<R3BSofSciTcalData> fSofSciCalData;
     R3BEventHeader* fEventHeader;
+    R3BSofSciRawTofPar* fRawTofPar;
+    Int_t fStartId;
 
     bool IsBeam() const;
     Double_t GetTStart() const;

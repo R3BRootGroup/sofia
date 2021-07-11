@@ -51,14 +51,7 @@ Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("TrimMappedData", "SofTrim", fArray, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("TrimMappedData", "SofTrim", fArray, kFALSE);
-    }
+    FairRootManager::Instance()->Register("TrimMappedData", "SofTrim", fArray, !fOnline);
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
