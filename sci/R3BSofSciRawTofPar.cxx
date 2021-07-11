@@ -9,9 +9,6 @@
 
 #include <iostream>
 
-using std::cout;
-using std::endl;
-
 #define MAX_RAWTOFPAR 10
 
 // ---- Standard Constructor ---------------------------------------------------
@@ -125,11 +122,11 @@ void R3BSofSciRawTofPar::printParams()
     LOG(INFO) << "R3BSofSciRawTofPar: SofSciRawTof Parameters: ";
     Int_t array_size = fNumSignals * fNumParsPerSignal;
 
-    cout << "--- --------------------------------------------" << endl;
-    cout << "--- Single Tcal RawTof Parameters :  " << endl;
-    cout << "--- --------------------------------------------" << endl;
+    LOG(INFO) << "--- --------------------------------------------";
+    LOG(INFO) << "--- Single Tcal RawTof Parameters :  ";
+    LOG(INFO) << "--- --------------------------------------------";
     for (Int_t param = 0; param < array_size; param++)
     {
-        cout << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param) << endl;
+        LOG(INFO) << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param);
     }
 }

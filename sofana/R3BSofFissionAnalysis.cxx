@@ -16,19 +16,7 @@ const Double_t c = 29.9792458;
 
 // R3BSofFissionAnalysis: Default Constructor --------------------------
 R3BSofFissionAnalysis::R3BSofFissionAnalysis()
-    : FairTask("R3BSof fission tracking Analysis", 1)
-    , fOffsetAq(0)
-    , fFieldCentre(0)
-    , fEffLength(0.)
-    , fBfield_Glad(0.)
-    , fMwpc0HitDataCA(NULL)
-    , fTwimHitDataCA(NULL)
-    , fMwpc1HitDataCA(NULL)
-    , fMwpc2HitDataCA(NULL)
-    , fMwpc3HitDataCA(NULL)
-    , fTofWHitDataCA(NULL)
-    , fTrackingDataCA(NULL)
-    , fOnline(kFALSE)
+    : R3BSofFissionAnalysis("R3BSof fission tracking analysis", 1)
 {
 }
 

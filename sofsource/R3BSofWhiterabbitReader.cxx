@@ -63,14 +63,7 @@ Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
         LOG(INFO) << "R3BSofWhiterabbitReader::Init() R3BEventHeader found";
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("SofWRData", "SofWR", fArray, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("SofWRData", "SofWR", fArray, kFALSE);
-    }
+    FairRootManager::Instance()->Register("SofWRData", "SofWR", fArray, !fOnline);
 
     fData->TIMESTAMP_SOFIA1ID = 0;
     fData->TIMESTAMP_SOFIA2ID = 0;

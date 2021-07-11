@@ -72,10 +72,10 @@ Bool_t R3BSofCorrvReader::Read()
     // Stop if no correlation signals
     if (data->SOFCORRV_TRCM == 0 || data->SOFCORRV_TRFM == 0)
     {
-			return kTRUE;
-		}
+        return kTRUE;
+    }
 
-		// There is only one correlation signal
+    // There is only one correlation signal
     if (data->SOFCORRV_TRCM > 1 || data->SOFCORRV_TRFM > 1)
     {
         LOG(FATAL) << "R3BSofCorrvReader::Read(), SOFCORRV_TRCM=" << data->SOFCORRV_TRCM

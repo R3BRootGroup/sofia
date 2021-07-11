@@ -63,12 +63,12 @@ Bool_t R3BSofCorrmReader::Read()
     EXT_STR_h101_SOFCORRM_onion* data = (EXT_STR_h101_SOFCORRM_onion*)fData;
 
     // only one TR=correlation signal and TT=trig signal
-    if (data->SOFCORRM_TRM ==0 || data->SOFCORRM_TTM ==0)
-		{
-			return kTRUE;
-		} 
-		
-		// only one TR=correlation signal and TT=trig signal
+    if (data->SOFCORRM_TRM == 0 || data->SOFCORRM_TTM == 0)
+    {
+        return kTRUE;
+    }
+
+    // only one TR=correlation signal and TT=trig signal
     if (data->SOFCORRM_TRM > 1 || data->SOFCORRM_TTM > 1)
     {
         LOG(FATAL) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
@@ -80,7 +80,7 @@ Bool_t R3BSofCorrmReader::Read()
     if (data->SOFCORRM_TRMI[0] != 1 || data->SOFCORRM_TTMI[0] != 1)
     {
         LOG(INFO) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
-                   << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
+                  << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
         LOG(FATAL) << "R3BSofCorrmReader::Read(), SOFCORRM_TRMI=" << data->SOFCORRM_TRMI[0]
                    << ", SOFCORRM_TTMI=" << data->SOFCORRM_TTMI[0];
         return kFALSE;

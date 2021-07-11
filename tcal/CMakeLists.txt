@@ -11,6 +11,7 @@ ${R3BROOT_SOURCE_DIR}/neuland/shared
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/tcal
+${R3BSOF_SOURCE_DIR}/sci
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
