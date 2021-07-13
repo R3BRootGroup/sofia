@@ -65,7 +65,7 @@ void finder_tcal_VFTX(const Int_t nev = -1)
     R3BEventHeader* EvntHeader = new R3BEventHeader();
     run->SetEventHeader(EvntHeader);
     run->SetRunId(1);
-    run->SetOutputFile(outputFileName);
+    run->SetSink(new FairRootFileSink(outputFileName));
     
     // Create source using ucesb for input ------------------
     R3BUcesbSource* source =

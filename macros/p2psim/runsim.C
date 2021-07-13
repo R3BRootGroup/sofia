@@ -9,6 +9,11 @@
  **         - 26/12/19 : Added new califa tasks and mwpc0 geometry
  **         - 05/01/21 : Added container with detector parameters
  **
+ **  Configuration:
+ **  (1) Select the right generator "fGenerator"
+ **  (2) Select the detectors that you wish for the simulation, for instance, "fCalifa = true"
+ **  (3) Look at the file "s455_setup.par" that the positions of your detectors are right
+ **
  **  Execute it as follows:
  **  root -l 'runsim.C(1000)'
  **  where 1000 means the number of events
@@ -22,7 +27,7 @@ void runsim(Int_t nEvents = 0)
     TString OutFile = "sim.root"; // Output file for data
     TString ParFile = "par.root"; // Output file for params
 
-    Bool_t fVis = false;            // Store tracks for visualization
+    Bool_t fVis = true;             // Store tracks for visualization
     Bool_t fUserPList = false;      // Use of R3B special physics list
     Bool_t fR3BMagnet = false;      // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
@@ -32,14 +37,18 @@ void runsim(Int_t nEvents = 0)
     // MonteCarlo engine: TGeant3, TGeant4, TFluka  --------------------
     TString fMC = "TGeant4";
 
-    // Event generator type: box for particles or ascii for p2p-fission
+    // Event generator type: box for particles or ascii&inclroot for p2p-fission
     TString generator1 = "box";
     TString generator2 = "ascii";
+    TString generator3 = "inclroot";
     TString fGenerator = generator2;
 
     // Input event file in the case of ascii generator
-    // TString fEventFile = "p2p_238U.txt";
-    TString fEventFile = "p2p_U238_500.txt";
+    TString fEventFile;
+    if (fGenerator.CompareTo("ascii") == 0)
+        fEventFile = "p2p_U238_500.txt";
+    else if (fGenerator.CompareTo("inclroot") == 0)
+        fEventFile = "p_U236_650.root";
 
     Int_t fFieldMap = -1;          // Magentic field map selector
     Double_t fMeasCurrent = 2000.; // Magnetic field current
@@ -118,7 +127,7 @@ void runsim(Int_t nEvents = 0)
     FairRunSim* run = new FairRunSim();
     run->SetName(fMC);                           // Transport engine
     run->SetSink(new FairRootFileSink(OutFile)); // Output file
-    
+
     // -----   Runtime data base   --------------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
@@ -212,9 +221,9 @@ void runsim(Int_t nEvents = 0)
         {
             califaPar->printParams();
             TGeoRotation* rcalifa = new TGeoRotation("Califarot");
-            rcalifa->RotateX(mwpc0Par->GetRotX());
-            rcalifa->RotateY(mwpc0Par->GetRotY());
-            rcalifa->RotateZ(mwpc0Par->GetRotZ());
+            rcalifa->RotateX(califaPar->GetRotX());
+            rcalifa->RotateY(califaPar->GetRotY());
+            rcalifa->RotateZ(califaPar->GetRotZ());
             R3BCalifa* califa = new R3BCalifa(
                 fCalifaGeo, { califaPar->GetPosX(), califaPar->GetPosY(), califaPar->GetPosZ(), rcalifa });
             califa->SelectGeometryVersion(fCalifaGeoVer);
@@ -424,6 +433,16 @@ void runsim(Int_t nEvents = 0)
     if (fGenerator.CompareTo("ascii") == 0)
     {
         R3BAsciiGenerator* gen = new R3BAsciiGenerator((dir + "/sofia/input/" + fEventFile).Data());
+        gen->SetXYZ(targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ());
+        gen->SetDxDyDz(0., 0., 0.);
+        primGen->AddGenerator(gen);
+    }
+
+    if (fGenerator.CompareTo("inclroot") == 0)
+    {
+        R3BINCLRootGenerator* gen = new R3BINCLRootGenerator((dir + "/sofia/input/" + fEventFile).Data());
+        gen->SetOnlyFission(kTRUE);
+        // gen->SetOnlyP2pFission(kTRUE);
         gen->SetXYZ(targetPar->GetPosX(), targetPar->GetPosY(), targetPar->GetPosZ());
         gen->SetDxDyDz(0., 0., 0.);
         primGen->AddGenerator(gen);
