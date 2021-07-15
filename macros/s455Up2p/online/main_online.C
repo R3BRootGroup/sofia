@@ -54,7 +54,7 @@ void main_online()
     // *********************************** //
     // PLEASE CHANGE THE EXPERIMENT NUMBER //
     // *********************************** //
-    const Int_t expId = 455; // select experiment: 444, 467 or 455
+    const Int_t fExpId = 455; // select experiment: 444, 467 or 455
     // *********************************** //
 
     // NumSoiSci, file names and paths -----------------------------
@@ -65,7 +65,7 @@ void main_online()
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
-    if (expId == 455)
+    if (fExpId == 455)
     {
         NumSofSci = 1;
         IdS2 = 0;
@@ -73,18 +73,18 @@ void main_online()
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
-        filename = "--stream=lxlanddaq01:9001";
+        // filename = "--stream=lxlanddaq01:9001";
         // filename = "--stream=lxir133:9001";
         // filename = "/d/land5/202103_s455/stitched/main0209_*.lmd";
         // filename = "~/lmd/s455/main0147_0001.lmd";
-        // filename = "~/lmd/s455/main0273_0010_stitched.lmd";
+        filename = "~/lmd/s455/main0273_0010_stitched.lmd";
 
         TString outputpath = "/d/land5/202103_s455/rootfiles/sofia/";
         outputFilename = outputpath + "s455_data_sofia_online_" + oss.str() + ".root";
-        // outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
+        outputFilename = "s455_data_sofia_online_" + oss.str() + ".root";
 
-        // upexps_dir = ucesb_dir + "/../upexps"; // for local computers
-        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
+        upexps_dir = ucesb_dir + "/../upexps"; // for local computers
+        // upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
         ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=70Mi";
         ucesb_path.ReplaceAll("//", "/");
@@ -409,7 +409,7 @@ void main_online()
         // --- Cal 2 Hit
         R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
         SofTrimCal2Hit->SetOnline(NOTstorehitdata);
-        SofTrimCal2Hit->SetExpId(expId);
+        SofTrimCal2Hit->SetExpId(fExpId);
         SofTrimCal2Hit->SetCoulex(kFALSE);
         SofTrimCal2Hit->SetTriShape(kTRUE);
         run->AddTask(SofTrimCal2Hit);
@@ -502,7 +502,7 @@ void main_online()
         // --- SingleTcal 2 Hit for SofTofW
         R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
         SofTofWSingleTcal2Hit->SetOnline(NOTstorehitdata);
-        SofTofWSingleTcal2Hit->SetExpId(expId);
+        SofTofWSingleTcal2Hit->SetExpId(fExpId);
         SofTofWSingleTcal2Hit->SetTofLISE(33.);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
@@ -512,11 +512,12 @@ void main_online()
     {
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
         TwimMap2Cal->SetOnline(NOTstorecaldata);
-        TwimMap2Cal->SetExpId(expId);
+        TwimMap2Cal->SetExpId(fExpId);
         run->AddTask(TwimMap2Cal);
 
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
         TwimCal2Hit->SetOnline(NOTstorehitdata);
+        TwimCal2Hit->SetExpId(fExpId);
         run->AddTask(TwimCal2Hit);
     }
 
@@ -665,7 +666,7 @@ void main_online()
     if (fTwim)
     {
         R3BSofTwimOnlineSpectra* twonline = new R3BSofTwimOnlineSpectra();
-        twonline->SetExpId(expId);
+        twonline->SetExpId(fExpId);
         run->AddTask(twonline);
         // Twim-Music correlations
         if (fMusic)
