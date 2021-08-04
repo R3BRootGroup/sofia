@@ -1,6 +1,6 @@
 #include "FairLogger.h"
-
 #include "FairRootManager.h"
+
 #include "R3BSofMwpcMappedData.h"
 #include "R3BSofMwpcReader.h"
 
@@ -16,7 +16,7 @@ extern "C"
 
 using namespace std;
 
-R3BSofMwpcReader::R3BSofMwpcReader(EXT_STR_h101_SOFMWPC* data, UInt_t offset)
+R3BSofMwpcReader::R3BSofMwpcReader(EXT_STR_h101_SOFMWPC* data, size_t offset)
     : R3BReader("R3BSofMwpcReader")
     , fData(data)
     , fOffset(offset)
@@ -25,13 +25,12 @@ R3BSofMwpcReader::R3BSofMwpcReader(EXT_STR_h101_SOFMWPC* data, UInt_t offset)
     , fArrayMwpc1(new TClonesArray("R3BSofMwpcMappedData")) // class name
     , fArrayMwpc2(new TClonesArray("R3BSofMwpcMappedData")) // class name
     , fArrayMwpc3(new TClonesArray("R3BSofMwpcMappedData")) // class name
-    , fNumEntries(0)
 {
 }
 
 R3BSofMwpcReader::~R3BSofMwpcReader()
 {
-    LOG(INFO) << "R3BSofMwpcReader: Delete instance";
+    LOG(DEBUG) << "R3BSofMwpcReader: Delete instance";
     if (fArrayMwpc0)
     {
         delete fArrayMwpc0;
@@ -129,7 +128,6 @@ void R3BSofMwpcReader::Reset()
     fArrayMwpc1->Clear();
     fArrayMwpc2->Clear();
     fArrayMwpc3->Clear();
-    fNumEntries = 0;
 }
 
-ClassImp(R3BSofMwpcReader)
+ClassImp(R3BSofMwpcReader);

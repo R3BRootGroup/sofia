@@ -6,9 +6,6 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-#pragma link C++ class R3BSofTcalContFact+;
-#pragma link C++ class R3BSofTcalPar+;
-
-#pragma link C++ class R3BSofiaProvideTStart+;
+#pragma link C++ class R3BSofAT+;
 
 #endif

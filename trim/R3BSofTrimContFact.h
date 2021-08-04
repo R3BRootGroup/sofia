@@ -18,7 +18,6 @@ class R3BSofTrimContFact : public FairContFact
     R3BSofTrimContFact();
     ~R3BSofTrimContFact() {}
     FairParSet* createContainer(FairContainer*);
-    void activateParIo(FairParIo* io);
     ClassDef(R3BSofTrimContFact, 0) // Factory for all R3BSofTrim parameter containers
 };
 

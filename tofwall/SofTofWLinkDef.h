@@ -1,4 +1,5 @@
 // clang-format off
+
 #ifdef __CINT__
 
 #pragma link off all globals;

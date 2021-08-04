@@ -1,6 +1,5 @@
-# Create a library called "libR3BSofAT" which includes the source files given in
-# the array .
-# The extension is already found.  Any number of sources could be listed here.
+# Create a library called "libR3BSofat" which includes the source files given in
+# the array. The extension is already found. Any number of sources could be listed here.
 
 Set(SYSTEM_INCLUDE_DIRECTORIES ${SYSTEM_INCLUDE_DIRECTORIES} ${BASE_INCLUDE_DIRECTORIES} )
 
@@ -24,21 +23,14 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 #Put here your sourcefiles
 R3BSofAT.cxx
-#R3BSofATHitPar.cxx
-#R3BSofATCalPar.cxx
-#R3BSofATMappedPar.cxx
-#R3BSofATCal2Hit.cxx
-#R3BSofATMapped2Cal.cxx
-#R3BSofATCal2HitPar.cxx
-#R3BSofATMapped2CalPar.cxx
 )
 
 # fill list of header files from list of source files
 # by exchanging the file extension
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 
-set(LINKDEF SofATLinkDef.h)
-set(LIBRARY_NAME R3BSofAT)
+set(LINKDEF SofAtLinkDef.h)
+set(LIBRARY_NAME R3BSofat)
 set(DEPENDENCIES
     R3Bbase R3BSofData)
 

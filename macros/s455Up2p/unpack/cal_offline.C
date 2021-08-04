@@ -139,7 +139,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     // Add analysis task --------------------------------------------------------
 
     // Add Header copy
-    R3BEventHeaderCal2Hit* RunIdTask = new R3BEventHeaderCal2Hit();
+    R3BEventHeaderPropagator* RunIdTask = new R3BEventHeaderPropagator();
     run->AddTask(RunIdTask);
 
     // Add WRs from sofia

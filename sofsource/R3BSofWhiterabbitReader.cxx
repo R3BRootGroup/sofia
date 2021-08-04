@@ -1,9 +1,9 @@
 
-
-#include "R3BSofWhiterabbitReader.h"
 #include "FairLogger.h"
 #include "FairRootManager.h"
+
 #include "R3BEventHeader.h"
+#include "R3BSofWhiterabbitReader.h"
 #include "R3BWRMasterData.h"
 #include "TClonesArray.h"
 
@@ -14,7 +14,7 @@ extern "C"
 }
 
 R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data,
-                                                 UInt_t offset,
+                                                 size_t offset,
                                                  UInt_t whiterabbit_id1,
                                                  UInt_t whiterabbit_id2)
     : R3BReader("R3BSofWhiterabbitReader")
@@ -22,7 +22,6 @@ R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data,
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
-    , fLogger(FairLogger::GetLogger())
     , fWhiterabbitId1(whiterabbit_id1)
     , fWhiterabbitId2(whiterabbit_id2)
     , fEventHeader(nullptr)
@@ -32,10 +31,9 @@ R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data,
 
 R3BSofWhiterabbitReader::~R3BSofWhiterabbitReader()
 {
+    LOG(DEBUG) << "R3BSofWhiterabbitReader: Delete instance";
     if (fArray)
-    {
         delete fArray;
-    }
     if (fEventHeader)
         delete fEventHeader;
 }
@@ -171,4 +169,4 @@ void R3BSofWhiterabbitReader::Reset()
     fNEvent = 0;
 }
 
-ClassImp(R3BSofWhiterabbitReader)
+ClassImp(R3BSofWhiterabbitReader);

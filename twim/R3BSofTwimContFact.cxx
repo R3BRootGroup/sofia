@@ -66,21 +66,15 @@ FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTwimCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "twimHitPar") == 0)
+    else if (strcmp(name, "twimHitPar") == 0)
     {
         p = new R3BSofTwimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "TwimGeoPar") == 0)
+    else if (strcmp(name, "TwimGeoPar") == 0)
     {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;
 }
 
-void R3BSofTwimContFact::activateParIo(FairParIo* io)
-{
-    // activates the input/output class for the parameters
-    // needed by the Twim
-}
-
-ClassImp(R3BSofTwimContFact)
+ClassImp(R3BSofTwimContFact);
