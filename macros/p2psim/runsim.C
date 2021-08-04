@@ -34,7 +34,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fCalifaHitFinder = true; // Apply hit finder task
     Bool_t fSofiaDigitizer = true;  // Apply hit digitizer task
 
-    // MonteCarlo engine: TGeant3, TGeant4, TFluka  --------------------
+    // MonteCarlo engine: TGeant4, TFluka           --------------------
     TString fMC = "TGeant4";
 
     // Event generator type: box for particles or ascii&inclroot for p2p-fission
@@ -57,14 +57,20 @@ void runsim(Int_t nEvents = 0)
     // ---------  Detector selection: true - false ---------------------
     // ---- R3B and SOFIA detectors as well as passive elements
 
-    Bool_t fR3BMusic = true; // R3B Music Detector
+    Bool_t fR3BMusic = false; // R3B Music Detector
     TString fR3BMusicGeo = "music_s467.geo.root";
+
+    Bool_t fR3BTripleMusic = true; // R3B Triple-Music Detector
+    TString fR3BTripleMusicGeo = "trim_v21.geo.root";
 
     Bool_t fMwpc0 = true; // MWPC0 Detector
     TString fMwpc0Geo = "mwpc_0.geo.root";
 
+    Bool_t fSciStart = true; // Start Detector
+    TString fSciStartGeo = "sof_sci_v21.geo.root";
+
     Bool_t fTracker = true; // AMS-Tracker + Vacuum chamber + LH2 target
-    TString fTrackerGeo = "targetvacuumchamber_ams_s455.geo.root";
+    TString fTrackerGeo = "target_area_s455_v21.geo.root";
 
     Bool_t fCalifa = true; // Califa Calorimeter
     TString fCalifaGeo = "califa_2020.geo.root";
@@ -77,7 +83,7 @@ void runsim(Int_t nEvents = 0)
     TString fMwpc1Geo = "mwpc_1.geo.root";
 
     Bool_t fTwim = true; // Twin-Music Detector
-    TString fTwimGeo = "twinmusic_v19a.geo.root";
+    TString fTwimGeo = "twinmusic_v21.geo.root";
 
     Bool_t fMwpc2 = true; // MWPC2 Detector
     TString fMwpc2Geo = "mwpc_2.geo.root";
@@ -92,7 +98,7 @@ void runsim(Int_t nEvents = 0)
     TString fMwpc3Geo = "mwpc_3.geo.root";
 
     Bool_t fSofTofWall = true; // Sofia ToF-Wall
-    TString fSofTofWallGeo = "sof_tof_v19.geo.root";
+    TString fSofTofWallGeo = "sof_tof_v21.geo.root";
 
     Bool_t fNeuLand = false; // NeuLand Detector
     TString fNeuLandGeo = "neuland_v12a_14m.geo.root";
@@ -111,10 +117,6 @@ void runsim(Int_t nEvents = 0)
     TString r3b_confdir = dir + "/gconfig/";
     gSystem->Setenv("CONFIG_DIR", r3b_confdir.Data());
     r3b_confdir.ReplaceAll("//", "/");
-
-    char str[1000];
-    sprintf(str, "GEOMPATH=%s/sofia/geometry", dir.Data());
-    putenv(str);
 
     // ----    Debug option   -------------------------------------------------
     gDebug = 0;
@@ -136,15 +138,39 @@ void runsim(Int_t nEvents = 0)
     parIo1->open("s455_setup.par", "in");
     rtdb->setFirstInput(parIo1);
     rtdb->print();
+
     // ----- Containers
-    R3BTGeoPar* mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
-    R3BTGeoPar* targetPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
-    R3BTGeoPar* califaPar = (R3BTGeoPar*)rtdb->getContainer("CalifaGeoPar");
-    R3BTGeoPar* mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
-    R3BTGeoPar* twimPar = (R3BTGeoPar*)rtdb->getContainer("TwimGeoPar");
-    R3BTGeoPar* mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc2GeoPar");
-    R3BTGeoPar* mwpc3Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc3GeoPar");
-    R3BTGeoPar* tofwPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
+    R3BTGeoPar* mwpc0Par = NULL;
+    R3BTGeoPar* trimPar = NULL;
+    R3BTGeoPar* scistartPar = NULL;
+    R3BTGeoPar* targetPar = NULL;
+    R3BTGeoPar* califaPar = NULL;
+    R3BTGeoPar* mwpc1Par = NULL;
+    R3BTGeoPar* twimPar = NULL;
+    R3BTGeoPar* mwpc2Par = NULL;
+    R3BTGeoPar* mwpc3Par = NULL;
+    R3BTGeoPar* tofwPar = NULL;
+
+    targetPar = (R3BTGeoPar*)rtdb->getContainer("TargetGeoPar");
+    if (fMwpc0)
+        mwpc0Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
+    if (fR3BTripleMusic)
+        trimPar = (R3BTGeoPar*)rtdb->getContainer("TrimGeoPar");
+    if (fSciStart)
+        scistartPar = (R3BTGeoPar*)rtdb->getContainer("SofSciGeoPar");
+    if (fCalifa)
+        califaPar = (R3BTGeoPar*)rtdb->getContainer("CalifaGeoPar");
+    if (fMwpc1)
+        mwpc1Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
+    if (fTwim)
+        twimPar = (R3BTGeoPar*)rtdb->getContainer("TwimGeoPar");
+    if (fMwpc2)
+        mwpc2Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc2GeoPar");
+    if (fMwpc3)
+        mwpc3Par = (R3BTGeoPar*)rtdb->getContainer("Mwpc3GeoPar");
+    if (fSofTofWall)
+        tofwPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
+
     UInt_t runId = 1;
     rtdb->initContainers(runId);
 
@@ -159,17 +185,10 @@ void runsim(Int_t nEvents = 0)
     run->SetMaterials("media_r3b.geo"); // Materials
 
     // -----   Create R3B geometry --------------------------------------------
-
     // Cave definition
     FairModule* cave = new R3BCave("CAVE");
     cave->SetGeometryFileName("r3b_cave.geo");
     run->AddModule(cave);
-
-    // R3B-Music definition
-    if (fR3BMusic)
-    {
-        run->AddModule(new R3BMusic(fR3BMusicGeo, { 0., 0., -160.5 }));
-    }
 
     // MWPC0 definition
     if (fMwpc0)
@@ -189,6 +208,46 @@ void runsim(Int_t nEvents = 0)
         R3BSofMwpcDigitizer* mw0_digitizer = new R3BSofMwpcDigitizer("Mwpc0", 1);
         if (fSofiaDigitizer)
             run->AddTask(mw0_digitizer);
+    }
+
+    // R3B-Music definition
+    if (fR3BMusic)
+    {
+        run->AddModule(new R3BMusic(fR3BMusicGeo, { 0., 0., -220.5 }));
+    }
+
+    // R3B-Triple-Music definition
+    if (fR3BTripleMusic)
+    {
+        if (trimPar)
+        {
+            trimPar->printParams();
+            TGeoRotation* rtrim = new TGeoRotation("Trimrot");
+            rtrim->RotateX(trimPar->GetRotX());
+            rtrim->RotateY(trimPar->GetRotY());
+            rtrim->RotateZ(trimPar->GetRotZ());
+            run->AddModule(new R3BSofTrim(fR3BTripleMusicGeo,
+                                          { trimPar->GetPosX(), trimPar->GetPosY(), trimPar->GetPosZ(), rtrim }));
+        }
+        else
+            run->AddModule(new R3BSofTrim(fR3BTripleMusicGeo, { 0., 0., -220.5 }));
+    }
+
+    // Start scintillator
+    if (fSciStart)
+    {
+        if (scistartPar)
+        {
+            scistartPar->printParams();
+            TGeoRotation* rsci = new TGeoRotation("Scirot");
+            rsci->RotateX(mwpc0Par->GetRotX());
+            rsci->RotateY(mwpc0Par->GetRotY());
+            rsci->RotateZ(mwpc0Par->GetRotZ());
+            run->AddModule(new R3BSofSci(
+                fSciStartGeo, { scistartPar->GetPosX(), scistartPar->GetPosY(), scistartPar->GetPosZ(), rsci }));
+        }
+        else
+            run->AddModule(new R3BSofSci(fSciStartGeo, { 0., 0., -150. }));
     }
 
     // Tracker, vacuum chamber and LH2 target definitions

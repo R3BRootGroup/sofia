@@ -67,7 +67,7 @@ Run ucesb with the struct_writer header generation option
 
     ./sNNN --ntuple=<signals>,STRUCT_HH,ext_h101.h
 
-with <signals> something like UNPACK:EVENTNO,UNPACK:TRIGGER,RAW.
+with <signals> something like RAW:Detector_name,NOTRIGEVENTNO.
 This will produce the header file called 'ext_h101.h'.
 It contains the structure information for R3BROOT.
 The data coming from ucesb will adhere to this format.
@@ -76,7 +76,7 @@ You can skip parts of the following step, if you do the header writing like this
 
     ./sNNN --ntuple=<signals>,id=h101_<detector>,ext_h101_<detector>.h
 #Example
-    ./s483 --ntuple=RAW:TOFD,id=h101_tofd,ext_h101_tofd.h
+    ./202103_s455 --ntuple=RAW:SOFTOFW,NOTRIGEVENTNO,id=h101_softofw,ext_h101_softofw.h
 
 This will already insert the correct detector names for you, if you like and only extract signals related to the specific detector.
 
@@ -110,9 +110,9 @@ And you will have to make sure that in the Read() function your detector specifi
 Write or modify your R3BROOT steering macro
 -------------------------------------------
 
-An existing steering macro for the s438b experiment can be found in
+An existing steering macro for the s455 experiment can be found in
 
-    macros/r3b/unpack/s438b/unpack_ucesb.C
+    sofia/macros/s455Up2p/unpack_offline.C
 
 It shows how the R3BUcesbSource class is used and how Readers are added.
 

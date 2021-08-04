@@ -1,6 +1,6 @@
 #include "FairLogger.h"
-
 #include "FairRootManager.h"
+
 #include "R3BSofTrimMappedData.h"
 #include "R3BSofTrimReader.h"
 
@@ -14,29 +14,27 @@ extern "C"
 
 using namespace std;
 
-R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, UInt_t offset)
-    : R3BReader("R3BSofTrimReader")
-    , fData(data)
-    , fOffset(offset)
-    , fOnline(kFALSE)
-    , fLogger(FairLogger::GetLogger())
-    , fArray(new TClonesArray("R3BSofTrimMappedData"))
-    , fSections(3)
+R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, size_t offset)
+    : R3BSofTrimReader(data, offset, 3)
 {
 }
 
-R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, UInt_t offset, Int_t num)
+R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, size_t offset, Int_t num)
     : R3BReader("R3BSofTrimReader")
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
-    , fLogger(FairLogger::GetLogger())
     , fArray(new TClonesArray("R3BSofTrimMappedData"))
     , fSections(num)
 {
 }
 
-R3BSofTrimReader::~R3BSofTrimReader() {}
+R3BSofTrimReader::~R3BSofTrimReader()
+{
+    LOG(DEBUG) << "R3BSofTrimReader: Delete instance";
+    if (fArray)
+        delete fArray;
+}
 
 Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
 {
@@ -211,4 +209,4 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     return kTRUE;
 }
 
-ClassImp(R3BSofTrimReader)
+ClassImp(R3BSofTrimReader);

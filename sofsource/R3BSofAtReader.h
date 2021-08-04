@@ -3,44 +3,47 @@
 
 #include "R3BReader.h"
 #include "TClonesArray.h"
+#include <Rtypes.h>
 
 struct EXT_STR_h101_SOFAT_t;
 typedef struct EXT_STR_h101_SOFAT_t EXT_STR_h101_SOFAT;
 typedef struct EXT_STR_h101_SOFAT_onion_t EXT_STR_h101_SOFAT_onion;
 
-class FairLogger;
-
 class R3BSofAtReader : public R3BReader
 {
   public:
-    R3BSofAtReader(EXT_STR_h101_SOFAT*, UInt_t);
-    ~R3BSofAtReader();
+    // Standard constructor
+    R3BSofAtReader(EXT_STR_h101_SOFAT*, size_t);
 
-  public:
-    Bool_t Init(ext_data_struct_info*);
-    Bool_t Read();
-    void Reset();
+    // Destructor
+    virtual ~R3BSofAtReader();
 
-    /** Accessor to select online mode **/
+    // Setup structure information
+    virtual Bool_t Init(ext_data_struct_info*) override;
+
+    // Read data from full event structure
+    virtual Bool_t Read() override;
+
+    // Reset
+    virtual void Reset() override;
+
+    // Accessor to select online mode
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
+    // Read data
     Bool_t ReadData(EXT_STR_h101_SOFAT_onion*);
-
-  private:
-    /* Reader specific data structure from ucesb */
+    // Reader specific data structure from ucesb
     EXT_STR_h101_SOFAT* fData;
-    /* Data offset */
-    UInt_t fOffset;
+    // Data offset
+    size_t fOffset;
     // Don't store data for online
     Bool_t fOnline;
-    /* FairLogger */
-    FairLogger* fLogger;
-    /* the structs of type R3BSofAtMappedData Item */
+    // R3BSofAtMappedData Item
     TClonesArray* fArray; /**< Output array. */
 
   public:
-    ClassDef(R3BSofAtReader, 0);
+    ClassDefOverride(R3BSofAtReader, 0);
 };
 
-#endif
+#endif // R3BSOFATREADER_H

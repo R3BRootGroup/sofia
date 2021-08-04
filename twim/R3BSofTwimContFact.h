@@ -19,7 +19,6 @@ class R3BSofTwimContFact : public FairContFact
     R3BSofTwimContFact();
     ~R3BSofTwimContFact() {}
     FairParSet* createContainer(FairContainer*);
-    void activateParIo(FairParIo* io);
     ClassDef(R3BSofTwimContFact, 0) // Factory for all R3BSofTwim parameter containers
 };
 

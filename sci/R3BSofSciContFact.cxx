@@ -4,6 +4,7 @@
 #include "FairLogger.h"
 #include "FairParSet.h"
 #include "FairRuntimeDb.h"
+#include "R3BTGeoPar.h"
 
 #include "R3BSofSciCalPosPar.h"
 #include "R3BSofSciCalTofPar.h"
@@ -45,6 +46,10 @@ void R3BSofSciContFact::setAllContainers()
     FairContainer* p5 = new FairContainer("SofSciTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
     p5->addContext("SofTcalParContext");
     containers->Add(p5);
+
+    FairContainer* p6 = new FairContainer("SofSciGeoPar", "Sof Sci geometry parameters", "GeometryParameterContext");
+    p6->addContext("GeometryParameterContext");
+    containers->Add(p6);
 }
 
 FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
@@ -61,23 +66,27 @@ FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "SofSciRawPosPar") == 0)
+    else if (strcmp(name, "SofSciRawPosPar") == 0)
     {
         p = new R3BSofSciRawPosPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "SofSciRawTofPar") == 0)
+    else if (strcmp(name, "SofSciRawTofPar") == 0)
     {
         p = new R3BSofSciRawTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "SofSciCalPosPar") == 0)
+    else if (strcmp(name, "SofSciCalPosPar") == 0)
     {
         p = new R3BSofSciCalPosPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "SofSciCalTofPar") == 0)
+    else if (strcmp(name, "SofSciCalTofPar") == 0)
     {
         p = new R3BSofSciCalTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+    }
+    else if (strcmp(name, "SofSciGeoPar") == 0)
+    {
+        p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;
 }
 
-ClassImp(R3BSofSciContFact)
+ClassImp(R3BSofSciContFact);

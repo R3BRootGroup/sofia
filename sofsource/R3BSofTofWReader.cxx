@@ -1,6 +1,6 @@
 #include "FairLogger.h"
-
 #include "FairRootManager.h"
+
 #include "R3BSofTofWMappedData.h"
 #include "R3BSofTofWReader.h"
 
@@ -14,29 +14,24 @@ extern "C"
 
 using namespace std;
 
-R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, UInt_t offset)
-    : R3BReader("R3BSofTofWReader")
-    , fData(data)
-    , fOffset(offset)
-    , fOnline(kFALSE)
-    , fArray(new TClonesArray("R3BSofTofWMappedData"))
-    , fNumPaddles(28)
+R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, size_t offset)
+    : R3BSofTofWReader(data, offset, 28)
 {
 }
 
-R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, UInt_t offset, Int_t num)
+R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, size_t offset, Int_t NumPaddles)
     : R3BReader("R3BSofTofWReader")
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofTofWMappedData"))
-    , fNumPaddles(num)
+    , fNumPaddles(NumPaddles)
 {
 }
 
 R3BSofTofWReader::~R3BSofTofWReader()
 {
-    LOG(INFO) << "R3BSofTofWReader: Delete instance";
+    LOG(DEBUG) << "R3BSofTofWReader: Delete instance";
     if (fArray)
     {
         delete fArray;
@@ -56,20 +51,14 @@ Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("SofTofWMappedData", "SofTofW", fArray, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("SofTofWMappedData", "SofTofW", fArray, kFALSE);
-    }
+    FairRootManager::Instance()->Register("SofTofWMappedData", "SofTofW", fArray, !fOnline);
+
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFTOFW_onion* data = (EXT_STR_h101_SOFTOFW_onion*)fData;
-    for (int d = 0; d < fNumPaddles; d++)
+    for (Int_t d = 0; d < fNumPaddles; d++)
     {
         data->SOFTOFW_P[d].TFM = 0;
         data->SOFTOFW_P[d].TCM = 0;
@@ -154,4 +143,4 @@ void R3BSofTofWReader::Reset()
     fArray->Clear();
 }
 
-ClassImp(R3BSofTofWReader)
+ClassImp(R3BSofTofWReader);

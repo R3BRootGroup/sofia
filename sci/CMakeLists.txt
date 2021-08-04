@@ -1,6 +1,5 @@
 # Create a library called "libR3BSofSci" which includes the source files given in
-# the array .
-# The extension is already found.  Any number of sources could be listed here.
+# the array. The extension is already found. Any number of sources could be listed here.
 
 Set(SYSTEM_INCLUDE_DIRECTORIES
 ${SYSTEM_INCLUDE_DIRECTORIES}
@@ -31,6 +30,7 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
+R3BSofSci.cxx
 R3BSofSciContFact.cxx
 R3BSofSciRawPosPar.cxx
 R3BSofSciRawTofPar.cxx

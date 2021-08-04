@@ -1,6 +1,5 @@
 # Create a library called "libR3BSofTrim" which includes the source files given in
-# the array .
-# The extension is already found.  Any number of sources could be listed here.
+# the array. The extension is already found. Any number of sources could be listed here.
 
 Set(SYSTEM_INCLUDE_DIRECTORIES ${SYSTEM_INCLUDE_DIRECTORIES} ${BASE_INCLUDE_DIRECTORIES} )
 
@@ -24,16 +23,19 @@ set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} )
 
 link_directories( ${LINK_DIRECTORIES})
 
-set(SRCS
+#set(SRCS
 #Put here your sourcefiles
-R3BSofTrimContFact.cxx
-R3BSofTrimCalPar.cxx
-R3BSofTrimHitPar.cxx
-R3BSofTrimMapped2Cal.cxx
-R3BSofTrimCalculateMatchGainPar.cxx
-R3BSofTrimCalculateDriftTimeOffsetPar.cxx
-R3BSofTrimCal2Hit.cxx
-)
+#R3BSofTrim.cxx
+#R3BSofTrimContFact.cxx
+#R3BSofTrimCalPar.cxx
+#R3BSofTrimHitPar.cxx
+#R3BSofTrimMapped2Cal.cxx
+#R3BSofTrimCalculateMatchGainPar.cxx
+#R3BSofTrimCalculateDriftTimeOffsetPar.cxx
+#R3BSofTrimCal2Hit.cxx
+#)
+
+file(GLOB SRCS *.cxx)
 
 # fill list of header files from list of source files
 # by exchanging the file extension

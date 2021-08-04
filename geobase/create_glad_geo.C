@@ -5,15 +5,25 @@
 //
 //         Last Update 03/01/20: Included mylar windows
 //
-//       
+//
 
-#include <iomanip>
-#include <iostream>
+#include "TGeoBBox.h"
 #include "TGeoManager.h"
 #include "TMath.h"
-#include "TGeoBBox.h"
+#include <iomanip>
+#include <iostream>
 
-TGeoManager*  gGeoMan = NULL;
+// --------------------------------------------------------------------------
+// Configurable geometry for the GLAD magnet.
+// Use this macro to create root files with the different configurations
+// and positions of the magnet.
+//
+// Execute macro:  root -l
+//                 .L create_glad_geo.C
+//                 create_glad_geo()
+// --------------------------------------------------------------------------
+
+TGeoManager* gGeoMan = NULL;
 
 void ConstructSubPartEcrans(TGeoVolume* pWorld);
 void ConstructDemiEcransTh(TGeoVolume* pWorld);
@@ -28,12 +38,12 @@ void ConstructFlunge(TGeoVolume* pWorld);
 void ConstructWindows(TGeoVolume* pWorld);
 void ConstructWindowsExit(TGeoVolume* pWorld);
 
-void create_glad_geo(const char* geoTag="s455", Bool_t create_flange = kTRUE, Bool_t create_wd = kTRUE)
+void create_glad_geo(const char* geoTag = "s455", Bool_t create_flange = kTRUE, Bool_t create_wd = kTRUE)
 {
     // Global positioning definition
-    Double_t glad_angle = 14.0;         // deg
-    Double_t distanceToTarget = 308.8;  // cm
-    Double_t zeroLineOffset = -42.0;    // cm
+    Double_t glad_angle = 14.0;        // deg
+    Double_t distanceToTarget = 308.8; // cm
+    Double_t zeroLineOffset = -42.0;   // cm
 
     // -------   Load media from media file   -----------------------------------
     FairGeoLoader* geoLoad = new FairGeoLoader("TGeo", "FairGeoLoader");
@@ -46,7 +56,7 @@ void create_glad_geo(const char* geoTag="s455", Bool_t create_flange = kTRUE, Bo
     // --------------------------------------------------------------------------
 
     // -------   Geometry file name (output)   ----------------------------------
-    TString geoFileName = geoPath + "/sofia/geometry/glad_";
+    TString geoFileName = geoPath + "/geometry/glad_";
     geoFileName = geoFileName + geoTag + ".geo.root";
     // --------------------------------------------------------------------------
 
@@ -86,11 +96,13 @@ void create_glad_geo(const char* geoTag="s455", Bool_t create_flange = kTRUE, Bo
     if (!pMed2)
         Fatal("Main", "Medium Air not found");
 
-    FairGeoMedium* mMylar      = geoMedia->getMedium("mylar");
-    if ( ! mMylar ) Fatal("Main", "FairMedium mylar not found");
+    FairGeoMedium* mMylar = geoMedia->getMedium("mylar");
+    if (!mMylar)
+        Fatal("Main", "FairMedium mylar not found");
     geoBuild->createMedium(mMylar);
     TGeoMedium* pMed4 = gGeoMan->GetMedium("mylar");
-    if ( ! pMed4 ) Fatal("Main", "Medium mylar not found");
+    if (!pMed4)
+        Fatal("Main", "Medium mylar not found");
     // --------------------------------------------------------------------------
 
     // --------------   Create geometry and top volume  -------------------------
@@ -117,13 +129,13 @@ void create_glad_geo(const char* geoTag="s455", Bool_t create_flange = kTRUE, Bo
     ConstructFonfE(pWorld);
     ConstructFondS(pWorld);
     ConstructGToles(pWorld);
-    
-    if(create_flange)
+
+    if (create_flange)
     {
         ConstructFlunge(pWorld);
     }
 
-    if(create_wd)
+    if (create_wd)
     {
         ConstructWindows(pWorld);
         ConstructWindowsExit(pWorld);
@@ -138,72 +150,72 @@ void create_glad_geo(const char* geoTag="s455", Bool_t create_flange = kTRUE, Bo
     TFile* geoFile = new TFile(geoFileName, "RECREATE");
     top->Write();
     geoFile->Close();
-    std::cout << "Creating geometry: "<<geoFileName<< std::endl;
+    std::cout << "\033[34m Creating geometry:\033[0m "
+              << "\033[33m" << geoFileName << " \033[0m" << std::endl;
+    gApplication->Terminate();
     // --------------------------------------------------------------------------
 }
 
 void ConstructWindows(TGeoVolume* pWorld)
 {
-   Float_t z_offset = -198.-10.408+1.8;
-   Float_t disc_radius = 13.5338;
-   Float_t disc_half_thickn = 0.005;
-   TGeoMedium* pMed4 = gGeoMan->GetMedium("mylar");
+    Float_t z_offset = -198. - 10.408 + 1.8;
+    Float_t disc_radius = 13.5338;
+    Float_t disc_half_thickn = 0.005;
+    TGeoMedium* pMed4 = gGeoMan->GetMedium("mylar");
 
-   TGeoVolumeAssembly* wd_world = new TGeoVolumeAssembly("EntranceWindow");
+    TGeoVolumeAssembly* wd_world = new TGeoVolumeAssembly("EntranceWindow");
 
-   // Convertion to GLAD coordinate system
-   TGeoRotation* rot1 = new TGeoRotation();
-   rot1->RotateZ(-180.0);
-   rot1->RotateZ(90.0);
-   rot1->RotateY(-90.0);
-    
-   // Zero rotation
-   TGeoRotation* zero_rot = new TGeoRotation();
-   zero_rot->RotateY(14.);
+    // Convertion to GLAD coordinate system
+    TGeoRotation* rot1 = new TGeoRotation();
+    rot1->RotateZ(-180.0);
+    rot1->RotateZ(90.0);
+    rot1->RotateY(-90.0);
 
-   TGeoShape* f_disc = new TGeoTube(0., disc_radius, disc_half_thickn);
+    // Zero rotation
+    TGeoRotation* zero_rot = new TGeoRotation();
+    zero_rot->RotateY(14.);
 
-   // Volume: 
-   TGeoVolume*
-   wd_log = new TGeoVolume("Entrance_WD",f_disc, pMed4);
-   wd_log->SetVisLeaves(kTRUE);
-   wd_log->SetLineColor(11);
+    TGeoShape* f_disc = new TGeoTube(0., disc_radius, disc_half_thickn);
 
-   TGeoCombiTrans* m_disc = new TGeoCombiTrans(0., 0., 0., zero_rot);
-   wd_world->AddNode(wd_log, 0, m_disc);
+    // Volume:
+    TGeoVolume* wd_log = new TGeoVolume("Entrance_WD", f_disc, pMed4);
+    wd_log->SetVisLeaves(kTRUE);
+    wd_log->SetLineColor(11);
 
-   TGeoCombiTrans* m1 = new TGeoCombiTrans(-1. * z_offset+disc_half_thickn, 9., 0., rot1);
-   pWorld->AddNode(wd_world, 0, m1);
+    TGeoCombiTrans* m_disc = new TGeoCombiTrans(0., 0., 0., zero_rot);
+    wd_world->AddNode(wd_log, 0, m_disc);
+
+    TGeoCombiTrans* m1 = new TGeoCombiTrans(-1. * z_offset + disc_half_thickn, 9., 0., rot1);
+    pWorld->AddNode(wd_world, 0, m1);
 }
 
 void ConstructWindowsExit(TGeoVolume* pWorld)
 {
-   Float_t z_offset = -224.5;
-   Float_t half_thickn = 0.005;
-   TGeoMedium* pMed4 = gGeoMan->GetMedium("mylar");
+    Float_t z_offset = -224.5;
+    Float_t half_thickn = 0.005;
+    TGeoMedium* pMed4 = gGeoMan->GetMedium("mylar");
 
-   TGeoVolumeAssembly* wd_world = new TGeoVolumeAssembly("ExitWindow");
+    TGeoVolumeAssembly* wd_world = new TGeoVolumeAssembly("ExitWindow");
 
-   // Convertion to GLAD coordinate system
-   TGeoRotation* rot1 = new TGeoRotation();
-   rot1->RotateZ(-180.0);
-   rot1->RotateZ(90.0);
-   rot1->RotateY(-90.0);
+    // Convertion to GLAD coordinate system
+    TGeoRotation* rot1 = new TGeoRotation();
+    rot1->RotateZ(-180.0);
+    rot1->RotateZ(90.0);
+    rot1->RotateY(-90.0);
 
-   TGeoShape *ExitWDBox = new TGeoBBox("Exit_WD", 229., 59., half_thickn);
-   // Volume: 
-   TGeoVolume*
-   ewd_log = new TGeoVolume("Exit_WD_log",ExitWDBox, pMed4);
-   ewd_log->SetVisLeaves(kTRUE);
+    TGeoShape* ExitWDBox = new TGeoBBox("Exit_WD", 229., 59., half_thickn);
+    // Volume:
+    TGeoVolume* ewd_log = new TGeoVolume("Exit_WD_log", ExitWDBox, pMed4);
+    ewd_log->SetVisLeaves(kTRUE);
 
-   // Zero rotation
-   TGeoRotation* zero_rot = new TGeoRotation();
+    // Zero rotation
+    TGeoRotation* zero_rot = new TGeoRotation();
 
-   TGeoCombiTrans* m_disc = new TGeoCombiTrans(0., 0., 0., zero_rot);
-   wd_world->AddNode(ewd_log, 0, m_disc);
+    TGeoCombiTrans* m_disc = new TGeoCombiTrans(0., 0., 0., zero_rot);
+    wd_world->AddNode(ewd_log, 0, m_disc);
 
-   TGeoCombiTrans* m1 = new TGeoCombiTrans(z_offset, 0., 0., rot1);
-   pWorld->AddNode(wd_world, 0, m1);
+    TGeoCombiTrans* m1 = new TGeoCombiTrans(z_offset, 0., 0., rot1);
+    pWorld->AddNode(wd_world, 0, m1);
 }
 
 void ConstructFlunge(TGeoVolume* pWorld)
@@ -218,50 +230,50 @@ void ConstructFlunge(TGeoVolume* pWorld)
     Float_t tube_half_length = 5.0114 + disc_half_thickn;
     Float_t segm_xy_thickn = 2.4604;
     Float_t segm_z_thickn = 2.3696;
-    
+
     TGeoVolumeAssembly* flange_world = new TGeoVolumeAssembly("Flunge");
-    
+
     // Convertion to GLAD coordinate system
     TGeoRotation* rot1 = new TGeoRotation();
     rot1->RotateZ(-180.0);
     rot1->RotateZ(90.0);
     rot1->RotateY(-90.0);
-    
+
     // Zero rotation
     TGeoRotation* zero_rot = new TGeoRotation();
-    
+
     // Disc and hole
     TGeoShape* f_disc = new TGeoTube(0., disc_radius, disc_half_thickn);
     TGeoShape* f_hole = new TGeoTube(0., hole_radius, 10. * disc_half_thickn);
-    
+
     // Subtract hole from disc and create new shape
     TGeoRotation* rot_tube = new TGeoRotation();
     rot_tube->RotateY(14.);
     TGeoCombiTrans* m_hole = new TGeoCombiTrans(hole_x_offset, 0., 0., rot_tube);
     TGeoSubtraction* f_subtr_tube = new TGeoSubtraction(f_disc, f_hole, 0, m_hole);
     TGeoShape* f_tube = new TGeoCompositeShape("FlungeDisc", f_subtr_tube);
-    
+
     TGeoShape* f_tube_2 = new TGeoTube(hole_radius, hole_radius + tube_thickn, tube_half_length);
-    TGeoShape* f_segm = new TGeoTube(hole_radius_2, hole_radius_2 + segm_xy_thickn, segm_z_thickn/2.);
-    TGeoCombiTrans* m_segm = new TGeoCombiTrans(0., 0., -tube_half_length - segm_z_thickn/2., zero_rot);
+    TGeoShape* f_segm = new TGeoTube(hole_radius_2, hole_radius_2 + segm_xy_thickn, segm_z_thickn / 2.);
+    TGeoCombiTrans* m_segm = new TGeoCombiTrans(0., 0., -tube_half_length - segm_z_thickn / 2., zero_rot);
     TGeoUnion* u_secondary = new TGeoUnion(f_tube_2, f_segm, 0, m_segm);
     TGeoShape* f_secondary = new TGeoCompositeShape("SecondPart", u_secondary);
-    
+
     TGeoCombiTrans* m_tube_2 = new TGeoCombiTrans(hole_x_offset, 0., 0., rot_tube);
     TGeoUnion* flange_u = new TGeoUnion(f_tube, f_secondary, 0, m_tube_2);
     TGeoShape* flange_u_shape = new TGeoCompositeShape("FlungeDiscTube", flange_u);
-    
+
     TGeoShape* f_cut = new TGeoTube(0., disc_radius + 0.1, tube_half_length);
     TGeoCombiTrans* m_cut = new TGeoCombiTrans(0., 0., disc_half_thickn + tube_half_length, zero_rot);
     TGeoSubtraction* flange_u_c = new TGeoSubtraction(flange_u_shape, f_cut, 0, m_cut);
     TGeoShape* flange_u_c_shape = new TGeoCompositeShape("FlungeDiscTubeCut", flange_u_c);
-    
+
     TGeoMedium* pMedFe = gGeoManager->GetMedium("iron");
     TGeoVolume* vol_tube = new TGeoVolume("Flunge_disc", flange_u_c_shape, pMedFe);
-    
+
     TGeoCombiTrans* m_disc = new TGeoCombiTrans(0., 0., 0., zero_rot);
     flange_world->AddNode(vol_tube, 0, m_disc);
-    
+
     TGeoCombiTrans* m1 = new TGeoCombiTrans(-1. * flange_z_offset, -4., 0., rot1);
     pWorld->AddNode(flange_world, 0, m1);
 }
@@ -2489,7 +2501,8 @@ void ConstructEnceinteI(TGeoVolume* pWorld)
     TGeoUnion* pBoolNode1 = new TGeoUnion(pG2402001_Enceinte_interne_2_2, pG2402001_Enceinte_interne_3_9, 0, pMatrix3);
     // Shape: G2402001_Enceinte_interne_26 type: TGeoCompositeShape
     // D. Kresan: skip entrance box - use Trd2 shape directly
-    TGeoShape* pG2402001_Enceinte_interne_26_15 = pG2402001_Enceinte_interne_3_9;// new TGeoCompositeShape("G2402001_Enceinte_interne_26", pBoolNode1);
+    TGeoShape* pG2402001_Enceinte_interne_26_15 =
+        pG2402001_Enceinte_interne_3_9; // new TGeoCompositeShape("G2402001_Enceinte_interne_26", pBoolNode1);
     // Shape: G2402001_Enceinte_interne_4 type: TGeoTrd2
     dx1 = 19.994047;
     dx2 = 37.710887;

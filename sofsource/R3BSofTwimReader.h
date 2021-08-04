@@ -3,6 +3,7 @@
 
 #include "R3BReader.h"
 #include "TClonesArray.h"
+#include <Rtypes.h>
 
 struct EXT_STR_h101_SOFTWIM_t;
 typedef struct EXT_STR_h101_SOFTWIM_t EXT_STR_h101_SOFTWIM;
@@ -11,15 +12,22 @@ typedef struct EXT_STR_h101_SOFTWIM_onion_t EXT_STR_h101_SOFTWIM_onion;
 class R3BSofTwimReader : public R3BReader
 {
   public:
-    R3BSofTwimReader(EXT_STR_h101_SOFTWIM*, UInt_t);
-    ~R3BSofTwimReader();
+    // Standard constructor
+    R3BSofTwimReader(EXT_STR_h101_SOFTWIM*, size_t);
 
-  public:
-    Bool_t Init(ext_data_struct_info*);
-    Bool_t Read();
-    void Reset();
+    // Destructor
+    virtual ~R3BSofTwimReader();
 
-    /** Accessor to select online mode **/
+    // Setup structure information
+    virtual Bool_t Init(ext_data_struct_info*) override;
+
+    // Read data from full event structure
+    virtual Bool_t Read() override;
+
+    // Reset
+    virtual void Reset() override;
+
+    // Accessor to select online mode
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
@@ -32,7 +40,7 @@ class R3BSofTwimReader : public R3BReader
     /* Reader specific data structure from ucesb */
     EXT_STR_h101_SOFTWIM* fData;
     /* Data offset */
-    UInt_t fOffset;
+    size_t fOffset;
     // Don't store data for online
     Bool_t fOnline;
     /* the structs of type R3BSofTwimMappedData Item */
@@ -44,7 +52,7 @@ class R3BSofTwimReader : public R3BReader
     Int_t fTtrig;
 
   public:
-    ClassDef(R3BSofTwimReader, 0);
+    ClassDefOverride(R3BSofTwimReader, 0);
 };
 
-#endif
+#endif // R3BSOFTWIMREADER_H

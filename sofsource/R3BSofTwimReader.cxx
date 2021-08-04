@@ -1,6 +1,6 @@
 #include "FairLogger.h"
-
 #include "FairRootManager.h"
+
 #include "R3BSofTwimMappedData.h"
 #include "R3BSofTwimReader.h"
 
@@ -14,7 +14,7 @@ extern "C"
 
 using namespace std;
 
-R3BSofTwimReader::R3BSofTwimReader(EXT_STR_h101_SOFTWIM* data, UInt_t offset)
+R3BSofTwimReader::R3BSofTwimReader(EXT_STR_h101_SOFTWIM* data, size_t offset)
     : R3BReader("R3BSofTwimReader")
     , fData(data)
     , fOffset(offset)
@@ -29,7 +29,7 @@ R3BSofTwimReader::R3BSofTwimReader(EXT_STR_h101_SOFTWIM* data, UInt_t offset)
 
 R3BSofTwimReader::~R3BSofTwimReader()
 {
-    LOG(INFO) << "R3BSofTwimReader: Delete instance";
+    LOG(DEBUG) << "R3BSofTwimReader: Delete instance";
     if (fArray)
     {
         delete fArray;
@@ -219,4 +219,4 @@ Bool_t R3BSofTwimReader::ReadData(EXT_STR_h101_SOFTWIM_onion* data, UShort_t sec
     return kTRUE;
 }
 
-ClassImp(R3BSofTwimReader)
+ClassImp(R3BSofTwimReader);

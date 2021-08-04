@@ -17,7 +17,7 @@ class R3BSofSciContFact : public FairContFact
   public:
     R3BSofSciContFact();
     ~R3BSofSciContFact() {}
-    FairParSet* createContainer(FairContainer* c);
+    FairParSet* createContainer(FairContainer*);
     ClassDef(R3BSofSciContFact, 1)
 };
 

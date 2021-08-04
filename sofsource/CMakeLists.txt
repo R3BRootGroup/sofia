@@ -1,6 +1,5 @@
 # Create a library called "libR3BSofsource" which includes the source files given in
-# the array .
-# The extension is already found.  Any number of sources could be listed here.
+# the array. The extension is already found. Any number of sources could be listed here.
 
 set(SYSTEM_INCLUDE_DIRECTORIES ${SYSTEM_INCLUDE_DIRECTORIES} ${BASE_INCLUDE_DIRECTORIES} ${ucesb_INCLUDE_DIR} )
 
@@ -28,18 +27,20 @@ include_directories( ${INCLUDE_DIRECTORIES})
 include_directories(SYSTEM ${SYSTEM_INCLUDE_DIRECTORIES})
 link_directories( ${LINK_DIRECTORIES})
 
-set(SRCS
-R3BSofWhiterabbitReader.cxx
-R3BSofSciReader.cxx
-R3BSofTofWReader.cxx
-R3BSofTwimReader.cxx
-R3BSofTrimReader.cxx
-R3BSofMwpcReader.cxx
-R3BSofScalersReader.cxx
-R3BSofAtReader.cxx
-R3BSofCorrmReader.cxx
-R3BSofCorrvReader.cxx
-)
+# set(SRCS
+# R3BSofWhiterabbitReader.cxx
+# R3BSofSciReader.cxx
+# R3BSofTofWReader.cxx
+# R3BSofTwimReader.cxx
+# R3BSofTrimReader.cxx
+# R3BSofMwpcReader.cxx
+# R3BSofScalersReader.cxx
+# R3BSofAtReader.cxx
+# R3BSofCorrmReader.cxx
+# R3BSofCorrvReader.cxx
+# )
+
+file(GLOB SRCS *.cxx)
 
 Set(STRUCT_HEADERS
 ext/ext_h101_wrsofia.h
@@ -59,7 +60,7 @@ ext/ext_h101_sofcorrv.h
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 Set(HEADERS ${STRUCT_HEADERS} ${HEADERS})
 
-set(LINKDEF_FILE R3BSofLinkDef.h)
+set(LINKDEF_FILE SofSourceLinkDef.h)
 set(DEPENDENCIES
     R3Bbase Base R3BSofData R3Bsource ${ucesb_LIBRARY_SHARED} FairTools)
 set(LIBRARY_NAME R3BSofsource)

@@ -26,19 +26,15 @@ void runsim(Int_t nEvents = 0)
 
     Int_t fCalifaGeoVer = 2020;
 
-    // ------------------------------------------------------------------------
-    // Stable part ------------------------------------------------------------
-    TString dir = getenv("VMCWORKDIR");
-    char str[1000];
-    sprintf(str, "GEOMPATH=%s/sofia/geometry", dir.Data());
-    putenv(str);
-
     // ----    Debug option   -------------------------------------------------
     gDebug = 0;
 
     // -----   Timer   --------------------------------------------------------
     TStopwatch timer;
     timer.Start();
+    
+    // Stable part ------------------------------------------------------------
+    TString dir = getenv("VMCWORKDIR");
 
     // -----   Create simulation run   ----------------------------------------
     FairRunSim* run = new FairRunSim();
@@ -71,10 +67,10 @@ void runsim(Int_t nEvents = 0)
     // --- SOFIA detectors ---
 
     // Target
-    run->AddModule(new R3BSofAT("sof_at_v19a.geo.root", { 0., 0., -65.5 }));
+    run->AddModule(new R3BSofAT("sof_at_v21.geo.root", { 0., 0., -65.5 }));
 
     // TWIM
-    run->AddModule(new R3BSofTwim("twinmusic_v19a.geo.root", { 0., 0., 50. }));
+    run->AddModule(new R3BSofTwim("twinmusic_v21.geo.root", { 0., 0., 50. }));
 
     // MWPC1
     run->AddModule(new R3BSofMwpc1("mwpc_1.geo.root", { 0., 0., 95. }));
@@ -83,7 +79,7 @@ void runsim(Int_t nEvents = 0)
     run->AddModule(new R3BSofMwpc3("mwpc_3.geo.root"));
 
     // ToF Wall
-    run->AddModule(new R3BSofTofW("sof_tof_v19.geo.root"));
+    run->AddModule(new R3BSofTofW("sof_tof_v21.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>

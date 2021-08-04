@@ -1,6 +1,6 @@
 #include "FairLogger.h"
-
 #include "FairRootManager.h"
+
 #include "R3BSofAtMappedData.h"
 #include "R3BSofAtReader.h"
 
@@ -14,21 +14,26 @@ extern "C"
 
 using namespace std;
 
-R3BSofAtReader::R3BSofAtReader(EXT_STR_h101_SOFAT* data, UInt_t offset)
+R3BSofAtReader::R3BSofAtReader(EXT_STR_h101_SOFAT* data, size_t offset)
     : R3BReader("R3BSofAtReader")
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
-    , fLogger(FairLogger::GetLogger())
     , fArray(new TClonesArray("R3BSofAtMappedData"))
 {
 }
 
-R3BSofAtReader::~R3BSofAtReader() {}
+R3BSofAtReader::~R3BSofAtReader()
+{
+
+    LOG(DEBUG) << "R3BSofAtReader: Delete instance";
+    if (fArray)
+        delete fArray;
+}
 
 Bool_t R3BSofAtReader::Init(ext_data_struct_info* a_struct_info)
 {
-    int ok;
+    Int_t ok;
     LOG(INFO) << "R3BSofAtReader::Init";
     EXT_STR_h101_SOFAT_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFAT, 0);
     if (!ok)
@@ -39,14 +44,7 @@ Bool_t R3BSofAtReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("AtMappedData", "SofAt", fArray, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("AtMappedData", "SofAt", fArray, kFALSE);
-    }
+    FairRootManager::Instance()->Register("AtMappedData", "SofAt", fArray, !fOnline);
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
@@ -64,12 +62,6 @@ Bool_t R3BSofAtReader::Read()
 
     ReadData(data);
     return kTRUE;
-}
-
-void R3BSofAtReader::Reset()
-{
-    // Reset the output array
-    fArray->Clear();
 }
 
 Bool_t R3BSofAtReader::ReadData(EXT_STR_h101_SOFAT_onion* data)
@@ -115,4 +107,10 @@ Bool_t R3BSofAtReader::ReadData(EXT_STR_h101_SOFAT_onion* data)
     return kTRUE;
 }
 
-ClassImp(R3BSofAtReader)
+void R3BSofAtReader::Reset()
+{
+    // Reset the output array
+    fArray->Clear();
+}
+
+ClassImp(R3BSofAtReader);

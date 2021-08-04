@@ -1,26 +1,33 @@
 
-
 #ifndef R3BSofWhiterabbitReader_H
 #define R3BSofWhiterabbitReader_H
+
 #include "R3BReader.h"
+#include <Rtypes.h>
 
 struct EXT_STR_h101_WRSOFIA_t;
 typedef struct EXT_STR_h101_WRSOFIA_t EXT_STR_h101_WRSOFIA;
 
-class FairLogger;
 class TClonesArray;
 class R3BEventHeader;
 
 class R3BSofWhiterabbitReader : public R3BReader
 {
   public:
-    R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA*, UInt_t, UInt_t, UInt_t);
+    // Standard constructor
+    R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA*, size_t, UInt_t, UInt_t);
 
-    ~R3BSofWhiterabbitReader();
+    // Destructor
+    virtual ~R3BSofWhiterabbitReader();
 
-    Bool_t Init(ext_data_struct_info*);
-    Bool_t Read();
-    void Reset();
+    // Setup structure information
+    virtual Bool_t Init(ext_data_struct_info*) override;
+
+    // Read data from full event structure
+    virtual Bool_t Read() override;
+
+    // Reset
+    virtual void Reset() override;
 
     /** Accessor to select online mode **/
     void SetOnline(Bool_t option) { fOnline = option; }
@@ -31,9 +38,7 @@ class R3BSofWhiterabbitReader : public R3BReader
     /* Reader specific data structure from ucesb */
     EXT_STR_h101_WRSOFIA* fData;
     /* Offset of detector specific data in full data structure */
-    UInt_t fOffset;
-    /* FairLogger */
-    FairLogger* fLogger;
+    size_t fOffset;
     /* The whiterabbit subsystem ID */
     UInt_t fWhiterabbitId1;
     UInt_t fWhiterabbitId2;
@@ -45,6 +50,6 @@ class R3BSofWhiterabbitReader : public R3BReader
     TClonesArray* fArray;
 
   public:
-    ClassDef(R3BSofWhiterabbitReader, 0);
+    ClassDefOverride(R3BSofWhiterabbitReader, 0);
 };
-#endif
+#endif // R3BSofWhiterabbitReader_H

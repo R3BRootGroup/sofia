@@ -7,6 +7,8 @@
 #pragma link off all functions;
 
 // Point classes for simulation
+#pragma link C++ class R3BSofSciPoint+;
+#pragma link C++ class R3BSofTrimPoint+;
 #pragma link C++ class R3BSofATPoint+;
 #pragma link C++ class R3BSofMwpcPoint+;
 #pragma link C++ class R3BSofTwimPoint+;

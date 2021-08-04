@@ -1,6 +1,5 @@
 # Create a library called "libR3BSofData" which includes the source files given in
-# the array .
-# The extension is already found.  Any number of sources could be listed here.
+# the array. The extension is already found. Any number of sources could be listed here.
 
 Set(SYSTEM_INCLUDE_DIRECTORIES ${SYSTEM_INCLUDE_DIRECTORIES} ${BASE_INCLUDE_DIRECTORIES} )
 
@@ -28,6 +27,10 @@ set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} )
 link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
+trimData/R3BSofTrimPoint.cxx
+trimData/R3BSofTrimMappedData.cxx
+trimData/R3BSofTrimCalData.cxx
+trimData/R3BSofTrimHitData.cxx
 atData/R3BSofATPoint.cxx
 atData/R3BSofAtMappedData.cxx
 mwpcData/R3BSofMwpcPoint.cxx
@@ -35,7 +38,11 @@ mwpcData/R3BSofMwpcMappedData.cxx
 mwpcData/R3BSofMwpcCalData.cxx
 mwpcData/R3BSofMwpcHitData.cxx
 twimData/R3BSofTwimPoint.cxx
+twimData/R3BSofTwimMappedData.cxx
+twimData/R3BSofTwimCalData.cxx
+twimData/R3BSofTwimHitData.cxx
 tofwData/R3BSofTofWPoint.cxx
+sciData/R3BSofSciPoint.cxx
 sciData/R3BSofSciMappedData.cxx
 sciData/R3BSofSciTcalData.cxx
 sciData/R3BSofSciSingleTcalData.cxx
@@ -46,12 +53,6 @@ tofwData/R3BSofTofWTcalData.cxx
 tofwData/R3BSofTofWSingleTcalData.cxx
 tofwData/R3BSofTofWCalData.cxx
 tofwData/R3BSofTofWHitData.cxx
-twimData/R3BSofTwimMappedData.cxx
-twimData/R3BSofTwimCalData.cxx
-twimData/R3BSofTwimHitData.cxx
-trimData/R3BSofTrimMappedData.cxx
-trimData/R3BSofTrimCalData.cxx
-trimData/R3BSofTrimHitData.cxx
 trackingData/R3BSofTrackingData.cxx
 scalersData/R3BSofScalersMappedData.cxx
 corrData/R3BSofCorrmMappedData.cxx

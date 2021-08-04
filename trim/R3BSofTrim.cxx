@@ -1,8 +1,9 @@
 // -------------------------------------------------------------------------
-// -----                        R3BSofTRIM source file                  -----
-// -----                  Created 24/11/17  by H.Alvarez-Pol          -----
+// -----                        R3BSofTrim source file                 -----
+// -----                 Created 24/11/17 by H.Alvarez-Pol             -----
 // -------------------------------------------------------------------------
-#include "R3BSofTRIM.h"
+#include "R3BSofTrim.h"
+
 #include "FairGeoInterface.h"
 #include "FairGeoLoader.h"
 #include "FairGeoNode.h"
@@ -11,15 +12,11 @@
 #include "FairRun.h"
 #include "FairRuntimeDb.h"
 #include "FairVolume.h"
+
 #include "R3BMCStack.h"
-#include "R3BSofTRIMPoint.h"
+#include "R3BSofTrimPoint.h"
 #include "TClonesArray.h"
-#include "TGeoCompositeShape.h"
-#include "TGeoMCGeometry.h"
 #include "TGeoManager.h"
-#include "TGeoMaterial.h"
-#include "TGeoMatrix.h"
-#include "TGeoMedium.h"
 #include "TMCProcess.h"
 #include "TObjArray.h"
 #include "TParticle.h"
@@ -28,34 +25,25 @@
 #include <iostream>
 #include <stdlib.h>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 #define U_MEV 931.4940954
 
-R3BSofTRIM::R3BSofTRIM()
-    : R3BSofTRIM("")
+R3BSofTrim::R3BSofTrim(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
+    : R3BSofTrim(geoFile, { trans, rot })
 {
 }
 
-R3BSofTRIM::R3BSofTRIM(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofTRIM(geoFile, { trans, rot })
-{
-}
-
-R3BSofTRIM::R3BSofTRIM(const TString& geoFile, const TGeoCombiTrans& combi)
-    : R3BDetector("R3BSofTRIM", kSOFTRIM, geoFile, combi)
+R3BSofTrim::R3BSofTrim(const TString& geoFile, const TGeoCombiTrans& combi)
+    : R3BDetector("R3BSofTrim", kSOFTRIM, geoFile, combi)
 {
     ResetParameters();
-    fSofTRIMCollection = new TClonesArray("R3BSofTRIMPoint");
+    fSofTRIMCollection = new TClonesArray("R3BSofTrimPoint");
     fPosIndex = 0;
     kGeoSaved = kFALSE;
     flGeoPar = new TList();
     flGeoPar->SetName(GetName());
 }
 
-R3BSofTRIM::~R3BSofTRIM()
+R3BSofTrim::~R3BSofTrim()
 {
     if (flGeoPar)
     {
@@ -68,69 +56,68 @@ R3BSofTRIM::~R3BSofTRIM()
     }
 }
 
-void R3BSofTRIM::Initialize()
+void R3BSofTrim::Initialize()
 {
     FairDetector::Initialize();
 
-    LOG(INFO) << "R3BSofTRIM: initialisation";
-    LOG(DEBUG) << "-I- R3BSofTRIM: Vol (McId) def";
-
-    TGeoVolume* vol = gGeoManager->GetVolume("SofTRIMWorld");
-    vol->SetVisibility(kFALSE);
+    LOG(INFO) << "R3BSofTrim: initialisation";
+    LOG(DEBUG) << "R3BSofTrim: Vol (McId) def";
 }
 
 // -----   Public method ProcessHits  --------------------------------------
-Bool_t R3BSofTRIM::ProcessHits(FairVolume* vol)
+Bool_t R3BSofTrim::ProcessHits(FairVolume* vol)
 {
     if (gMC->IsTrackEntering())
     {
         gGeoManager->cd(gMC->CurrentVolPath());
         Int_t nodeId = gGeoManager->GetNodeId();
-    }
-    if (gMC->IsTrackEntering())
-    {
         fELoss = 0.;
-        fNf = 0.;
-        fNs = 0.;
         fNSteps = 0; // FIXME
         fTime = gMC->TrackTime() * 1.0e09;
         fLength = gMC->TrackLength();
         gMC->TrackPosition(fPosIn);
         gMC->TrackMomentum(fMomIn);
-        fEinc = gMC->Etot() - gMC->TrackMass(); // be aware!! Relativistic mass!
     }
 
     // Sum energy loss for all steps in the active volume
-    Double_t dE = gMC->Edep() * 1000.;                          // in MeV
-    Double_t post_E = (gMC->Etot() - gMC->TrackMass()) * 1000.; // in MeV
-    TString ptype = gMC->GetStack()->GetCurrentTrack()->GetName();
+    fELoss += gMC->Edep();
 
-    Double_t M_in = gMC->TrackMass() * 1000.;
-    Double_t A_in = M_in / U_MEV;
-    Double_t Z_in = gMC->TrackCharge();
+    if (fELoss == 0.)
+        return kFALSE;
 
-    fELoss += dE / 1000.; // back to GeV
-
-    if (dE > 0 && dx > 0)
+    if (fELoss > 0)
     {
 
         fNSteps++;
 
-        // Set additional parameters at exit of active volume. Create R3BSofTRIMPoint.
+        // Set additional parameters at exit of active volume. Create R3BSofTrimPoint.
         if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
         {
 
             fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
-            fParentTrackID = gMC->GetStack()->GetCurrentParentTrackNumber();
             fVolumeID = vol->getMCid();
-            fTrackPID = gMC->TrackPid();
+            fDetCopyID = vol->getCopyNo();
             fUniqueID = gMC->GetStack()->GetCurrentTrack()->GetUniqueID();
 
             gMC->TrackPosition(fPosOut);
             gMC->TrackMomentum(fMomOut);
 
-            if (fELoss == 0.)
-                return kFALSE;
+            Double_t M_in = gMC->TrackMass() * 1000.;
+            fA = M_in / U_MEV;
+            fZ = gMC->TrackCharge();
+
+            AddPoint(fTrackID,
+                     fVolumeID,
+                     fDetCopyID,
+                     fZ,
+                     fA,
+                     TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
+                     TVector3(fPosOut.X(), fPosOut.Y(), fPosOut.Z()),
+                     TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()),
+                     TVector3(fMomOut.Px(), fMomOut.Py(), fMomOut.Pz()),
+                     fTime,
+                     fLength,
+                     fELoss);
 
             // Increment number of SofTRIMPoints for this track
             R3BStack* stack = (R3BStack*)gMC->GetStack();
@@ -143,10 +130,10 @@ Bool_t R3BSofTRIM::ProcessHits(FairVolume* vol)
 }
 
 // -----   Public method EndOfEvent   -----------------------------------------
-void R3BSofTRIM::BeginEvent() {}
+void R3BSofTrim::BeginEvent() {}
 
 // -----   Public method EndOfEvent   -----------------------------------------
-void R3BSofTRIM::EndOfEvent()
+void R3BSofTrim::EndOfEvent()
 {
     if (fVerboseLevel)
         Print();
@@ -157,52 +144,58 @@ void R3BSofTRIM::EndOfEvent()
 }
 
 // -----   Public method Register   -------------------------------------------
-void R3BSofTRIM::Register()
+void R3BSofTrim::Register()
 {
-    FairRootManager::Instance()->Register("SofTRIMPoint", GetName(), fSofTRIMCollection, kTRUE);
+    FairRootManager::Instance()->Register("SofTrimPoint", GetName(), fSofTRIMCollection, kTRUE);
 }
 
 // -----   Public method GetCollection   --------------------------------------
-TClonesArray* R3BSofTRIM::GetCollection() const { return fSofTRIMCollection; }
+TClonesArray* R3BSofTrim::GetCollection(Int_t iColl) const
+{
+    if (iColl == 0)
+        return fSofTRIMCollection;
+    else
+        return NULL;
+}
 
 // -----   Public method Print   ----------------------------------------------
-void R3BSofTRIM::Print(Option_t* option) const
+void R3BSofTrim::Print(Option_t* option) const
 {
     Int_t nHits = fSofTRIMCollection->GetEntriesFast();
-    LOG(INFO) << "R3BSofTRIM: " << nHits << " points registered in this event";
+    LOG(INFO) << "R3BSofTrim: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
-void R3BSofTRIM::Reset()
+void R3BSofTrim::Reset()
 {
     fSofTRIMCollection->Clear();
     ResetParameters();
 }
 
 // -----   Public method CopyClones   -----------------------------------------
-void R3BSofTRIM::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
+void R3BSofTrim::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 {
     Int_t nEntries = cl1->GetEntriesFast();
-    LOG(INFO) << "R3BSofTRIM: " << nEntries << " entries to add";
+    LOG(INFO) << "R3BSofTrim: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
-    R3BSofTRIMPoint* oldpoint = NULL;
+    R3BSofTrimPoint* oldpoint = NULL;
     for (Int_t i = 0; i < nEntries; i++)
     {
-        oldpoint = (R3BSofTRIMPoint*)cl1->At(i);
+        oldpoint = (R3BSofTrimPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
-        new (clref[fPosIndex]) R3BSofTRIMPoint(*oldpoint);
+        new (clref[fPosIndex]) R3BSofTrimPoint(*oldpoint);
         fPosIndex++;
     }
-    LOG(INFO) << "R3BSofTRIM: " << cl2->GetEntriesFast() << " merged entries";
+    LOG(INFO) << "R3BSofTrim: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
-R3BSofTRIMPoint* R3BSofTRIM::AddPoint(Int_t trackID,
+R3BSofTrimPoint* R3BSofTrim::AddPoint(Int_t trackID,
                                       Int_t detID,
-                                      Int_t volid,
-                                      Int_t copy,
-                                      Int_t ident,
+                                      Int_t detCopyID,
+                                      Double_t zf,
+                                      Double_t af,
                                       TVector3 posIn,
                                       TVector3 posOut,
                                       TVector3 momIn,
@@ -214,20 +207,20 @@ R3BSofTRIMPoint* R3BSofTRIM::AddPoint(Int_t trackID,
     TClonesArray& clref = *fSofTRIMCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
-        LOG(INFO) << "R3BSofTRIM: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
+        LOG(INFO) << "R3BSofTrim: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size])
-        R3BSofTRIMPoint(trackID, detID, volid, copy, ident, posIn, posOut, momIn, momOut, time, length, eLoss, Nf, Ns);
+        R3BSofTrimPoint(trackID, detID, detCopyID, zf, af, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
 
 // -----  Public method CheckIfSensitive  ----------------------------------
-Bool_t R3BSofTRIM::CheckIfSensitive(std::string name)
+Bool_t R3BSofTrim::CheckIfSensitive(std::string name)
 {
-    if (TString(name).Contains("TRIMVolume_"))
+    if (TString(name).Contains("TrimAnode"))
     { // check at the simulation
         return kTRUE;
     }
     return kFALSE;
 }
 
-ClassImp(R3BSofTRIM)
+ClassImp(R3BSofTrim);
