@@ -77,7 +77,7 @@ void runsim(Int_t nEvents = 0)
     Int_t fCalifaGeoVer = 2020;
     Double_t fCalifaCryTh = 0.000080;  // In GeV: 0.000080 means 80 keV per crystal
     Double_t fCalifaHitEnergyTh = 0.0; // Threshold in GeV per cluster hit
-    Double_t fCalifaNonU = 0.5;        // Non-uniformity: 1 means +-1% max deviation
+    Double_t fCalifaNonU = 1.0;        // Non-uniformity: 1 means +-1% max deviation
 
     Bool_t fMwpc1 = true; // MWPC1 Detector
     TString fMwpc1Geo = "mwpc_1.geo.root";
