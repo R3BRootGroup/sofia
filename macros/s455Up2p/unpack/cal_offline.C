@@ -107,7 +107,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     // Set up R3BHeader  --------------------------------------------------------
     R3BEventHeader* EvntHeader = new R3BEventHeader();
     run->SetEventHeader(EvntHeader);
-    // run->SetRunId(fRunId);
+    run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
 
     // Runtime data base ------------------------------------

@@ -130,9 +130,10 @@ void unpack_offline(const Int_t fRunId = 273, const Int_t nev = -1, const Int_t 
     EXT_STR_h101 ucesb_struct;
 
     // Create online run ------------------------------------
-    FairRunOnline* run = new FairRunOnline();
     R3BEventHeader* EvntHeader = new R3BEventHeader();
+    FairRunOnline* run = new FairRunOnline();
     run->SetEventHeader(EvntHeader);
+    run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
 
     R3BUcesbSource* source =
