@@ -14,8 +14,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 4.5
-SigmaX: Double_t 0.1
-SigmaY: Double_t 1.
+SigmaX: Double_t 0.0112
+SigmaY: Double_t 0.03
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -36,7 +36,7 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 65.
-SigmaX: Double_t 0.1
+SigmaX: Double_t 0.005
 SigmaY: Double_t 1.
 Z: Double_t 14.
 A: Double_t 28.0855
@@ -124,8 +124,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 4.5
-SigmaX: Double_t 0.1
-SigmaY: Double_t 1.
+SigmaX: Double_t 0.0112
+SigmaY: Double_t 0.03
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -146,7 +146,7 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 53.
-SigmaX: Double_t 0.02
+SigmaX: Double_t 0.005
 SigmaY: Double_t 0.
 Z: Double_t 14.
 A: Double_t 28.0855
@@ -168,8 +168,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 4.5
-SigmaX: Double_t 0.1
-SigmaY: Double_t 1.
+SigmaX: Double_t 0.0112
+SigmaY: Double_t 0.03
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 1.0
@@ -228,14 +228,4 @@ Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032
 IonisationEnergy: Double_t 57.4e-6
-##############################################################################
-##############################################################################
-# Class:   GladFieldPar
-# Context: GladFieldParContext
-##############################################################################
-[GladFieldPar]
-//----------------------------------------------------------------------------
-Bz: Float_t 2.155
-EffLength: Float_t 210.
-FieldCentre: Float_t 308.
 ##############################################################################
