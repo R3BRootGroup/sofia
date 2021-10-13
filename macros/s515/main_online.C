@@ -79,8 +79,8 @@ void main_online()
 
     if (expId == 515)
     {
-        filename = "--stream=lxlanddaq01:9001";
-        // filename = "~/lmd/s515/main0484_0001_stit.lmd";
+       filename = "--stream=lxlanddaq01:9001";
+       // filename = "~/lmd/s515/main0484_0001_stit.lmd";
 
         TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
         outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
