@@ -57,7 +57,7 @@ void finder_tofw_singletcal2hit(const Int_t nev = -1)
         sofiaWR_SE = 0xe00;
         sofiaWR_ME = 0xf00;
 
-        filename = "~/lmd/s455/main0273_0010*.lmd";
+        filename = "~/lmd/s455/main0273_0021*.lmd";
         outputFilename = "data_s455_singletcal2hit.root";
 
         upexps_dir = ucesb_dir + "/../upexps/"; // for local computers

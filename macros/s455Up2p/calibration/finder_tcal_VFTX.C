@@ -41,7 +41,7 @@ void finder_tcal_VFTX(const Int_t nev = -1)
     {
         NumSofSci = 1;
 
-        filename = "~/lmd/s455/main0273_0010_stitched.lmd";
+        filename = "~/lmd/s455/main0273_0021_stitched.lmd";
 
         upexps_dir = ucesb_dir + "/../upexps/";
         ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=70Mi";
