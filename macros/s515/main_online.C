@@ -23,7 +23,6 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_TOFD_onion_t tofd;
     EXT_STR_h101_PSP_onion_t psp;
     EXT_STR_h101_raw_nnp_tamex_t raw_nnp;
-    EXT_STR_h101_timestamp_master_t timestamp_master;
 
     EXT_STR_h101_SOFMWPC_onion_t mwpc;
 
@@ -72,22 +71,22 @@ void main_online()
     // NumSoiSci, file names and paths -----------------------------
     Int_t sofiaWR_SE, sofiaWR_ME, NumSofSci, IdS2, IdS8;
     TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString ntuple_options = "RAW"; // For stitched data
-    // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
+    // TString ntuple_options = "RAW"; // For stitched data
+    TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
     TString ucesb_dir = getenv("UCESB_DIR");
     TString filename, outputFilename, upexps_dir, ucesb_path, sofiacaldir;
 
     if (expId == 515)
     {
-       filename = "--stream=lxlanddaq01:9001";
-       // filename = "~/lmd/s515/main0484_0001_stit.lmd";
+        // filename = "--stream=lxlanddaq01:9001";
+        filename = "~/lmd/s515/main0484_0001.lmd";
 
         TString outputpath = "/d/land5/202104_s515/rootfiles/sofia/";
-        outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
-        // outputFilename = "s515_data_sofia_online_" + oss.str() + ".root";
+        // outputFilename = outputpath + "s515_data_sofia_online_" + oss.str() + ".root";
+        outputFilename = "s515_data_sofia_online_" + oss.str() + ".root";
 
-        // upexps_dir = ucesb_dir + "/../upexps"; // for local computers
-        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
+        upexps_dir = ucesb_dir + "/../upexps"; // for local computers
+        // upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         // upexps_dir = "/u/land/lynx.landexp/202104_s515/upexps/";  // for lxg computers
         ucesb_path = upexps_dir + "/202104_s515/202104_s515 --allow-errors --input-buffer=100Mi";
         ucesb_path.ReplaceAll("//", "/");
@@ -152,6 +151,14 @@ void main_online()
     TString tofdcalfilename = pardir + "TofdTcalPar_main0019.root";
     tofdcalfilename.ReplaceAll("//", "/");
 
+    // Create online run ------------------------------------
+    R3BEventHeader* EvntHeader = new R3BEventHeader();
+    FairRunOnline* run = new FairRunOnline();
+    run->SetEventHeader(EvntHeader);
+    run->SetRunId(fRunId);
+    run->SetSink(new FairRootFileSink(outputFilename));
+    run->ActivateHttpServer(refresh, port);
+
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
 
@@ -160,10 +167,7 @@ void main_online()
     source->SetMaxEvents(nev);
 
     // Definition of reader ---------------------------------
-    R3BFrsReaderNov19* unpackfrs;
-
     R3BMusicReader* unpackmusic;
-    R3BTimestampMasterReader* unpackttm;
     R3BLosReader* unpacklos;
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
@@ -190,8 +194,6 @@ void main_online()
 
     if (fLos)
     {
-        unpackttm = new R3BTimestampMasterReader((EXT_STR_h101_timestamp_master_t*)&ucesb_struct.timestamp_master,
-                                                 offsetof(EXT_STR_h101, timestamp_master));
         unpacklos = new R3BLosReader((EXT_STR_h101_LOS_t*)&ucesb_struct.los, offsetof(EXT_STR_h101, los));
     }
 
@@ -247,7 +249,6 @@ void main_online()
 
     if (fLos)
     {
-        source->AddReader(unpackttm);
         unpacklos->SetOnline(NOTstoremappeddata);
         source->AddReader(unpacklos);
     }
@@ -293,12 +294,7 @@ void main_online()
         unpackWRNeuland->SetOnline(NOTstoremappeddata);
         source->AddReader(unpackWRNeuland);
     }
-
-    // Create online run ------------------------------------
-    FairRunOnline* run = new FairRunOnline(source);
-    run->SetRunId(fRunId);
-    run->SetSink(new FairRootFileSink(outputFilename));
-    run->ActivateHttpServer(refresh, port);
+    run->SetSource(source);
 
     // Runtime data base ------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
