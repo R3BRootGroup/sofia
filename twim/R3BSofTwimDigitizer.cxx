@@ -10,11 +10,6 @@
 #include "FairRuntimeDb.h"
 #include "TClonesArray.h"
 
-// includes for modeling
-#include "TGeoManager.h"
-#include "TParticle.h"
-#include "TVirtualMC.h"
-
 #include "TMath.h"
 #include "TRandom.h"
 #include "TVector3.h"
@@ -68,7 +63,7 @@ R3BSofTwimDigitizer::~R3BSofTwimDigitizer()
 // ----   Public method Init  -----------------------------------------
 InitStatus R3BSofTwimDigitizer::Init()
 {
-    LOG(INFO) << "R3BSof" + fName + "Digitizer: Init";
+    LOG(INFO) << "R3BSof" + fName + "Digitizer::Init()";
 
     // Get input array
     FairRootManager* ioman = FairRootManager::Instance();
@@ -82,8 +77,6 @@ InitStatus R3BSofTwimDigitizer::Init()
     // fTwimHits = new TClonesArray("R3BHit", 10);
     fTwimHits = new TClonesArray("R3BSofTwimHitData", 10);
     ioman->Register(fName + "HitData", "Digital response in " + fName, fTwimHits, kTRUE);
-
-    // fDetId = 3;
 
     return kSUCCESS;
 }
@@ -137,22 +130,22 @@ void R3BSofTwimDigitizer::Exec(Option_t* opt)
 
             if (anodeId == 0)
             {
-                x[0] = (fX_out - fX_in) / 5.;
+                x[0] = (fX_out + fX_in) / 2.;
                 zf[0] = pointData[i]->GetZFF();
             }
             else if (anodeId == 16)
             {
-                x[1] = (fX_out - fX_in) / 5.;
+                x[1] = (fX_out + fX_in) / 2.;
                 zf[1] = pointData[i]->GetZFF();
             }
             else if (anodeId == 32)
             {
-                x[2] = (fX_out - fX_in) / 5.;
+                x[2] = (fX_out + fX_in) / 2.;
                 zf[2] = pointData[i]->GetZFF();
             }
             else if (anodeId == 48)
             {
-                x[3] = (fX_out - fX_in) / 5.;
+                x[3] = (fX_out + fX_in) / 2.;
                 zf[3] = pointData[i]->GetZFF();
             }
         }
@@ -189,7 +182,4 @@ R3BSofTwimHitData* R3BSofTwimDigitizer::AddR3BHitData(Int_t secId, Double_t thet
     return new (clref[size]) R3BSofTwimHitData(secId, theta, z);
 }
 
-// -----   Public method Finish  ------------------------------------------------
-void R3BSofTwimDigitizer::Finish() {}
-
-ClassImp(R3BSofTwimDigitizer)
+ClassImp(R3BSofTwimDigitizer);
