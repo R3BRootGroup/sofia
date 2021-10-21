@@ -24,7 +24,7 @@ class R3BSofTwimDigitizer : public FairTask
     R3BSofTwimDigitizer(const TString& name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    ~R3BSofTwimDigitizer();
+    virtual ~R3BSofTwimDigitizer();
 
     /** Virtual method Init **/
     virtual InitStatus Init();
@@ -35,7 +35,6 @@ class R3BSofTwimDigitizer : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* opt);
 
-    virtual void Finish();
     virtual void Reset();
 
     /** Setters for sigmas **/
@@ -54,7 +53,6 @@ class R3BSofTwimDigitizer : public FairTask
     Float_t fPosX, fPosZ;
     TString fName;
 
-    /** Private method AddR3BHitData **/
     // Adds a R3BSofTwimHitData to the HitCollection
     R3BSofTwimHitData* AddR3BHitData(Int_t detId, Double_t theta, Double_t z);
 
@@ -63,4 +61,4 @@ class R3BSofTwimDigitizer : public FairTask
     ClassDef(R3BSofTwimDigitizer, 1);
 };
 
-#endif
+#endif /* R3BSofTwimDigitizer_H */
