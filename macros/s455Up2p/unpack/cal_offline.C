@@ -132,7 +132,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
 
     // Create source using root files for input ---------------------------------
     R3BFileSource* source = new R3BFileSource(filename);
-    source->SetInputFileName("./parameters/setup_runid.par");
+    source->SetInputFileName("../parameters/setup_runid.par");
     source->SetRunId(fRunId);
     run->SetSource(source);
 
