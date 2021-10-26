@@ -31,8 +31,7 @@
 #include "R3BSofTwimOnlineSpectra.h"
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
-#include "R3BWRCalifaData.h"
-#include "R3BWRMasterData.h"
+#include "R3BWRData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -632,7 +631,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         int64_t wrs[2];
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsSofia->At(ihit);
+            R3BWRData* hit = (R3BWRData*)fWRItemsSofia->At(ihit);
             if (!hit)
                 continue;
             wrs[ihit] = hit->GetTimeStamp();
@@ -645,7 +644,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             int64_t wr[nHits];
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BWRCalifaData* hit = (R3BWRCalifaData*)fWRItemsCalifa->At(ihit);
+                R3BWRData* hit = (R3BWRData*)fWRItemsCalifa->At(ihit);
                 if (!hit)
                     continue;
                 wr[ihit] = hit->GetTimeStamp();
@@ -659,7 +658,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             nHits = fWRItemsNeuland->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsNeuland->At(ihit);
+                R3BWRData* hit = (R3BWRData*)fWRItemsNeuland->At(ihit);
                 if (!hit)
                     continue;
                 fh1_wrs[2]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
@@ -673,7 +672,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             nHits = fWRItemsS2->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsS2->At(ihit);
+                R3BWRData* hit = (R3BWRData*)fWRItemsS2->At(ihit);
                 if (!hit)
                     continue;
                 fh1_wrs[3]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
@@ -685,7 +684,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             nHits = fWRItemsS8->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsS8->At(ihit);
+                R3BWRData* hit = (R3BWRData*)fWRItemsS8->At(ihit);
                 if (!hit)
                     continue;
                 fh1_wrs[4]->Fill(int64_t(wrs[0] - hit->GetTimeStamp()));
@@ -698,7 +697,7 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             int64_t wrm = 0.;
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BWRMasterData* hit = (R3BWRMasterData*)fWRItemsMaster->At(ihit);
+                R3BWRData* hit = (R3BWRData*)fWRItemsMaster->At(ihit);
                 if (!hit)
                     continue;
                 wrm = hit->GetTimeStamp();

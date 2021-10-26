@@ -4,7 +4,7 @@
 
 #include "R3BEventHeader.h"
 #include "R3BSofWhiterabbitReader.h"
-#include "R3BWRMasterData.h"
+#include "R3BWRData.h"
 #include "TClonesArray.h"
 
 extern "C"
@@ -25,7 +25,7 @@ R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data,
     , fWhiterabbitId1(whiterabbit_id1)
     , fWhiterabbitId2(whiterabbit_id2)
     , fEventHeader(nullptr)
-    , fArray(new TClonesArray("R3BWRMasterData"))
+    , fArray(new TClonesArray("R3BWRData"))
 {
 }
 
@@ -55,7 +55,7 @@ Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
     fEventHeader = (R3BEventHeader*)frm->GetObject("EventHeader.");
     if (!fEventHeader)
     {
-        LOG(WARNING) << "R3BSofWhiterabbitReader::Init() R3BEventHeader not found";
+        LOG(WARNING) << "R3BSofWhiterabbitReader::Init() EventHeader. not found";
     }
     else
         LOG(INFO) << "R3BSofWhiterabbitReader::Init() R3BEventHeader found";
@@ -97,7 +97,7 @@ Bool_t R3BSofWhiterabbitReader::Read()
 
             // fEventHeader->SetTimeStamp(timestamp);
             fNEvent = fEventHeader->GetEventno();
-            new ((*fArray)[fArray->GetEntriesFast()]) R3BWRMasterData(timestamp);
+            new ((*fArray)[fArray->GetEntriesFast()]) R3BWRData(timestamp);
         }
         else
         {
@@ -142,12 +142,12 @@ Bool_t R3BSofWhiterabbitReader::Read()
 
             // fEventHeader->SetTimeStamp(timestamp);
             fNEvent = fEventHeader->GetEventno();
-            new ((*fArray)[fArray->GetEntriesFast()]) R3BWRMasterData(timestamp1);
+            new ((*fArray)[fArray->GetEntriesFast()]) R3BWRData(timestamp1);
 
             uint64_t timestamp2 =
                 ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T3 << 32) |
                 ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA2WR_T1;
-            new ((*fArray)[fArray->GetEntriesFast()]) R3BWRMasterData(timestamp2);
+            new ((*fArray)[fArray->GetEntriesFast()]) R3BWRData(timestamp2);
         }
         else
         {
