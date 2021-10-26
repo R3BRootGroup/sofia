@@ -120,8 +120,8 @@ void main_online()
     Bool_t fMusic = true;    // R3B-Music: Ionization chamber for charge-Z before GLAD
     Bool_t fPsp = false;     // Psp: Silicon detectors for tracking
     // --- Sofia ------------------------------------------------------------------------
-    Bool_t fMwpc0 = true; // MWPC0 for tracking at entrance of GLAD
-    Bool_t fTofD = true;  // ToF-Wall for time-of-flight of fragments behind GLAD
+    Bool_t fMwpc0 = false; // MWPC0 for tracking at entrance of GLAD
+    Bool_t fTofD = false;  // ToF-Wall for time-of-flight of fragments behind GLAD
     // --- Traking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
@@ -450,8 +450,13 @@ void main_online()
     // S2 Mapped -> Tcal
     if (fFrsid)
     {
-        R3BSci2Mapped2Tcal* s2Mapped2Tcal = new R3BSci2Mapped2Tcal("Sci2Map2Tcal", 1);
+        R3BSci2Mapped2Tcal* s2Mapped2Tcal = new R3BSci2Mapped2Tcal();
+        s2Mapped2Tcal->SetOnline(NOTstorecaldata);
         run->AddTask(s2Mapped2Tcal);
+        
+        R3BSci2Tcal2Hit* sci2Tcal2Hit = new R3BSci2Tcal2Hit();
+        sci2Tcal2Hit->SetOnline(NOTstorehitdata);
+        run->AddTask(sci2Tcal2Hit);
     }
 
     // MWPC0
