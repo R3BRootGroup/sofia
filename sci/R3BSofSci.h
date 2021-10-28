@@ -12,6 +12,7 @@ class TGeoRotation;
 class R3BSofSci : public R3BDetector
 {
   public:
+    R3BSofSci();
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param trans   position

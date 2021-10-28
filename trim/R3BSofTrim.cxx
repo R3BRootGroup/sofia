@@ -27,6 +27,11 @@
 
 #define U_MEV 931.4940954
 
+R3BSofTrim::R3BSofTrim()
+    : R3BSofTrim("")
+{
+}
+
 R3BSofTrim::R3BSofTrim(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
     : R3BSofTrim(geoFile, { trans, rot })
 {

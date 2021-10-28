@@ -240,9 +240,9 @@ void runsim(Int_t nEvents = 0)
         {
             scistartPar->printParams();
             TGeoRotation* rsci = new TGeoRotation("Scirot");
-            rsci->RotateX(mwpc0Par->GetRotX());
-            rsci->RotateY(mwpc0Par->GetRotY());
-            rsci->RotateZ(mwpc0Par->GetRotZ());
+            rsci->RotateX(scistartPar->GetRotX());
+            rsci->RotateY(scistartPar->GetRotY());
+            rsci->RotateZ(scistartPar->GetRotZ());
             run->AddModule(new R3BSofSci(
                 fSciStartGeo, { scistartPar->GetPosX(), scistartPar->GetPosY(), scistartPar->GetPosZ(), rsci }));
         }
@@ -295,6 +295,30 @@ void runsim(Int_t nEvents = 0)
             califa->SelectGeometryVersion(fCalifaGeoVer);
             run->AddModule(califa);
         }
+        
+        
+            // ----- Initialize CalifaDigitizer task (from Point Level to Cal Level)
+    if (fCalifaDigitizer)
+    {
+        R3BCalifaDigitizer* califaDig = new R3BCalifaDigitizer();
+        califaDig->SetNonUniformity(fCalifaNonU);
+        califaDig->SetExpEnergyRes(5.0); // 5. means 5% at 1 MeV
+        califaDig->SetComponentRes(5.0);
+        califaDig->SetDetectionThreshold(fCalifaHitEnergyTh);
+        run->AddTask(califaDig);
+        
+    // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
+    if (fCalifaHitFinder)
+    {
+        R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
+        califaHF->SetCrystalThreshold(fCalifaCryTh);
+        califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
+        run->AddTask(califaHF);
+    }
+    }
+        
+        
+        
     }
 
     // MWPC1 definition
@@ -514,27 +538,7 @@ void runsim(Int_t nEvents = 0)
 
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
 
-    // ----- Initialize CalifaDigitizer task (from Point Level to Cal Level)
-    if (fCalifa && fCalifaDigitizer)
-    {
-        R3BCalifaDigitizer* califaDig = new R3BCalifaDigitizer();
-        califaDig->SetNonUniformity(fCalifaNonU);
-        califaDig->SetExpEnergyRes(5.0); // 5. means 5% at 1 MeV
-        califaDig->SetComponentRes(5.0);
-        califaDig->SetDetectionThreshold(fCalifaHitEnergyTh);
-        run->AddTask(califaDig);
-    }
-
-    // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
-    if (fCalifa && fCalifaHitFinder)
-    {
-        R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
-        califaHF->SetCrystalThreshold(fCalifaCryTh);
-        califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
-        run->AddTask(califaHF);
-    }
-
-    if (fSofiaDigitizer)
+    if (fMwpc1&&fMwpc2&&fMwpc3&&fSofTofWall&&fSofiaDigitizer)
     {
         R3BSofFissionAnalysis* fissiontracking = new R3BSofFissionAnalysis();
         run->AddTask(fissiontracking);
