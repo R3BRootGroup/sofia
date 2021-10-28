@@ -14,6 +14,7 @@ class TGeoCombiTrans;
 class R3BSofTrim : public R3BDetector
 {
   public:
+    R3BSofTrim();
     /** Standard constructor.
      *@param geoFile name of the ROOT geometry file
      *@param trans   position

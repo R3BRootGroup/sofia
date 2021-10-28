@@ -26,6 +26,11 @@
 #include <iostream>
 #include <stdlib.h>
 
+R3BSofSci::R3BSofSci()
+    : R3BSofSci("")
+{
+}
+
 R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
     : R3BSofSci(geoFile, { trans, rot })
 {
