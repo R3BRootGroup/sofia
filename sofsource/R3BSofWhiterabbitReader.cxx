@@ -41,7 +41,7 @@ R3BSofWhiterabbitReader::~R3BSofWhiterabbitReader()
 Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofWhiterabbitReader::Init";
+    LOG(INFO) << "R3BSofWhiterabbitReader::Init()";
     EXT_STR_h101_WRSOFIA_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_WRSOFIA, 0);
 
     if (!ok)
@@ -62,6 +62,7 @@ Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
 
     // Register output array in tree
     FairRootManager::Instance()->Register("SofWRData", "SofWR", fArray, !fOnline);
+    fArray->Clear();
 
     fData->TIMESTAMP_SOFIA1ID = 0;
     fData->TIMESTAMP_SOFIA2ID = 0;
