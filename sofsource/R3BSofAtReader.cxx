@@ -34,7 +34,7 @@ R3BSofAtReader::~R3BSofAtReader()
 Bool_t R3BSofAtReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofAtReader::Init";
+    LOG(INFO) << "R3BSofAtReader::Init()";
     EXT_STR_h101_SOFAT_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFAT, 0);
     if (!ok)
     {
@@ -45,6 +45,7 @@ Bool_t R3BSofAtReader::Init(ext_data_struct_info* a_struct_info)
 
     // Register output array in tree
     FairRootManager::Instance()->Register("AtMappedData", "SofAt", fArray, !fOnline);
+    fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.

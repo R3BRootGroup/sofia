@@ -38,7 +38,7 @@ R3BSofScalersReader::~R3BSofScalersReader()
 Bool_t R3BSofScalersReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofScalersReader::Init";
+    LOG(INFO) << "R3BSofScalersReader::Init()";
     EXT_STR_h101_SOFSCALERS_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFSCALERS, 0);
     if (!ok)
     {
@@ -49,7 +49,6 @@ Bool_t R3BSofScalersReader::Init(ext_data_struct_info* a_struct_info)
 
     // Register output array in tree
     FairRootManager::Instance()->Register("SofScalersMappedData", "SofScalers", fArray, !fOnline);
-
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that

@@ -25,7 +25,7 @@ R3BSofCorrvReader::R3BSofCorrvReader(EXT_STR_h101_SOFCORRV* data, UInt_t offset)
 
 R3BSofCorrvReader::~R3BSofCorrvReader()
 {
-    LOG(INFO) << "R3BSofCorrvReader: Delete instance";
+    LOG(DEBUG) << "R3BSofCorrvReader: Delete instance";
     if (fArray)
     {
         delete fArray;
@@ -45,14 +45,7 @@ Bool_t R3BSofCorrvReader::Init(ext_data_struct_info* a_struct_info)
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
-        FairRootManager::Instance()->Register("CorrvMappedData", "SofCorrv", fArray, kTRUE);
-    }
-    else
-    {
-        FairRootManager::Instance()->Register("CorrvMappedData", "SofCorrv", fArray, kFALSE);
-    }
+    FairRootManager::Instance()->Register("CorrvMappedData", "SofCorrv", fArray, !fOnline);
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
@@ -113,4 +106,4 @@ void R3BSofCorrvReader::Reset()
     fArray->Clear();
 }
 
-ClassImp(R3BSofCorrvReader)
+ClassImp(R3BSofCorrvReader);

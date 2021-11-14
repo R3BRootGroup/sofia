@@ -41,7 +41,7 @@ R3BSofTofWReader::~R3BSofTofWReader()
 Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofTofWReader::Init";
+    LOG(INFO) << "R3BSofTofWReader::Init()";
     EXT_STR_h101_SOFTOFW_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTOFW, 0);
     if (!ok)
     {
@@ -52,7 +52,6 @@ Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
 
     // Register output array in tree
     FairRootManager::Instance()->Register("SofTofWMappedData", "SofTofW", fArray, !fOnline);
-
     fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that

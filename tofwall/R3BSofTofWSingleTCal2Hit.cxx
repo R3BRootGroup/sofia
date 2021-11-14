@@ -9,12 +9,7 @@
 
 // R3BSofTofWSingleTCal2Hit: Default Constructor --------------------------
 R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit()
-    : FairTask("R3BSof TofW tcal2hit Task", 1)
-    , fTCalDataCA(NULL)
-    , fHitDataCA(NULL)
-    , fExpId(467)
-    , fOnline(kFALSE)
-    , fTof_lise(43.)
+    : R3BSofTofWSingleTCal2Hit("R3BSofTofWSingleTCal2Hit", 1)
 {
 }
 
@@ -32,7 +27,7 @@ R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit(const char* name, Int_t iVerb
 // Virtual R3BSofTofWSingleTCal2Hit: Destructor
 R3BSofTofWSingleTCal2Hit::~R3BSofTofWSingleTCal2Hit()
 {
-    LOG(INFO) << "R3BSofTofWSingleTCal2Hit: Delete instance";
+    LOG(DEBUG) << "R3BSofTofWSingleTCal2Hit::Delete instance";
     if (fTCalDataCA)
         delete fTCalDataCA;
     if (fHitDataCA)
@@ -64,6 +59,20 @@ void R3BSofTofWSingleTCal2Hit::SetParContainers()
     return;
 }
 
+void R3BSofTofWSingleTCal2Hit::SetParameter()
+{
+    //--- Parameter Container ---
+    if (fTofWHitPar)
+    {
+        LOG(INFO) << "R3BSofTofWSingleTCal2Hit::Tof alignment (in ns)" << fTofWHitPar->GetTofAlign();
+        fTof_lise = fTofWHitPar->GetTofAlign();
+    }
+    else
+        LOG(ERROR) << "R3BSofTofWSingleTCal2Hit::SetParameter() : Could not get access to fTofWHitPar container.";
+
+    return;
+}
+
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTofWSingleTCal2Hit::Init()
 {
@@ -79,6 +88,7 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
     fTCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
     if (!fTCalDataCA)
     {
+        LOG(ERROR) << "R3BSofTofWSingleTCal2Hit::SofTofWSingleTcalData not found";
         return kFATAL;
     }
 
@@ -87,6 +97,7 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
     fHitDataCA = new TClonesArray("R3BSofTofWHitData", 10);
     rootManager->Register("TofWHitData", "TofW-Hit", fHitDataCA, !fOnline);
 
+    SetParameter();
     return kSUCCESS;
 }
 
@@ -94,6 +105,7 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
 InitStatus R3BSofTofWSingleTCal2Hit::ReInit()
 {
     SetParContainers();
+    SetParameter();
     return kSUCCESS;
 }
 
@@ -134,10 +146,10 @@ void R3BSofTofWSingleTCal2Hit::S455()
         posy = calDat[i]->GetRawPosNs();
 
         posx = fTofWGeoPar->GetDimX() / 2.0 - 15. - (Double_t)(fPaddleId - 1) * 30.;
-        posy = posy - fTofWHitPar->GetPosPar(fPaddleId);
+        posy = posy - fTofWHitPar->GetPosOffsetPar(fPaddleId);
         tofw = tofw - fTofWHitPar->GetTofPar(fPaddleId) + fTof_lise;
 
-        AddHitData(fPaddleId, posx, posy * 41., tofw);
+        AddHitData(fPaddleId, posx, posy * fTofWHitPar->GetPosSlopePar(fPaddleId), tofw);
     }
     if (calDat)
         delete calDat;
@@ -175,7 +187,7 @@ void R3BSofTofWSingleTCal2Hit::S467()
     if (mult == 1)
     {
         posx = fTofWGeoPar->GetDimX() / 2.0 - 15. - (Double_t)(fPaddleId - 1) * 30.; // x=0 at the gap of bars 14 and 15
-        posy = posy - fTofWHitPar->GetPosPar(fPaddleId);
+        posy = posy - fTofWHitPar->GetPosOffsetPar(fPaddleId);
         tofw = tofw - fTofWHitPar->GetTofPar(fPaddleId) + fTof_lise;
         // TofPar is adjusted to align the time 0 with motor sweep runs,
         // And the Tof_lise is to adjust the difference of the flight path from sofsci to target setting-by-setting.
@@ -185,11 +197,6 @@ void R3BSofTofWSingleTCal2Hit::S467()
         delete calDat;
     return;
 }
-
-// -----   Public method Finish  ------------------------------------------------
-void R3BSofTofWSingleTCal2Hit::Finish() {}
-
-void R3BSofTofWSingleTCal2Hit::FinishEvent() {}
 
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTofWSingleTCal2Hit::Reset()
@@ -208,4 +215,4 @@ R3BSofTofWHitData* R3BSofTofWSingleTCal2Hit::AddHitData(Int_t paddle, Double_t x
     return new (clref[size]) R3BSofTofWHitData(paddle, x, y, tof);
 }
 
-ClassImp(R3BSofTofWSingleTCal2Hit)
+ClassImp(R3BSofTofWSingleTCal2Hit);

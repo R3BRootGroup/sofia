@@ -26,20 +26,7 @@
 
 // R3BSofTofWSingleTCal2HitPar: Default Constructor --------------------------
 R3BSofTofWSingleTCal2HitPar::R3BSofTofWSingleTCal2HitPar()
-    : FairTask("R3BSof TofW Calibrator", 1)
-    , fNumSci(28)
-    , fMinStatistics(1000)
-    , fLimit_left_tof(-100.)
-    , fLimit_right_tof(100.)
-    , fLimit_left_pos(-50.)
-    , fLimit_right_pos(50)
-    , fNbBinsTof(2000)
-    , fNbBinsPos(2000)
-    , fMaxSigma(200)
-    , TofParams(NULL)
-    , PosParams(NULL)
-    , fHit_Par(NULL)
-    , fTofCalDataCA(NULL)
+    : R3BSofTofWSingleTCal2HitPar("R3BSofTofWSingleTCal2HitPar", 1)
 {
 }
 
@@ -65,7 +52,7 @@ R3BSofTofWSingleTCal2HitPar::R3BSofTofWSingleTCal2HitPar(const TString& name, In
 // Virtual R3BSofTofWSingleTCal2HitPar: Destructor
 R3BSofTofWSingleTCal2HitPar::~R3BSofTofWSingleTCal2HitPar()
 {
-    LOG(INFO) << "R3BSofTofWSingleTCal2HitPar: Delete instance";
+    LOG(DEBUG) << "R3BSofTofWSingleTCal2HitPar::Delete instance";
     if (fTofCalDataCA)
         delete fTofCalDataCA;
 }
@@ -73,7 +60,7 @@ R3BSofTofWSingleTCal2HitPar::~R3BSofTofWSingleTCal2HitPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTofWSingleTCal2HitPar::Init()
 {
-    LOG(INFO) << "R3BSofTofWSingleTCal2HitPar: Init";
+    LOG(INFO) << "R3BSofTofWSingleTCal2HitPar::Init()";
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -85,7 +72,7 @@ InitStatus R3BSofTofWSingleTCal2HitPar::Init()
     fTofCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
     if (!fTofCalDataCA)
     {
-        LOG(ERROR) << "R3BSofTofWSingleTCal2HitPar: SofTofWSingleTcalData not found";
+        LOG(ERROR) << "R3BSofTofWSingleTCal2HitPar::SofTofWSingleTcalData not found";
         return kFATAL;
     }
 
@@ -177,7 +164,7 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
             hpos[s]->Fit("fit1", "QR0");
             Double_t par1[3];
             fit1->GetParameters(&par1[0]);
-            fHit_Par->SetPosPar(par1[1], s + 1);
+            fHit_Par->SetPosOffsetPar(par1[1], s + 1);
 
             for (Int_t k2 = 0; k2 < fNbBinsTof; k2++)
             {
@@ -207,4 +194,4 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
     }
 }
 
-ClassImp(R3BSofTofWSingleTCal2HitPar)
+ClassImp(R3BSofTofWSingleTCal2HitPar);

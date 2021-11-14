@@ -52,7 +52,7 @@ R3BSofMwpcReader::~R3BSofMwpcReader()
 Bool_t R3BSofMwpcReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofMwpcReader::Init";
+    LOG(INFO) << "R3BSofMwpcReader::Init()";
     EXT_STR_h101_SOFMWPC_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFMWPC, 0);
     if (!ok)
     {

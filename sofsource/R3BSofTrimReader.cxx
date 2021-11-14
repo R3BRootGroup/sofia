@@ -38,8 +38,8 @@ R3BSofTrimReader::~R3BSofTrimReader()
 
 Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
 {
-    int ok;
-    LOG(INFO) << "R3BSofTrimReader::Init";
+    Int_t ok;
+    LOG(INFO) << "R3BSofTrimReader::Init()";
     EXT_STR_h101_SOFTRIM_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTRIM, 0);
     if (!ok)
     {
@@ -50,6 +50,7 @@ Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
 
     // Register output array in tree
     FairRootManager::Instance()->Register("TrimMappedData", "SofTrim", fArray, !fOnline);
+    fArray->Clear();
 
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.

@@ -265,7 +265,6 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
         // --- SingleTcal 2 Hit for SofTofW
         R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
         SofTofWSingleTcal2Hit->SetExpId(fExpId);
-        SofTofWSingleTcal2Hit->SetTofLISE(33.);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
 

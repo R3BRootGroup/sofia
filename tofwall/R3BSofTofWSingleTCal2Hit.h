@@ -57,10 +57,6 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
 
-    /** Virtual method Finish **/
-    virtual void Finish();
-    virtual void FinishEvent();
-
     void SetOnline(Bool_t option) { fOnline = option; }
     void SetExpId(Int_t exp) { fExpId = exp; }
     void SetTofLISE(Double_t tof) { fTof_lise = tof; }
@@ -68,6 +64,7 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     Double_t GetTofLISE() { return fTof_lise; }
 
   private:
+    void SetParameter();
     /** Private method Experiment s455 **/
     virtual void S455();
     /** Private method Experiment s467 **/
