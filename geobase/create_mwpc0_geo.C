@@ -12,6 +12,7 @@
 #include "TMath.h"
 #include <iomanip>
 #include <iostream>
+#include <string>
 
 void create_mwpc0_geo(TString geoTag = "0")
 {
