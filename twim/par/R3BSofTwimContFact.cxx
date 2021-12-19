@@ -60,7 +60,7 @@ FairParSet* R3BSofTwimContFact::createContainer(FairContainer* c)
     // of this container, the name is concatinated with the context.
 
     const char* name = c->GetName();
-    LOG(INFO) << "R3BSofTwimContFact: Create container name: " << name;
+    LOG(INFO) << "R3BSofTwimContFact::createContainer(): " << name;
     FairParSet* p = 0;
     if (strcmp(name, "twimCalPar") == 0)
     {

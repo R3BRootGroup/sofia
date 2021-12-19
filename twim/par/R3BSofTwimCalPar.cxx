@@ -82,21 +82,25 @@ Bool_t R3BSofTwimCalPar::getParams(FairParamList* list)
     LOG(INFO) << "R3BSofTwimCalPar::getParams() called";
     if (!list)
     {
+        LOG(FATAL) << "Could not find FairParamList";
         return kFALSE;
     }
 
     if (!list->fill("twimSectionNumberPar", &fNumSections))
     {
+        LOG(ERROR) << "Could not initialize twimSectionNumberPar";
         return kFALSE;
     }
 
     if (!list->fill("twimAnodeNumberPar", &fNumAnodes))
     {
+        LOG(ERROR) << "Could not initialize twimAnodeNumberPar";
         return kFALSE;
     }
 
     if (!list->fill("twimAnodeEFitPar", &fNumParamsEFit))
     {
+        LOG(ERROR) << "Could not initialize twimAnodeEFitPar";
         return kFALSE;
     }
 
@@ -105,7 +109,7 @@ Bool_t R3BSofTwimCalPar::getParams(FairParamList* list)
     fIn_use->Set(array_anode);
     if (!(list->fill("twimInUsePar", fIn_use)))
     {
-        LOG(INFO) << "---Could not initialize twimInUsePar";
+        LOG(ERROR) << "Could not initialize twimInUsePar";
         return kFALSE;
     }
 
@@ -114,12 +118,13 @@ Bool_t R3BSofTwimCalPar::getParams(FairParamList* list)
     fAnodeCalParams->Set(array_size);
     if (!(list->fill("twimCalEPar", fAnodeCalParams)))
     {
-        LOG(INFO) << "---Could not initialize twimCalEPar";
+        LOG(ERROR) << "Could not initialize twimCalEPar";
         return kFALSE;
     }
 
     if (!list->fill("twimPosFitPar", &fNumParamsPosFit))
     {
+        LOG(ERROR) << "Could not initialize twimPosFitPar";
         return kFALSE;
     }
 
@@ -129,7 +134,7 @@ Bool_t R3BSofTwimCalPar::getParams(FairParamList* list)
 
     if (!(list->fill("twimPosPar", fPosParams)))
     {
-        LOG(INFO) << "---Could not initialize twimPosPar";
+        LOG(ERROR) << "Could not initialize twimPosPar";
         return kFALSE;
     }
 
@@ -142,7 +147,7 @@ void R3BSofTwimCalPar::print() { printParams(); }
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTwimCalPar::printParams()
 {
-    LOG(INFO) << "R3BSofTwimCalPar: twim anode parameters for energy: ";
+    LOG(INFO) << "R3BSofTwimCalPar::printParams() twim anode parameters for energy: ";
     Int_t array_size = fNumSections * fNumAnodes * fNumParamsEFit;
 
     for (Int_t s = 0; s < fNumSections; s++)
@@ -159,7 +164,7 @@ void R3BSofTwimCalPar::printParams()
         }
     }
 
-    LOG(INFO) << "R3BSofTwimCalPar: twim anode parameters for position: "
+    LOG(INFO) << "R3BSofTwimCalPar::printParams() twim anode parameters for position: "
               << fNumSections * fNumAnodes * fNumParamsPosFit;
     for (Int_t s = 0; s < fNumSections; s++)
     {
@@ -176,4 +181,4 @@ void R3BSofTwimCalPar::printParams()
     }
 }
 
-ClassImp(R3BSofTwimCalPar)
+ClassImp(R3BSofTwimCalPar);

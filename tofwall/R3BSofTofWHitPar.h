@@ -69,7 +69,7 @@ class R3BSofTofWHitPar : public FairParGenericSet
 
     R3BSofTofWHitPar(const R3BSofTofWHitPar&); /*< a copy constructor >*/
 
-    ClassDef(R3BSofTofWHitPar, 1);
+    ClassDef(R3BSofTofWHitPar, 2);
 };
 
-#endif
+#endif /* R3BSofTofWHitPar_H */
