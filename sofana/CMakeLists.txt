@@ -21,6 +21,9 @@ ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/trackingData
 ${R3BSOF_SOURCE_DIR}/twim
+${R3BSOF_SOURCE_DIR}/twim/sim
+${R3BSOF_SOURCE_DIR}/twim/par
+${R3BSOF_SOURCE_DIR}/twim/calibration
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})

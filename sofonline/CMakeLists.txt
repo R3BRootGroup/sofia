@@ -19,7 +19,7 @@ ${R3BROOT_SOURCE_DIR}/r3bdata/wrData
 ${R3BROOT_SOURCE_DIR}/ssd/online
 ${R3BROOT_SOURCE_DIR}/califa/online
 ${R3BROOT_SOURCE_DIR}/trim
-${R3BROOT_SOURCE_DIR}/triw
+${R3BROOT_SOURCE_DIR}/twim/par
 ${R3BROOT_SOURCE_DIR}/mwpc/mwpc0
 ${R3BROOT_SOURCE_DIR}/mwpc/mwpc1
 ${R3BROOT_SOURCE_DIR}/mwpc/mwpc2

@@ -85,16 +85,19 @@ Bool_t R3BSofTwimHitPar::getParams(FairParamList* list)
     LOG(INFO) << "R3BSofTwimHitPar::getParams() called";
     if (!list)
     {
+        LOG(FATAL) << "Could not find FairParamList";
         return kFALSE;
     }
 
     if (!list->fill("twimHitNumSecPar", &fNumSec))
     {
+        LOG(ERROR) << "Could not initialize twimHitNumSecPar";
         return kFALSE;
     }
 
     if (!list->fill("twimAnodeNumberPar", &fNumAnodes))
     {
+        LOG(ERROR) << "Could not initialize twimAnodeNumberPar";
         return kFALSE;
     }
 
@@ -103,19 +106,20 @@ Bool_t R3BSofTwimHitPar::getParams(FairParamList* list)
     fIn_use->Set(array_anode);
     if (!(list->fill("twimInUsePar", fIn_use)))
     {
-        LOG(ERROR) << "---Could not initialize twimInUsePar";
+        LOG(ERROR) << "Could not initialize twimInUsePar";
         return kFALSE;
     }
 
     fAnode_pos->Set(array_anode);
     if (!(list->fill("twimAnodePosPar", fAnode_pos)))
     {
-        LOG(ERROR) << "---Could not initialize twimAnodePosPar";
+        LOG(ERROR) << "Could not initialize twimAnodePosPar";
         return kFALSE;
     }
 
     if (!list->fill("twimZHitParamsFitPar", &fNumParamsZFit))
     {
+        LOG(ERROR) << "Could not initialize twimZHitParamsFitPar";
         return kFALSE;
     }
 
@@ -125,13 +129,13 @@ Bool_t R3BSofTwimHitPar::getParams(FairParamList* list)
 
     if (!(list->fill("twimZHitPar", fDetZHitParams)))
     {
-        LOG(ERROR) << "---Could not initialize twimZHitPar";
+        LOG(ERROR) << "Could not initialize twimZHitPar";
         return kFALSE;
     }
 
     if (!(list->fill("twimvstofHitPar", fTofHitParams)))
     {
-        LOG(WARNING) << "---Could not initialize twimvstofHitPar";
+        LOG(WARNING) << "Could not initialize twimvstofHitPar";
         // return kFALSE;
     }
 
@@ -144,8 +148,8 @@ void R3BSofTwimHitPar::print() { printParams(); }
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTwimHitPar::printParams()
 {
-    LOG(INFO) << "R3BSofTwimHitPar: twim detector Parameters";
-    LOG(INFO) << "R3BSofTwimHitPar: twim anodes in use: ";
+    LOG(INFO) << "R3BSofTwimHitPar::printParams() twim detector Parameters";
+    LOG(INFO) << "R3BSofTwimHitPar::printParams() twim anodes in use: ";
 
     for (Int_t s = 0; s < fNumSec; s++)
     {
@@ -180,4 +184,4 @@ void R3BSofTwimHitPar::printParams()
         }
 }
 
-ClassImp(R3BSofTwimHitPar)
+ClassImp(R3BSofTwimHitPar);

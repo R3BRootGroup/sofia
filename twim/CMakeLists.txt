@@ -14,6 +14,9 @@ ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/twim
+${R3BSOF_SOURCE_DIR}/twim/sim
+${R3BSOF_SOURCE_DIR}/twim/par
+${R3BSOF_SOURCE_DIR}/twim/calibration
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -26,17 +29,18 @@ link_directories( ${LINK_DIRECTORIES})
 #set(SRCS
 #Put here your sourcefiles
 #*.cxx
-#R3BSofTwim.cxx
-#R3BSofTwimContFact.cxx
-#R3BSofTwimCalPar.cxx
-#R3BSofTwimHitPar.cxx
-#R3BSofTwimMapped2Cal.cxx
-#R3BSofTwimCal2Hit.cxx
-#R3BSofTwimMapped2CalPar.cxx
-#R3BSofTwimDigitizer.cxx
+#./sim/R3BSofTwim.cxx
+#./sim/R3BSofTwimDigitizer.cxx
+#./par/R3BSofTwimContFact.cxx
+#./par/R3BSofTwimCalPar.cxx
+#./par/R3BSofTwimHitPar.cxx
+#./calibration/R3BSofTwimMapped2Cal.cxx
+#./calibration/R3BSofTwimCal2Hit.cxx
+#./calibration/R3BSofTwimMapped2CalPar.cxx
 #)
 
-file(GLOB SRCS *.cxx)
+file(GLOB SRCS ./sim/*.cxx ./par/*.cxx ./calibration/*.cxx)
+
 
 # fill list of header files from list of source files
 # by exchanging the file extension
