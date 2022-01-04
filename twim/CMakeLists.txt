@@ -15,7 +15,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/twim
 ${R3BSOF_SOURCE_DIR}/twim/sim
-${R3BSOF_SOURCE_DIR}/twim/par
+${R3BSOF_SOURCE_DIR}/twim/pars
 ${R3BSOF_SOURCE_DIR}/twim/calibration
 )
 
@@ -39,7 +39,7 @@ link_directories( ${LINK_DIRECTORIES})
 #./calibration/R3BSofTwimMapped2CalPar.cxx
 #)
 
-file(GLOB SRCS ./sim/*.cxx ./par/*.cxx ./calibration/*.cxx)
+file(GLOB SRCS ./sim/*.cxx ./pars/*.cxx ./calibration/*.cxx)
 
 
 # fill list of header files from list of source files
