@@ -49,6 +49,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofTwimLinkDef.h)
 set(LIBRARY_NAME R3BSofTwim)
 set(DEPENDENCIES
-    R3Bbase R3BData R3BSofData R3BSofTcal)
+    R3BBase R3BData R3BSofData R3BSofTcal)
 
 GENERATE_LIBRARY()

@@ -51,6 +51,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofAnaLinkDef.h)
 set(LIBRARY_NAME R3BSofAna)
 set(DEPENDENCIES
-    R3Bbase R3BData R3BSofData R3BTracking)
+    R3BBase R3BData R3BSofData R3BTracking)
 
 GENERATE_LIBRARY()

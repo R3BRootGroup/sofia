@@ -138,4 +138,4 @@ void R3BSofTcalPar::printParams()
     }
 }
 
-ClassImp(R3BSofTcalPar)
+ClassImp(R3BSofTcalPar);

@@ -62,12 +62,12 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
         p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
-    if (strcmp(name, "TofwGeoPar") == 0)
+    else if (strcmp(name, "TofwGeoPar") == 0)
     {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
-    if (strcmp(name, "SofTofWTcalPar") == 0)
+    else if (strcmp(name, "SofTofWTcalPar") == 0)
     {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
@@ -75,4 +75,4 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
     return p;
 }
 
-ClassImp(R3BSofTofWContFact)
+ClassImp(R3BSofTofWContFact);

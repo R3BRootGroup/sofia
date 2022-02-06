@@ -44,6 +44,6 @@ CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 set(LINKDEF SofTrimLinkDef.h)
 set(LIBRARY_NAME R3BSofTrim)
 set(DEPENDENCIES
-  R3Bbase R3BData R3BSofData R3BSofTcal R3BTracking)
+  R3BBase R3BData R3BSofData R3BSofTcal R3BTracking)
 
 GENERATE_LIBRARY()
