@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------
 // -----                                                       -----
 // -----                R3BSofTwimMapped2CalPar                -----
-// -----        Created 29/01/20  by J.L. Rodriguez-Sanchez    -----
+// -----        Created 29/01/20 by J.L. Rodriguez-Sanchez     -----
 // -----------------------------------------------------------------
 
 #ifndef R3BSofTwimMapped2CalPar_H
@@ -34,14 +34,8 @@ class R3BSofTwimMapped2CalPar : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
 
-    /** Virtual method FinishEvent **/
-    virtual void FinishEvent();
-
     /** Virtual method FinishTask **/
     virtual void FinishTask();
-
-    /** Virtual method Reset **/
-    virtual void Reset();
 
     /** Virtual method Init **/
     virtual InitStatus Init();
