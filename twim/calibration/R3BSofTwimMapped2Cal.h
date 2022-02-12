@@ -12,6 +12,8 @@
 #include "R3BSofTwimMappedData.h"
 #include "TH1F.h"
 #include <TRandom.h>
+#include <stdint.h>
+#include <vector>
 
 class TClonesArray;
 class R3BSofTwimCalPar;
@@ -43,9 +45,6 @@ class R3BSofTwimMapped2Cal : public FairTask
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
 
-    /** Virtual method Finish **/
-    virtual void Finish();
-
     /** Method to set up the experiment ID **/
     void SetExpId(Int_t exp) { fExpId = exp; }
 
@@ -56,14 +55,14 @@ class R3BSofTwimMapped2Cal : public FairTask
 
     Int_t fNumSec;
     Int_t fNumAnodes;
-    Int_t fNumParams;
+    Int_t fNumEParams;
     Int_t fNumPosParams;
     Int_t fNumAnodesRef;
     Int_t fNumAnodesTrig;
     Int_t fMaxMult;
     Int_t fExpId;
-    TArrayF* CalParams;
-    TArrayF* PosParams;
+    std::vector<TArrayF*> CalEParams;
+    std::vector<TArrayF*> PosParams;
 
     Int_t mulanode[4][16 + 4];
     Double_t fE[4][20][16 + 4];

@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------
 // -----         R3BSofTwimMapped2CalPar source file               -----
-// -----      Created 29/01/20  by J.L. Rodriguez-Sanchez          -----
+// -----      Created 29/01/20 by J.L. Rodriguez-Sanchez           -----
 // ---------------------------------------------------------------------
 
 // ROOT headers
@@ -11,7 +11,7 @@
 #include "TRandom.h"
 #include "TVector3.h"
 
-// Fair headers
+// FAIR headers
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
@@ -23,33 +23,9 @@
 #include "R3BSofTwimMapped2CalPar.h"
 #include "R3BSofTwimMappedData.h"
 
-#include <iomanip>
-
 // R3BSofTwimMapped2CalPar: Default Constructor --------------------------
 R3BSofTwimMapped2CalPar::R3BSofTwimMapped2CalPar()
-    : FairTask("R3B Twim Angle Calibrator", 1)
-    , fNumSec(4)
-    , fNumAnodes(16)   // 16 anodes
-    , fNumAnodesRef(2) // 2 anode for TREF
-    , fMaxMult(20)
-    , fMinStadistics(1000)
-    , fLimit_left(0)
-    , fLimit_right(24000)
-    , fNumParams(3)
-    , fNumPosParams(2)
-    , fMaxSigma(200)
-    , CalParams(NULL)
-    , PosParams(NULL)
-    , fCal_Par(NULL)
-    , fNameDetA("Mwpc1")
-    , fPosMwpcA(0.)
-    , fNameDetB("Mwpc2")
-    , fPosMwpcB(0.)
-    , fPosTwim(0.)
-    , fTwimMappedDataCA(NULL)
-    , fHitItemsMwpcA(NULL)
-    , fHitItemsMwpcB(NULL)
-    , fExpId(467)
+    : R3BSofTwimMapped2CalPar("R3B Twim Angle Calibrator", 1, "Mwpc1", "Mwpc2")
 {
 }
 
@@ -85,16 +61,7 @@ R3BSofTwimMapped2CalPar::R3BSofTwimMapped2CalPar(const TString& name,
 }
 
 // Virtual R3BSofTwimMapped2CalPar: Destructor
-R3BSofTwimMapped2CalPar::~R3BSofTwimMapped2CalPar()
-{
-    LOG(INFO) << "R3BSofTwimMapped2CalPar: Delete instance";
-    if (fTwimMappedDataCA)
-        delete fTwimMappedDataCA;
-    if (fHitItemsMwpcA)
-        delete fHitItemsMwpcA;
-    if (fHitItemsMwpcB)
-        delete fHitItemsMwpcB;
-}
+R3BSofTwimMapped2CalPar::~R3BSofTwimMapped2CalPar() { LOG(INFO) << "R3BSofTwimMapped2CalPar: Delete instance"; }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTwimMapped2CalPar::Init()
@@ -289,24 +256,21 @@ void R3BSofTwimMapped2CalPar::Exec(Option_t* option)
     return;
 }
 
-// -----   Protected method Finish   --------------------------------------------
-void R3BSofTwimMapped2CalPar::FinishEvent() {}
-
-// -----   Public method Reset   ------------------------------------------------
-void R3BSofTwimMapped2CalPar::Reset() {}
-
 void R3BSofTwimMapped2CalPar::FinishTask()
 {
     fCal_Par->SetNumSec(fNumSec);
     fCal_Par->SetNumAnodes(fNumAnodes);
     fCal_Par->SetNumParamsEFit(fNumParams);
     fCal_Par->SetNumParamsPosFit(fNumPosParams);
-    fCal_Par->GetAnodeCalParams()->Set(fNumSec * fNumParams * fNumAnodes);
-    fCal_Par->GetPosParams()->Set(fNumSec * fNumPosParams * fNumAnodes);
 
     TF1* fit = new TF1("fit", "pol1", fLimit_left, fLimit_right);
     fit->SetLineColor(2);
+
     for (Int_t s = 0; s < fNumSec; s++)
+    {
+        fCal_Par->GetAnodeCalEParams(s)->Set(fNumParams * fNumAnodes);
+        fCal_Par->GetAnodeCalPosParams(s)->Set(fNumPosParams * fNumAnodes);
+
         for (Int_t i = 0; i < fNumAnodes; i++)
         {
             if (fg_anode[s * fNumAnodes + i]->GetN() > fMinStadistics)
@@ -315,15 +279,20 @@ void R3BSofTwimMapped2CalPar::FinishTask()
                 fg_anode[s * fNumAnodes + i]->Fit("fit", "QR0");
                 Double_t par[fNumPosParams];
                 fit->GetParameters(&par[0]);
-                fCal_Par->SetPosParams(par[0], i * fNumPosParams + s * fNumAnodes * fNumPosParams);
-                fCal_Par->SetPosParams(par[1], i * fNumPosParams + s * fNumAnodes * fNumPosParams + 1);
+                fCal_Par->SetPosParams(par[0], s, i, 1);
+                fCal_Par->SetPosParams(par[1], s, i, 2);
             }
             else
-                fCal_Par->SetAnodeCalParams(-1.0, i * fNumParams + s * fNumAnodes * fNumPosParams + 1);
+            {
+                fCal_Par->SetAnodeCalParams(0.0, s, i, 1);
+                fCal_Par->SetAnodeCalParams(-1.0, s, i, 2);
+            }
 
             fg_anode[s * fNumAnodes + i]->Write();
         }
+    }
+
     fCal_Par->setChanged();
 }
 
-ClassImp(R3BSofTwimMapped2CalPar)
+ClassImp(R3BSofTwimMapped2CalPar);

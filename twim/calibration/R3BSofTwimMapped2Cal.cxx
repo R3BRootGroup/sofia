@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------
 // -----         R3BSofTwimMapped2Cal source file             -----
-// -----    Created 24/11/19  by J.L. Rodriguez-Sanchez       -----
+// -----    Created 24/11/19 by J.L. Rodriguez-Sanchez        -----
 // ----------------------------------------------------------------
 
 // ROOT headers
@@ -8,64 +8,54 @@
 #include "TMath.h"
 #include "TRandom.h"
 
-// Fair headers
+// FAIR headers
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
 
-#include <iomanip>
-
 // TWIM headers
+#include "R3BLogger.h"
 #include "R3BSofTwimCalData.h"
 #include "R3BSofTwimCalPar.h"
 #include "R3BSofTwimMapped2Cal.h"
 #include "R3BSofTwimMappedData.h"
 
-// R3BSofTwimMapped2Cal: Default Constructor --------------------------
+// R3BSofTwimMapped2Cal::Default Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal()
-    : FairTask("R3BSof Twim Cal Calibrator", 1)
-    , fNumSec(4)
-    , fNumAnodes(16)   // 16 anodes
-    , fNumAnodesRef(2) // 2 anode for TREF
-    , fMaxMult(20)
-    , fNumParams(3)
-    , fNumPosParams(2)
-    , CalParams(NULL)
-    , PosParams(NULL)
-    , fCal_Par(NULL)
-    , fTwimMappedDataCA(NULL)
-    , fTwimCalDataCA(NULL)
-    , fExpId(467)
-    , fOnline(kFALSE)
+    : R3BSofTwimMapped2Cal("R3BSofTwimMapped2Cal", 1)
 {
 }
 
-// R3BSofTwimMapped2CalPar: Standard Constructor --------------------------
+// R3BSofTwimMapped2CalPar::Standard Constructor --------------------------
 R3BSofTwimMapped2Cal::R3BSofTwimMapped2Cal(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fNumSec(4)
-    , fNumAnodes(16)   // 16 anodes
-    , fNumAnodesRef(2) // 2 anode for TREF
+    , fNumAnodes(16)    // 16 anodes
+    , fNumAnodesRef(2)  // 2 anode for TREF
+    , fNumAnodesTrig(2) // 2 anode for TRIG
     , fMaxMult(20)
-    , fNumParams(3)
+    , fNumEParams(2)
     , fNumPosParams(2)
-    , CalParams(NULL)
-    , PosParams(NULL)
     , fCal_Par(NULL)
     , fTwimMappedDataCA(NULL)
     , fTwimCalDataCA(NULL)
     , fExpId(467)
     , fOnline(kFALSE)
 {
+    CalEParams.resize(fNumSec);
+    PosParams.resize(fNumSec);
+    for (Int_t s = 0; s < fNumSec; s++)
+    {
+        CalEParams[s] = NULL;
+        PosParams[s] = NULL;
+    }
 }
 
-// Virtual R3BSofTwimMapped2Cal: Destructor
+// Virtual R3BSofTwimMapped2Cal::Destructor
 R3BSofTwimMapped2Cal::~R3BSofTwimMapped2Cal()
 {
-    LOG(INFO) << "R3BSofTwimMapped2Cal: Delete instance";
-    if (fTwimMappedDataCA)
-        delete fTwimMappedDataCA;
+    R3BLOG(DEBUG1, "");
     if (fTwimCalDataCA)
         delete fTwimCalDataCA;
 }
@@ -73,21 +63,17 @@ R3BSofTwimMapped2Cal::~R3BSofTwimMapped2Cal()
 void R3BSofTwimMapped2Cal::SetParContainers()
 {
     // Parameter Container
-    // Reading amsStripCalPar from FairRuntimeDb
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
-        LOG(ERROR) << "FairRuntimeDb not opened!";
-    }
+    R3BLOG_IF(ERROR, !rtdb, "FairRuntimeDb not found");
 
     fCal_Par = (R3BSofTwimCalPar*)rtdb->getContainer("twimCalPar");
     if (!fCal_Par)
     {
-        LOG(ERROR) << "R3BSofTwimMapped2CalPar::Init() Couldn't get handle on twimCalPar container";
+        R3BLOG(ERROR, "Couldn't get handle on twimCalPar container");
     }
     else
     {
-        LOG(INFO) << "R3BSofTwimMapped2CalPar:: twimCalPar container open";
+        R3BLOG(INFO, "twimCalPar container opened");
     }
     return;
 }
@@ -95,47 +81,46 @@ void R3BSofTwimMapped2Cal::SetParContainers()
 void R3BSofTwimMapped2Cal::SetParameter()
 {
     //--- Parameter Container ---
-    fNumSec = fCal_Par->GetNumSec();           // Number of sections
-    fNumAnodes = fCal_Par->GetNumAnodes();     // Number of anodes per section
-    fNumParams = fCal_Par->GetNumParamsEFit(); // Number of Parameters
+    fNumSec = fCal_Par->GetNumSec();               // Number of sections
+    fNumAnodesRef = fCal_Par->GetNumAnodesTRef();  // Anodes for TREF
+    fNumAnodesTrig = fCal_Par->GetNumAnodesTrig(); // Anodes for Trig
+    fMaxMult = fCal_Par->GetMaxMult();
+    fNumAnodes = fCal_Par->GetNumAnodes();          // Number of anodes per section
+    fNumEParams = fCal_Par->GetNumParamsEFit();     // Number of parameters for energy calibration
+    fNumPosParams = fCal_Par->GetNumParamsPosFit(); // Number of parameters for position calibration
 
-    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb sections: " << fNumSec;
-    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb anodes: " << fNumAnodes;
-    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb parameters from pedestal fit: " << fNumParams;
+    R3BLOG(INFO, "Nb sections: " << fNumSec);
+    R3BLOG(INFO, "Nb anodes: " << fNumAnodes);
+    R3BLOG(INFO, "Nb of twim Ref anodes: " << fNumAnodesRef);
+    R3BLOG(INFO, "Nb of twim Trigger anodes: " << fNumAnodesTrig);
+    R3BLOG(INFO, "Nb of twim Max. multiplicity per anode: " << fMaxMult);
+    R3BLOG(INFO, "Nb parameters from energy cal fit: " << fNumEParams);
+    R3BLOG(INFO, "Nb parameters from position cal fit: " << fNumPosParams);
 
-    if (fExpId == 444 || fExpId == 467)
-    {
-        fNumAnodesRef = 2;  // 2 anode for TREF
-        fNumAnodesTrig = 2; // 2 anode for Trig
-        fMaxMult = 10;
-    }
-    else if (fExpId == 455)
-    {
-        fNumAnodesRef = 1;  // 1 anode for TREF
-        fNumAnodesTrig = 1; // 1 anode for Trig
-        fMaxMult = 20;
-    }
-
-    CalParams = new TArrayF();
-    Int_t array_size = (fNumSec * fNumAnodes) * fNumParams;
-    CalParams->Set(array_size);
-    CalParams = fCal_Par->GetAnodeCalParams(); // Array with the Cal parameters
-
-    LOG(INFO) << "R3BSofTwimMapped2Cal: Nb parameters for position fit: " << fNumPosParams;
-    PosParams = new TArrayF();
-    Int_t array_pos = fNumSec * fNumAnodes * fNumPosParams;
-    PosParams->Set(array_pos);
-    PosParams = fCal_Par->GetPosParams(); // Array with the Cal parameters
-
-    // Count the number of dead anodes
+    CalEParams.resize(fNumSec);
+    PosParams.resize(fNumSec);
     for (Int_t s = 0; s < fNumSec; s++)
     {
-        LOG(INFO) << "R3BSofTwimMapped2Cal::Dead anodes in section " << s;
+        // Energy cal parameters
+        CalEParams[s] = new TArrayF();
+        Int_t array_e = fNumAnodes * fNumEParams;
+        CalEParams[s]->Set(array_e);
+        CalEParams[s] = fCal_Par->GetAnodeCalEParams(s + 1);
+        // Position cal parameters
+        PosParams[s] = new TArrayF();
+        Int_t array_pos = fNumAnodes * fNumPosParams;
+        PosParams[s]->Set(array_pos);
+        PosParams[s] = fCal_Par->GetAnodeCalPosParams(s + 1);
+    }
+
+    // Count the number of dead anodes or not used
+    for (Int_t s = 0; s < fNumSec; s++)
+    {
         Int_t numdeadanodes = 0;
         for (Int_t i = 0; i < fNumAnodes; i++)
-            if (CalParams->GetAt(s * fNumAnodes * fNumParams + fNumParams * i + 1) == -1)
+            if (CalEParams[s]->GetAt(fNumEParams * i + 1) == -1 || fCal_Par->GetInUse(s + 1, i + 1) == 0)
                 numdeadanodes++;
-        LOG(INFO) << "R3BSofTwimMapped2Cal::Nb of dead anodes : " << numdeadanodes;
+        R3BLOG(INFO, "Dead (or not used) anodes in section " << s + 1 << ": " << numdeadanodes);
     }
     return;
 }
@@ -143,33 +128,27 @@ void R3BSofTwimMapped2Cal::SetParameter()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTwimMapped2Cal::Init()
 {
-    LOG(INFO) << "R3BSofTwimMapped2Cal::Init()";
+    R3BLOG(INFO, "");
 
-    // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
     if (!rootManager)
     {
+        R3BLOG(FATAL, "FairRootManager not found");
         return kFATAL;
     }
 
+    // INPUT DATA
     fTwimMappedDataCA = (TClonesArray*)rootManager->GetObject("TwimMappedData");
     if (!fTwimMappedDataCA)
     {
+        R3BLOG(FATAL, "TwimMappedData not found");
         return kFATAL;
     }
 
     // OUTPUT DATA
-    // Calibrated data
-    fTwimCalDataCA = new TClonesArray("R3BSofTwimCalData", fMaxMult * (fNumAnodes + fNumAnodesRef));
-
-    if (!fOnline)
-    {
-        rootManager->Register("TwimCalData", "TWIM Cal", fTwimCalDataCA, kTRUE);
-    }
-    else
-    {
-        rootManager->Register("TwimCalData", "TWIM Cal", fTwimCalDataCA, kFALSE);
-    }
+    fTwimCalDataCA = new TClonesArray("R3BSofTwimCalData");
+    rootManager->Register("TwimCalData", "TWIM_Cal", fTwimCalDataCA, !fOnline);
+    fTwimCalDataCA->Clear();
 
     SetParameter();
     return kSUCCESS;
@@ -198,6 +177,7 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     Int_t secId = 0;
     Int_t anodeId = 0;
     Double_t pedestal = 0.;
+    Double_t slope = 1.;
 
     for (Int_t s = 0; s < fNumSec; s++)
         for (Int_t i = 0; i < (fNumAnodes + fNumAnodesRef + fNumAnodesTrig); i++)
@@ -213,14 +193,16 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     for (Int_t i = 0; i < nHits; i++)
     {
         mappedData[i] = (R3BSofTwimMappedData*)(fTwimMappedDataCA->At(i));
+        // 0-base FIXME in 1-base
         secId = mappedData[i]->GetSecID();
         anodeId = mappedData[i]->GetAnodeID();
 
         if (anodeId < fNumAnodes && fCal_Par->GetInUse(secId + 1, anodeId + 1) == 1)
         {
-            pedestal = CalParams->GetAt(secId * fNumAnodes * fNumParams + fNumParams * anodeId + 1);
+            pedestal = CalEParams[secId]->GetAt(fNumEParams * anodeId);
+            slope = CalEParams[secId]->GetAt(fNumEParams * anodeId + 1);
 
-            fE[secId][mulanode[secId][anodeId]][anodeId] = mappedData[i]->GetEnergy() - pedestal;
+            fE[secId][mulanode[secId][anodeId]][anodeId] = pedestal + slope * mappedData[i]->GetEnergy();
             fDT[secId][mulanode[secId][anodeId]][anodeId] = mappedData[i]->GetTime();
             mulanode[secId][anodeId]++;
         }
@@ -237,9 +219,9 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
         {
             for (Int_t i = 0; i < fNumAnodes; i++)
             {
-                Int_t ii = s * fNumAnodes * fNumPosParams + fNumPosParams * i;
-                Float_t a0 = PosParams->GetAt(ii);
-                Float_t a1 = PosParams->GetAt(ii + 1);
+                Int_t ii = fNumPosParams * i;
+                Float_t a0 = PosParams[s]->GetAt(ii);
+                Float_t a1 = PosParams[s]->GetAt(ii + 1);
                 for (Int_t j = 0; j < mulanode[s][fNumAnodes]; j++)
                     for (Int_t k = 0; k < mulanode[s][i]; k++)
                     {
@@ -279,13 +261,10 @@ void R3BSofTwimMapped2Cal::Exec(Option_t* option)
     return;
 }
 
-// -----   Protected method Finish   --------------------------------------------
-void R3BSofTwimMapped2Cal::Finish() {}
-
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTwimMapped2Cal::Reset()
 {
-    LOG(DEBUG) << "Clearing TwimCalData Structure";
+    R3BLOG(DEBUG1, "Clearing TwimCalData Structure");
     if (fTwimCalDataCA)
         fTwimCalDataCA->Clear();
 }
@@ -299,4 +278,4 @@ R3BSofTwimCalData* R3BSofTwimMapped2Cal::AddCalData(Int_t secID, Int_t anodeID, 
     return new (clref[size]) R3BSofTwimCalData(secID, anodeID, dtime, energy);
 }
 
-ClassImp(R3BSofTwimMapped2Cal)
+ClassImp(R3BSofTwimMapped2Cal);
