@@ -14,7 +14,7 @@
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
 #include "R3BSofTrimHitData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -586,7 +586,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
         Int_t nHits = fHitItemsTwim->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+            R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
             z_twim += hit->GetZcharge();

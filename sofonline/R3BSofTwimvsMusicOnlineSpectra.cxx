@@ -11,7 +11,7 @@
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -193,7 +193,7 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
         Int_t nHits2 = fHitItemsTwim->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits2; ihit++)
         {
-            R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+            R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
             e2 = hit->GetEave();

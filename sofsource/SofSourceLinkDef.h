@@ -8,9 +8,7 @@
 
 #pragma link C++ class R3BSofSciReader + ;
 #pragma link C++ class R3BSofTofWReader + ;
-#pragma link C++ class R3BSofTwimReader + ;
 #pragma link C++ class R3BSofTrimReader + ;
-#pragma link C++ class R3BSofMwpcReader + ;
 #pragma link C++ class R3BSofScalersReader + ;
 #pragma link C++ class R3BSofWhiterabbitReader + ;
 #pragma link C++ class R3BSofAtReader + ;
@@ -19,9 +17,7 @@
 
 #pragma link C++ class EXT_STR_h101_SOFSCI_onion_t;
 #pragma link C++ class EXT_STR_h101_SOFTOFW_onion_t;
-#pragma link C++ class EXT_STR_h101_SOFTWIM_onion_t;
 #pragma link C++ class EXT_STR_h101_SOFTRIM_onion_t;
-#pragma link C++ class EXT_STR_h101_SOFMWPC_onion_t;
 #pragma link C++ class EXT_STR_h101_SOFSCALERS_onion_t;
 #pragma link C++ class EXT_STR_h101_WRSOFIA_onion_t;
 #pragma link C++ class EXT_STR_h101_SOFAT_onion_t;

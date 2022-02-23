@@ -11,8 +11,6 @@ ${R3BSOF_SOURCE_DIR}/sofdata
 ${R3BSOF_SOURCE_DIR}/sofdata/atData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sofdata/trimData
-${R3BSOF_SOURCE_DIR}/sofdata/twimData
-${R3BSOF_SOURCE_DIR}/sofdata/mwpcData
 ${R3BSOF_SOURCE_DIR}/sofdata/tofwData
 ${R3BSOF_SOURCE_DIR}/sofdata/frsData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
@@ -33,14 +31,6 @@ trimData/R3BSofTrimCalData.cxx
 trimData/R3BSofTrimHitData.cxx
 atData/R3BSofATPoint.cxx
 atData/R3BSofAtMappedData.cxx
-mwpcData/R3BSofMwpcPoint.cxx
-mwpcData/R3BSofMwpcMappedData.cxx
-mwpcData/R3BSofMwpcCalData.cxx
-mwpcData/R3BSofMwpcHitData.cxx
-twimData/R3BSofTwimPoint.cxx
-twimData/R3BSofTwimMappedData.cxx
-twimData/R3BSofTwimCalData.cxx
-twimData/R3BSofTwimHitData.cxx
 tofwData/R3BSofTofWPoint.cxx
 sciData/R3BSofSciPoint.cxx
 sciData/R3BSofSciMappedData.cxx

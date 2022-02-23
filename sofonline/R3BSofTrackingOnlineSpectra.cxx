@@ -11,9 +11,9 @@
 #include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcHitData.h"
 #include "R3BSofTrackingData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -413,7 +413,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
         Int_t nHits = fMwpc0HitDataCA->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc0HitDataCA->At(ihit);
+            R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc0HitDataCA->At(ihit);
             if (!hit)
                 continue;
             mwpc0x = hit->GetX();
@@ -426,7 +426,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             nHits = fMwpc2HitDataCA->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit);
+                R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc2HitDataCA->At(ihit);
                 if (!hit)
                     continue;
                 Double_t angX = (hit->GetX() - mwpc0x) / 2835.;
@@ -472,7 +472,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
             Int_t nHits = fMwpc3HitDataCA->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc3HitDataCA->At(ihit);
+                R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc3HitDataCA->At(ihit);
                 if (!hit)
                     continue;
                 mwpc3x = hit->GetX();
@@ -494,7 +494,7 @@ void R3BSofTrackingOnlineSpectra::Exec(Option_t* option)
                 fh2_Mwpc3vsbeta->Fill(mwpc3x, hit->GetBeta());
                 if (nHitsTwim == 1)
                 {
-                    R3BSofTwimHitData* hitTwim = (R3BSofTwimHitData*)fTwimHitDataCA->At(0);
+                    R3BTwimHitData* hitTwim = (R3BTwimHitData*)fTwimHitDataCA->At(0);
                     fh2_ZvsBeta->Fill(hit->GetBeta(), hitTwim->GetZcharge());
                 }
             }

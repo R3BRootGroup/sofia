@@ -1,6 +1,6 @@
 #include "R3BSofSciSingleTcal2CalPosCaveCPar.h"
 
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcHitData.h"
 #include "R3BSofSciSingleTcalData.h"
 
 #include "R3BEventHeader.h"
@@ -166,7 +166,7 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::Exec(Option_t* opt)
         // --- -------------------------- --- //
         // --- read the hit data of Mwpc0 --- //
         // --- -------------------------- --- //
-        R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fHitMw0->At(0);
+        R3BMwpcHitData* hitMwpc0 = (R3BMwpcHitData*)fHitMw0->At(0);
 
         // --- ------------------------------ --- //
         // --- loop over sci single tcal data --- //

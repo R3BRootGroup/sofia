@@ -21,10 +21,10 @@
 class TClonesArray;
 class R3BEventHeader;
 class R3BSofAtOnlineSpectra;
-class R3BSofMwpcOnlineSpectra;
-class R3BSofMwpcCorrelationOnlineSpectra;
+class R3BMwpcOnlineSpectra;
+class R3BMwpcCorrelationOnlineSpectra;
 class R3BSofTrimOnlineSpectra;
-class R3BSofTwimOnlineSpectra;
+class R3BTwimOnlineSpectra;
 class R3BSofTwimvsMusicOnlineSpectra;
 class R3BSofTwimvsTrimOnlineSpectra;
 class R3BSofSciOnlineSpectra;
@@ -116,16 +116,16 @@ class R3BSofOnlineSpectra : public FairTask
     Int_t fNEvents;               /**< Event counter.     */
 
     R3BSofAtOnlineSpectra* fAtOnline;
-    R3BSofMwpcOnlineSpectra* fMwpc0Online;
-    R3BSofMwpcCorrelationOnlineSpectra* fMwpc01Online;
-    R3BSofMwpcCorrelationOnlineSpectra* fMwpc02Online;
-    R3BSofMwpcCorrelationOnlineSpectra* fMwpc12Online;
-    R3BSofMwpcCorrelationOnlineSpectra* fMwpc23Online;
-    R3BSofMwpcOnlineSpectra* fMwpc1Online;
-    R3BSofMwpcOnlineSpectra* fMwpc2Online;
-    R3BSofMwpcOnlineSpectra* fMwpc3Online;
+    R3BMwpcOnlineSpectra* fMwpc0Online;
+    R3BMwpcCorrelationOnlineSpectra* fMwpc01Online;
+    R3BMwpcCorrelationOnlineSpectra* fMwpc02Online;
+    R3BMwpcCorrelationOnlineSpectra* fMwpc12Online;
+    R3BMwpcCorrelationOnlineSpectra* fMwpc23Online;
+    R3BMwpcOnlineSpectra* fMwpc1Online;
+    R3BMwpcOnlineSpectra* fMwpc2Online;
+    R3BMwpcOnlineSpectra* fMwpc3Online;
     R3BSofTrimOnlineSpectra* fTrimOnline;
-    R3BSofTwimOnlineSpectra* fTwimOnline;
+    R3BTwimOnlineSpectra* fTwimOnline;
     R3BSofTwimvsMusicOnlineSpectra* fTwimVsMusicOnline;
     R3BSofTwimvsTrimOnlineSpectra* fTwimVsTrimOnline;
     R3BSofSciOnlineSpectra* fSciOnline;

@@ -9,7 +9,7 @@
 
 #include "R3BSofSciVsMwpc0OnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcHitData.h"
 #include "R3BSofSciCalData.h"
 #include "R3BSofSciSingleTcalData.h"
 #include "THttpServer.h"
@@ -217,7 +217,7 @@ void R3BSofSciVsMwpc0OnlineSpectra::Exec(Option_t* option)
         // --- -------------------------- --- //
         // --- read the hit data of Mwpc0 --- //
         // --- -------------------------- --- //
-        R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fHitMwpc0->At(0);
+        R3BMwpcHitData* hitMwpc0 = (R3BMwpcHitData*)fHitMwpc0->At(0);
 
         // --- ------------------------------ --- //
         // --- loop over sci single tcal data --- //

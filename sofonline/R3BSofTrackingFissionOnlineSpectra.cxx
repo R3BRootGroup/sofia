@@ -10,10 +10,10 @@
 
 #include "R3BSofTrackingFissionOnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcHitData.h"
 #include "R3BSofTrackingData.h"
 #include "R3BSofTrimHitData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 #include "R3BTGeoPar.h"
 #include "THttpServer.h"
 
@@ -490,7 +490,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
         Int_t nHits = fMwpc0HitDataCA->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc0HitDataCA->At(ihit);
+            R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc0HitDataCA->At(ihit);
             if (!hit)
                 continue;
             mwpc0x = hit->GetX() + fMw0GeoPar->GetPosX() * 10.; // mm
@@ -504,7 +504,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
             Float_t mwpc1x = -150., mwpc1y = -150.;
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc1HitDataCA->At(ihit);
+                R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc1HitDataCA->At(ihit);
                 if (!hit)
                     continue;
                 mwpc1x = hit->GetX() + fMw1GeoPar->GetPosX() * 10.;
@@ -530,7 +530,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                 nHits = fMwpc2HitDataCA->GetEntriesFast();
                 for (Int_t ihit = 0; ihit < nHits; ihit++)
                 {
-                    R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit);
+                    R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc2HitDataCA->At(ihit);
                     if (!hit)
                         continue;
                     Double_t angX = (hit->GetX() + fMw2GeoPar->GetPosX() * 10. - mwpc1x) /
@@ -555,7 +555,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
             Int_t nHits2 = fMwpc2HitDataCA->GetEntriesFast();
             for (Int_t ihit1 = 0; ihit1 < nHits1; ihit1++)
             {
-                R3BSofMwpcHitData* hit1 = (R3BSofMwpcHitData*)fMwpc1HitDataCA->At(ihit1);
+                R3BMwpcHitData* hit1 = (R3BMwpcHitData*)fMwpc1HitDataCA->At(ihit1);
                 if (!hit1)
                     continue;
 
@@ -564,7 +564,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
 
                 for (Int_t ihit2 = 0; ihit2 < nHits2; ihit2++)
                 {
-                    R3BSofMwpcHitData* hit2 = (R3BSofMwpcHitData*)fMwpc2HitDataCA->At(ihit2);
+                    R3BMwpcHitData* hit2 = (R3BMwpcHitData*)fMwpc2HitDataCA->At(ihit2);
                     if (!hit2)
                         continue;
                     float mw2x = hit2->GetX() + fMw2GeoPar->GetPosX() * 10.;
@@ -596,7 +596,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
             Int_t nHits = fMwpc3HitDataCA->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fMwpc3HitDataCA->At(ihit);
+                R3BMwpcHitData* hit = (R3BMwpcHitData*)fMwpc3HitDataCA->At(ihit);
                 if (!hit)
                     continue;
                 mwpc3x = hit->GetX();
@@ -618,7 +618,7 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                 fh2_Mwpc3vsbeta->Fill(mwpc3x, hit->GetBeta());
                 if (nHitsTwim == 1)
                 {
-                    R3BSofTwimHitData* hitTwim = (R3BSofTwimHitData*)fTwimHitDataCA->At(0);
+                    R3BTwimHitData* hitTwim = (R3BTwimHitData*)fTwimHitDataCA->At(0);
                     fh2_ZvsBeta->Fill(hit->GetBeta(), hitTwim->GetZcharge());
                 }
             }
