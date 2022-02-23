@@ -10,8 +10,6 @@
 #pragma link C++ class R3BSofSciPoint+;
 #pragma link C++ class R3BSofTrimPoint+;
 #pragma link C++ class R3BSofATPoint+;
-#pragma link C++ class R3BSofMwpcPoint+;
-#pragma link C++ class R3BSofTwimPoint+;
 #pragma link C++ class R3BSofTofWPoint+;
 
 // General
@@ -23,10 +21,6 @@
 #pragma link C++ class R3BSofSciCalData+;
 #pragma link C++ class R3BSofSciHitData+;
 
-#pragma link C++ class R3BSofMwpcMappedData+;
-#pragma link C++ class R3BSofMwpcCalData+;
-#pragma link C++ class R3BSofMwpcHitData+;
-
 #pragma link C++ class R3BSofTofWMappedData+;
 #pragma link C++ class R3BSofTofWTcalData+;
 #pragma link C++ class R3BSofTofWSingleTcalData+;
@@ -37,9 +31,6 @@
 #pragma link C++ class R3BSofTrimCalData+;
 #pragma link C++ class R3BSofTrimHitData+;
 
-#pragma link C++ class R3BSofTwimMappedData+;
-#pragma link C++ class R3BSofTwimCalData+;
-#pragma link C++ class R3BSofTwimHitData+;
 #pragma link C++ class R3BSofTrackingData+;
 
 #pragma link C++ class R3BSofScalersMappedData+;

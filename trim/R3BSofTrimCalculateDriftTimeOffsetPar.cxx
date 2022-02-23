@@ -1,6 +1,6 @@
 #include "R3BSofTrimCalculateDriftTimeOffsetPar.h"
 
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcHitData.h"
 #include "R3BSofTrimCalData.h"
 
 #include "R3BEventHeader.h"
@@ -253,8 +253,8 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     //}
     if (nHitsMw0 == 1 && nHitsMw1 == 1)
     {
-        R3BSofMwpcHitData* hitMwpc0 = (R3BSofMwpcHitData*)fMwpc0HitData->At(0);
-        R3BSofMwpcHitData* hitMwpc1 = (R3BSofMwpcHitData*)fMwpc1HitData->At(0);
+        R3BMwpcHitData* hitMwpc0 = (R3BMwpcHitData*)fMwpc0HitData->At(0);
+        R3BMwpcHitData* hitMwpc1 = (R3BMwpcHitData*)fMwpc1HitData->At(0);
         X0 = hitMwpc0->GetX() + geoX0;
         X1 = hitMwpc1->GetX() + geoX1;
         DX = X1 - X0;

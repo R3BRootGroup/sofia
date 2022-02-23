@@ -28,7 +28,7 @@
 
 // SOFIA headers
 #include "R3BSofTrackingData.h"
-#include "R3BSofTwimHitPar.h"
+#include "R3BTwimHitPar.h"
 
 class TClonesArray;
 class R3BTGeoPar;
@@ -94,7 +94,7 @@ class R3BSofFissionAnalysis : public FairTask
     Double_t fFieldCentre, fEffLength, fBfield_Glad;
 
     R3BSofGladFieldPar* fGladPar;
-    R3BSofTwimHitPar* fTwimPar;
+    R3BTwimHitPar* fTwimPar;
     R3BTGeoPar* fMw0GeoPar;
     R3BTGeoPar* fTargetGeoPar;
     R3BTGeoPar* fMw1GeoPar;

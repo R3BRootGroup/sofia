@@ -9,13 +9,13 @@
 
 #include "R3BSofTofWOnlineSpectra.h"
 #include "R3BEventHeader.h"
-#include "R3BSofMwpcCalData.h"
+#include "R3BMwpcCalData.h"
 #include "R3BSofSciSingleTcalData.h"
 #include "R3BSofTofWHitData.h"
 #include "R3BSofTofWMappedData.h"
 #include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWTcalData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -588,7 +588,7 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
             nHits = fHitItemsTwim->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+                R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
                 if (!hit)
                     continue;
                 twimZ = hit->GetZcharge();
@@ -603,7 +603,7 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
             nHits = fCalItemsMwpc->GetEntriesFast();
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BSofMwpcCalData* hit = (R3BSofMwpcCalData*)fCalItemsMwpc->At(ihit);
+                R3BMwpcCalData* hit = (R3BMwpcCalData*)fCalItemsMwpc->At(ihit);
                 if (!hit)
                     continue;
                 if (hit->GetQ() > qmax && hit->GetPlane() == 1)

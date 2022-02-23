@@ -27,7 +27,7 @@
 
 // SOFIA headers
 #include "R3BSofFragmentAnaPar.h"
-#include "R3BSofTwimHitPar.h"
+#include "R3BTwimHitPar.h"
 
 class TClonesArray;
 class R3BSofTrackingData;
@@ -84,7 +84,7 @@ class R3BSofFragmentAnalysis : public FairTask
     Double_t frho_Cave, fBfield_Glad, fTimeOffset, fTofWPos;
     Bool_t fOnline; // Don't store data for online
     R3BSofFragmentAnaPar* fFragPar;
-    R3BSofTwimHitPar* fTwimPar;
+    R3BTwimHitPar* fTwimPar;
 
     // Parameters from par file
     Float_t fTwimZ0 = 0., fTwimZ1 = 0., fTwimZ2 = 0.; // CalibPar for Twim

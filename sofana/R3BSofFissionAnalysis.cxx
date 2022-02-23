@@ -5,9 +5,9 @@
 // ----------------------------------------------------------------------
 
 #include "R3BSofFissionAnalysis.h"
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcHitData.h"
 #include "R3BSofTofWHitData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 
 #include "R3BSofGladFieldPar.h"
 #include "R3BTGeoPar.h"
@@ -249,11 +249,11 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
         zf[j] = 0.;
     }
 
-    R3BSofMwpcHitData** HitMwpc0 = new R3BSofMwpcHitData*[nHitMwpc0];
-    R3BSofTwimHitData** HitTwim = new R3BSofTwimHitData*[nHitTwim];
-    R3BSofMwpcHitData** HitMwpc1 = new R3BSofMwpcHitData*[nHitMwpc1];
-    R3BSofMwpcHitData** HitMwpc2 = new R3BSofMwpcHitData*[nHitMwpc2];
-    R3BSofMwpcHitData** HitMwpc3 = new R3BSofMwpcHitData*[nHitMwpc3];
+    R3BMwpcHitData** HitMwpc0 = new R3BMwpcHitData*[nHitMwpc0];
+    R3BTwimHitData** HitTwim = new R3BTwimHitData*[nHitTwim];
+    R3BMwpcHitData** HitMwpc1 = new R3BMwpcHitData*[nHitMwpc1];
+    R3BMwpcHitData** HitMwpc2 = new R3BMwpcHitData*[nHitMwpc2];
+    R3BMwpcHitData** HitMwpc3 = new R3BMwpcHitData*[nHitMwpc3];
     R3BSofTofWHitData** HitTofW = new R3BSofTofWHitData*[nHitTofW];
 
     TVector3 pos1[2];
@@ -268,7 +268,7 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
 
     for (Int_t i = 0; i < nHitTwim; i++)
     {
-        HitTwim[i] = (R3BSofTwimHitData*)(fTwimHitDataCA->At(i));
+        HitTwim[i] = (R3BTwimHitData*)(fTwimHitDataCA->At(i));
         if (HitTwim[i]->GetSecID() == 0 || HitTwim[i]->GetSecID() == 1) // Left
             zf[0] = HitTwim[i]->GetZcharge();
         else
@@ -277,7 +277,7 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
 
     for (Int_t i = 0; i < nHitMwpc1; i++)
     {
-        HitMwpc1[i] = (R3BSofMwpcHitData*)(fMwpc1HitDataCA->At(i));
+        HitMwpc1[i] = (R3BMwpcHitData*)(fMwpc1HitDataCA->At(i));
         if (HitMwpc1[i]->GetX() > 0.)
             pos1[0].SetXYZ(HitMwpc1[i]->GetX(), HitMwpc1[i]->GetY(), 0.);
         else
@@ -289,7 +289,7 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
     for (Int_t i = 0; i < nHitMwpc2; i++)
     {
 
-        HitMwpc2[i] = (R3BSofMwpcHitData*)(fMwpc2HitDataCA->At(i));
+        HitMwpc2[i] = (R3BMwpcHitData*)(fMwpc2HitDataCA->At(i));
 
         if (HitMwpc2[i]->GetX() > 0.)
             pos2[0].SetXYZ(HitMwpc2[i]->GetX(), HitMwpc2[i]->GetY(), 0.);
@@ -302,7 +302,7 @@ void R3BSofFissionAnalysis::Exec(Option_t* option)
     for (Int_t i = 0; i < nHitMwpc3; i++)
     {
 
-        HitMwpc3[i] = (R3BSofMwpcHitData*)(fMwpc3HitDataCA->At(i));
+        HitMwpc3[i] = (R3BMwpcHitData*)(fMwpc3HitDataCA->At(i));
         if (i == 0)
             pos3[0].SetXYZ(HitMwpc3[i]->GetX(), HitMwpc3[i]->GetY(), 0.);
         else

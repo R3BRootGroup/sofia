@@ -11,7 +11,7 @@
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BEventHeader.h"
 #include "R3BSofAtMappedData.h"
-#include "R3BSofTwimHitData.h"
+#include "R3BTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -580,7 +580,7 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
                     Float_t zr = 0., zl = 0.;
                     for (Int_t ihit = 0; ihit < nHits; ihit++)
                     {
-                        R3BSofTwimHitData* hit = (R3BSofTwimHitData*)fHitItemsTwim->At(ihit);
+                        R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
                         if (!hit)
                             continue;
                         // FIXME: this is defined only for the experiment 4-march-2021

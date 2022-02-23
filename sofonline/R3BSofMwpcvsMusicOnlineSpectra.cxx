@@ -12,8 +12,8 @@
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
 #include "R3BMusicMappedData.h"
-#include "R3BSofMwpcCalData.h"
-#include "R3BSofMwpcHitData.h"
+#include "R3BMwpcCalData.h"
+#include "R3BMwpcHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -240,7 +240,7 @@ void R3BSofMwpcvsMusicOnlineSpectra::Exec(Option_t* option)
             {
                 for (Int_t ihit = 0; ihit < fHitItemsMwpc->GetEntriesFast(); ihit++)
                 {
-                    R3BSofMwpcHitData* hit = (R3BSofMwpcHitData*)fHitItemsMwpc->At(ihit);
+                    R3BMwpcHitData* hit = (R3BMwpcHitData*)fHitItemsMwpc->At(ihit);
                     if (!hit)
                         continue;
                     fh2_MusCorMwpc0_EsumVsX0mm->Fill(hit->GetX(), (e1 + e2) / (n1 + n2));

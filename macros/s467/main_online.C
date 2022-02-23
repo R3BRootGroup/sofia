@@ -166,8 +166,8 @@ void main_online()
     R3BAmsReader* unpackams;
     R3BCalifaFebexReader* unpackcalifa;
     R3BWhiterabbitCalifaReader* unpackWRCalifa;
-    R3BSofMwpcReader* unpackmwpc;
-    R3BSofTwimReader* unpacktwim;
+    R3BMwpcReader* unpackmwpc;
+    R3BTwimReader* unpacktwim;
     R3BSofTofWReader* unpacktofw;
     R3BSofScalersReader* unpackscalers;
     R3BNeulandTamexReader* unpackneuland;
@@ -206,10 +206,10 @@ void main_online()
             (EXT_STR_h101_WRCALIFA*)&ucesb_struct.wrcalifa, offsetof(EXT_STR_h101, wrcalifa), 0xa00, 0xb00);
     }
     if (fMwpc0 || fMwpc1 || fMwpc2 || fMwpc3)
-        unpackmwpc = new R3BSofMwpcReader((EXT_STR_h101_SOFMWPC_t*)&ucesb_struct.mwpc, offsetof(EXT_STR_h101, mwpc));
+        unpackmwpc = new R3BMwpcReader((EXT_STR_h101_SOFMWPC_t*)&ucesb_struct.mwpc, offsetof(EXT_STR_h101, mwpc));
 
     if (fTwim)
-        unpacktwim = new R3BSofTwimReader((EXT_STR_h101_SOFTWIM_t*)&ucesb_struct.twim, offsetof(EXT_STR_h101, twim));
+        unpacktwim = new R3BTwimReader((EXT_STR_h101_SOFTWIM_t*)&ucesb_struct.twim, offsetof(EXT_STR_h101, twim));
 
     if (fTofW)
         unpacktofw = new R3BSofTofWReader((EXT_STR_h101_SOFTOFW_t*)&ucesb_struct.tofw, offsetof(EXT_STR_h101, tofw));
@@ -351,11 +351,11 @@ void main_online()
     // MWPC0
     if (fMwpc0)
     {
-        R3BSofMwpc0Mapped2Cal* MW0Map2Cal = new R3BSofMwpc0Mapped2Cal();
+        R3BMwpc0Mapped2Cal* MW0Map2Cal = new R3BMwpc0Mapped2Cal();
         MW0Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW0Map2Cal);
 
-        R3BSofMwpc0Cal2Hit* MW0Cal2Hit = new R3BSofMwpc0Cal2Hit();
+        R3BMwpc0Cal2Hit* MW0Cal2Hit = new R3BMwpc0Cal2Hit();
         MW0Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW0Cal2Hit);
     }
@@ -434,11 +434,11 @@ void main_online()
     // MWPC1
     if (fMwpc1)
     {
-        R3BSofMwpc1Mapped2Cal* MW1Map2Cal = new R3BSofMwpc1Mapped2Cal();
+        R3BMwpc1Mapped2Cal* MW1Map2Cal = new R3BMwpc1Mapped2Cal();
         MW1Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW1Map2Cal);
 
-        R3BSofMwpc1Cal2Hit* MW1Cal2Hit = new R3BSofMwpc1Cal2Hit();
+        R3BMwpc1Cal2Hit* MW1Cal2Hit = new R3BMwpc1Cal2Hit();
         MW1Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW1Cal2Hit);
     }
@@ -446,12 +446,12 @@ void main_online()
     // TWIM
     if (fTwim)
     {
-        R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
+        R3BTwimMapped2Cal* TwimMap2Cal = new R3BTwimMapped2Cal();
         TwimMap2Cal->SetOnline(NOTstorecaldata);
         TwimMap2Cal->SetExpId(expId);
         run->AddTask(TwimMap2Cal);
 
-        R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
+        R3BTwimCal2Hit* TwimCal2Hit = new R3BTwimCal2Hit();
         TwimCal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(TwimCal2Hit);
     }
@@ -459,11 +459,11 @@ void main_online()
     // MWPC2
     if (fMwpc2)
     {
-        R3BSofMwpc2Mapped2Cal* MW2Map2Cal = new R3BSofMwpc2Mapped2Cal();
+        R3BMwpc2Mapped2Cal* MW2Map2Cal = new R3BMwpc2Mapped2Cal();
         MW2Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW2Map2Cal);
 
-        R3BSofMwpc2Cal2Hit* MW2Cal2Hit = new R3BSofMwpc2Cal2Hit();
+        R3BMwpc2Cal2Hit* MW2Cal2Hit = new R3BMwpc2Cal2Hit();
         MW2Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW2Cal2Hit);
     }
@@ -471,11 +471,11 @@ void main_online()
     // MWPC3
     if (fMwpc3)
     {
-        R3BSofMwpc3Mapped2Cal* MW3Map2Cal = new R3BSofMwpc3Mapped2Cal();
+        R3BMwpc3Mapped2Cal* MW3Map2Cal = new R3BMwpc3Mapped2Cal();
         MW3Map2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(MW3Map2Cal);
 
-        R3BSofMwpc3Cal2Hit* MW3Cal2Hit = new R3BSofMwpc3Cal2Hit();
+        R3BMwpc3Cal2Hit* MW3Cal2Hit = new R3BMwpc3Cal2Hit();
         MW3Cal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(MW3Cal2Hit);
     }
@@ -519,7 +519,7 @@ void main_online()
     }
     if (fMwpc0)
     {
-        R3BSofMwpcOnlineSpectra* mw0online = new R3BSofMwpcOnlineSpectra("SofMwpc0OnlineSpectra", 1, "Mwpc0");
+        R3BMwpcOnlineSpectra* mw0online = new R3BMwpcOnlineSpectra("Mwpc0OnlineSpectra", 1, "Mwpc0");
         run->AddTask(mw0online);
     }
 
@@ -600,7 +600,7 @@ void main_online()
 
     if (fTwim)
     {
-        R3BSofTwimOnlineSpectra* twonline = new R3BSofTwimOnlineSpectra();
+        R3BTwimOnlineSpectra* twonline = new R3BTwimOnlineSpectra();
         twonline->SetExpId(expId);
         run->AddTask(twonline);
         // Twim-Music correlations
@@ -613,47 +613,47 @@ void main_online()
 
     if (fMwpc1)
     {
-        R3BSofMwpcOnlineSpectra* mw1online = new R3BSofMwpcOnlineSpectra("SofMwpc1OnlineSpectra", 1, "Mwpc1");
+        R3BMwpcOnlineSpectra* mw1online = new R3BMwpcOnlineSpectra("Mwpc1OnlineSpectra", 1, "Mwpc1");
         run->AddTask(mw1online);
     }
 
     if (fMwpc0 && fMwpc1)
     {
-        R3BSofMwpcCorrelationOnlineSpectra* mw0mw1online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_1CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc1");
+        R3BMwpcCorrelationOnlineSpectra* mw0mw1online =
+            new R3BMwpcCorrelationOnlineSpectra("Mwpc0_1CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc1");
         run->AddTask(mw0mw1online);
     }
 
     if (fMwpc1 && fMwpc2)
     {
-        R3BSofMwpcCorrelationOnlineSpectra* mw1mw2online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc1_2CorrelationOnlineSpectra", 1, "Mwpc1", "Mwpc2");
+        R3BMwpcCorrelationOnlineSpectra* mw1mw2online =
+            new R3BMwpcCorrelationOnlineSpectra("Mwpc1_2CorrelationOnlineSpectra", 1, "Mwpc1", "Mwpc2");
         run->AddTask(mw1mw2online);
     }
 
     if (fMwpc2)
     {
-        R3BSofMwpcOnlineSpectra* mw2online = new R3BSofMwpcOnlineSpectra("SofMwpc2OnlineSpectra", 1, "Mwpc2");
+        R3BMwpcOnlineSpectra* mw2online = new R3BMwpcOnlineSpectra("Mwpc2OnlineSpectra", 1, "Mwpc2");
         run->AddTask(mw2online);
     }
 
     if (fMwpc0 && fMwpc2)
     {
-        R3BSofMwpcCorrelationOnlineSpectra* mw0mw2online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc0_2CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc2");
+        R3BMwpcCorrelationOnlineSpectra* mw0mw2online =
+            new R3BMwpcCorrelationOnlineSpectra("Mwpc0_2CorrelationOnlineSpectra", 1, "Mwpc0", "Mwpc2");
         run->AddTask(mw0mw2online);
     }
 
     if (fMwpc2 && fMwpc3)
     {
-        R3BSofMwpcCorrelationOnlineSpectra* mw2mw3online =
-            new R3BSofMwpcCorrelationOnlineSpectra("SofMwpc2_3CorrelationOnlineSpectra", 1, "Mwpc2", "Mwpc3");
+        R3BMwpcCorrelationOnlineSpectra* mw2mw3online =
+            new R3BMwpcCorrelationOnlineSpectra("Mwpc2_3CorrelationOnlineSpectra", 1, "Mwpc2", "Mwpc3");
         run->AddTask(mw2mw3online);
     }
 
     if (fMwpc3)
     {
-        R3BSofMwpcOnlineSpectra* mw3online = new R3BSofMwpcOnlineSpectra("SofMwpc3OnlineSpectra", 1, "Mwpc3");
+        R3BMwpcOnlineSpectra* mw3online = new R3BMwpcOnlineSpectra("Mwpc3OnlineSpectra", 1, "Mwpc3");
         run->AddTask(mw3online);
     }
 

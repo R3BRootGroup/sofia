@@ -12,10 +12,10 @@
 #include "R3BAmsMappedData.h"
 #include "R3BCalifaMappedData.h"
 #include "R3BEventHeader.h"
-#include "R3BSofMwpcMappedData.h"
+#include "R3BMwpcMappedData.h"
 #include "R3BSofTofWMappedData.h"
 #include "R3BSofTrimMappedData.h"
-#include "R3BSofTwimMappedData.h"
+#include "R3BTwimMappedData.h"
 #include "R3BWRData.h"
 #include "THttpServer.h"
 
@@ -641,13 +641,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc0MappedDataCA && fMwpc0MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc0MappedDataCA->GetEntries();
-            R3BSofMwpcMappedData** mappedData = new R3BSofMwpcMappedData*[nHits];
+            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofMwpcMappedData*)(fMwpc0MappedDataCA->At(i));
+                mappedData[i] = (R3BMwpcMappedData*)(fMwpc0MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1)
                     nbpadx++;
@@ -720,13 +720,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc1MappedDataCA && fMwpc1MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc1MappedDataCA->GetEntries();
-            R3BSofMwpcMappedData** mappedData = new R3BSofMwpcMappedData*[nHits];
+            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofMwpcMappedData*)(fMwpc1MappedDataCA->At(i));
+                mappedData[i] = (R3BMwpcMappedData*)(fMwpc1MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1 || planeId == 2)
                     nbpadx++;
@@ -743,13 +743,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fTwimMappedDataCA && fTwimMappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fTwimMappedDataCA->GetEntries();
-            R3BSofTwimMappedData** mappedData = new R3BSofTwimMappedData*[nHits];
+            R3BTwimMappedData** mappedData = new R3BTwimMappedData*[nHits];
             Int_t secId = 0;
             Int_t anodeId = 0;
             Int_t sumanodes = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofTwimMappedData*)(fTwimMappedDataCA->At(i));
+                mappedData[i] = (R3BTwimMappedData*)(fTwimMappedDataCA->At(i));
                 secId = mappedData[i]->GetSecID();
                 anodeId = mappedData[i]->GetAnodeID();
                 if (anodeId < 16)
@@ -764,13 +764,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc2MappedDataCA && fMwpc2MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc2MappedDataCA->GetEntries();
-            R3BSofMwpcMappedData** mappedData = new R3BSofMwpcMappedData*[nHits];
+            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofMwpcMappedData*)(fMwpc2MappedDataCA->At(i));
+                mappedData[i] = (R3BMwpcMappedData*)(fMwpc2MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1 || planeId == 2)
                     nbpadx++;
@@ -787,13 +787,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc3MappedDataCA && fMwpc3MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc3MappedDataCA->GetEntries();
-            R3BSofMwpcMappedData** mappedData = new R3BSofMwpcMappedData*[nHits];
+            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofMwpcMappedData*)(fMwpc3MappedDataCA->At(i));
+                mappedData[i] = (R3BMwpcMappedData*)(fMwpc3MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1)
                     nbpadx++;

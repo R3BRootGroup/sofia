@@ -16,8 +16,8 @@
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofCorrOnlineSpectra.h"
 #include "R3BSofFrsOnlineSpectra.h"
-#include "R3BSofMwpcCorrelationOnlineSpectra.h"
-#include "R3BSofMwpcOnlineSpectra.h"
+#include "R3BMwpcCorrelationOnlineSpectra.h"
+#include "R3BMwpcOnlineSpectra.h"
 #include "R3BSofScalersOnlineSpectra.h"
 #include "R3BSofSciOnlineSpectra.h"
 #include "R3BSofSciVsMusicOnlineSpectra.h"
@@ -28,7 +28,7 @@
 #include "R3BSofTrackingOnlineSpectra.h"
 #include "R3BSofTrimOnlineSpectra.h"
 #include "R3BSofTrimVsTofwOnlineSpectra.h"
-#include "R3BSofTwimOnlineSpectra.h"
+#include "R3BTwimOnlineSpectra.h"
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
 #include "R3BWRData.h"
@@ -226,52 +226,52 @@ InitStatus R3BSofOnlineSpectra::Init()
         LOG(WARNING) << "R3BSofOnlineSpectra::SofAtOnlineSpectra not found";
 
     // Looking for Mwpc0 online
-    fMwpc0Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0OnlineSpectra");
+    fMwpc0Online = (R3BMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc0OnlineSpectra");
     if (!fMwpc0Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0OnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc0OnlineSpectra not found";
 
     // Looking for Mwpc0_1 online
     fMwpc01Online =
-        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_1CorrelationOnlineSpectra");
+        (R3BMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc0_1CorrelationOnlineSpectra");
     if (!fMwpc01Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_1CorrelationOnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc0_1CorrelationOnlineSpectra not found";
 
     // Looking for Mwpc0_2 online
     fMwpc02Online =
-        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc0_2CorrelationOnlineSpectra");
+        (R3BMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc0_2CorrelationOnlineSpectra");
     if (!fMwpc02Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_2CorrelationOnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc0_2CorrelationOnlineSpectra not found";
 
     // Looking for Mwpc1_2 online
     fMwpc12Online =
-        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1_2CorrelationOnlineSpectra");
+        (R3BMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc1_2CorrelationOnlineSpectra");
     if (!fMwpc12Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc1_2CorrelationOnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc1_2CorrelationOnlineSpectra not found";
 
     // Looking for Mwpc2_3 online
     fMwpc23Online =
-        (R3BSofMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc2_3CorrelationOnlineSpectra");
+        (R3BMwpcCorrelationOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc2_3CorrelationOnlineSpectra");
     if (!fMwpc23Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc0_1CorrelationOnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc0_1CorrelationOnlineSpectra not found";
 
     fFrsOnline = (R3BSofFrsOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofFrsOnlineSpectra");
     if (!fFrsOnline)
         LOG(WARNING) << "R3BSofOnlineSpectra::SofFrsOnlineSpectra not found";
 
     // Looking for Mwpc1 online
-    fMwpc1Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc1OnlineSpectra");
+    fMwpc1Online = (R3BMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc1OnlineSpectra");
     if (!fMwpc1Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc1OnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc1OnlineSpectra not found";
 
     // Looking for Mwpc2 online
-    fMwpc2Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc2OnlineSpectra");
+    fMwpc2Online = (R3BMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc2OnlineSpectra");
     if (!fMwpc2Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc2OnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc2OnlineSpectra not found";
 
     // Looking for Mwpc3 online
-    fMwpc3Online = (R3BSofMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofMwpc3OnlineSpectra");
+    fMwpc3Online = (R3BMwpcOnlineSpectra*)FairRunOnline::Instance()->GetTask("Mwpc3OnlineSpectra");
     if (!fMwpc3Online)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofMwpc3OnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::Mwpc3OnlineSpectra not found";
 
     // Looking for Trim online
     fTrimOnline = (R3BSofTrimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTrimOnlineSpectra");
@@ -279,9 +279,9 @@ InitStatus R3BSofOnlineSpectra::Init()
         LOG(WARNING) << "R3BSofOnlineSpectra::SofTrimOnlineSpectra not found";
 
     // Looking for Twim online
-    fTwimOnline = (R3BSofTwimOnlineSpectra*)FairRunOnline::Instance()->GetTask("SofTwimOnlineSpectra");
+    fTwimOnline = (R3BTwimOnlineSpectra*)FairRunOnline::Instance()->GetTask("TwimOnlineSpectra");
     if (!fTwimOnline)
-        LOG(WARNING) << "R3BSofOnlineSpectra::SofTwimOnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::TwimOnlineSpectra not found";
 
     // Looking for Twim vs Music online
     fTwimVsMusicOnline =
@@ -332,9 +332,9 @@ InitStatus R3BSofOnlineSpectra::Init()
         LOG(WARNING) << "R3BSofOnlineSpectra::SofScalersOnlineSpectra not found";
 
     // Looking for Music online
-    fMusicOnline = (R3BMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("R3BMusicOnlineSpectra");
+    fMusicOnline = (R3BMusicOnlineSpectra*)FairRunOnline::Instance()->GetTask("MusicOnlineSpectra");
     if (!fMusicOnline)
-        LOG(WARNING) << "R3BSofOnlineSpectra::R3BMusicOnlineSpectra not found";
+        LOG(WARNING) << "R3BSofOnlineSpectra::MusicOnlineSpectra not found";
 
     // Looking for AMS online
     fAmsOnline = (R3BAmsOnlineSpectra*)FairRunOnline::Instance()->GetTask("AmsOnlineSpectra");
