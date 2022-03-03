@@ -11,7 +11,7 @@
  * or submit itself to any jurisdiction.                                      *
  ******************************************************************************/
 
-#include "FairLogger.h"
+#include "R3BLogger.h"
 #include "FairRootManager.h"
 #include "FairRuntimeDb.h"
 
@@ -33,7 +33,7 @@ void R3BSofiaProvideTStart::SetParContainers()
     fRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
     if (!fRawTofPar)
     {
-        LOG(ERROR) << "R3BSofiaProvideTStart::SetParContainers() : SofSciRawTofPar-Container not found.";
+        R3BLOG(ERROR, "SofSciRawTofPar-Container not found.");
         return;
     }
 }
@@ -41,7 +41,7 @@ void R3BSofiaProvideTStart::SetParContainers()
 void R3BSofiaProvideTStart::SetParameter()
 {
     if (!fRawTofPar)
-        LOG(FATAL) << "R3BSofiaProvideTStart::SetParameter() : fRawTofPar not found.";
+        R3BLOG(FATAL, "fRawTofPar not found.");
     fStartId = fRawTofPar->GetDetIdCaveC();
     return;
 }
@@ -56,12 +56,13 @@ InitStatus R3BSofiaProvideTStart::Init()
         throw std::runtime_error("R3BSofiaProvideTStart: No FairRootManager");
     }
 
-    fEventHeader = (R3BEventHeader*)ioman->GetObject("R3BEventHeader");
+
+    fEventHeader = (R3BEventHeader*)ioman->GetObject("EventHeader.");
     if (fEventHeader == nullptr)
     {
-        throw std::runtime_error("R3BSofiaProvideTStart: No R3BEventHeader");
+        fEventHeader = (R3BEventHeader*)ioman->GetObject("R3BEventHeader");
+        R3BLOG(WARNING, "R3BEventHeader was found instead of EventHeader.");
     }
-
     SetParameter();
 
     return kSUCCESS;
@@ -111,4 +112,4 @@ Double_t R3BSofiaProvideTStart::GetTStart() const
 
 bool R3BSofiaProvideTStart::IsBeam() const { return !std::isnan(GetTStart()); }
 
-ClassImp(R3BSofiaProvideTStart)
+ClassImp(R3BSofiaProvideTStart);
