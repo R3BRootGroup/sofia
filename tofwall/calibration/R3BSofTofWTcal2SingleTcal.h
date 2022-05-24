@@ -1,9 +1,9 @@
-// *** *************************************************************** *** //
-// ***                  R3BSofTofWTcal2SingleTcal                        *** //
-// *** *************************************************************** *** //
+// *** ***************************************************************
+// ***                  R3BSofTofWTcal2SingleTcal
+// *** ***************************************************************
 
-#ifndef R3BSOFTOFW_TCAL2SINGLETCAL
-#define R3BSOFTOFW_TCAL2SINGLETCAL
+#ifndef R3BSOFTOFW_TCAL2SINGLETCAL_H
+#define R3BSOFTOFW_TCAL2SINGLETCAL_H 1
 
 #include "FairTask.h"
 
@@ -12,15 +12,16 @@
 #include "TClonesArray.h"
 #include "TMath.h"
 #include "TRandom.h"
-class TRandom3;
 
 #include "R3BSofSciSingleTcalData.h"
 #include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWTcalData.h"
 
+class TRandom3;
+class R3BTimeStitch;
+
 class R3BSofTofWTcal2SingleTcal : public FairTask
 {
-
   public:
     // --- Default constructor --- //
     R3BSofTofWTcal2SingleTcal();
@@ -43,15 +44,13 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
     /** Virtual method Reset **/
     virtual void Reset();
 
-    /** Virtual method Finish **/
-    virtual void Finish();
-
     void SetOnline(Bool_t option) { fOnline = option; }
 
     void SetNumPaddles(Int_t n) { fNumPaddles = n; }
     void SetNumPmts(Int_t n) { fNumPmts = n; }
 
   private:
+    R3BTimeStitch* fTimeStitch;
     TClonesArray* fSciSingleTcal;      // input data
     TClonesArray* fTofWTcal;           // input data
     TClonesArray* fTofWSingleTcal;     // output data
@@ -72,4 +71,4 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
     ClassDef(R3BSofTofWTcal2SingleTcal, 1)
 };
 
-#endif // R3BSOFTOFW_TCAL2SINGLETCAL
+#endif // R3BSOFTOFW_TCAL2SINGLETCAL_H

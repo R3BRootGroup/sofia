@@ -92,7 +92,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
     UInt_t iTc;
     Double_t tns = 0.0;
 
-    Int_t nHitsPerEvent_SofTofW = fMapped->GetEntries();
+    Int_t nHitsPerEvent_SofTofW = fMapped->GetEntriesFast();
     for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
     {
         R3BSofTofWMappedData* hit = (R3BSofTofWMappedData*)fMapped->At(ihit);
@@ -140,21 +140,21 @@ Double_t R3BSofTofWMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UIn
     Double_t iPar = (Double_t)fTcalPar->GetSignalTcalParams(rank);
     Double_t iClock = (Double_t)fTcalPar->GetClockOffset((iDet - 1) * fTcalPar->GetNumChannels() + (iCh - 1));
     Double_t r = (Double_t)rand.Rndm() - 0.5;
-    Double_t iTf_ns;
+    // Double_t iTf_ns;
     Double_t iTc_ns = ((Double_t)iTc - iClock) * 5.;
-
-    if (r < 0)
-    {
-        Double_t iParPrev = fTcalPar->GetSignalTcalParams(rank - 1);
-        iTf_ns = iPar + r * (iPar - iParPrev);
-    }
-    else
-    {
-        Double_t iParNext = fTcalPar->GetSignalTcalParams(rank + 1);
-        iTf_ns = iPar + r * (iParNext - iPar);
-    }
-
-    return (iTc_ns - iTf_ns);
+    /*
+        if (r < 0)
+        {
+            Double_t iParPrev = fTcalPar->GetSignalTcalParams(rank - 1);
+            iTf_ns = iPar + r * (iPar - iParPrev);
+        }
+        else
+        {
+            Double_t iParNext = fTcalPar->GetSignalTcalParams(rank + 1);
+            iTf_ns = iPar + r * (iParNext - iPar);
+        }
+        return (iTc_ns - iTf_ns);*/
+    return (iTc_ns - iPar);
 }
 
 // -----   Private method AddTCalData  --------------------------------------------

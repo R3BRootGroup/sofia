@@ -1,4 +1,5 @@
 #include "R3BSofTofWTcal2SingleTcal.h"
+#include "R3BTimeStitch.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
@@ -101,8 +102,11 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     // --- ----------------------- --- //
 
     // Register output array in tree
-    fTofWSingleTcal = new TClonesArray("R3BSofTofWSingleTcalData", 10);
+    fTofWSingleTcal = new TClonesArray("R3BSofTofWSingleTcalData");
     rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, !fOnline);
+
+    // Definition of a time stich object to correlate VFTX times
+    fTimeStitch = new R3BTimeStitch();
 
     return kSUCCESS;
 }
@@ -132,7 +136,7 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
     // --- ------------------------------------------- --- //
     UInt_t mult_SofSciCaveC = 0;
     Double_t iRawTime_SofSci = -1000000.;
-    UInt_t nHitsPerEvent_SofSci = fSciSingleTcal->GetEntries();
+    UInt_t nHitsPerEvent_SofSci = fSciSingleTcal->GetEntriesFast();
 
     for (UInt_t i = 0; i < nHitsPerEvent_SofSci; i++)
     {
@@ -149,7 +153,7 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
     // --- ------------------------------------------------------------------------- --- //
     if (mult_SofSciCaveC == 1)
     {
-        Int_t nHitsPerEvent_SofTofW = fTofWTcal->GetEntries();
+        Int_t nHitsPerEvent_SofTofW = fTofWTcal->GetEntriesFast();
         // get the multiplicity per PMT
         for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
         {
@@ -182,9 +186,9 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
                     // Traw down is iTraw[d * fNumPmts]
                     // Traw up   is iTraw[d * fNumPmts + 1]
                     // To have a raw position which increases from down to up : RawPos = Tdown - Tup
-                    iRawPos = iTraw[d * fNumPmts][0] - iTraw[d * fNumPmts + 1][0];
+                    iRawPos = fTimeStitch->GetTime(iTraw[d * fNumPmts][0] - iTraw[d * fNumPmts + 1][0], "vftx", "vftx");
                     iRawTime = 0.5 * (iTraw[d * fNumPmts][0] + iTraw[d * fNumPmts + 1][0]);
-                    iRawTof = (iRawTime - iRawTime_SofSci);
+                    iRawTof = fTimeStitch->GetTime(iRawTime - iRawTime_SofSci, "vftx", "vftx");
                     AddHitData(d + 1, iRawTime, iRawTof, iRawPos);
                 }
             }
@@ -202,8 +206,6 @@ void R3BSofTofWTcal2SingleTcal::Reset()
         fTofWSingleTcal->Clear();
 }
 
-void R3BSofTofWTcal2SingleTcal::Finish() {}
-
 // -----   Private method AddData  --------------------------------------------
 R3BSofTofWSingleTcalData* R3BSofTofWTcal2SingleTcal::AddHitData(Int_t plastic,
                                                                 Double_t time,
@@ -216,4 +218,4 @@ R3BSofTofWSingleTcalData* R3BSofTofWTcal2SingleTcal::AddHitData(Int_t plastic,
     return new (clref[size]) R3BSofTofWSingleTcalData(plastic, time, tof, pos);
 }
 
-ClassImp(R3BSofTofWTcal2SingleTcal)
+ClassImp(R3BSofTofWTcal2SingleTcal);
