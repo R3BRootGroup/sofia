@@ -22,11 +22,13 @@
 #include <iomanip>
 
 // TofW headers
+#include "R3BEventHeader.h"
 #include "R3BSofTofWHitData.h"
 #include "R3BSofTofWHitPar.h"
 #include "R3BSofTofWTcalData.h"
 
 class TClonesArray;
+class R3BEventHeader;
 class R3BTGeoPar;
 
 class R3BSofTofWSingleTCal2Hit : public FairTask
@@ -69,6 +71,8 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     virtual void S455();
     /** Private method Experiment s467 **/
     virtual void S467();
+
+    R3BEventHeader* header; /**< Event header. */
 
     Bool_t fOnline; // Don't store data for online
     Int_t fExpId;

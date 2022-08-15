@@ -106,6 +106,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     FairRunAna* run = new FairRunAna();
     // Set up R3BHeader  --------------------------------------------------------
     R3BEventHeader* EvntHeader = new R3BEventHeader();
+    EvntHeader->SetExpId(fExpId); // Set ExpId global for the analysis
     run->SetEventHeader(EvntHeader);
     run->SetRunId(fRunId);
     run->SetSink(new FairRootFileSink(outputFilename));
@@ -186,7 +187,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
 
         // --- Cal 2 Hit
         R3BSofTrimCal2Hit* SofTrimCal2Hit = new R3BSofTrimCal2Hit();
-        SofTrimCal2Hit->SetExpId(fExpId);
+        //SofTrimCal2Hit->SetExpId(fExpId);
         SofTrimCal2Hit->SetCoulex(kFALSE);
         SofTrimCal2Hit->SetTriShape(kTRUE);
         run->AddTask(SofTrimCal2Hit);
@@ -264,7 +265,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
 
         // --- SingleTcal 2 Hit for SofTofW
         R3BSofTofWSingleTCal2Hit* SofTofWSingleTcal2Hit = new R3BSofTofWSingleTCal2Hit();
-        SofTofWSingleTcal2Hit->SetExpId(fExpId);
+        //SofTofWSingleTcal2Hit->SetExpId(fExpId);
         run->AddTask(SofTofWSingleTcal2Hit);
     }
 
@@ -272,11 +273,11 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     if (fTwim)
     {
         R3BSofTwimMapped2Cal* TwimMap2Cal = new R3BSofTwimMapped2Cal();
-        TwimMap2Cal->SetExpId(fExpId);
+        //TwimMap2Cal->SetExpId(fExpId);
         run->AddTask(TwimMap2Cal);
 
         R3BSofTwimCal2Hit* TwimCal2Hit = new R3BSofTwimCal2Hit();
-        TwimCal2Hit->SetExpId(fExpId);
+        //TwimCal2Hit->SetExpId(fExpId);
         run->AddTask(TwimCal2Hit);
     }
 

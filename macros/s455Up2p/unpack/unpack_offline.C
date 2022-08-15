@@ -131,6 +131,7 @@ void unpack_offline(const Int_t fRunId = 273, const Int_t nev = -1, const Int_t 
 
     // Create online run ------------------------------------
     R3BEventHeader* EvntHeader = new R3BEventHeader();
+    EvntHeader->SetExpId(fExpId);
     FairRunOnline* run = new FairRunOnline();
     run->SetEventHeader(EvntHeader);
     run->SetRunId(fRunId);
