@@ -26,7 +26,7 @@
 // R3BSofTrimCal2Hit: Default Constructor --------------------------
 R3BSofTrimCal2Hit::R3BSofTrimCal2Hit()
     : FairTask("R3BSof Trim Hit Calibrator", 1)
-    , fExpId(455)
+    , fExpId(0)
     , fCoulex(true)
     , fNumSections(3)
     , fNumAnodes(6)
@@ -43,7 +43,7 @@ R3BSofTrimCal2Hit::R3BSofTrimCal2Hit()
 // R3BSofTrimCal2HitPar: Standard Constructor --------------------------
 R3BSofTrimCal2Hit::R3BSofTrimCal2Hit(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fExpId(455)
+    , fExpId(0)
     , fCoulex(true)
     , fNumSections(3)
     , fNumAnodes(6)
@@ -110,6 +110,9 @@ InitStatus R3BSofTrimCal2Hit::Init()
     {
         return kFATAL;
     }
+    header = (R3BEventHeader*)rootManager->GetObject("EventHeader.");
+    if (!header)
+        header = (R3BEventHeader*)rootManager->GetObject("R3BEventHeader");
 
     // --- ------------------------------- --- //
     // --- INPUT CAL DATA FOR TRIPLE-MUSIC --- //
@@ -148,9 +151,10 @@ InitStatus R3BSofTrimCal2Hit::ReInit()
 // -----   Public method Execution   --------------------------------------------
 void R3BSofTrimCal2Hit::Exec(Option_t* option)
 {
-    if (fExpId == 455 && fCoulex)
+    int expid = fExpId != 0 ? fExpId : header->GetExpId();
+    if (expid == 455 && fCoulex)
         S455_Coulex();
-    else if (fExpId == 455 && !fCoulex)
+    else if (expid == 455 && !fCoulex)
         S455_P2p();
 
     return;

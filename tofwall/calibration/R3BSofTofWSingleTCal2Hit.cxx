@@ -18,7 +18,7 @@ R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit(const char* name, Int_t iVerb
     : FairTask(name, iVerbose)
     , fTCalDataCA(NULL)
     , fHitDataCA(NULL)
-    , fExpId(467)
+    , fExpId(0)
     , fOnline(kFALSE)
     , fTof_lise(43.)
 {
@@ -85,6 +85,10 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
         return kFATAL;
     }
 
+    header = (R3BEventHeader*)rootManager->GetObject("EventHeader.");
+    if (!header)
+        header = (R3BEventHeader*)rootManager->GetObject("R3BEventHeader");
+
     fTCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
     if (!fTCalDataCA)
     {
@@ -114,9 +118,10 @@ void R3BSofTofWSingleTCal2Hit::Exec(Option_t* option)
 {
     // At the moment we will use the expid to select the reconstruction
     // this should be changed in the future because expid is not necessary
-    if (fExpId == 467 || fExpId == 444)
+    int expid = fExpId != 0 ? fExpId : header->GetExpId();
+    if (expid == 467 || expid == 444)
         S467();
-    else if (fExpId == 455)
+    else if (expid == 455)
         S455();
 
     return;
