@@ -13,8 +13,8 @@
 #include "R3BMwpcHitData.h"
 #include "R3BSofTrackingData.h"
 #include "R3BSofTrimHitData.h"
-#include "R3BTwimHitData.h"
 #include "R3BTGeoPar.h"
+#include "R3BTwimHitData.h"
 #include "THttpServer.h"
 
 #include "FairLogger.h"
@@ -577,8 +577,9 @@ void R3BSofTrackingFissionOnlineSpectra::Exec(Option_t* option)
                         Double_t angY = (mw2y - mw1y) / (fMw2GeoPar->GetPosZ() - fMw1GeoPar->GetPosZ()) / 10.;
                         fh2_tracking_planeXZ->Fill(
                             zrand + fPosTarget,
-                            mw1x + angX * (zrand - fMw1GeoPar->GetPosZ() * 10. -
-                                           730.)); // 730mm is the target position with respect to (0,0,0)
+                            mw1x +
+                                angX * (zrand - fMw1GeoPar->GetPosZ() * 10. -
+                                        730.)); // 730mm is the target position with respect to (0,0,0)
                         fh2_tracking_planeYZ->Fill(zrand + fPosTarget,
                                                    mw1y + angY * (zrand - fMw1GeoPar->GetPosZ() * 10. - 730.));
                     }

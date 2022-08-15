@@ -18,7 +18,9 @@ R3BSofFrsAnalysis::R3BSofFrsAnalysis()
     , fMusicHitDataCA(NULL)
     , fFrsDataCA(NULL)
     , fOnline(kFALSE)
+    , fBetaCorr(kTRUE)
     , fNbSci(4)
+    , fNbTof(3)
     , fIdS2(2)
     , fIdS8(3)
     , fIdCave(4)
@@ -35,7 +37,9 @@ R3BSofFrsAnalysis::R3BSofFrsAnalysis(const TString& name, Int_t iVerbose)
     , fMusicHitDataCA(NULL)
     , fFrsDataCA(NULL)
     , fOnline(kFALSE)
+    , fBetaCorr(kTRUE)
     , fNbSci(4)
+    , fNbTof(3)
     , fIdS2(2)
     , fIdS8(3)
     , fIdCave(4)
@@ -45,7 +49,7 @@ R3BSofFrsAnalysis::R3BSofFrsAnalysis(const TString& name, Int_t iVerbose)
 // Virtual R3BSofFrsAnalysis: Destructor
 R3BSofFrsAnalysis::~R3BSofFrsAnalysis()
 {
-    LOG(INFO) << "R3BSofFrsAnalysis: Delete instance";
+    R3BLOG(INFO, "R3BSofFrsAnalysis: Delete instance");
     // Kept Mwpc and SciHit can be used for later analysis if needed
     /*if (fMwpcHitDataCA)
     {
@@ -72,57 +76,34 @@ R3BSofFrsAnalysis::~R3BSofFrsAnalysis()
 
 void R3BSofFrsAnalysis::SetParContainers()
 {
-    LOG(INFO) << "R3BSofFrsAnalysis::SetParContainers()";
+    R3BLOG(INFO, "R3BSofFrsAnalysis::SetParContainers()");
     // Parameter Container
     // Reading soffrsAnaPar from FairRuntimeDb
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
-        LOG(ERROR) << "FairRuntimeDb not opened!";
+        R3BLOG(ERROR, "FairRuntimeDb not opened!");
     }
 
     fFrs_Par = (R3BSofFrsAnaPar*)rtdb->getContainer("soffrsAnaPar");
     if (!fFrs_Par)
     {
-        LOG(ERROR) << "R3BSofFrsAnalysisPar:: Couldn't get handle on soffrsAnaPar container";
+        R3BLOG(ERROR, "R3BSofFrsAnalysisPar:: Couldn't get handle on soffrsAnaPar container");
     }
     else
     {
-        LOG(INFO) << "R3BSofFrsAnalysisPar:: soffrsAnaPar container open";
+        R3BLOG(INFO, "R3BSofFrsAnalysisPar:: soffrsAnaPar container open");
     }
 
-    R3BMusicHitPar* fCal_Par; /// **< Parameter container. >* //
     fCal_Par = (R3BMusicHitPar*)rtdb->getContainer("musicHitPar");
     if (!fCal_Par)
     {
-        LOG(ERROR) << "R3BSofFrsAnalysisPar::Init() Couldn't get handle on musicHitPar container";
+        R3BLOG(ERROR, "R3BSofFrsAnalysisPar::Init() Couldn't get handle on musicHitPar container");
     }
     else
     {
-        LOG(INFO) << "R3BSofFrsAnalysisPar:: musicHitPar container open";
+        R3BLOG(INFO, "R3BSofFrsAnalysisPar:: musicHitPar container open");
     }
-    //--- Parameter Container ---
-    fNumMusicParams = fCal_Par->GetNumParZFit(); // Number of Parameters
-    LOG(INFO) << "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit: Nb parameters for charge-Z: " << (Int_t)fNumMusicParams;
-    CalZParams = new TArrayF();
-    CalZParams->Set(fNumMusicParams);
-    CalZParams = fCal_Par->GetZHitPar(); // Array with the Cal parameters
-    // Parameters detector
-    if (fNumMusicParams == 2)
-    {
-        fZ0 = CalZParams->GetAt(0);
-        fZ1 = CalZParams->GetAt(1);
-    }
-    else if (fNumMusicParams == 3)
-    {
-        fZ0 = CalZParams->GetAt(0);
-        fZ1 = CalZParams->GetAt(1);
-        fZ2 = CalZParams->GetAt(2);
-    }
-    else
-        LOG(INFO) << "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit parameters for charge-Z cannot be used here, number of "
-                     "parameters: "
-                  << fNumMusicParams;
 }
 
 void R3BSofFrsAnalysis::SetParameter()
@@ -145,12 +126,41 @@ void R3BSofFrsAnalysis::SetParameter()
     }
     fS2SciCoef0 = fFrs_Par->GetS2PosOffset();
     fS2SciCoef1 = fFrs_Par->GetS2PosCoef();
+    fNumBrhoCorrPar = fFrs_Par->GetNumBrhoCorrPar();
+    fBrhoCorrPar = new Float_t[fNumBrhoCorrPar];
+    for (Int_t i = 0; i < fNumBrhoCorrPar; i++)
+    {
+        fBrhoCorrPar[i] = fFrs_Par->GetBrhoCorrPar(i);
+    }
+    //--- Parameter Container ---
+    fNumMusicParams = fCal_Par->GetNumParZFit(); // Number of Parameters
+    R3BLOG(INFO, "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit: Nb parameters for charge-Z: " << (Int_t)fNumMusicParams);
+    CalZParams = new TArrayF();
+    CalZParams->Set(fNumMusicParams);
+    CalZParams = fCal_Par->GetZHitPar(); // Array with the Cal parameters
+    // Parameters detector
+    if (fNumMusicParams == 2)
+    {
+        fZ0 = CalZParams->GetAt(0);
+        fZ1 = CalZParams->GetAt(1);
+    }
+    else if (fNumMusicParams == 3)
+    {
+        fZ0 = CalZParams->GetAt(0);
+        fZ1 = CalZParams->GetAt(1);
+        fZ2 = CalZParams->GetAt(2);
+    }
+    else
+        R3BLOG(INFO,
+               "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit parameters for charge-Z cannot be used here, number of "
+               "parameters: "
+                   << fNumMusicParams);
 }
 
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofFrsAnalysis::Init()
 {
-    LOG(INFO) << "R3BSofFrsAnalysis: Init FRS analysis from S2 to Cave-C";
+    R3BLOG(INFO, "R3BSofFrsAnalysis: Init FRS analysis from S2 to Cave-C");
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
@@ -187,18 +197,18 @@ InitStatus R3BSofFrsAnalysis::Init()
     fFrsDataCA = new TClonesArray("R3BFrsData", 5);
     if (!fOnline)
     {
-        rootManager->Register("SofFrsData", "Analysis FRS", fFrsDataCA, kTRUE);
+        rootManager->Register("FrsData", "Analysis FRS", fFrsDataCA, kTRUE);
     }
     else
     {
-        rootManager->Register("SofFrsData", "Analysis FRS", fFrsDataCA, kFALSE);
+        rootManager->Register("FrsData", "Analysis FRS", fFrsDataCA, kFALSE);
     }
     // ReInit();
     SetParameter();
 
     xpos = new Double_t[fNbSci];
 
-    LOG(INFO) << "R3BSofFrsAnalysis::Init() done";
+    R3BLOG(INFO, "R3BSofFrsAnalysis::Init() done");
     return kSUCCESS;
 }
 
@@ -223,19 +233,20 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     // --- -------------- --- //
     // --- MUSIC Hit data --- //
     // --- -------------- --- //
+    R3BMusicHitData* hitmusic;
     for (Int_t ihit = 0; ihit < nHitMusic; ihit++)
     {
-        R3BMusicHitData* hit = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
-        if (!hit)
-            continue;
         // In case the MusicHitData container has several "realistic" values,
         // it's not possible to distinguish which is the "correct" event. Thus skipping events having several hits.
         if (MusicE > 0)
             return;
-        MusicE = hit->GetEave();
+        hitmusic = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
+        if (!hitmusic)
+            continue;
+        MusicE = hitmusic->GetEave();
     }
     // LOG(DEBUG) << nHitMusic << " " << nHitSci << " " << MusicE;
-    if (MusicE < 0)
+    if (!(MusicE > 0))
         return;
 
     // --- ------------------------------ --- //
@@ -268,27 +279,75 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
         }
         if (d == fIdCave - 1 && fIdS8 > 0)
             Tof_wTref_S8_Cave = hitsingletcal->GetRawTofNs_FromS8();
-    }
+    } // Loop over sci hits
+    //
+    Double_t beta[fNbTof + 1] = { NAN };
+    Int_t i_s2cave = -1, i_s8cave = -1, i_s2s8 = -1;
     for (Int_t i = 0; i < fNbTof; i++)
     {
-        Double_t tof = -5000.;
+        Double_t tof = NAN;
         if (fStaId[i] == fIdS2 && fStoId[i] == fIdCave)
-            tof = Tof_wTref_S2_Cave;
-        if (fStaId[i] == fIdS2 && fStoId[i] == fIdS8)
-            tof = Tof_wTref_S2_S8;
-        if (fStaId[i] == fIdS8 && fStoId[i] == fIdCave)
-            tof = Tof_wTref_S8_Cave;
-        if (tof < 0)
-            continue;
-        Double_t beta = fPathLength[i] / (tof + fTofOffset[i]); // ToFCalib
-        Double_t gamma = 1. / (TMath::Sqrt(1. - beta * beta));
-        Double_t brho = fBrho0 * (1 + (fUseS2x[i] != 0 ? xpos[fIdS2 - 1] : 0.) / 726.);
-        Double_t aoq = brho / (3.10716 * gamma * beta);
-        if (beta > 0.)
         {
-            MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta + fZ2 * MusicE * beta * beta;
+            tof = Tof_wTref_S2_Cave;
+            i_s2cave = i;
         }
-        AddData(fStaId[i], fStoId[i], MusicZ, aoq, beta, brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
+        else if (fStaId[i] == fIdS2 && fStoId[i] == fIdS8)
+        {
+            tof = Tof_wTref_S2_S8;
+            i_s2s8 = i;
+        }
+        else if (fStaId[i] == fIdS8 && fStoId[i] == fIdCave)
+        {
+            tof = Tof_wTref_S8_Cave;
+            i_s8cave = i;
+        }
+        if (isnan(tof) || tof < 0)
+            continue;
+        beta[i] = fPathLength[i] / (tof + fTofOffset[i]); // ToFCalib
+    }
+    // Velocity correlation conditions
+    if (fBetaCorr && beta[i_s2cave] > 0. && beta[i_s8cave] > 0. && TMath::Abs(beta[i_s2cave] - beta[i_s8cave] < 0.01))
+        beta[fNbTof] = beta[i_s2cave];
+    //
+    // Under modification
+    int index_tof[4] = { fNbTof, i_s2cave, i_s8cave, i_s2s8 };
+    for (Int_t ii = 0; ii < TMath::Min(4, fNbTof + 1); ii++) // starting from the good one
+    {
+        Int_t i = 0;
+        if (index_tof[ii] >= 0)
+        {
+            i = index_tof[ii];
+        }
+        else
+        {
+            continue;
+        }
+        if (!(beta[i] > 0.))
+        {
+            if (ii == 0)
+                AddData(0, 0);
+            continue;
+        }
+        Double_t gamma = 1. / (TMath::Sqrt(1. - beta[i] * beta[i]));
+        Double_t correction = 1.;
+        if (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0)
+        {
+            for (Int_t j = 0; j < fNumBrhoCorrPar; j++)
+                correction -= pow(xpos[fIdS2 - 1], j) * fBrhoCorrPar[j];
+        }
+        Double_t brho = fBrho0 * correction;
+        Double_t aoq = brho / (3.10716 * gamma * beta[i]);
+        MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta[i] + fZ2 * MusicE * beta[i] * beta[i];
+        //
+        if (ii == 0)
+        {
+            AddData(0, 0, MusicZ, aoq, beta[i], brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
+            hitmusic->SetZcharge(MusicZ); // Set velocity corrected Z
+        }
+        else
+        {
+            AddData(fStaId[i], fStoId[i], MusicZ, aoq, beta[i], brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
+        }
     }
     return;
 }
@@ -313,10 +372,10 @@ void R3BSofFrsAnalysis::Reset()
         fFrsDataCA->Clear();
 
     for (Int_t i = 0; i < fNbSci; i++)
-        xpos[i] = -5000.;
-    Tof_wTref_S2_Cave = -5000., Tof_wTref_S2_S8 = -5000., Tof_wTref_S8_Cave = -5000.;
-    MusicZ = -5000.;
-    MusicE = -5000.;
+        xpos[i] = NAN;
+    Tof_wTref_S2_Cave = NAN, Tof_wTref_S2_S8 = NAN, Tof_wTref_S8_Cave = NAN;
+    MusicZ = NAN;
+    MusicE = NAN;
 }
 
 // -----   Private method AddData  --------------------------------------------
@@ -329,7 +388,7 @@ R3BFrsData* R3BSofFrsAnalysis::AddData(Int_t StaId,
                                        Double_t xs2,
                                        Double_t xc)
 {
-    // It fills the R3BSofFrsData
+    // It fills the R3BFrsData
     TClonesArray& clref = *fFrsDataCA;
     Int_t size = clref.GetEntriesFast();
     return new (clref[size]) R3BFrsData(StaId, StoId, z, aq, beta, brho, xs2, xc);

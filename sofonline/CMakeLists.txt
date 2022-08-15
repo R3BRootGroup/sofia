@@ -10,6 +10,7 @@ ${R3BROOT_SOURCE_DIR}/r3bbase
 ${R3BROOT_SOURCE_DIR}/r3bdata
 ${R3BROOT_SOURCE_DIR}/r3bdata/frsData
 ${R3BROOT_SOURCE_DIR}/music/online
+${R3BROOT_SOURCE_DIR}/music/pars
 ${R3BROOT_SOURCE_DIR}/twim/online
 ${R3BROOT_SOURCE_DIR}/mwpc/online
 ${R3BROOT_SOURCE_DIR}/passive
@@ -20,10 +21,11 @@ ${R3BROOT_SOURCE_DIR}/r3bdata/califaData
 ${R3BROOT_SOURCE_DIR}/r3bdata/mwpcData
 ${R3BROOT_SOURCE_DIR}/r3bdata/twimData
 ${R3BROOT_SOURCE_DIR}/r3bdata/wrData
+${R3BROOT_SOURCE_DIR}/r3bdata/trloiiData
 ${R3BROOT_SOURCE_DIR}/ssd/online
 ${R3BROOT_SOURCE_DIR}/califa/online
 ${R3BROOT_SOURCE_DIR}/trim
-${R3BROOT_SOURCE_DIR}/twim/par
+${R3BROOT_SOURCE_DIR}/twim/pars
 ${R3BROOT_SOURCE_DIR}/mwpc/mwpc0
 ${R3BROOT_SOURCE_DIR}/mwpc/mwpc1
 ${R3BROOT_SOURCE_DIR}/mwpc/mwpc2
@@ -39,6 +41,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/trackingData
 ${R3BSOF_SOURCE_DIR}/sofdata/scalersData
 ${R3BSOF_SOURCE_DIR}/sofdata/corrData
 ${R3BSOF_SOURCE_DIR}/sofonline
+${R3BSOF_SOURCE_DIR}/sofana
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
