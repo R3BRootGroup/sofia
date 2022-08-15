@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// -----                R3BSofScalersOnlineSpectra            -----
+// ----             R3BSofScalersOnlineSpectra            -----
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
@@ -18,10 +18,10 @@
 #include <iostream>
 #include <sstream>
 
-#define NbScalers 2
+#define NbScalers 14
 #define NbChannelsPerScaler \
     {                       \
-        7, 56               \
+      7, 56 , 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16   \
     }
 
 class TClonesArray;
@@ -87,18 +87,25 @@ class R3BSofScalersOnlineSpectra : public FairTask
      */
     virtual void Reset_Histo();
 
+    void SetReadTrloii(Bool_t trloii) { read_trloii = trloii; }
+    Bool_t GetReadTrloii() { return read_trloii; }
+
   private:
     TClonesArray* fMappedItemsScalers; /**< Array with mapped items. */
+    TClonesArray* fMappedItemsTrloii;
 
     // check for trigger should be done globablly (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
-    Int_t fNEvents;         /**< Event counter.     */
+    Int_t fNEvents, fNSpill; /**< Event counter.     */
+    Bool_t read_trloii;
+    ULong64_t fTrloii[16][16] = {{0}}, fScaler[8] = {0}, fcounts[10] = {0};
+    Double_t frate[10] = {0.};
 
     // Canvas
-    TCanvas* cScalersGeneralView[NbScalers];
+    TCanvas* cScalersGeneralView[NbScalers], *cRate;
 
     // Histograms for Mapped data : accumulate statistics per channel
-    TH1I* fh1_GeneralView[NbScalers];
+    TH1D* fh1_GeneralView[NbScalers], *h_RatePerSpill;
 
   public:
     ClassDef(R3BSofScalersOnlineSpectra, 1)

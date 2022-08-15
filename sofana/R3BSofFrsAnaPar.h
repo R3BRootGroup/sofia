@@ -16,6 +16,7 @@
 #include "FairLogger.h"
 #include "FairParGenericSet.h"
 #include "FairParamList.h"
+#include "R3BLogger.h"
 
 class FairParamList;
 
@@ -52,6 +53,8 @@ class R3BSofFrsAnaPar : public FairParGenericSet
     const Int_t GetUseS2x(Int_t i) { return fUseS2x->GetAt(i); }
     const Float_t GetS2PosCoef() { return fS2PosCoef; }
     const Float_t GetS2PosOffset() { return fS2PosOffset; }
+    const Int_t GetNumBrhoCorrPar() { return fNumBrhoCorrPar; }
+    const Float_t GetBrhoCorrPar(Int_t i) { return fBrhoCorrPar->GetAt(i); }
 
     void SetBrho(Float_t brho) { fBrho0 = brho; }
     void SetNumTof(Int_t num) { fNumTof = num; }
@@ -62,6 +65,8 @@ class R3BSofFrsAnaPar : public FairParGenericSet
     void SetUseS2x(Int_t i, Int_t val) { fUseS2x->AddAt(val, i); }
     void SetS2PosCoef(Float_t val) { fS2PosCoef = val; }
     void SetS2PosOffset(Float_t val) { fS2PosOffset = val; }
+    void SetNumBrhoCorrPar(Int_t i) { fNumBrhoCorrPar = i; }
+    void SetBrhoCorrPar(Int_t i, Float_t val) { fBrhoCorrPar->AddAt(val, i); }
     /** Create more Methods if you need them! **/
 
   private:
@@ -74,6 +79,8 @@ class R3BSofFrsAnaPar : public FairParGenericSet
     TArrayI* fUseS2x;
     Float_t fS2PosCoef;
     Float_t fS2PosOffset;
+    Int_t fNumBrhoCorrPar;
+    TArrayF* fBrhoCorrPar;
     const R3BSofFrsAnaPar& operator=(const R3BSofFrsAnaPar&); /*< an assignment operator>*/
 
     R3BSofFrsAnaPar(const R3BSofFrsAnaPar&); /*< a copy constructor >*/
