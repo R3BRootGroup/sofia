@@ -6,12 +6,14 @@
 #define R3BSofTrimCal2Hit_H
 
 #include "FairTask.h"
+#include "R3BEventHeader.h"
 #include "R3BSofTrimHitData.h"
 #include "R3BSofTrimHitPar.h"
 #include "TH1F.h"
 #include <TRandom.h>
 
 class TClonesArray;
+class R3BEventHeader;
 class R3BSofTrimHitPar;
 
 class R3BSofTrimCal2Hit : public FairTask
@@ -64,6 +66,7 @@ class R3BSofTrimCal2Hit : public FairTask
     Bool_t fTriShape;
     Bool_t fOnline; // Don't store data for online
 
+    R3BEventHeader* header; /**< Event header. */
     R3BSofTrimHitPar* fTrimHitPar; // Parameter container
     TClonesArray* fTrimCalData;    // Array with Cal input data for Triple-MUSIC
     TClonesArray* fSciCalData;     // Array with Cal input data for incoming beam velocity
