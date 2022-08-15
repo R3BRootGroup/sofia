@@ -14,12 +14,14 @@ R3BSofFrsAnaPar::R3BSofFrsAnaPar(const TString& name, const TString& title, cons
     , fNumTof(0)
     , fS2PosCoef(0)
     , fS2PosOffset(0)
+    , fNumBrhoCorrPar(4)
 {
     fStaSciId = new TArrayI(MAX_TOFNUM);
     fStoSciId = new TArrayI(MAX_TOFNUM);
     fPathLength = new TArrayF(MAX_TOFNUM);
     fTofOffset = new TArrayF(MAX_TOFNUM);
     fUseS2x = new TArrayI(MAX_TOFNUM);
+    fBrhoCorrPar = new TArrayF(fNumBrhoCorrPar);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -36,6 +38,8 @@ R3BSofFrsAnaPar::~R3BSofFrsAnaPar()
         delete fTofOffset;
     if (fUseS2x)
         delete fUseS2x;
+    if (fBrhoCorrPar)
+        delete fBrhoCorrPar;
 }
 
 // ----  Method clear ----------------------------------------------------------
@@ -48,7 +52,7 @@ void R3BSofFrsAnaPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofFrsAnaPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofFrsAnaPar::putParams() called";
+    R3BLOG(INFO, "R3BSofFrsAnaPar::putParams() called");
     if (!list)
     {
         return;
@@ -69,12 +73,15 @@ void R3BSofFrsAnaPar::putParams(FairParamList* list)
 
     list->add("S2PosCoef", fS2PosCoef);
     list->add("S2PosOffset", fS2PosOffset);
+
+    list->add("NumBrhoCorrPar", fNumBrhoCorrPar);
+    list->add("BrhoCorrPar", *fBrhoCorrPar);
 }
 
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofFrsAnaPar::getParams() called";
+    R3BLOG(INFO, "R3BSofFrsAnaPar::getParams() called");
     if (!list)
     {
         return kFALSE;
@@ -106,6 +113,14 @@ Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
     if (!list->fill("S2PosOffset", &fS2PosOffset))
         return kFALSE;
 
+    if (!list->fill("NumBrhoCorrPar", &fNumBrhoCorrPar))
+    {
+
+        // return kFALSE;
+    }
+    if (!list->fill("BrhoCorrPar", fBrhoCorrPar))
+        return kFALSE;
+
     // printParams();
 
     return kTRUE;
@@ -114,19 +129,23 @@ Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofFrsAnaPar::printParams()
 {
-    LOG(INFO) << "R3BSofFrsAnaPar: Frs Analysis Parameters: ";
-    LOG(INFO) << "BrhoS2S8: " << fBrho0;
-    LOG(INFO) << "NumTof: " << fNumTof;
+    R3BLOG(INFO, "R3BSofFrsAnaPar: Frs Analysis Parameters: ");
+    R3BLOG(INFO, "BrhoS2S8: " << fBrho0);
+    R3BLOG(INFO, "NumTof: " << fNumTof);
     for (Int_t i = 0; i < fNumTof; i++)
     {
-        LOG(INFO) << "StaSciId(" << i << "): " << fStaSciId->GetAt(i);
-        LOG(INFO) << "StoSciId(" << i << "): " << fStoSciId->GetAt(i);
-        LOG(INFO) << "PathLength(" << i << "): " << fPathLength->GetAt(i);
-        LOG(INFO) << "TofOffset(" << i << "): " << fTofOffset->GetAt(i);
-        LOG(INFO) << "UseS2x(" << i << "): " << fUseS2x->GetAt(i);
+        R3BLOG(INFO, "StaSciId(" << i << "): " << fStaSciId->GetAt(i));
+        R3BLOG(INFO, "StoSciId(" << i << "): " << fStoSciId->GetAt(i));
+        R3BLOG(INFO, "PathLength(" << i << "): " << fPathLength->GetAt(i));
+        R3BLOG(INFO, "TofOffset(" << i << "): " << fTofOffset->GetAt(i));
+        R3BLOG(INFO, "UseS2x(" << i << "): " << fUseS2x->GetAt(i));
     }
-    LOG(INFO) << "S2PosCoef: " << fS2PosCoef;
-    LOG(INFO) << "S2PosOffset: " << fS2PosOffset;
+    R3BLOG(INFO, "S2PosCoef: " << fS2PosCoef);
+    R3BLOG(INFO, "S2PosOffset: " << fS2PosOffset);
+    for (Int_t i = 0; i < fNumBrhoCorrPar; i++)
+    {
+        R3BLOG(INFO, "BrhoCorrPar(" << i << "): " << fBrhoCorrPar->GetAt(i));
+    }
 }
 
 ClassImp(R3BSofFrsAnaPar);

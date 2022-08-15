@@ -77,7 +77,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
     run->GetHttpServer()->Register("", this);
 
     // get access to mapped data of FRS
-    fHitItemsFrs = (TClonesArray*)mgr->GetObject("SofFrsData");
+    fHitItemsFrs = (TClonesArray*)mgr->GetObject("FrsData");
     if (!fHitItemsFrs)
     {
         return kFATAL;

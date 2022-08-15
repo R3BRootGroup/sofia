@@ -11,9 +11,9 @@
  * or submit itself to any jurisdiction.                                      *
  ******************************************************************************/
 
-#include "R3BLogger.h"
 #include "FairRootManager.h"
 #include "FairRuntimeDb.h"
+#include "R3BLogger.h"
 
 #include "R3BEventHeader.h"
 #include "R3BSofSciRawTofPar.h"
@@ -41,7 +41,9 @@ void R3BSofiaProvideTStart::SetParContainers()
 void R3BSofiaProvideTStart::SetParameter()
 {
     if (!fRawTofPar)
+    {
         R3BLOG(FATAL, "fRawTofPar not found.");
+    }
     fStartId = fRawTofPar->GetDetIdCaveC();
     return;
 }
@@ -55,7 +57,6 @@ InitStatus R3BSofiaProvideTStart::Init()
     {
         throw std::runtime_error("R3BSofiaProvideTStart: No FairRootManager");
     }
-
 
     fEventHeader = (R3BEventHeader*)ioman->GetObject("EventHeader.");
     if (fEventHeader == nullptr)
