@@ -40,10 +40,7 @@ void R3BSofiaProvideTStart::SetParContainers()
 
 void R3BSofiaProvideTStart::SetParameter()
 {
-    if (!fRawTofPar)
-    {
-        R3BLOG(FATAL, "fRawTofPar not found.");
-    }
+    R3BLOG_IF(FATAL, !fRawTofPar, "fRawTofPar not found.");
     fStartId = fRawTofPar->GetDetIdCaveC();
     return;
 }
