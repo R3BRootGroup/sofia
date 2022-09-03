@@ -5,7 +5,7 @@
 // *** *************************************************************** *** //
 
 #ifndef R3BSOFSCI_MAPPED2TCAL_H
-#define R3BSOFSCI_MAPPED2TCAL_H
+#define R3BSOFSCI_MAPPED2TCAL_H 1
 
 #include "FairTask.h"
 
@@ -20,7 +20,6 @@ class R3BSofTcalPar;
 
 class R3BSofSciMapped2Tcal : public FairTask
 {
-
   public:
     // --- Default constructor --- //
     R3BSofSciMapped2Tcal();
@@ -38,8 +37,6 @@ class R3BSofSciMapped2Tcal : public FairTask
     virtual InitStatus Init();
 
     virtual InitStatus ReInit();
-
-    virtual void Finish();
 
     /** Virtual method Reset **/
     virtual void Reset();

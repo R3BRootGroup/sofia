@@ -333,8 +333,6 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
     ++fNevent;
 }
 
-void R3BSofSciTcal2SingleTcal::Finish() {}
-
 void R3BSofSciTcal2SingleTcal::Reset()
 {
     if (fSingleTcal)
@@ -356,4 +354,4 @@ R3BSofSciSingleTcalData* R3BSofSciTcal2SingleTcal::AddSingleTcalData(UShort_t iD
     return new (clref[size]) R3BSofSciSingleTcalData(iDet, traw, posraw, tofrawS2, tofrawS8);
 }
 
-ClassImp(R3BSofSciTcal2SingleTcal)
+ClassImp(R3BSofSciTcal2SingleTcal);

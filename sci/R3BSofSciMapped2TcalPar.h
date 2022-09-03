@@ -1,5 +1,5 @@
 #ifndef __R3BSOFSCIMAPPED2TCALPAR_H__
-#define __R3BSOFSCIMAPPED2TCALPAR_H__
+#define __R3BSOFSCIMAPPED2TCALPAR_H__ 1
 
 #include "FairTask.h"
 #include "TH1F.h"

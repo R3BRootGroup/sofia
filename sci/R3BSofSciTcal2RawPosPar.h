@@ -1,5 +1,5 @@
 #ifndef __R3BSOFSCITCAL2RAWPOSPAR_H__
-#define __R3BSOFSCITCAL2RAWPOSPAR_H__
+#define __R3BSOFSCITCAL2RAWPOSPAR_H__ 1
 
 #include "FairTask.h"
 #include "TF1.h"

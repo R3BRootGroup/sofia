@@ -9,8 +9,6 @@
 #include "R3BSofSciTcalData.h"
 #include "R3BSofTcalPar.h"
 
-#include <iomanip>
-
 // --- Default Constructor
 R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
     : FairTask("R3BSofSciMapped2Tcal", 1)
@@ -164,9 +162,6 @@ void R3BSofSciMapped2Tcal::Reset()
         fTcal->Clear();
 }
 
-// -----   Public method Finish   -----------------------------------------------
-void R3BSofSciMapped2Tcal::Finish() {}
-
 // -----   Private method to calculate the time in ns  --------------------------
 Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt_t iTf, UInt_t iTc)
 {
@@ -203,4 +198,4 @@ R3BSofSciTcalData* R3BSofSciMapped2Tcal::AddTcalData(Int_t det, Int_t ch, Double
     return new (clref[size]) R3BSofSciTcalData(det, ch, tns, clock);
 }
 
-ClassImp(R3BSofSciMapped2Tcal)
+ClassImp(R3BSofSciMapped2Tcal);

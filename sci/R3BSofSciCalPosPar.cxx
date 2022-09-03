@@ -11,9 +11,6 @@
 
 #define MAX_ALLPARS 10
 
-using std::cout;
-using std::endl;
-
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciCalPosPar::R3BSofSciCalPosPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
@@ -95,7 +92,9 @@ void R3BSofSciCalPosPar::printParams()
 
     for (Int_t det = 0; det < fNumDets; det++)
     {
-        cout << "SofSci" << det + 1 << ": p0 = " << fAllParams->GetAt(2 * det)
-             << " , p1=" << fAllParams->GetAt(2 * det + 1) << endl;
+        LOG(INFO) << "SofSci" << det + 1 << ": p0 = " << fAllParams->GetAt(2 * det)
+                  << " , p1=" << fAllParams->GetAt(2 * det + 1);
     }
 }
+
+ClassImp(R3BSofSciCalPosPar);

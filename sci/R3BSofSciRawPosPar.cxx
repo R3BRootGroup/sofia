@@ -7,12 +7,7 @@
 #include "TMath.h"
 #include "TString.h"
 
-#include <iostream>
-
 #define MAX_RAWPOSPAR 10
-
-using std::cout;
-using std::endl;
 
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, const char* context)
@@ -22,7 +17,7 @@ R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, cons
     , fNumSignals(2)
     , fNumParsPerSignal(1)
 {
-    fAllRawPosParams = new TArrayF(fNumSignals*fNumParsPerSignal);
+    fAllRawPosParams = new TArrayF(fNumSignals * fNumParsPerSignal);
 }
 
 // ----  Destructor ------------------------------------------------------------
@@ -107,11 +102,13 @@ void R3BSofSciRawPosPar::printParams()
     LOG(INFO) << "R3BSofSciRawPosPar: SofSciRawPos Parameters: ";
     Int_t array_size = fNumSignals * fNumParsPerSignal;
 
-    cout << "--- --------------------------------------------" << endl;
-    cout << "--- Single Tcal Parameters :  " << endl;
-    cout << "--- --------------------------------------------" << endl;
+    LOG(INFO) << "--- --------------------------------------------";
+    LOG(INFO) << "--- Single Tcal Parameters :  ";
+    LOG(INFO) << "--- --------------------------------------------";
     for (Int_t param = 0; param < array_size; param++)
     {
-        cout << "LIMIT " << param << " = " << fAllRawPosParams->GetAt(param) << endl;
+        LOG(INFO) << "LIMIT " << param << " = " << fAllRawPosParams->GetAt(param);
     }
 }
+
+ClassImp(R3BSofSciRawPosPar);

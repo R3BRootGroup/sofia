@@ -3,23 +3,15 @@
 #include "R3BSofSciRawTofPar.h"
 #include "R3BSofSciTcalData.h"
 
-#include "R3BEventHeader.h"
-
 #include "FairLogger.h"
 #include "FairRootManager.h"
-#include "FairRunAna.h"
 #include "FairRuntimeDb.h"
-#include "TGeoManager.h"
 
 #include "TClonesArray.h"
-#include "TGeoMatrix.h"
 #include "TMath.h"
 #include "TObjArray.h"
 #include "TRandom.h"
 #include "TVector3.h"
-
-#include <iostream>
-#include <stdlib.h>
 
 // *** ************************************ *** //
 // *** SofSci Pmt Right (Tcal Data)         *** //
@@ -245,4 +237,4 @@ void R3BSofSciTcal2RawTofPar::CalculateRawTofParams()
     return;
 }
 
-ClassImp(R3BSofSciTcal2RawTofPar)
+ClassImp(R3BSofSciTcal2RawTofPar);
