@@ -13,8 +13,6 @@
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
 
-#include <iomanip>
-
 // SCI headers
 #include "R3BSofSciHitData.h"
 #include "R3BSofSciSingleTcal2Hit.h"
@@ -156,9 +154,6 @@ void R3BSofSciSingleTcal2Hit::Exec(Option_t* option)
     return;
 }
 
-// -----   Public method Finish  ------------------------------------------------
-void R3BSofSciSingleTcal2Hit::Finish() {}
-
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofSciSingleTcal2Hit::Reset()
 {
@@ -176,4 +171,4 @@ R3BSofSciHitData* R3BSofSciSingleTcal2Hit::AddHitData(Int_t sci, Double_t x, Dou
     return new (clref[size]) R3BSofSciHitData(sci, x, tof);
 }
 
-ClassImp(R3BSofSciSingleTcal2Hit)
+ClassImp(R3BSofSciSingleTcal2Hit);

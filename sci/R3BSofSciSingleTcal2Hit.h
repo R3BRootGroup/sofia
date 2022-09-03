@@ -4,13 +4,12 @@
 // -----------------------------------------------------------------
 
 #ifndef R3BSofSciSingleTCal2Hit_H
-#define R3BSofSciSingleTCal2Hit_H
+#define R3BSofSciSingleTCal2Hit_H 1
 
 #include "FairTask.h"
 #include "R3BSofSciHitData.h"
 #include "R3BSofSciRawTofPar.h"
 #include "R3BSofSciSingleTcalData.h"
-#include <TRandom.h>
 
 class TClonesArray;
 
@@ -41,9 +40,6 @@ class R3BSofSciSingleTcal2Hit : public FairTask
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
-
-    /** Virtual method Finish **/
-    virtual void Finish();
 
     void SetOnline(Bool_t option) { fOnline = option; }
 

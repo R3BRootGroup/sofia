@@ -3,8 +3,6 @@
 #include "R3BMwpcHitData.h"
 #include "R3BSofSciSingleTcalData.h"
 
-#include "R3BEventHeader.h"
-
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
@@ -17,9 +15,6 @@
 #include "TObjArray.h"
 #include "TRandom.h"
 #include "TVector3.h"
-
-#include <iostream>
-#include <stdlib.h>
 
 // R3BSofSciSingleTcal2CalPosCaveCPar: Default Constructor --------------------------
 R3BSofSciSingleTcal2CalPosCaveCPar::R3BSofSciSingleTcal2CalPosCaveCPar()
@@ -190,11 +185,6 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::Exec(Option_t* opt)
     } // end of HitMwpc0
 }
 
-// ---- Public method Reset   --------------------------------------------------
-void R3BSofSciSingleTcal2CalPosCaveCPar::Reset() {}
-
-void R3BSofSciSingleTcal2CalPosCaveCPar::FinishEvent() {}
-
 // ---- Public method Finish   --------------------------------------------------
 void R3BSofSciSingleTcal2CalPosCaveCPar::FinishTask()
 {
@@ -231,3 +221,5 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::CalculateCalPosCaveCParams()
 
     return;
 }
+
+ClassImp(R3BSofSciSingleTcal2CalPosCaveCPar);

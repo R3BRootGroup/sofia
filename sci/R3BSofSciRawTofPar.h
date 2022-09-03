@@ -1,5 +1,5 @@
 #ifndef __R3BSOFSCIRAWTOFPAR_H__
-#define __R3BSOFSCIRAWTOFPAR_H__
+#define __R3BSOFSCIRAWTOFPAR_H__ 1
 
 #include "FairParGenericSet.h" // for FairParGenericSet
 #include "TArrayF.h"
