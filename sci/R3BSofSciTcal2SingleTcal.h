@@ -39,7 +39,7 @@ class R3BSofSciTcal2SingleTcal : public FairTask
     virtual InitStatus Init();
     virtual void SetParContainers();
     virtual InitStatus ReInit();
-    virtual void Finish();
+
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:

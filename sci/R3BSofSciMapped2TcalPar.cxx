@@ -257,4 +257,4 @@ void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
     return;
 }
 
-ClassImp(R3BSofSciMapped2TcalPar)
+ClassImp(R3BSofSciMapped2TcalPar);

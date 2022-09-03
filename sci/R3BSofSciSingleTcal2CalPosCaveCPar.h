@@ -1,5 +1,5 @@
 #ifndef __R3BSofSciSingleTcal2CalPosCaveCPar_H__
-#define __R3BSofSciSingleTcal2CalPosCaveCPar_H__
+#define __R3BSofSciSingleTcal2CalPosCaveCPar_H__ 1
 
 #include "FairTask.h"
 #include "TCanvas.h"
@@ -11,11 +11,8 @@
 #include "R3BTGeoPar.h"
 #include "TClonesArray.h"
 
-class R3BEventHeader;
-
 class R3BSofSciSingleTcal2CalPosCaveCPar : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofSciSingleTcal2CalPosCaveCPar();
@@ -32,14 +29,8 @@ class R3BSofSciSingleTcal2CalPosCaveCPar : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* opt);
 
-    /** Virtual method FinishEvent **/
-    virtual void FinishEvent();
-
     /** Virtual method FinishTask **/
     virtual void FinishTask();
-
-    /** Virtual method Reset **/
-    virtual void Reset();
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();

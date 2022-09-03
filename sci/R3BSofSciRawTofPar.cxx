@@ -7,8 +7,6 @@
 #include "TMath.h"
 #include "TString.h"
 
-#include <iostream>
-
 #define MAX_RAWTOFPAR 10
 
 // ---- Standard Constructor ---------------------------------------------------
@@ -130,3 +128,5 @@ void R3BSofSciRawTofPar::printParams()
         LOG(INFO) << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param);
     }
 }
+
+ClassImp(R3BSofSciRawTofPar);

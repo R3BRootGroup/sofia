@@ -3,11 +3,6 @@
 // -----                  Created 24/11/17  by H.Alvarez-Pol           -----
 // -------------------------------------------------------------------------
 #include "R3BSofSci.h"
-
-#include "FairGeoInterface.h"
-#include "FairGeoLoader.h"
-#include "FairGeoNode.h"
-#include "FairGeoRootBuilder.h"
 #include "FairRootManager.h"
 #include "FairRun.h"
 #include "FairRuntimeDb.h"
@@ -16,15 +11,12 @@
 #include "R3BMCStack.h"
 #include "R3BSofSciPoint.h"
 #include "TClonesArray.h"
-#include "TGeoMCGeometry.h"
 #include "TGeoManager.h"
 #include "TMCProcess.h"
 #include "TObjArray.h"
 #include "TParticle.h"
 #include "TVirtualMC.h"
 #include "TVirtualMCStack.h"
-#include <iostream>
-#include <stdlib.h>
 
 R3BSofSci::R3BSofSci()
     : R3BSofSci("")

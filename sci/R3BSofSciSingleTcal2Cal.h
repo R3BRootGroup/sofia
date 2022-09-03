@@ -1,5 +1,5 @@
 #ifndef R3BSofSciSingleTCal2Cal_H
-#define R3BSofSciSingleTCal2Cal_H
+#define R3BSofSciSingleTCal2Cal_H 1
 
 #include "FairTask.h"
 #include "R3BSofSciCalData.h"
@@ -13,7 +13,6 @@
 
 class R3BSofSciSingleTcal2Cal : public FairTask
 {
-
   public:
     // --- Default constructor --- //
     R3BSofSciSingleTcal2Cal();

@@ -1,5 +1,5 @@
 #ifndef R3BSOFSCICONTFACT_H
-#define R3BSOFSCICONTFACT_H
+#define R3BSOFSCICONTFACT_H 1
 
 #include "FairContFact.h"
 

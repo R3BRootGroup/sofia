@@ -11,9 +11,6 @@
 
 #define MAX_PARS 10
 
-using std::cout;
-using std::endl;
-
 // ---- Standard Constructor ---------------------------------------------------
 R3BSofSciCalTofPar::R3BSofSciCalTofPar(const char* name, const char* title, const char* context)
     : FairParGenericSet(name, title, context)
@@ -195,10 +192,10 @@ void R3BSofSciCalTofPar::printParams()
 {
     LOG(INFO) << "R3BSofSciCalTofPar: SofSciCalTof Parameters: ";
 
-    cout << "fNumDets = " << fNumDets << endl;
-    cout << "fDetIdS2 = " << fDetIdS2 << endl;
-    cout << "fDetIdS8 = " << fDetIdS8 << endl;
-    cout << "fDetIdCaveC = " << fDetIdCaveC << endl;
+    LOG(INFO) << "fNumDets = " << fNumDets;
+    LOG(INFO) << "fDetIdS2 = " << fDetIdS2;
+    LOG(INFO) << "fDetIdS8 = " << fDetIdS8;
+    LOG(INFO) << "fDetIdCaveC = " << fDetIdCaveC;
 
     Int_t rankL;
 
@@ -207,9 +204,9 @@ void R3BSofSciCalTofPar::printParams()
         for (Int_t det = fDetIdS8 + 1; det <= fNumDets; det++)
         {
             rankL = det - fDetIdS8 - 1;
-            cout << "SofSci " << det << ": Flight Length From S8 = " << fFlightLength_FromS8->GetAt(rankL) << endl;
-            cout << "          Tof2InvV_FromS8, p0 = " << fTof2InvV_FromS8->GetAt(rankL * 2)
-                 << ", p1 = " << fTof2InvV_FromS8->GetAt(rankL * 2 + 1) << endl;
+            LOG(INFO) << "SofSci " << det << ": Flight Length From S8 = " << fFlightLength_FromS8->GetAt(rankL);
+            LOG(INFO) << "          Tof2InvV_FromS8, p0 = " << fTof2InvV_FromS8->GetAt(rankL * 2)
+                      << ", p1 = " << fTof2InvV_FromS8->GetAt(rankL * 2 + 1);
         }
     }
     if (fDetIdS2 > 0)
@@ -217,9 +214,11 @@ void R3BSofSciCalTofPar::printParams()
         for (Int_t det = fDetIdS2 + 1; det <= fNumDets; det++)
         {
             rankL = det - fDetIdS2 - 1;
-            cout << "SofSci " << det << ": Flight Length From S2 = " << fFlightLength_FromS2->GetAt(rankL) << endl;
-            cout << "          Tof2InvV_FromS2, p0 = " << fTof2InvV_FromS2->GetAt(rankL * 2)
-                 << ", p1 = " << fTof2InvV_FromS2->GetAt(rankL * 2 + 1) << endl;
+            LOG(INFO) << "SofSci " << det << ": Flight Length From S2 = " << fFlightLength_FromS2->GetAt(rankL);
+            LOG(INFO) << "          Tof2InvV_FromS2, p0 = " << fTof2InvV_FromS2->GetAt(rankL * 2)
+                      << ", p1 = " << fTof2InvV_FromS2->GetAt(rankL * 2 + 1);
         }
     }
 }
+
+ClassImp(R3BSofSciCalTofPar);

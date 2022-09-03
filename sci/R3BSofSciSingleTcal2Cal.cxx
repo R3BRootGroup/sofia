@@ -188,4 +188,4 @@ R3BSofSciCalData* R3BSofSciSingleTcal2Cal::AddCalData(Int_t iDet,
     return new (clref[size]) R3BSofSciCalData(iDet, x, b2, b8, t2, t8);
 }
 
-ClassImp(R3BSofSciSingleTcal2Cal)
+ClassImp(R3BSofSciSingleTcal2Cal);
