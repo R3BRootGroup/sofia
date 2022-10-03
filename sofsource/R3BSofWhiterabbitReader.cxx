@@ -34,8 +34,6 @@ R3BSofWhiterabbitReader::~R3BSofWhiterabbitReader()
     LOG(DEBUG) << "R3BSofWhiterabbitReader: Delete instance";
     if (fArray)
         delete fArray;
-    if (fEventHeader)
-        delete fEventHeader;
 }
 
 Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
