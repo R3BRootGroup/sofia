@@ -84,8 +84,6 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
 R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
 {
     LOG(INFO) << "R3BSofSciOnlineSpectra::Delete instance";
-    if (fEventHeader)
-        delete fEventHeader;
     if (fMapped)
         delete fMapped;
     if (fTcal)
