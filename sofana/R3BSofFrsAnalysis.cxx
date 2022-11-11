@@ -281,7 +281,9 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
             Tof_wTref_S8_Cave = hitsingletcal->GetRawTofNs_FromS8();
     } // Loop over sci hits
     //
-    Double_t beta[fNbTof + 1] = { NAN };
+    // Double_t beta[fNbTof + 1] = { NAN };
+    std::vector<Double_t> beta;
+
     Int_t i_s2cave = -1, i_s8cave = -1, i_s2s8 = -1;
     for (Int_t i = 0; i < fNbTof; i++)
     {
@@ -302,16 +304,30 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
             i_s8cave = i;
         }
         if (isnan(tof) || tof < 0)
+        {
             continue;
-        beta[i] = fPathLength[i] / (tof + fTofOffset[i]); // ToFCalib
+        }
+        else
+        {
+            // beta[i] = fPathLength[i] / (tof + fTofOffset[i]); // ToFCalib
+            beta.push_back(fPathLength[i] / (tof + fTofOffset[i]));
+        }
     }
     // Velocity correlation conditions
-    if (fBetaCorr && beta[i_s2cave] > 0. && beta[i_s8cave] > 0. && TMath::Abs(beta[i_s2cave] - beta[i_s8cave] < 0.01))
-        beta[fNbTof] = beta[i_s2cave];
+    if (fBetaCorr && beta.at(i_s2cave) > 0. && beta.at(i_s8cave) > 0. &&
+        TMath::Abs(beta.at(i_s2cave) - beta.at(i_s8cave)) < 0.01)
+    {
+        beta.push_back(beta.at(i_s2cave));
+    }
     //
     // Under modification
-    int index_tof[4] = { fNbTof, i_s2cave, i_s8cave, i_s2s8 };
-    for (Int_t ii = 0; ii < TMath::Min(4, fNbTof + 1); ii++) // starting from the good one
+    if (beta.size() == 0)
+    {
+        return;
+    }
+    const int betaindex = beta.size() - 1;
+    int index_tof[4] = { betaindex, i_s2cave, i_s8cave, i_s2s8 };
+    for (Int_t ii = 0; ii < TMath::Min(4, betaindex + 1); ii++) // starting from the good one
     {
         Int_t i = 0;
         if (index_tof[ii] >= 0)
@@ -322,13 +338,14 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
         {
             continue;
         }
-        if (!(beta[i] > 0.))
+        if (!(beta.at(i) > 0.))
         {
             if (ii == 0)
                 AddData(0, 0);
             continue;
         }
-        Double_t gamma = 1. / (TMath::Sqrt(1. - beta[i] * beta[i]));
+        // Double_t gamma = 1. / (TMath::Sqrt(1. - beta[i] * beta[i]));
+        Double_t gamma = 1. / (TMath::Sqrt(1. - beta.at(i) * beta.at(i)));
         Double_t correction = 1.;
         if (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0)
         {
@@ -336,17 +353,19 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
                 correction -= pow(xpos[fIdS2 - 1], j) * fBrhoCorrPar[j];
         }
         Double_t brho = fBrho0 * correction;
-        Double_t aoq = brho / (3.10716 * gamma * beta[i]);
-        MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta[i] + fZ2 * MusicE * beta[i] * beta[i];
+        // Double_t aoq = brho / (3.10716 * gamma * beta[i]);
+        Double_t aoq = brho / (3.10716 * gamma * beta.at(i));
+        // MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta[i] + fZ2 * MusicE * beta[i] * beta[i];
+        MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta.at(i) + fZ2 * MusicE * beta.at(i) * beta.at(i);
         //
         if (ii == 0)
         {
-            AddData(0, 0, MusicZ, aoq, beta[i], brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
+            AddData(0, 0, MusicZ, aoq, beta.at(i), brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
             hitmusic->SetZcharge(MusicZ); // Set velocity corrected Z
         }
         else
         {
-            AddData(fStaId[i], fStoId[i], MusicZ, aoq, beta[i], brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
+            AddData(fStaId[i], fStoId[i], MusicZ, aoq, beta.at(i), brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
         }
     }
     return;
