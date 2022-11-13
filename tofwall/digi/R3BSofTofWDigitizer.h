@@ -42,8 +42,6 @@ class R3BSofTofWDigitizer : public FairTask
     // Fair specific
     virtual void SetParContainers();
 
-    virtual void Finish();
-
     virtual void Reset();
 
     /** Setters for sigmas **/

@@ -15,6 +15,7 @@ ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/sci
 ${R3BSOF_SOURCE_DIR}/tofwall
 ${R3BSOF_SOURCE_DIR}/tofwall/sim
+${R3BSOF_SOURCE_DIR}/tofwall/digi
 ${R3BSOF_SOURCE_DIR}/tofwall/pars
 ${R3BSOF_SOURCE_DIR}/tofwall/calibration
 )
@@ -39,7 +40,7 @@ link_directories( ${LINK_DIRECTORIES})
 #R3BSofTofWHitPar.cxx
 #)
 
-file(GLOB SRCS ./sim/*.cxx ./pars/*.cxx ./calibration/*.cxx)
+file(GLOB SRCS ./sim/*.cxx ./digi/*.cxx ./pars/*.cxx ./calibration/*.cxx)
 
 # fill list of header files from list of source files
 # by exchanging the file extension
