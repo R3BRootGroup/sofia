@@ -1,32 +1,26 @@
 // ----------------------------------------------------------------
 // -----          R3BSofTofWDigitizer source file             -----
-// -----         Created 03/11/19  by JL Rodriguez            -----
+// -----        Created 03/11/19 by J.L. Rodriguez            -----
 // ----------------------------------------------------------------
 
-#include "R3BSofTofWDigitizer.h"
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
+
+#include "R3BLogger.h"
+#include "R3BMCTrack.h"
+#include "R3BSofTofWDigitizer.h"
+#include "R3BSofTofWPoint.h"
 #include "R3BTGeoPar.h"
+
 #include "TClonesArray.h"
-
-// includes for modeling
-#include "TGeoManager.h"
-#include "TParticle.h"
-#include "TVirtualMC.h"
-
 #include "TMath.h"
 #include "TVector3.h"
-#include <iostream>
-#include <string>
-
-#include "R3BMCTrack.h"
-#include "R3BSofTofWPoint.h"
 
 // R3BSofTofWDigitizer: Default Constructor --------------------------
 R3BSofTofWDigitizer::R3BSofTofWDigitizer()
-    : FairTask("R3BSof Tof Digitization scheme", 1)
+    : FairTask("R3BSofTofWDigitizer", 1)
     , fMCTrack(NULL)
     , fTofPoints(NULL)
     , fTofHits(NULL)
@@ -53,30 +47,30 @@ R3BSofTofWDigitizer::R3BSofTofWDigitizer(const char* name, Int_t iVerbose)
 // Virtual R3BSofTofWDigitizer: Destructor ----------------------------
 R3BSofTofWDigitizer::~R3BSofTofWDigitizer()
 {
-    LOG(INFO) << "R3BSofTofWDigitizer: Delete instance";
-    if (fTofPoints)
-        delete fTofPoints;
+    R3BLOG(debug, "");
     if (fTofHits)
+    {
         delete fTofHits;
+    }
 }
 
 void R3BSofTofWDigitizer::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-
     fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
     if (!fTofWGeoPar)
     {
-        LOG(ERROR) << "R3BSofTofWDigitizer::SetParContainers() : Could not get access to TofwGeoPar container.";
+        R3BLOG(error, "Could not get access to TofwGeoPar container.");
         return;
     }
     else
-        LOG(INFO) << "R3BSofTofWDigitizer::SetParContainers() : Container TofwGeoPar found.";
+    {
+        R3BLOG(info, "Container TofwGeoPar found.");
+    }
 }
 
 void R3BSofTofWDigitizer::SetParameter()
 {
-    // fsigma_x = fTofWGeoPar->GetSigmaX();
     fsigma_y = fTofWGeoPar->GetSigmaY();
 
     fRot.RotateX(-fTofWGeoPar->GetRotX() * TMath::DegToRad());
@@ -89,18 +83,17 @@ void R3BSofTofWDigitizer::SetParameter()
 // ----   Public method Init  -----------------------------------------
 InitStatus R3BSofTofWDigitizer::Init()
 {
-    LOG(INFO) << "R3BSofTofWDigitizer: Init";
+    R3BLOG(info, "");
 
     // Get input array
     FairRootManager* ioman = FairRootManager::Instance();
-    if (!ioman)
-        LOG(fatal) << "Init: No FairRootManager";
+    R3BLOG_IF(fatal, !ioman, "FairRootManager not found.");
 
     fMCTrack = (TClonesArray*)ioman->GetObject("MCTrack");
     fTofPoints = (TClonesArray*)ioman->GetObject("SofTofWPoint");
 
     // Register output array fTofHits
-    fTofHits = new TClonesArray("R3BSofTofWHitData", 10);
+    fTofHits = new TClonesArray("R3BSofTofWHitData");
     ioman->Register("TofWHitData", "Digital response in TofW", fTofHits, kTRUE);
 
     SetParameter();
@@ -113,11 +106,12 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
     Reset();
     // Reading the Input -- Point Data --
     Int_t nHits = fTofPoints->GetEntries();
-    if (!nHits)
+    if (nHits == 0)
+    {
         return;
+    }
     // Data from Point level
-    R3BSofTofWPoint** pointData;
-    pointData = new R3BSofTofWPoint*[nHits];
+    R3BSofTofWPoint** pointData = new R3BSofTofWPoint*[nHits];
     Int_t paddle = 0;
     Int_t TrackId = 0, PID = 0, mother = -1;
     Double_t x = 0., y = 0., z = 0., time = 0.;
@@ -129,7 +123,6 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
 
         R3BMCTrack* Track = (R3BMCTrack*)fMCTrack->At(TrackId);
         PID = Track->GetPdgCode();
-        // mother = Track->GetMotherId();
 
         if (PID > 1000080160) // Z=8 and A=16
         {
@@ -155,7 +148,10 @@ void R3BSofTofWDigitizer::Exec(Option_t* opt)
         }
     }
     if (pointData)
-        delete pointData;
+    {
+        delete[] pointData;
+    }
+    LOG(info) << "R3BSofTofWDigitizer: " << fTofHits->GetEntriesFast() << " points registered in this event";
     return;
 }
 
@@ -170,9 +166,11 @@ InitStatus R3BSofTofWDigitizer::ReInit()
 // -----   Public method Reset   -----------------------------------------------
 void R3BSofTofWDigitizer::Reset()
 {
-    LOG(DEBUG) << "Clearing R3BSofTofWDigitizer Structure";
+    R3BLOG(debug, "");
     if (fTofHits)
+    {
         fTofHits->Clear();
+    }
 }
 
 // -----   Private method AddHitData  -------------------------------------------
@@ -184,7 +182,4 @@ R3BSofTofWHitData* R3BSofTofWDigitizer::AddHitData(Int_t paddle, Double_t x, Dou
     return new (clref[size]) R3BSofTofWHitData(paddle, x, y, time);
 }
 
-// -----   Public method Finish  ------------------------------------------------
-void R3BSofTofWDigitizer::Finish() {}
-
-ClassImp(R3BSofTofWDigitizer)
+ClassImp(R3BSofTofWDigitizer);
