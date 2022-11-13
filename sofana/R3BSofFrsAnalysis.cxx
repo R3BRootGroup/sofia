@@ -281,9 +281,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
             Tof_wTref_S8_Cave = hitsingletcal->GetRawTofNs_FromS8();
     } // Loop over sci hits
     //
-    // Double_t beta[fNbTof + 1] = { NAN };
     std::vector<Double_t> beta;
-
     Int_t i_s2cave = -1, i_s8cave = -1, i_s2s8 = -1;
     for (Int_t i = 0; i < fNbTof; i++)
     {
@@ -305,19 +303,22 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
         }
         if (isnan(tof) || tof < 0)
         {
-            continue;
+            beta.push_back(NAN);
         }
         else
         {
-            // beta[i] = fPathLength[i] / (tof + fTofOffset[i]); // ToFCalib
             beta.push_back(fPathLength[i] / (tof + fTofOffset[i]));
         }
     }
     // Velocity correlation conditions
-    if (fBetaCorr && beta.at(i_s2cave) > 0. && beta.at(i_s8cave) > 0. &&
+    if (fBetaCorr && i_s2cave >= 0 && i_s8cave >= 0 && beta.at(i_s2cave) > 0. && beta.at(i_s8cave) > 0. &&
         TMath::Abs(beta.at(i_s2cave) - beta.at(i_s8cave)) < 0.01)
     {
         beta.push_back(beta.at(i_s2cave));
+    }
+    else
+    {
+        beta.push_back(NAN);
     }
     //
     // Under modification
@@ -344,7 +345,6 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
                 AddData(0, 0);
             continue;
         }
-        // Double_t gamma = 1. / (TMath::Sqrt(1. - beta[i] * beta[i]));
         Double_t gamma = 1. / (TMath::Sqrt(1. - beta.at(i) * beta.at(i)));
         Double_t correction = 1.;
         if (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0)
@@ -353,9 +353,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
                 correction -= pow(xpos[fIdS2 - 1], j) * fBrhoCorrPar[j];
         }
         Double_t brho = fBrho0 * correction;
-        // Double_t aoq = brho / (3.10716 * gamma * beta[i]);
         Double_t aoq = brho / (3.10716 * gamma * beta.at(i));
-        // MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta[i] + fZ2 * MusicE * beta[i] * beta[i];
         MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta.at(i) + fZ2 * MusicE * beta.at(i) * beta.at(i);
         //
         if (ii == 0)
