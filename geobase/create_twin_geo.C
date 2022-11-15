@@ -155,8 +155,8 @@ void create_twin_geo(const char* geoTag = "v21")
 
     Int_t nbanode = 0;
     Float_t offsetx = 11. / 2. + xcathode / 2.;
-    Float_t secposx[4] = { -offsetx, -offsetx, offsetx, offsetx };
-    Float_t secposy[4] = { 11. / 2., -11. / 2., -11. / 2., 11. / 2. };
+    Float_t secposx[4] = { offsetx, offsetx, -offsetx, -offsetx };
+    Float_t secposy[4] = { -11. / 2., 11. / 2., 11. / 2., -11. / 2. };
     for (Int_t i = 0; i < nbSections; i++)
     { // Sections
         dx = secposx[i];
