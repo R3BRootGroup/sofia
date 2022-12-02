@@ -313,7 +313,7 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
         // std::cout <<" init: "<< HitTofW[i]->GetPaddle() << " "<< ToF_Cave << std::endl;
     }
 
-    if (isnan(ToF_Cave))
+    if (TMath::IsNaN(ToF_Cave))
         return;
 
     double gamma = 1. / sqrt(1. - Beta * Beta);
