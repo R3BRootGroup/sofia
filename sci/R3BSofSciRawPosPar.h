@@ -35,11 +35,8 @@ class R3BSofSciRawPosPar : public FairParGenericSet
     void printParams();
 
     /** Accessor functions **/
-    const Int_t GetNumDets() 
-    
-    { return fNumDets; }
-    
-    
+    const Int_t GetNumDets() { return fNumDets; }
+
     const Int_t GetNumPmts() { return fNumPmts; }
     const Int_t GetNumSignals() { return fNumSignals; }
     const Int_t GetNumParsPerSignal() { return fNumParsPerSignal; }
