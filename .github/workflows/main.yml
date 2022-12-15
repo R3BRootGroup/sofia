@@ -36,9 +36,9 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a set of commands using the runners shell
-#      - name: Run Dart.sh
-#        run: |
-#          cd $GITHUB_WORKSPACE
+      - name: Run Dart.sh
+        run: |
+          cd $GITHUB_WORKSPACE
 #          git clone https://github.com/R3BRootGroup/macros.git
 #          cd macros && git checkout dev && cd ..
 #          singularity exec /data.local2/kresan/debian10-jun19p2-v18.2.1-ucesb.sif $PWD/containers/run_build_test.sh
