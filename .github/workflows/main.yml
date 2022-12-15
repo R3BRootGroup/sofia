@@ -22,5 +22,5 @@ jobs:
       - name: c-linter
         uses: ArtificialAmateur/cpp-linter-action@master
         with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           build_path: /$PWD/travis-clang-format-check.sh clang-format-8
