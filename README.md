@@ -1,5 +1,3 @@
-![GitHub release (latest SemVer)](https://github.com/R3BRootGroup/sofia/releases/feb22)
-
 # Purpose
 
 SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed
