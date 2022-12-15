@@ -28,9 +28,9 @@ class R3BSofTofWSingleTcalData : public TObject
     void SetRawTofNs(Double_t tof) { fRawTofNs = tof; }
 
   private:
-    Int_t fDetector; // 1..28
+    Int_t fDetector;   // 1..28
     Double_t fRawTofNs;
-    Double_t fRawPosNs; // RawTimeDOWN - RawTimeUP
+    Double_t fRawPosNs;   // RawTimeDOWN - RawTimeUP
     Double_t fRawTimeNs;
 
   public:

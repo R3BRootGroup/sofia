@@ -6,15 +6,15 @@
 #ifndef R3BSofGladFieldPar_H
 #define R3BSofGladFieldPar_H
 
+#include "FairLogger.h"
+#include "FairParGenericSet.h"
+#include "FairParamList.h"
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TObject.h"
 #include "TString.h"
-#include <iostream>
 
-#include "FairLogger.h"
-#include "FairParGenericSet.h"
-#include "FairParamList.h"
+#include <iostream>
 
 class FairParamList;
 
@@ -52,9 +52,9 @@ class R3BSofGladFieldPar : public FairParGenericSet
     /** Create more Methods if you need them! **/
 
   private:
-    Float_t fBz;          // Magnetic field in the Z direction [Tesla]
-    Float_t fEffLength;   // Effective magnetic field length [cm]
-    Float_t fFieldCentre; // Field centre position in the Z direction [cm]
+    Float_t fBz;            // Magnetic field in the Z direction [Tesla]
+    Float_t fEffLength;     // Effective magnetic field length [cm]
+    Float_t fFieldCentre;   // Field centre position in the Z direction [cm]
 
     const R3BSofGladFieldPar& operator=(const R3BSofGladFieldPar&); /*< an assignment operator>*/
 

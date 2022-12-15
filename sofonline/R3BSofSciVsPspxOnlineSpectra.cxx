@@ -8,23 +8,22 @@
  */
 
 #include "R3BSofSciVsPspxOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BPspxCalData.h"
-#include "R3BPspxHitData.h"
-#include "R3BSofSciCalData.h"
-#include "R3BSofSciSingleTcalData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BPspxCalData.h"
+#include "R3BPspxHitData.h"
+#include "R3BSofSciCalData.h"
+#include "R3BSofSciSingleTcalData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH2.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TMath.h"
 
 R3BSofSciVsPspxOnlineSpectra::R3BSofSciVsPspxOnlineSpectra()
@@ -65,7 +64,7 @@ R3BSofSciVsPspxOnlineSpectra::R3BSofSciVsPspxOnlineSpectra(const char* name, Int
 
 R3BSofSciVsPspxOnlineSpectra::~R3BSofSciVsPspxOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofSciVsPspxOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofSciVsPspxOnlineSpectra::Delete instance";
     if (fSciSTcal)
         delete fSciSTcal;
     if (fSciCal)
@@ -79,14 +78,13 @@ R3BSofSciVsPspxOnlineSpectra::~R3BSofSciVsPspxOnlineSpectra()
 InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofSciVsPspxOnlineSpectra::Init()";
+    LOG(info) << "R3BSofSciVsPspxOnlineSpectra::Init()";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
 
     FairRootManager* mgr = FairRootManager::Instance();
-    if (NULL == mgr)
-    {
+    if (NULL == mgr) {
         LOG(FATAL) << "R3BSofSciVsPspxOnlineSpectra::Init FairRootManager not found";
         return kFATAL;
     }
@@ -99,9 +97,8 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     // --- get access to tcal data of the Sci --- //
     // --- ---------------------------------- --- //
     fSciSTcal = (TClonesArray*)mgr->GetObject("SofSciSingleTcalData");
-    if (!fSciSTcal)
-    {
-        LOG(WARNING) << "R3BSofSciVsPspxOnlineSpectra::SofSciSingleTcalData not found";
+    if (!fSciSTcal) {
+        LOG(warn) << "R3BSofSciVsPspxOnlineSpectra::SofSciSingleTcalData not found";
         // return kFATAL;
     }
 
@@ -109,9 +106,8 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     // --- get access to cal data of the Sci --- //
     // --- --------------------------------- --- //
     fSciCal = (TClonesArray*)mgr->GetObject("SofSciCalData");
-    if (!fSciCal)
-    {
-        LOG(WARNING) << "R3BSofSciVsPspxOnlineSpectra::SofSciCalData not found";
+    if (!fSciCal) {
+        LOG(warn) << "R3BSofSciVsPspxOnlineSpectra::SofSciCalData not found";
         // return kFATAL;
     }
 
@@ -119,9 +115,8 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     // --- get access to cal data of the Pspx         --- //
     // --- ------------------------------------------ --- //
     fPspxHit = (TClonesArray*)mgr->GetObject("Pspx1_xCal");
-    if (!fPspxHit)
-    {
-        LOG(WARNING) << "R3BSofSciVsPspxOnlineSpectra: Pspx1_xCal not found";
+    if (!fPspxHit) {
+        LOG(warn) << "R3BSofSciVsPspxOnlineSpectra: Pspx1_xCal not found";
     }
 
     // --- ------------------------------------------ --- //
@@ -130,7 +125,7 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     /*fPspxHit = (TClonesArray*)mgr->GetObject("Pspx1_xHit");
     if (!fPspxHit)
     {
-        LOG(WARNING) << "R3BSofSciVsPspxOnlineSpectra: Pspx1_xHit not found";
+        LOG(warn) << "R3BSofSciVsPspxOnlineSpectra: Pspx1_xHit not found";
     }*/
 
     // --- ------------------------------- --- //
@@ -140,15 +135,12 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     char Name2[255];
 
     // Pspx ENERGY LOSS VERSUS POSITION / BETA / AoQ IN SCI
-    if (fSciSTcal && fPspxHit)
-    {
-        if (fSciCal)
-        {
+    if (fSciSTcal && fPspxHit) {
+        if (fSciCal) {
             c_PspxE_vs_SciPosCal = new TCanvas*[fNbDetectors];
             fh2_PspxE_vs_SciPosCal = new TH2F*[fNbDetectors];
 
-            for (Int_t i = 0; i < fNbDetectors; i++)
-            {
+            for (Int_t i = 0; i < fNbDetectors; i++) {
                 sprintf(Name1, "PspxE_vs_Sci%02dPosCal", i + 1);
                 c_PspxE_vs_SciPosCal[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
 
@@ -176,8 +168,7 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
             // c_PspxE_vs_AoQraw->Divide(2, 2);
             fh2_PspxE_vs_AoQraw = new TH2F*[1];
 
-            for (Int_t section = 0; section < 1; section++)
-            {
+            for (Int_t section = 0; section < 1; section++) {
                 c_PspxE_vs_BetaS2->cd(section + 1);
                 sprintf(Name1, "PspxES%02d_vs_BetaS2", section + 1);
                 fh2_PspxE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
@@ -200,10 +191,8 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
     // --- --------------- --- //
     TFolder* mainfol = new TFolder("SofSci-Pspx", "SofSci vs Pspx");
 
-    if (fSciCal && fPspxHit)
-    {
-        for (UShort_t d = 0; d < fNbDetectors; d++)
-        {
+    if (fSciCal && fPspxHit) {
+        for (UShort_t d = 0; d < fNbDetectors; d++) {
             mainfol->Add(c_PspxE_vs_SciPosCal[d]);
         }
         mainfol->Add(c_PspxE_vs_BetaS2);
@@ -220,14 +209,12 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
 
 void R3BSofSciVsPspxOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofSciVsPspxOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofSciVsPspxOnlineSpectra::Reset_Histo";
 
-    if (fSciSTcal && fPspxHit)
-    {
+    if (fSciSTcal && fPspxHit) {
         for (UShort_t d = 0; d < fNbDetectors; d++)
             fh2_PspxE_vs_SciPosCal[d]->Reset();
-        for (Int_t i = 0; i < 1; i++)
-        {
+        for (Int_t i = 0; i < 1; i++) {
             fh2_PspxE_vs_BetaS2[i]->Reset();
             fh2_PspxE_vs_AoQraw[i]->Reset();
         }
@@ -246,16 +233,13 @@ void R3BSofSciVsPspxOnlineSpectra::Exec(Option_t* option)
     // --- -------------------
     // --- Pspx Hit data
     // --- ------------------
-    if (fPspxHit && fPspxHit->GetEntriesFast() > 0)
-    {
+    if (fPspxHit && fPspxHit->GetEntriesFast() > 0) {
         nHits = fPspxHit->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BPspxHitData* hit = (R3BPspxHitData*)fPspxHit->At(ihit);
             if (!hit)
                 continue;
-            if (Emax < hit->GetEnergy())
-            {
+            if (Emax < hit->GetEnergy()) {
                 Emax = hit->GetEnergy();
                 Posmax = hit->GetPos();
             }
@@ -269,22 +253,18 @@ void R3BSofSciVsPspxOnlineSpectra::Exec(Option_t* option)
     Double_t xCC = 0.;
     Double_t BetaS2 = 1.;
     Double_t Gamma = 1.;
-    if (fSciCal && fSciCal->GetEntriesFast() > 0 && fPspxHit)
-    {
+    if (fSciCal && fSciCal->GetEntriesFast() > 0 && fPspxHit) {
         nHits = fSciCal->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BSofSciCalData* hit = (R3BSofSciCalData*)fSciCal->At(ihit);
             if (!hit)
                 continue;
-            if (hit->GetDetector() == fNbDetectors)
-            {
+            if (hit->GetDetector() == fNbDetectors) {
                 BetaS2 = hit->GetBeta_S2();
                 Gamma = 1. / (TMath::Sqrt(1. - TMath::Power(BetaS2, 2)));
                 xCC = hit->GetPosMm();
             }
-            if (hit->GetDetector() == fIdS2)
-            {
+            if (hit->GetDetector() == fIdS2) {
                 xS2 = hit->GetPosMm();
             }
             fh2_PspxE_vs_SciPosCal[hit->GetDetector() - 1]->Fill(hit->GetPosMm(), Emax);
@@ -297,12 +277,10 @@ void R3BSofSciVsPspxOnlineSpectra::Exec(Option_t* option)
         //    Brho = fBhro0 * (1 - xMwpc0/fDCC + xS2/fDS2)
         // in R3BRoot, X is increasing from right to left
         //    Bro = fBrho0 * (1 + xMwpc0/fDCC - xS2/fDS2)
-        Double_t Brho = fBrho0 * (1. - xS2 / fDS2); // + X_mwpc0/fDCC
+        Double_t Brho = fBrho0 * (1. - xS2 / fDS2);   // + X_mwpc0/fDCC
         Double_t AoQraw = Brho / (3.10716 * Gamma * BetaS2);
-        for (Int_t section = 0; section < 1; section++)
-        {
-            if (Emax > 0.)
-            {
+        for (Int_t section = 0; section < 1; section++) {
+            if (Emax > 0.) {
                 fh2_PspxE_vs_BetaS2[section]->Fill(BetaS2, Emax);
                 fh2_PspxE_vs_AoQraw[section]->Fill(AoQraw, Emax);
             }
@@ -315,32 +293,26 @@ void R3BSofSciVsPspxOnlineSpectra::Exec(Option_t* option)
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciVsPspxOnlineSpectra::FinishEvent()
 {
-    if (fSciSTcal)
-    {
+    if (fSciSTcal) {
         fSciSTcal->Clear();
     }
-    if (fSciCal)
-    {
+    if (fSciCal) {
         fSciCal->Clear();
     }
-    if (fPspxCal)
-    {
+    if (fPspxCal) {
         fPspxCal->Clear();
     }
-    if (fPspxHit)
-    {
+    if (fPspxHit) {
         fPspxHit->Clear();
     }
 }
 
 void R3BSofSciVsPspxOnlineSpectra::FinishTask()
 {
-    if (fPspxHit && fSciCal)
-    {
+    if (fPspxHit && fSciCal) {
         for (UShort_t d = 0; d < fNbDetectors; d++)
             fh2_PspxE_vs_SciPosCal[d]->Write();
-        for (Int_t i = 0; i < 1; i++)
-        {
+        for (Int_t i = 0; i < 1; i++) {
             fh2_PspxE_vs_BetaS2[i]->Write();
             fh2_PspxE_vs_AoQraw[i]->Write();
         }

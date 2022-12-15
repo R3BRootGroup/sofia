@@ -3,12 +3,12 @@
 // ---------------------------------------------------------------
 
 #include "R3BSofTrimContFact.h"
-#include "R3BSofTrimCalPar.h"
-#include "R3BSofTrimHitPar.h"
-#include "R3BTGeoPar.h"
 
 #include "FairLogger.h"
 #include "FairRuntimeDb.h"
+#include "R3BSofTrimCalPar.h"
+#include "R3BSofTrimHitPar.h"
+#include "R3BTGeoPar.h"
 #include "TClass.h"
 
 static R3BSofTrimContFact gR3BSofTrimContFact;
@@ -47,18 +47,13 @@ FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
     // of this container, the name is concatinated with the context.
 
     const char* name = c->GetName();
-    LOG(INFO) << "R3BSofTrimContFact: Create container name: " << name;
+    LOG(info) << "R3BSofTrimContFact: Create container name: " << name;
     FairParSet* p = 0;
-    if (strcmp(name, "trimCalPar") == 0)
-    {
+    if (strcmp(name, "trimCalPar") == 0) {
         p = new R3BSofTrimCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "trimHitPar") == 0)
-    {
+    } else if (strcmp(name, "trimHitPar") == 0) {
         p = new R3BSofTrimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "TrimGeoPar") == 0)
-    {
+    } else if (strcmp(name, "TrimGeoPar") == 0) {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;

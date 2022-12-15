@@ -7,16 +7,16 @@
 #ifndef R3BSofFrsAnaPar_H
 #define R3BSofFrsAnaPar_H
 
-#include "TArrayF.h"
-#include "TArrayI.h"
-#include "TObject.h"
-#include "TString.h"
-#include <iostream>
-
 #include "FairLogger.h"
 #include "FairParGenericSet.h"
 #include "FairParamList.h"
 #include "R3BLogger.h"
+#include "TArrayF.h"
+#include "TArrayI.h"
+#include "TObject.h"
+#include "TString.h"
+
+#include <iostream>
 
 class FairParamList;
 

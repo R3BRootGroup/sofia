@@ -17,8 +17,7 @@ R3BSofTofWCalData::R3BSofTofWCalData()
     , fPmt(0)
     , fTime(-1.)
     , fEnergy(-1.)
-{
-}
+{}
 
 // -----   Standard constructor   ------------------------------------------
 R3BSofTofWCalData::R3BSofTofWCalData(UChar_t ident, UShort_t pmt, Double_t time, Float_t energy)
@@ -27,8 +26,7 @@ R3BSofTofWCalData::R3BSofTofWCalData(UChar_t ident, UShort_t pmt, Double_t time,
     , fPmt(pmt)
     , fTime(time)
     , fEnergy(energy)
-{
-}
+{}
 
 // -----   Copy constructor   ------------------------------------------
 R3BSofTofWCalData::R3BSofTofWCalData(const R3BSofTofWCalData& right)
@@ -37,8 +35,7 @@ R3BSofTofWCalData::R3BSofTofWCalData(const R3BSofTofWCalData& right)
     , fPmt(right.fPmt)
     , fTime(right.fTime)
     , fEnergy(right.fEnergy)
-{
-}
+{}
 
 // -----   Destructor   ----------------------------------------------------
 R3BSofTofWCalData::~R3BSofTofWCalData() {}

@@ -6,16 +6,13 @@
 #define R3BSOFTOFW_TCAL2SINGLETCAL_H 1
 
 #include "FairTask.h"
-
 #include "R3BSofSciRawTofPar.h"
-
-#include "TClonesArray.h"
-#include "TMath.h"
-#include "TRandom.h"
-
 #include "R3BSofSciSingleTcalData.h"
 #include "R3BSofTofWSingleTcalData.h"
 #include "R3BSofTofWTcalData.h"
+#include "TClonesArray.h"
+#include "TMath.h"
+#include "TRandom.h"
 
 class TRandom3;
 class R3BTimeStitch;
@@ -51,12 +48,12 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
 
   private:
     R3BTimeStitch* fTimeStitch;
-    TClonesArray* fSciSingleTcal;      // input data
-    TClonesArray* fTofWTcal;           // input data
-    TClonesArray* fTofWSingleTcal;     // output data
-    R3BSofSciRawTofPar* fSciRawTofPar; // needed to get the Cave C Sci ID
+    TClonesArray* fSciSingleTcal;        // input data
+    TClonesArray* fTofWTcal;             // input data
+    TClonesArray* fTofWSingleTcal;       // output data
+    R3BSofSciRawTofPar* fSciRawTofPar;   // needed to get the Cave C Sci ID
 
-    Bool_t fOnline; // Don't store data for online
+    Bool_t fOnline;   // Don't store data for online
 
     UInt_t fNumSingleTcal;
     UInt_t fNevent;
@@ -71,4 +68,4 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
     ClassDef(R3BSofTofWTcal2SingleTcal, 1)
 };
 
-#endif // R3BSOFTOFW_TCAL2SINGLETCAL_H
+#endif   // R3BSOFTOFW_TCAL2SINGLETCAL_H

@@ -8,8 +8,7 @@ R3BSofSciCalData::R3BSofSciCalData()
     , fBeta_S8(0)
     , fTofNs_S2(-1)
     , fTofNs_S8(-1)
-{
-}
+{}
 R3BSofSciCalData::R3BSofSciCalData(UShort_t det, Double_t x, Double_t b2, Double_t b8, Double_t t2, Double_t t8)
     : fDetector(det)
     , fPosMm(x)
@@ -17,8 +16,7 @@ R3BSofSciCalData::R3BSofSciCalData(UShort_t det, Double_t x, Double_t b2, Double
     , fBeta_S8(b8)
     , fTofNs_S2(t2)
     , fTofNs_S8(t8)
-{
-}
+{}
 
 // Destructor
 R3BSofSciCalData::~R3BSofSciCalData() {}

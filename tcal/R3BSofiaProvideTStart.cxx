@@ -11,13 +11,13 @@
  * or submit itself to any jurisdiction.                                      *
  ******************************************************************************/
 
+#include "R3BSofiaProvideTStart.h"
+
 #include "FairRootManager.h"
 #include "FairRuntimeDb.h"
-#include "R3BLogger.h"
-
 #include "R3BEventHeader.h"
+#include "R3BLogger.h"
 #include "R3BSofSciRawTofPar.h"
-#include "R3BSofiaProvideTStart.h"
 
 R3BSofiaProvideTStart::R3BSofiaProvideTStart()
     : FairTask("R3BSofiaProvideTStart", 0)
@@ -25,15 +25,13 @@ R3BSofiaProvideTStart::R3BSofiaProvideTStart()
     , fRawTofPar(NULL)
     , fStartId(1)
     , fEventHeader(nullptr)
-{
-}
+{}
 
 void R3BSofiaProvideTStart::SetParContainers()
 {
     fRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
-    if (!fRawTofPar)
-    {
-        R3BLOG(ERROR, "SofSciRawTofPar-Container not found.");
+    if (!fRawTofPar) {
+        R3BLOG(error, "SofSciRawTofPar-Container not found.");
         return;
     }
 }
@@ -50,16 +48,14 @@ InitStatus R3BSofiaProvideTStart::Init()
     fSofSciCalData.Init();
 
     auto ioman = FairRootManager::Instance();
-    if (ioman == nullptr)
-    {
+    if (ioman == nullptr) {
         throw std::runtime_error("R3BSofiaProvideTStart: No FairRootManager");
     }
 
     fEventHeader = (R3BEventHeader*)ioman->GetObject("EventHeader.");
-    if (fEventHeader == nullptr)
-    {
+    if (fEventHeader == nullptr) {
         fEventHeader = (R3BEventHeader*)ioman->GetObject("R3BEventHeader");
-        R3BLOG(WARNING, "R3BEventHeader was found instead of EventHeader.");
+        R3BLOG(warn, "R3BEventHeader was found instead of EventHeader.");
     }
     SetParameter();
 
@@ -79,31 +75,24 @@ Double_t R3BSofiaProvideTStart::GetTStart() const
 {
     const auto sofsci = fSofSciCalData.Retrieve();
 
-    if (sofsci.empty())
-    {
+    if (sofsci.empty()) {
         return std::numeric_limits<Double_t>::quiet_NaN();
     }
 
     Double_t ts = 0.;
     Int_t ns = 0;
-    for (const auto& sof : sofsci)
-    {
-        if (sof->GetDetector() == fStartId)
-        {
-            if (sof->GetPmt() == 1 || sof->GetPmt() == 2)
-            {
+    for (const auto& sof : sofsci) {
+        if (sof->GetDetector() == fStartId) {
+            if (sof->GetPmt() == 1 || sof->GetPmt() == 2) {
                 ts = ts + sof->GetRawTimeNs();
                 ns++;
             }
         }
     }
 
-    if (ns == 2)
-    {
+    if (ns == 2) {
         return ts / 2.;
-    }
-    else
-    {
+    } else {
         return std::numeric_limits<Double_t>::quiet_NaN();
     }
 }

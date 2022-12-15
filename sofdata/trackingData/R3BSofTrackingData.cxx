@@ -14,8 +14,7 @@ R3BSofTrackingData::R3BSofTrackingData()
     , fLength(0.)
     , fBrho(0.)
     , fPaddle(0)
-{
-}
+{}
 
 //------------------------------
 
@@ -31,7 +30,6 @@ R3BSofTrackingData::R3BSofTrackingData(Double_t z,
     , fLength(length)
     , fBrho(brho)
     , fPaddle(paddle)
-{
-}
+{}
 
 ClassImp(R3BSofTrackingData)

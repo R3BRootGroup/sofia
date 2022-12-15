@@ -15,8 +15,7 @@ R3BSofTrimHitData::R3BSofTrimHitData()
     , fEnergyTheta(0.)
     , fEnergyDT(0.)
     , fZcharge(0.)
-{
-}
+{}
 // -------------------------------------------------------------------------
 
 // -----   Standard constructors   ------------------------------------------
@@ -30,8 +29,7 @@ R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID)
     , fEnergyTheta(0.)
     , fEnergyDT(0.)
     , fZcharge(0.)
-{
-}
+{}
 
 R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID,
                                      Float_t e1,
@@ -51,8 +49,7 @@ R3BSofTrimHitData::R3BSofTrimHitData(Int_t secID,
     , fEnergyTheta(Etheta)
     , fEnergyDT(Edt)
     , fZcharge(Z)
-{
-}
+{}
 // -------------------------------------------------------------------------
 
 ClassImp(R3BSofTrimHitData)

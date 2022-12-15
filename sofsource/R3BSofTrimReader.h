@@ -3,6 +3,7 @@
 
 #include "R3BReader.h"
 #include "TClonesArray.h"
+
 #include <Rtypes.h>
 
 // section 1 : FIRST SECTION ALONG Z AXIS
@@ -59,4 +60,4 @@ class R3BSofTrimReader : public R3BReader
     ClassDefOverride(R3BSofTrimReader, 0);
 };
 
-#endif // R3BSOFTRIMREADER_H
+#endif   // R3BSOFTRIMREADER_H

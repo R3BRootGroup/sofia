@@ -7,7 +7,6 @@
 
 #include "FairLogger.h"
 #include "FairParamList.h"
-
 #include "TArrayF.h"
 #include "TMath.h"
 #include "TString.h"
@@ -50,16 +49,15 @@ void R3BSofTofWHitPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofTofWHitPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofTofWHitPar::putParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofTofWHitPar::putParams() called";
+    if (!list) {
         return;
     }
 
     list->add("tofwHitSciPar", fNumSci);
     list->add("tofwAlignTofPar", fTofAlign);
     Int_t array_sci = fNumSci;
-    LOG(INFO) << "Nb Sci: " << array_sci;
+    LOG(info) << "Nb Sci: " << array_sci;
     fIn_use->Set(array_sci);
     list->add("tofwInUsePar", *fIn_use);
     fSci_posoffset->Set(array_sci);
@@ -73,50 +71,43 @@ void R3BSofTofWHitPar::putParams(FairParamList* list)
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofTofWHitPar::getParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofTofWHitPar::getParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofTofWHitPar::getParams() called";
+    if (!list) {
         return kFALSE;
     }
 
-    if (!list->fill("tofwHitSciPar", &fNumSci))
-    {
+    if (!list->fill("tofwHitSciPar", &fNumSci)) {
         LOG(FATAL) << "Could not initialize tofwInUsePar";
         return kFALSE;
     }
 
-    if (!list->fill("tofwAlignTofPar", &fTofAlign))
-    {
+    if (!list->fill("tofwAlignTofPar", &fTofAlign)) {
         LOG(FATAL) << "Could not initialize tofwAlignTofPar";
         return kFALSE;
     }
 
     Int_t array_sci = fNumSci;
-    LOG(INFO) << "Nb Sci: " << array_sci;
+    LOG(info) << "Nb Sci: " << array_sci;
     fIn_use->Set(array_sci);
-    if (!(list->fill("tofwInUsePar", fIn_use)))
-    {
+    if (!(list->fill("tofwInUsePar", fIn_use))) {
         LOG(FATAL) << "Could not initialize tofwInUsePar";
         return kFALSE;
     }
 
     fSci_posoffset->Set(array_sci);
-    if (!(list->fill("tofwPosOffsetPar", fSci_posoffset)))
-    {
+    if (!(list->fill("tofwPosOffsetPar", fSci_posoffset))) {
         LOG(FATAL) << "Could not initialize tofwPosOffsetPar";
         return kFALSE;
     }
 
     fSci_posslope->Set(array_sci);
-    if (!(list->fill("tofwPosSlopePar", fSci_posslope)))
-    {
+    if (!(list->fill("tofwPosSlopePar", fSci_posslope))) {
         LOG(FATAL) << "Could not initialize tofwPosSlopePar";
         return kFALSE;
     }
 
     fSci_tof->Set(array_sci);
-    if (!(list->fill("tofwTofPar", fSci_tof)))
-    {
+    if (!(list->fill("tofwTofPar", fSci_tof))) {
         LOG(FATAL) << "Could not initialize tofwTofPar";
         return kFALSE;
     }
@@ -127,14 +118,13 @@ Bool_t R3BSofTofWHitPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTofWHitPar::printParams()
 {
-    LOG(INFO) << "R3BSofTofWHitPar: detector Parameters";
-    LOG(INFO) << "R3BSofTofWHitPar: " << fNumSci << " sci in use: ";
-    LOG(INFO) << "R3BSofTofWHitPar: Tof alignment (in ns)" << fTofAlign;
+    LOG(info) << "R3BSofTofWHitPar: detector Parameters";
+    LOG(info) << "R3BSofTofWHitPar: " << fNumSci << " sci in use: ";
+    LOG(info) << "R3BSofTofWHitPar: Tof alignment (in ns)" << fTofAlign;
 
-    for (Int_t s = 0; s < fNumSci; s++)
-    {
+    for (Int_t s = 0; s < fNumSci; s++) {
 
-        LOG(INFO) << "Sci " << s + 1 << " in use " << fIn_use->GetAt(s) << ", Position: " << fSci_posoffset->GetAt(s)
+        LOG(info) << "Sci " << s + 1 << " in use " << fIn_use->GetAt(s) << ", Position: " << fSci_posoffset->GetAt(s)
                   << "," << fSci_posslope->GetAt(s) << ", Tof: " << fSci_tof->GetAt(s);
     }
 }

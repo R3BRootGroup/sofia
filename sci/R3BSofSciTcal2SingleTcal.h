@@ -7,11 +7,9 @@
 #define R3BSOFSCI_TCAL2SINGLETCAL
 
 #include "FairTask.h"
-
 #include "R3BSofSciRawPosPar.h"
 #include "R3BSofSciRawTofPar.h"
 #include "R3BSofSciSingleTcalData.h"
-
 #include "TClonesArray.h"
 #include "TMath.h"
 #include "TRandom.h"
@@ -43,7 +41,7 @@ class R3BSofSciTcal2SingleTcal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    Bool_t fOnline; // Don't store data for online
+    Bool_t fOnline;   // Don't store data for online
     UInt_t fNevent;
     TRandom rand;
 
@@ -62,4 +60,4 @@ class R3BSofSciTcal2SingleTcal : public FairTask
     ClassDef(R3BSofSciTcal2SingleTcal, 1)
 };
 
-#endif // R3BSOFSCI_TCAL2SINGLETCAL
+#endif   // R3BSOFSCI_TCAL2SINGLETCAL

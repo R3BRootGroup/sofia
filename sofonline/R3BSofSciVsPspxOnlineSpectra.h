@@ -10,6 +10,7 @@
 #include "TCanvas.h"
 #include "TH2F.h"
 #include "TMath.h"
+
 #include <array>
 #include <cstdlib>
 #include <fstream>
@@ -89,10 +90,10 @@ class R3BSofSciVsPspxOnlineSpectra : public FairTask
     void SetDispersionCC(Float_t dispersion_mm) { fDCC = dispersion_mm; }
 
   private:
-    TClonesArray* fSciSTcal; // Array with SofSci Tcal items.
-    TClonesArray* fSciCal;   // Array with SofSci Cal items.
-    TClonesArray* fPspxCal;  // Array with Pspx Cal items.
-    TClonesArray* fPspxHit;  // Array with Pspx Hit items.
+    TClonesArray* fSciSTcal;   // Array with SofSci Tcal items.
+    TClonesArray* fSciCal;     // Array with SofSci Cal items.
+    TClonesArray* fPspxCal;    // Array with Pspx Cal items.
+    TClonesArray* fPspxHit;    // Array with Pspx Hit items.
 
     Int_t fNbDetectors;
     Int_t fNbChannels;
@@ -104,17 +105,17 @@ class R3BSofSciVsPspxOnlineSpectra : public FairTask
     TArrayF* fTofS2max;
 
     // check for trigger should be done globablly (somewhere else)
-    R3BEventHeader* header; // Event header.
-    Int_t fNEvents;         // Event counter.
+    R3BEventHeader* header;   // Event header.
+    Int_t fNEvents;           // Event counter.
 
     // Canvas
-    TCanvas** c_PspxE_vs_SciPosCal; // [fNbDetectors]
+    TCanvas** c_PspxE_vs_SciPosCal;   // [fNbDetectors]
     TCanvas* c_PspxE_vs_BetaS2;
     TCanvas* c_PspxE_vs_AoQraw;
 
-    TH2F** fh2_PspxE_vs_SciPosCal; // [fNbDetectors]
-    TH2F** fh2_PspxE_vs_BetaS2;    //
-    TH2F** fh2_PspxE_vs_AoQraw;    //
+    TH2F** fh2_PspxE_vs_SciPosCal;   // [fNbDetectors]
+    TH2F** fh2_PspxE_vs_BetaS2;      //
+    TH2F** fh2_PspxE_vs_AoQraw;      //
 
   public:
     ClassDef(R3BSofSciVsPspxOnlineSpectra, 1)

@@ -9,27 +9,27 @@
  */
 
 #include "R3BSofTwimvsMusicOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BMusicHitData.h"
-#include "R3BTwimHitData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BMusicHitData.h"
+#include "R3BTwimHitData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -42,20 +42,18 @@ R3BSofTwimvsMusicOnlineSpectra::R3BSofTwimvsMusicOnlineSpectra()
     , fHitItemsMusic(NULL)
     , fHitItemsTwim(NULL)
     , fNEvents(0)
-{
-}
+{}
 
 R3BSofTwimvsMusicOnlineSpectra::R3BSofTwimvsMusicOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fHitItemsMusic(NULL)
     , fHitItemsTwim(NULL)
     , fNEvents(0)
-{
-}
+{}
 
 R3BSofTwimvsMusicOnlineSpectra::~R3BSofTwimvsMusicOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofTwimvsMusicOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofTwimvsMusicOnlineSpectra::Delete instance";
     if (fHitItemsMusic)
         delete fHitItemsMusic;
     if (fHitItemsTwim)
@@ -65,7 +63,7 @@ R3BSofTwimvsMusicOnlineSpectra::~R3BSofTwimvsMusicOnlineSpectra()
 InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofTwimvsMusicOnlineSpectra::Init ";
+    LOG(info) << "R3BSofTwimvsMusicOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -80,16 +78,15 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
 
     // get access to hit data of the MUSIC detector
     fHitItemsMusic = (TClonesArray*)mgr->GetObject("MusicHitData");
-    if (!fHitItemsMusic)
-    {
-        LOG(WARNING) << "R3BSofTwimvsMusicOnlineSpectra: MusicHitData not found";
+    if (!fHitItemsMusic) {
+        LOG(warn) << "R3BSofTwimvsMusicOnlineSpectra: MusicHitData not found";
         return kERROR;
     }
 
     // get access to hit data of the TWIM
     fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
     if (!fHitItemsTwim)
-        LOG(WARNING) << "R3BSofTwimvsMusicOnlineSpectra: TwimHitData not found";
+        LOG(warn) << "R3BSofTwimvsMusicOnlineSpectra: TwimHitData not found";
 
     // Create histograms for detectors
     char Name1[255];
@@ -142,8 +139,7 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
 
     // MAIN FOLDER-Twim-Music
     TFolder* mainfolTwim = new TFolder("TWIM_vs_MUSIC", "TWIM vs MUSIC info");
-    if (fHitItemsTwim && fHitItemsMusic)
-    {
+    if (fHitItemsTwim && fHitItemsMusic) {
         mainfolTwim->Add(c_E);
         mainfolTwim->Add(c_Z);
         mainfolTwim->Add(c_theta);
@@ -158,10 +154,9 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
 
 void R3BSofTwimvsMusicOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofTwimvsMusicOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofTwimvsMusicOnlineSpectra::Reset_Histo";
 
-    if (fHitItemsTwim && fHitItemsMusic)
-    {
+    if (fHitItemsTwim && fHitItemsMusic) {
         fh2_hit_e->Reset();
         fh2_hit_z->Reset();
         fh2_hit_theta->Reset();
@@ -175,30 +170,28 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BSofTwimvsMusicOnlineSpectra::Exec FairRootManager not found";
 
     // Fill hit data
-    if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fHitItemsMusic && fHitItemsMusic->GetEntriesFast() > 0)
-    {
+    if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fHitItemsMusic
+        && fHitItemsMusic->GetEntriesFast() > 0) {
         Float_t e1 = 0., e2 = 0., z1 = 0., z2 = 0., theta1 = 0., theta2 = 0.;
         // MUSIC
         Int_t nHits1 = fHitItemsMusic->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits1; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits1; ihit++) {
             R3BMusicHitData* hit = (R3BMusicHitData*)fHitItemsMusic->At(ihit);
             if (!hit)
                 continue;
             e1 = hit->GetEave();
             z1 = hit->GetZcharge();
-            theta1 = hit->GetTheta() * 1000.; // mrad
+            theta1 = hit->GetTheta() * 1000.;   // mrad
         }
         // TWIM
         Int_t nHits2 = fHitItemsTwim->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits2; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits2; ihit++) {
             R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
             e2 = hit->GetEave();
             z2 = hit->GetZcharge();
-            theta2 = hit->GetTheta() * 1000.; // mrad
+            theta2 = hit->GetTheta() * 1000.;   // mrad
         }
         // Fill histograms
         fh2_hit_e->Fill(TMath::Sqrt(e1), TMath::Sqrt(e2));
@@ -211,20 +204,17 @@ void R3BSofTwimvsMusicOnlineSpectra::Exec(Option_t* option)
 
 void R3BSofTwimvsMusicOnlineSpectra::FinishEvent()
 {
-    if (fHitItemsMusic)
-    {
+    if (fHitItemsMusic) {
         fHitItemsMusic->Clear();
     }
-    if (fHitItemsTwim)
-    {
+    if (fHitItemsTwim) {
         fHitItemsTwim->Clear();
     }
 }
 
 void R3BSofTwimvsMusicOnlineSpectra::FinishTask()
 {
-    if (fHitItemsTwim && fHitItemsMusic)
-    {
+    if (fHitItemsTwim && fHitItemsMusic) {
         fh2_hit_e->Write();
         fh2_hit_z->Write();
         fh2_hit_theta->Write();

@@ -2,11 +2,10 @@
 #define __R3BSofTrimDTOffsetPar_H__
 
 #include "FairTask.h"
-#include "TH1.h"
-
 #include "R3BSofTrimCalPar.h"
 #include "R3BTGeoPar.h"
 #include "TClonesArray.h"
+#include "TH1.h"
 
 class R3BEventHeader;
 
@@ -66,7 +65,7 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
   protected:
     Int_t fNumSections;
     Int_t fNumAnodes;
-    Int_t fMinStatistics; // minimum statistics to proceed to the calibration
+    Int_t fMinStatistics;   // minimum statistics to proceed to the calibration
 
     // Geometry for Mwpc0 and Mwpc1
     R3BTGeoPar* fMwpc0GeoPar;
@@ -94,4 +93,4 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     ClassDef(R3BSofTrimCalculateDriftTimeOffsetPar, 0);
 };
 
-#endif //__R3BSofTrimDTOffsetPar_H__
+#endif   //__R3BSofTrimDTOffsetPar_H__

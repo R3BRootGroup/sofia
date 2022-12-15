@@ -9,10 +9,9 @@
 #ifndef R3BSofSciPoint_H
 #define R3BSofSciPoint_H
 
+#include "FairMCPoint.h"
 #include "TObject.h"
 #include "TVector3.h"
-
-#include "FairMCPoint.h"
 
 class R3BSofSciPoint : public FairMCPoint
 {

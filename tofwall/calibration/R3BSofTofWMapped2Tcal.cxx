@@ -1,10 +1,10 @@
 
+#include "R3BSofTofWMapped2Tcal.h"
+
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRuntimeDb.h"
-
 #include "R3BSofTcalPar.h"
-#include "R3BSofTofWMapped2Tcal.h"
 #include "R3BSofTofWMappedData.h"
 #include "R3BSofTofWTcalData.h"
 
@@ -16,8 +16,7 @@ R3BSofTofWMapped2Tcal::R3BSofTofWMapped2Tcal()
     , fNumTcal(0)
     , fOnline(kFALSE)
     , fNevent(0)
-{
-}
+{}
 
 R3BSofTofWMapped2Tcal::~R3BSofTofWMapped2Tcal()
 {
@@ -29,24 +28,21 @@ R3BSofTofWMapped2Tcal::~R3BSofTofWMapped2Tcal()
 
 InitStatus R3BSofTofWMapped2Tcal::Init()
 {
-    LOG(INFO) << "R3BSofTofWMapped2Tcal::Init()";
+    LOG(info) << "R3BSofTofWMapped2Tcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2Tcal::Init() Couldn't instance the FairRootManager";
+    if (!rm) {
+        LOG(error) << "R3BSofTofWMapped2Tcal::Init() Couldn't instance the FairRootManager";
         return kFATAL;
     }
 
     // scintillator at S2 and cave C
     fMapped = (TClonesArray*)rm->GetObject("SofTofWMappedData");
-    if (!fMapped)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2Tcal::Init() Couldn't get handle on SofTofWMappedData container";
+    if (!fMapped) {
+        LOG(error) << "R3BSofTofWMapped2Tcal::Init() Couldn't get handle on SofTofWMappedData container";
         return kFATAL;
-    }
-    else
-        LOG(INFO) << "R3BSofTofWMapped2Tcal::Init() SofTofWMappedData items found";
+    } else
+        LOG(info) << "R3BSofTofWMapped2Tcal::Init() SofTofWMappedData items found";
 
     // Register output array in tree
     fTcal = new TClonesArray("R3BSofTofWTcalData", 10);
@@ -58,19 +54,16 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
 void R3BSofTofWMapped2Tcal::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
-        LOG(ERROR) << "FairRuntimeDb not opened!";
+    if (!rtdb) {
+        LOG(error) << "FairRuntimeDb not opened!";
     }
 
     fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofTofWTcalPar");
-    if (!fTcalPar)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2Tcal::SetParContainers() : Could not get access to SofTofWTcalPar-Container.";
+    if (!fTcalPar) {
+        LOG(error) << "R3BSofTofWMapped2Tcal::SetParContainers() : Could not get access to SofTofWTcalPar-Container.";
         return;
-    }
-    else
-        LOG(INFO) << "R3BSofTofWMapped2Tcal::SetParContainers() : SofTofWTcalPar-Container found with "
+    } else
+        LOG(info) << "R3BSofTofWMapped2Tcal::SetParContainers() : SofTofWTcalPar-Container found with "
                   << fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
     return;
 }
@@ -93,8 +86,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
     Double_t tns = 0.0;
 
     Int_t nHitsPerEvent_SofTofW = fMapped->GetEntriesFast();
-    for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
-    {
+    for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++) {
         R3BSofTofWMappedData* hit = (R3BSofTofWMappedData*)fMapped->At(ihit);
         if (!hit)
             continue;
@@ -103,15 +95,13 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
         iTf = hit->GetTimeFine();
         iTc = hit->GetTimeCoarse();
 
-        if ((iDet < 1) || (iDet > fTcalPar->GetNumDetectors()))
-        {
-            LOG(INFO) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iDet = " << iDet
+        if ((iDet < 1) || (iDet > fTcalPar->GetNumDetectors())) {
+            LOG(info) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iDet = " << iDet
                       << "is out of range, item skipped ";
             continue;
         }
-        if ((iCh < 1) || (iCh > fTcalPar->GetNumChannels()))
-        {
-            LOG(INFO) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iCh = " << iCh
+        if ((iCh < 1) || (iCh > fTcalPar->GetNumChannels())) {
+            LOG(info) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iCh = " << iCh
                       << "is out of range, item skipped ";
             continue;
         }
@@ -125,7 +115,7 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTofWMapped2Tcal::Reset()
 {
-    LOG(DEBUG) << "Clearing TcalData Structure";
+    LOG(debug) << "Clearing TcalData Structure";
     if (fTcal)
         fTcal->Clear();
 }

@@ -6,7 +6,7 @@
 // -----------------------------------------------------------------
 
 #include "R3BSofFrsAnalysis.h"
-Double_t const c = 29.9792458; // Light velocity
+Double_t const c = 29.9792458;   // Light velocity
 
 // R3BSofFrsAnalysis: Default Constructor --------------------------
 R3BSofFrsAnalysis::R3BSofFrsAnalysis()
@@ -24,8 +24,7 @@ R3BSofFrsAnalysis::R3BSofFrsAnalysis()
     , fIdS2(2)
     , fIdS8(3)
     , fIdCave(4)
-{
-}
+{}
 
 // R3BSofFrsAnalysisPar: Standard Constructor --------------------------
 R3BSofFrsAnalysis::R3BSofFrsAnalysis(const TString& name, Int_t iVerbose)
@@ -43,13 +42,12 @@ R3BSofFrsAnalysis::R3BSofFrsAnalysis(const TString& name, Int_t iVerbose)
     , fIdS2(2)
     , fIdS8(3)
     , fIdCave(4)
-{
-}
+{}
 
 // Virtual R3BSofFrsAnalysis: Destructor
 R3BSofFrsAnalysis::~R3BSofFrsAnalysis()
 {
-    R3BLOG(INFO, "R3BSofFrsAnalysis: Delete instance");
+    R3BLOG(info, "R3BSofFrsAnalysis: Delete instance");
     // Kept Mwpc and SciHit can be used for later analysis if needed
     /*if (fMwpcHitDataCA)
     {
@@ -60,49 +58,39 @@ R3BSofFrsAnalysis::~R3BSofFrsAnalysis()
         delete fSciHitDataCA;
     }
     */
-    if (fSingleTcalItemsSci)
-    {
+    if (fSingleTcalItemsSci) {
         delete fSingleTcalItemsSci;
     }
-    if (fMusicHitDataCA)
-    {
+    if (fMusicHitDataCA) {
         delete fMusicHitDataCA;
     }
-    if (fFrsDataCA)
-    {
+    if (fFrsDataCA) {
         delete fFrsDataCA;
     }
 }
 
 void R3BSofFrsAnalysis::SetParContainers()
 {
-    R3BLOG(INFO, "R3BSofFrsAnalysis::SetParContainers()");
+    R3BLOG(info, "R3BSofFrsAnalysis::SetParContainers()");
     // Parameter Container
     // Reading soffrsAnaPar from FairRuntimeDb
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
-        R3BLOG(ERROR, "FairRuntimeDb not opened!");
+    if (!rtdb) {
+        R3BLOG(error, "FairRuntimeDb not opened!");
     }
 
     fFrs_Par = (R3BSofFrsAnaPar*)rtdb->getContainer("soffrsAnaPar");
-    if (!fFrs_Par)
-    {
-        R3BLOG(ERROR, "R3BSofFrsAnalysisPar:: Couldn't get handle on soffrsAnaPar container");
-    }
-    else
-    {
-        R3BLOG(INFO, "R3BSofFrsAnalysisPar:: soffrsAnaPar container open");
+    if (!fFrs_Par) {
+        R3BLOG(error, "R3BSofFrsAnalysisPar:: Couldn't get handle on soffrsAnaPar container");
+    } else {
+        R3BLOG(info, "R3BSofFrsAnalysisPar:: soffrsAnaPar container open");
     }
 
     fCal_Par = (R3BMusicHitPar*)rtdb->getContainer("musicHitPar");
-    if (!fCal_Par)
-    {
-        R3BLOG(ERROR, "R3BSofFrsAnalysisPar::Init() Couldn't get handle on musicHitPar container");
-    }
-    else
-    {
-        R3BLOG(INFO, "R3BSofFrsAnalysisPar:: musicHitPar container open");
+    if (!fCal_Par) {
+        R3BLOG(error, "R3BSofFrsAnalysisPar::Init() Couldn't get handle on musicHitPar container");
+    } else {
+        R3BLOG(info, "R3BSofFrsAnalysisPar:: musicHitPar container open");
     }
 }
 
@@ -116,8 +104,7 @@ void R3BSofFrsAnalysis::SetParameter()
     fPathLength = new Double_t[fNbTof];
     fTofOffset = new Double_t[fNbTof];
     fUseS2x = new Int_t[fNbTof];
-    for (Int_t i = 0; i < fNbTof; i++)
-    {
+    for (Int_t i = 0; i < fNbTof; i++) {
         fStaId[i] = fFrs_Par->GetStaSciId(i);
         fStoId[i] = fFrs_Par->GetStoSciId(i);
         fPathLength[i] = fFrs_Par->GetPathLength(i);
@@ -128,30 +115,25 @@ void R3BSofFrsAnalysis::SetParameter()
     fS2SciCoef1 = fFrs_Par->GetS2PosCoef();
     fNumBrhoCorrPar = fFrs_Par->GetNumBrhoCorrPar();
     fBrhoCorrPar = new Float_t[fNumBrhoCorrPar];
-    for (Int_t i = 0; i < fNumBrhoCorrPar; i++)
-    {
+    for (Int_t i = 0; i < fNumBrhoCorrPar; i++) {
         fBrhoCorrPar[i] = fFrs_Par->GetBrhoCorrPar(i);
     }
     //--- Parameter Container ---
-    fNumMusicParams = fCal_Par->GetNumParZFit(); // Number of Parameters
-    R3BLOG(INFO, "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit: Nb parameters for charge-Z: " << (Int_t)fNumMusicParams);
+    fNumMusicParams = fCal_Par->GetNumParZFit();   // Number of Parameters
+    R3BLOG(info, "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit: Nb parameters for charge-Z: " << (Int_t)fNumMusicParams);
     CalZParams = new TArrayF();
     CalZParams->Set(fNumMusicParams);
-    CalZParams = fCal_Par->GetZHitPar(); // Array with the Cal parameters
+    CalZParams = fCal_Par->GetZHitPar();   // Array with the Cal parameters
     // Parameters detector
-    if (fNumMusicParams == 2)
-    {
+    if (fNumMusicParams == 2) {
         fZ0 = CalZParams->GetAt(0);
         fZ1 = CalZParams->GetAt(1);
-    }
-    else if (fNumMusicParams == 3)
-    {
+    } else if (fNumMusicParams == 3) {
         fZ0 = CalZParams->GetAt(0);
         fZ1 = CalZParams->GetAt(1);
         fZ2 = CalZParams->GetAt(2);
-    }
-    else
-        R3BLOG(INFO,
+    } else
+        R3BLOG(info,
                "R3BSofFrsAnalysisPar:: R3BMusicCal2Hit parameters for charge-Z cannot be used here, number of "
                "parameters: "
                    << fNumMusicParams);
@@ -160,12 +142,11 @@ void R3BSofFrsAnalysis::SetParameter()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofFrsAnalysis::Init()
 {
-    R3BLOG(INFO, "R3BSofFrsAnalysis: Init FRS analysis from S2 to Cave-C");
+    R3BLOG(info, "R3BSofFrsAnalysis: Init FRS analysis from S2 to Cave-C");
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager)
-    {
+    if (!rootManager) {
         return kFATAL;
     }
     /*
@@ -176,8 +157,7 @@ InitStatus R3BSofFrsAnalysis::Init()
     }
     */
     fMusicHitDataCA = (TClonesArray*)rootManager->GetObject("MusicHitData");
-    if (!fMusicHitDataCA)
-    {
+    if (!fMusicHitDataCA) {
         return kFATAL;
     }
     /*
@@ -188,19 +168,15 @@ InitStatus R3BSofFrsAnalysis::Init()
     }
     */
     fSingleTcalItemsSci = (TClonesArray*)rootManager->GetObject("SofSciSingleTcalData");
-    if (!fSingleTcalItemsSci)
-    {
+    if (!fSingleTcalItemsSci) {
         return kFATAL;
     }
 
     // OUTPUT DATA
     fFrsDataCA = new TClonesArray("R3BFrsData", 5);
-    if (!fOnline)
-    {
+    if (!fOnline) {
         rootManager->Register("FrsData", "Analysis FRS", fFrsDataCA, kTRUE);
-    }
-    else
-    {
+    } else {
         rootManager->Register("FrsData", "Analysis FRS", fFrsDataCA, kFALSE);
     }
     // ReInit();
@@ -208,7 +184,7 @@ InitStatus R3BSofFrsAnalysis::Init()
 
     xpos = new Double_t[fNbSci];
 
-    R3BLOG(INFO, "R3BSofFrsAnalysis::Init() done");
+    R3BLOG(info, "R3BSofFrsAnalysis::Init() done");
     return kSUCCESS;
 }
 
@@ -226,7 +202,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     Int_t nHitMusic = fMusicHitDataCA->GetEntries();
     Int_t nHitSci = fSingleTcalItemsSci->GetEntries();
     // Int_t nHitMwpc = fMwpcHitDataCA->GetEntries();
-    // LOG(DEBUG) << nHitMusic << " " << nHitSci; //<< " " << nHitMwpc ;
+    // LOG(debug) << nHitMusic << " " << nHitSci; //<< " " << nHitMwpc ;
     if (nHitSci < 1 || nHitMusic < 1)
         return;
 
@@ -234,8 +210,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     // --- MUSIC Hit data --- //
     // --- -------------- --- //
     R3BMusicHitData* hitmusic;
-    for (Int_t ihit = 0; ihit < nHitMusic; ihit++)
-    {
+    for (Int_t ihit = 0; ihit < nHitMusic; ihit++) {
         // In case the MusicHitData container has several "realistic" values,
         // it's not possible to distinguish which is the "correct" event. Thus skipping events having several hits.
         if (MusicE > 0)
@@ -245,7 +220,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
             continue;
         MusicE = hitmusic->GetEave();
     }
-    // LOG(DEBUG) << nHitMusic << " " << nHitSci << " " << MusicE;
+    // LOG(debug) << nHitMusic << " " << nHitSci << " " << MusicE;
     if (!(MusicE > 0))
         return;
 
@@ -253,25 +228,19 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
     // --- loop over sci single tcal data --- //
     // --- ------------------------------ --- //
     Int_t d = -1;
-    for (Int_t ihit = 0; ihit < nHitSci; ihit++)
-    {
+    for (Int_t ihit = 0; ihit < nHitSci; ihit++) {
         R3BSofSciSingleTcalData* hitsingletcal = (R3BSofSciSingleTcalData*)fSingleTcalItemsSci->At(ihit);
         if (!hitsingletcal)
             continue;
         d = hitsingletcal->GetDetector() - 1;
-        if (d > -1 && d < fNbSci)
-        {
-            if (d != fIdS2 - 1)
-            {
+        if (d > -1 && d < fNbSci) {
+            if (d != fIdS2 - 1) {
                 xpos[d] = hitsingletcal->GetRawPosNs();
-            }
-            else
-            {
+            } else {
                 xpos[d] = hitsingletcal->GetRawPosNs() * fS2SciCoef1 + fS2SciCoef0;
             }
         }
-        if (fIdS2 > 0)
-        {
+        if (fIdS2 > 0) {
             if (d == fIdS8 - 1 && fIdS8 > 0)
                 Tof_wTref_S2_S8 = hitsingletcal->GetRawTofNs_FromS2();
             if (d == fIdCave - 1)
@@ -279,76 +248,58 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
         }
         if (d == fIdCave - 1 && fIdS8 > 0)
             Tof_wTref_S8_Cave = hitsingletcal->GetRawTofNs_FromS8();
-    } // Loop over sci hits
+    }   // Loop over sci hits
     //
     std::vector<Double_t> beta;
     Int_t i_s2cave = -1, i_s8cave = -1, i_s2s8 = -1;
-    for (Int_t i = 0; i < fNbTof; i++)
-    {
+    for (Int_t i = 0; i < fNbTof; i++) {
         Double_t tof = NAN;
-        if (fStaId[i] == fIdS2 && fStoId[i] == fIdCave)
-        {
+        if (fStaId[i] == fIdS2 && fStoId[i] == fIdCave) {
             tof = Tof_wTref_S2_Cave;
             i_s2cave = i;
-        }
-        else if (fStaId[i] == fIdS2 && fStoId[i] == fIdS8)
-        {
+        } else if (fStaId[i] == fIdS2 && fStoId[i] == fIdS8) {
             tof = Tof_wTref_S2_S8;
             i_s2s8 = i;
-        }
-        else if (fStaId[i] == fIdS8 && fStoId[i] == fIdCave)
-        {
+        } else if (fStaId[i] == fIdS8 && fStoId[i] == fIdCave) {
             tof = Tof_wTref_S8_Cave;
             i_s8cave = i;
         }
-        if (isnan(tof) || tof < 0)
-        {
+        if (isnan(tof) || tof < 0) {
             beta.push_back(NAN);
-        }
-        else
-        {
+        } else {
             beta.push_back(fPathLength[i] / (tof + fTofOffset[i]));
         }
     }
     // Velocity correlation conditions
-    if (fBetaCorr && i_s2cave >= 0 && i_s8cave >= 0 && beta.at(i_s2cave) > 0. && beta.at(i_s8cave) > 0. &&
-        TMath::Abs(beta.at(i_s2cave) - beta.at(i_s8cave)) < 0.01)
-    {
+    if (fBetaCorr && i_s2cave >= 0 && i_s8cave >= 0 && beta.at(i_s2cave) > 0. && beta.at(i_s8cave) > 0.
+        && TMath::Abs(beta.at(i_s2cave) - beta.at(i_s8cave)) < 0.01) {
         beta.push_back(beta.at(i_s2cave));
-    }
-    else
-    {
+    } else {
         beta.push_back(NAN);
     }
     //
     // Under modification
-    if (beta.size() == 0)
-    {
+    if (beta.size() == 0) {
         return;
     }
     const int betaindex = beta.size() - 1;
-    int index_tof[4] = { betaindex, i_s2cave, i_s8cave, i_s2s8 };
-    for (Int_t ii = 0; ii < TMath::Min(4, betaindex + 1); ii++) // starting from the good one
+    int index_tof[4] = {betaindex, i_s2cave, i_s8cave, i_s2s8};
+    for (Int_t ii = 0; ii < TMath::Min(4, betaindex + 1); ii++)   // starting from the good one
     {
         Int_t i = 0;
-        if (index_tof[ii] >= 0)
-        {
+        if (index_tof[ii] >= 0) {
             i = index_tof[ii];
-        }
-        else
-        {
+        } else {
             continue;
         }
-        if (!(beta.at(i) > 0.))
-        {
+        if (!(beta.at(i) > 0.)) {
             if (ii == 0)
                 AddData(0, 0);
             continue;
         }
         Double_t gamma = 1. / (TMath::Sqrt(1. - beta.at(i) * beta.at(i)));
         Double_t correction = 1.;
-        if (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0)
-        {
+        if (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0) {
             for (Int_t j = 0; j < fNumBrhoCorrPar; j++)
                 correction -= pow(xpos[fIdS2 - 1], j) * fBrhoCorrPar[j];
         }
@@ -356,13 +307,10 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
         Double_t aoq = brho / (3.10716 * gamma * beta.at(i));
         MusicZ = fZ0 + fZ1 * TMath::Sqrt(MusicE) * beta.at(i) + fZ2 * MusicE * beta.at(i) * beta.at(i);
         //
-        if (ii == 0)
-        {
+        if (ii == 0) {
             AddData(0, 0, MusicZ, aoq, beta.at(i), brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
-            hitmusic->SetZcharge(MusicZ); // Set velocity corrected Z
-        }
-        else
-        {
+            hitmusic->SetZcharge(MusicZ);   // Set velocity corrected Z
+        } else {
             AddData(fStaId[i], fStoId[i], MusicZ, aoq, beta.at(i), brho, xpos[fIdS2 - 1], xpos[fIdCave - 1]);
         }
     }
@@ -375,16 +323,14 @@ void R3BSofFrsAnalysis::Finish() {}
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofFrsAnalysis::Reset()
 {
-    LOG(DEBUG) << "FrsAnalysis Reset()";
-    if (fSingleTcalItemsSci)
-    {
+    LOG(debug) << "FrsAnalysis Reset()";
+    if (fSingleTcalItemsSci) {
         fSingleTcalItemsSci->Clear();
     }
-    if (fMusicHitDataCA)
-    {
+    if (fMusicHitDataCA) {
         fMusicHitDataCA->Clear();
     }
-    LOG(DEBUG) << "Clearing FrsData Structure";
+    LOG(debug) << "Clearing FrsData Structure";
     if (fFrsDataCA)
         fFrsDataCA->Clear();
 

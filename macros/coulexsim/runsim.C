@@ -191,7 +191,7 @@ void runsim(Int_t nEvents = 0)
     run->SetStoreTraj(storeTrajectories);
 
     //FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();

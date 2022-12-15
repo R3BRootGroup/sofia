@@ -20,8 +20,7 @@ R3BSofATPoint::R3BSofATPoint()
     , fPx_out(0.)
     , fPy_out(0.)
     , fPz_out(0.)
-{
-}
+{}
 
 // -----   Standard constructor   ------------------------------------------
 R3BSofATPoint::R3BSofATPoint(Int_t trackID,
@@ -43,8 +42,7 @@ R3BSofATPoint::R3BSofATPoint(Int_t trackID,
     , fPx_out(momOut.Px())
     , fPy_out(momOut.Py())
     , fPz_out(momOut.Pz())
-{
-}
+{}
 
 R3BSofATPoint::R3BSofATPoint(const R3BSofATPoint& right)
     : FairMCPoint(right)
@@ -54,8 +52,7 @@ R3BSofATPoint::R3BSofATPoint(const R3BSofATPoint& right)
     , fPx_out(right.fPx_out)
     , fPy_out(right.fPy_out)
     , fPz_out(right.fPz_out)
-{
-}
+{}
 
 // -----   Destructor   ----------------------------------------------------
 R3BSofATPoint::~R3BSofATPoint() {}

@@ -1,10 +1,11 @@
 #ifndef __R3BSofSciCalTofPar_H__
 #define __R3BSofSciCalTofPar_H__
 
-#include "FairParGenericSet.h" // for FairParGenericSet
+#include "FairParGenericSet.h"   // for FairParGenericSet
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
+
 #include <TObjString.h>
 
 class FairParamList;
@@ -60,20 +61,20 @@ class R3BSofSciCalTofPar : public FairParGenericSet
     void SetFlightLength_FromS8(Double_t length, UInt_t rank) { fFlightLength_FromS8->AddAt(length, rank); }
 
   private:
-    Int_t fNumDets; // number of detectors
+    Int_t fNumDets;   // number of detectors
     Int_t fDetIdS2;
     Int_t fDetIdS8;
     Int_t fDetIdCaveC;
-    TArrayF* fTof2InvV_FromS2;     // two parameter per Tof
-    TArrayF* fTof2InvV_FromS8;     // two parameter per Tof
-    TArrayF* fFlightLength_FromS2; // one parameter per detector
-    TArrayF* fFlightLength_FromS8; // one parameter per detector
+    TArrayF* fTof2InvV_FromS2;       // two parameter per Tof
+    TArrayF* fTof2InvV_FromS8;       // two parameter per Tof
+    TArrayF* fFlightLength_FromS2;   // one parameter per detector
+    TArrayF* fFlightLength_FromS8;   // one parameter per detector
 
     const R3BSofSciCalTofPar& operator=(const R3BSofSciCalTofPar&); /*< an assignment operator>*/
 
-    R3BSofSciCalTofPar(const R3BSofSciCalTofPar&); // a copy constructor
+    R3BSofSciCalTofPar(const R3BSofSciCalTofPar&);   // a copy constructor
 
     ClassDef(R3BSofSciCalTofPar, 1);
 };
 
-#endif //__R3BSofSciCalTofPar_H__
+#endif   //__R3BSofSciCalTofPar_H__

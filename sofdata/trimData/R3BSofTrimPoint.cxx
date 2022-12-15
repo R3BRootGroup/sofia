@@ -17,8 +17,7 @@ R3BSofTrimPoint::R3BSofTrimPoint()
     , fPz_out(0.)
     , fZF(0)
     , fAF(0)
-{
-}
+{}
 
 // -----   Standard constructor   ------------------------------------------
 R3BSofTrimPoint::R3BSofTrimPoint(Int_t trackID,

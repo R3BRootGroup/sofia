@@ -53,16 +53,16 @@ class R3BSofSciMapped2TcalPar : public FairTask
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   private:
-    UShort_t fNumSci;            // Number of detectors (=1 if cave C only, 2 or more if FRS in used)
-    UShort_t fNumChannels;       // Number of channels  (=2 if cave C only, 3 if FRS in used: LEFT, RIGHT, Tref)
-    Int_t fNumTcalParsPerSignal; // =1000 for each signal
-    Int_t fMinStatistics;        // Minimum statistics to proceed to the calibration
+    UShort_t fNumSci;              // Number of detectors (=1 if cave C only, 2 or more if FRS in used)
+    UShort_t fNumChannels;         // Number of channels  (=2 if cave C only, 3 if FRS in used: LEFT, RIGHT, Tref)
+    Int_t fNumTcalParsPerSignal;   // =1000 for each signal
+    Int_t fMinStatistics;          // Minimum statistics to proceed to the calibration
 
     // calibration parameters
-    R3BSofTcalPar* fTcalPar; // Tcal Parameters
+    R3BSofTcalPar* fTcalPar;   // Tcal Parameters
 
     // input data
-    TClonesArray* fMapped; // Array with mapped data from scintillator detectors
+    TClonesArray* fMapped;   // Array with mapped data from scintillator detectors
 
     // histograms
     TH1F** fh_TimeFineBin;
@@ -73,4 +73,4 @@ class R3BSofSciMapped2TcalPar : public FairTask
     ClassDef(R3BSofSciMapped2TcalPar, 0);
 };
 
-#endif //__R3BSOFSCIMAPPED2TCALPAR_H__
+#endif   //__R3BSOFSCIMAPPED2TCALPAR_H__

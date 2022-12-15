@@ -63,11 +63,11 @@ class R3BSofSciTcal2RawPosPar : public FairTask
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   protected:
-    Int_t fNumDets;          // number of detectors 2 if FRS, 1 if Cave C only
-    Int_t fNumPmts;          // number of channels at the Tcal level
-    Int_t fNumSignals;       // number of signal = fNumDets if RawPos used
-    Int_t fNumParsPerSignal; // =2 for each signal
-    Int_t fMinStatistics;    // minimum statistics to proceed to the calibration
+    Int_t fNumDets;            // number of detectors 2 if FRS, 1 if Cave C only
+    Int_t fNumPmts;            // number of channels at the Tcal level
+    Int_t fNumSignals;         // number of signal = fNumDets if RawPos used
+    Int_t fNumParsPerSignal;   // =2 for each signal
+    Int_t fMinStatistics;      // minimum statistics to proceed to the calibration
 
     // calibration parameters
     R3BSofSciRawPosPar* fRawPosPar;
@@ -86,4 +86,4 @@ class R3BSofSciTcal2RawPosPar : public FairTask
     ClassDef(R3BSofSciTcal2RawPosPar, 0);
 };
 
-#endif //__R3BSOFSCITCAL2RAWPOSPAR_H__
+#endif   //__R3BSOFSCITCAL2RAWPOSPAR_H__

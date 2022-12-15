@@ -358,7 +358,7 @@ void status_online()
 
     // Initialize -------------------------------------------
     run->Init();
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // Informations about portnumber and main data stream.
     cout<<"\n\n"<<endl;

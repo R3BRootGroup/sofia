@@ -51,8 +51,8 @@ class R3BSofTofWCalData : public FairMultiLinkedData
     virtual void Print(const Option_t* opt) const;
 
   protected:
-    UChar_t fDetector; // 1..28
-    UShort_t fPmt;     // needed at this level?
+    UChar_t fDetector;   // 1..28
+    UShort_t fPmt;       // needed at this level?
     Double_t fTime;
     Float_t fEnergy;
 

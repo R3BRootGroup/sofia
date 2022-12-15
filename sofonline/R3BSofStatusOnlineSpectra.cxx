@@ -9,6 +9,12 @@
  */
 
 #include "R3BSofStatusOnlineSpectra.h"
+
+#include "FairLogger.h"
+#include "FairRootManager.h"
+#include "FairRunAna.h"
+#include "FairRunOnline.h"
+#include "FairRuntimeDb.h"
 #include "R3BAmsMappedData.h"
 #include "R3BCalifaMappedData.h"
 #include "R3BEventHeader.h"
@@ -17,26 +23,18 @@
 #include "R3BSofTrimMappedData.h"
 #include "R3BTwimMappedData.h"
 #include "R3BWRData.h"
-#include "THttpServer.h"
-
-#include "FairLogger.h"
-#include "FairRootManager.h"
-#include "FairRunAna.h"
-#include "FairRunOnline.h"
-#include "FairRuntimeDb.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "TLegend.h"
-#include "TLegendEntry.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -66,8 +64,7 @@ R3BSofStatusOnlineSpectra::R3BSofStatusOnlineSpectra()
     , fMwpc2MappedDataCA(NULL)
     , fMwpc3MappedDataCA(NULL)
     , fTofWMappedDataCA(NULL)
-{
-}
+{}
 
 R3BSofStatusOnlineSpectra::R3BSofStatusOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
@@ -89,12 +86,11 @@ R3BSofStatusOnlineSpectra::R3BSofStatusOnlineSpectra(const TString& name, Int_t 
     , fMwpc2MappedDataCA(NULL)
     , fMwpc3MappedDataCA(NULL)
     , fTofWMappedDataCA(NULL)
-{
-}
+{}
 
 R3BSofStatusOnlineSpectra::~R3BSofStatusOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofStatusOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofStatusOnlineSpectra::Delete instance";
     if (fWRItemsMaster)
         delete fWRItemsMaster;
     if (fWRItemsSofia)
@@ -132,7 +128,7 @@ R3BSofStatusOnlineSpectra::~R3BSofStatusOnlineSpectra()
 InitStatus R3BSofStatusOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofStatusOnlineSpectra::Init ";
+    LOG(info) << "R3BSofStatusOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -149,103 +145,87 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
 
     // get access to WR-Master data
     fWRItemsMaster = (TClonesArray*)mgr->GetObject("WRMasterData");
-    if (!fWRItemsMaster)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRMasterData not found";
+    if (!fWRItemsMaster) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::WRMasterData not found";
     }
 
     // get access to WR-Sofia data
     fWRItemsSofia = (TClonesArray*)mgr->GetObject("SofWRData");
-    if (!fWRItemsSofia)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::SofWRData not found";
+    if (!fWRItemsSofia) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::SofWRData not found";
     }
 
     // get access to WR-Ams data
     fWRItemsAms = (TClonesArray*)mgr->GetObject("WRAmsData");
-    if (!fWRItemsAms)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRAmsData not found";
+    if (!fWRItemsAms) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::WRAmsData not found";
     }
 
     // get access to WR-Califa data
     fWRItemsCalifa = (TClonesArray*)mgr->GetObject("WRCalifaData");
-    if (!fWRItemsCalifa)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRCalifaData not found";
+    if (!fWRItemsCalifa) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::WRCalifaData not found";
     }
 
     // get access to WR-Neuland data
     fWRItemsNeuland = (TClonesArray*)mgr->GetObject("WRNeulandData");
-    if (!fWRItemsNeuland)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRNeulandData not found";
+    if (!fWRItemsNeuland) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::WRNeulandData not found";
     }
 
     // get access to WR-S2 data
     fWRItemsS2 = (TClonesArray*)mgr->GetObject("WRS2Data");
-    if (!fWRItemsS2)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRS2Data not found";
+    if (!fWRItemsS2) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::WRS2Data not found";
     }
 
     // get access to WR-S8 data
     fWRItemsS8 = (TClonesArray*)mgr->GetObject("WRS8Data");
-    if (!fWRItemsS8)
-    {
-        LOG(WARNING) << "R3BSofStatusOnlineSpectra::WRS8Data not found";
+    if (!fWRItemsS8) {
+        LOG(warn) << "R3BSofStatusOnlineSpectra::WRS8Data not found";
     }
 
     fMwpc0MappedDataCA = (TClonesArray*)mgr->GetObject("Mwpc0MappedData");
-    if (!fMwpc0MappedDataCA)
-    {
+    if (!fMwpc0MappedDataCA) {
         return kFATAL;
     }
 
     fTrimMappedData = (TClonesArray*)mgr->GetObject("TrimMappedData");
-    if (!fTrimMappedData)
-    {
+    if (!fTrimMappedData) {
         return kFATAL;
     }
 
     fMappedItemsCalifa = (TClonesArray*)mgr->GetObject("CalifaMappedData");
-    if (!fMappedItemsCalifa)
-    {
-        LOG(ERROR) << "R3BSofStatusOnlineSpectra::Couldn't get handle on CalifaMappedData.";
+    if (!fMappedItemsCalifa) {
+        LOG(error) << "R3BSofStatusOnlineSpectra::Couldn't get handle on CalifaMappedData.";
     }
 
     fMappedItemsAms = (TClonesArray*)mgr->GetObject("AmsMappedData");
-    if (!fMappedItemsAms)
-    {
-        LOG(ERROR) << "R3BSofStatusOnlineSpectra::Couldn't get handle on AmsMappedData.";
+    if (!fMappedItemsAms) {
+        LOG(error) << "R3BSofStatusOnlineSpectra::Couldn't get handle on AmsMappedData.";
     }
 
     fMwpc1MappedDataCA = (TClonesArray*)mgr->GetObject("Mwpc1MappedData");
-    if (!fMwpc1MappedDataCA)
-    {
+    if (!fMwpc1MappedDataCA) {
         return kFATAL;
     }
 
     fTwimMappedDataCA = (TClonesArray*)mgr->GetObject("TwimMappedData");
-    if (!fTwimMappedDataCA)
-    {
+    if (!fTwimMappedDataCA) {
         return kFATAL;
     }
 
     fMwpc2MappedDataCA = (TClonesArray*)mgr->GetObject("Mwpc2MappedData");
-    if (!fMwpc2MappedDataCA)
-    {
+    if (!fMwpc2MappedDataCA) {
         return kFATAL;
     }
     fMwpc3MappedDataCA = (TClonesArray*)mgr->GetObject("Mwpc3MappedData");
-    if (!fMwpc3MappedDataCA)
-    {
+    if (!fMwpc3MappedDataCA) {
         return kFATAL;
     }
 
     fTofWMappedDataCA = (TClonesArray*)mgr->GetObject("SofTofWMappedData");
-    if (!fTofWMappedDataCA)
-    {
+    if (!fTofWMappedDataCA) {
         return kFATAL;
     }
 
@@ -300,7 +280,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     sprintf(Name1, "WRs_Sofia_vs_others");
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     sprintf(Name2, "fh1_WR_Sofia_Wixhausen");
-    sprintf(Name3, "WR-Sofia - WR-Other"); // Messel (blue), Wixhausen (red)
+    sprintf(Name3, "WR-Sofia - WR-Other");   // Messel (blue), Wixhausen (red)
     fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wrs[0]->GetYaxis()->SetTitle("Counts");
@@ -310,32 +290,32 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     fh1_wrs[0]->SetLineColor(2);
     fh1_wrs[0]->SetLineWidth(3);
     gPad->SetLogy(1);
-    stack_wrs->Add(fh1_wrs[0]); //->Draw("");
+    stack_wrs->Add(fh1_wrs[0]);   //->Draw("");
     fh1_wrs[1] = new TH1F("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
     fh1_wrs[1]->SetLineColor(4);
     fh1_wrs[1]->SetLineWidth(3);
     if (fWRItemsCalifa)
-        stack_wrs->Add(fh1_wrs[1]); //->Draw("same");
+        stack_wrs->Add(fh1_wrs[1]);   //->Draw("same");
     fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
     fh1_wrs[2]->SetLineColor(3);
     fh1_wrs[2]->SetLineWidth(3);
     if (fWRItemsNeuland)
-        stack_wrs->Add(fh1_wrs[2]); //->Draw("same");
+        stack_wrs->Add(fh1_wrs[2]);   //->Draw("same");
     fh1_wrs[3] = new TH1F("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
     fh1_wrs[3]->SetLineColor(1);
     fh1_wrs[3]->SetLineWidth(3);
     if (fWRItemsS2)
-        stack_wrs->Add(fh1_wrs[3]); //->Draw("same");
+        stack_wrs->Add(fh1_wrs[3]);   //->Draw("same");
     fh1_wrs[4] = new TH1F("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
     fh1_wrs[4]->SetLineColor(5);
     fh1_wrs[4]->SetLineWidth(3);
     if (fWRItemsS8)
-        stack_wrs->Add(fh1_wrs[4]); //->Draw("same");
+        stack_wrs->Add(fh1_wrs[4]);   //->Draw("same");
     fh1_wrs[5] = new TH1F("fh1_WR_Sofia_Ams", "", 1200, -4100, 4100);
     fh1_wrs[5]->SetLineColor(7);
     fh1_wrs[5]->SetLineWidth(3);
     if (fWRItemsAms)
-        stack_wrs->Add(fh1_wrs[5]); //->Draw("same");
+        stack_wrs->Add(fh1_wrs[5]);   //->Draw("same");
     stack_wrs->Draw("nostack");
 
     TLegend* leg = new TLegend(0.05, 0.9, 0.39, 0.9999, NULL, "brNDC");
@@ -357,32 +337,28 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     entry->SetLineStyle(1);
     entry->SetLineWidth(3);
     entry->SetTextFont(62);
-    if (fWRItemsNeuland)
-    {
+    if (fWRItemsNeuland) {
         entry = leg->AddEntry("null", "Neuland", "l");
         entry->SetLineColor(3);
         entry->SetLineStyle(1);
         entry->SetLineWidth(3);
         entry->SetTextFont(62);
     }
-    if (fWRItemsS2)
-    {
+    if (fWRItemsS2) {
         entry = leg->AddEntry("null", "S2", "l");
         entry->SetLineColor(1);
         entry->SetLineStyle(1);
         entry->SetLineWidth(3);
         entry->SetTextFont(62);
     }
-    if (fWRItemsS8)
-    {
+    if (fWRItemsS8) {
         entry = leg->AddEntry("null", "S8", "l");
         entry->SetLineColor(5);
         entry->SetLineStyle(1);
         entry->SetLineWidth(3);
         entry->SetTextFont(62);
     }
-    if (fWRItemsAms)
-    {
+    if (fWRItemsAms) {
         entry = leg->AddEntry("null", "AMS", "l");
         entry->SetLineColor(7);
         entry->SetLineStyle(1);
@@ -481,16 +457,14 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
 
 void R3BSofStatusOnlineSpectra::Reset_GENERAL_Histo()
 {
-    LOG(INFO) << "R3BSofStatusOnlineSpectra::Reset_General_Histo";
+    LOG(info) << "R3BSofStatusOnlineSpectra::Reset_General_Histo";
     fh1_trigger->Reset();
     fh1_GeneralView->Reset();
-    if (fWRItemsMaster && fWRItemsSofia)
-    {
+    if (fWRItemsMaster && fWRItemsSofia) {
         fh1_wr[0]->Reset();
         fh1_wr[1]->Reset();
     }
-    if (fWRItemsCalifa && fWRItemsSofia)
-    {
+    if (fWRItemsCalifa && fWRItemsSofia) {
         fh1_wrs[0]->Reset();
         fh1_wrs[1]->Reset();
         if (fWRItemsNeuland)
@@ -514,38 +488,29 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
 
     Int_t tpatbin;
     bool ok = kFALSE;
-    if (fEventHeader->GetTpat() > 0)
-    {
-        for (Int_t i = 0; i < 16; i++)
-        {
+    if (fEventHeader->GetTpat() > 0) {
+        for (Int_t i = 0; i < 16; i++) {
             tpatbin = (fEventHeader->GetTpat() & (1 << i));
-            if (tpatbin != 0)
-            {
+            if (tpatbin != 0) {
                 fh1_trigger->Fill(i + 1);
                 fCounterTpats[i]++;
                 if (i + 1 > 0 && i + 1 < 5)
                     ok = true;
             }
         }
-    }
-    else if (fEventHeader->GetTpat() == 0)
-    {
+    } else if (fEventHeader->GetTpat() == 0) {
         fh1_trigger->Fill(0);
-    }
-    else
-    {
-        LOG(INFO) << fNEvents << " " << fEventHeader->GetTpat();
+    } else {
+        LOG(info) << fNEvents << " " << fEventHeader->GetTpat();
     }
     // fh1_trigger->Fill(fEventHeader->GetTpat());
 
     // WR data
-    if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0)
-    {
+    if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0) {
         // SOFIA
         Int_t nHits = fWRItemsSofia->GetEntriesFast();
         int64_t wrs[2];
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BWRData* hit = (R3BWRData*)fWRItemsSofia->At(ihit);
             if (!hit)
                 continue;
@@ -553,26 +518,22 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         }
 
         // Califa
-        if (fWRItemsCalifa && fWRItemsCalifa->GetEntriesFast() > 0)
-        {
+        if (fWRItemsCalifa && fWRItemsCalifa->GetEntriesFast() > 0) {
             nHits = fWRItemsCalifa->GetEntriesFast();
             int64_t wr[nHits];
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BWRData* hit = (R3BWRData*)fWRItemsCalifa->At(ihit);
                 if (!hit)
                     continue;
                 wr[ihit] = hit->GetTimeStamp();
             }
-            fh1_wrs[0]->Fill(wrs[0] - wr[0]); // messel
-            fh1_wrs[1]->Fill(wrs[0] - wr[1]); // wixhausen
+            fh1_wrs[0]->Fill(wrs[0] - wr[0]);   // messel
+            fh1_wrs[1]->Fill(wrs[0] - wr[1]);   // wixhausen
         }
         // Neuland
-        if (fWRItemsNeuland && fWRItemsNeuland->GetEntriesFast() > 0)
-        {
+        if (fWRItemsNeuland && fWRItemsNeuland->GetEntriesFast() > 0) {
             nHits = fWRItemsNeuland->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BWRData* hit = (R3BWRData*)fWRItemsNeuland->At(ihit);
                 if (!hit)
                     continue;
@@ -582,11 +543,9 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
             fh1_wrs[0]->SetMaximum(5. * fh1_wrs[2]->GetBinContent(fh1_wrs[2]->GetMaximumBin()));
         }
         // S2
-        if (fWRItemsS2 && fWRItemsS2->GetEntriesFast() > 0)
-        {
+        if (fWRItemsS2 && fWRItemsS2->GetEntriesFast() > 0) {
             nHits = fWRItemsS2->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BWRData* hit = (R3BWRData*)fWRItemsS2->At(ihit);
                 if (!hit)
                     continue;
@@ -594,11 +553,9 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
             }
         }
         // S8
-        if (fWRItemsS8 && fWRItemsS8->GetEntriesFast() > 0)
-        {
+        if (fWRItemsS8 && fWRItemsS8->GetEntriesFast() > 0) {
             nHits = fWRItemsS8->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BWRData* hit = (R3BWRData*)fWRItemsS8->At(ihit);
                 if (!hit)
                     continue;
@@ -606,11 +563,9 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
             }
         }
         // AMS
-        if (fWRItemsAms && fWRItemsAms->GetEntriesFast() > 0)
-        {
+        if (fWRItemsAms && fWRItemsAms->GetEntriesFast() > 0) {
             nHits = fWRItemsAms->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BWRData* hit = (R3BWRData*)fWRItemsAms->At(ihit);
                 if (!hit)
                     continue;
@@ -618,12 +573,10 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
             }
         }
         // Master
-        if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0)
-        {
+        if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0) {
             nHits = fWRItemsMaster->GetEntriesFast();
             int64_t wrm = 0.;
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BWRData* hit = (R3BWRData*)fWRItemsMaster->At(ihit);
                 if (!hit)
                     continue;
@@ -634,19 +587,16 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         }
     }
 
-    if (ok)
-    {
+    if (ok) {
         fNEvents += 1;
 
-        if (fMwpc0MappedDataCA && fMwpc0MappedDataCA->GetEntries() > 0)
-        {
+        if (fMwpc0MappedDataCA && fMwpc0MappedDataCA->GetEntries() > 0) {
             Int_t nHits = fMwpc0MappedDataCA->GetEntries();
             R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BMwpcMappedData*)(fMwpc0MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1)
@@ -661,19 +611,16 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[0]++;
         }
 
-        if (fTrimMappedData && fTrimMappedData->GetEntries() > 0)
-        {
+        if (fTrimMappedData && fTrimMappedData->GetEntries() > 0) {
             Int_t nHits = fTrimMappedData->GetEntries();
             R3BSofTrimMappedData** mappedData = new R3BSofTrimMappedData*[nHits];
             Int_t sumanodes = 0;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BSofTrimMappedData*)(fTrimMappedData->At(i));
                 if (mappedData[i]->GetAnodeID() < 7)
                     sumanodes++;
             }
-            if (sumanodes > 12)
-            {
+            if (sumanodes > 12) {
                 fCounterDet[1]++;
             }
 
@@ -681,13 +628,11 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 delete mappedData;
         }
 
-        if (fMappedItemsCalifa && fMappedItemsCalifa->GetEntries() > 0)
-        {
+        if (fMappedItemsCalifa && fMappedItemsCalifa->GetEntries() > 0) {
             Int_t nHits = fMappedItemsCalifa->GetEntries();
             Int_t nCry = 0;
             R3BCalifaMappedData** mappedData = new R3BCalifaMappedData*[nHits];
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BCalifaMappedData*)(fMappedItemsCalifa->At(i));
                 if (mappedData[i]->GetCrystalId() > 2432 && mappedData[i]->GetEnergy() > 2.)
                     nCry++;
@@ -698,13 +643,11 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[2]++;
         }
 
-        if (fMappedItemsAms && fMappedItemsAms->GetEntries() > 0)
-        {
+        if (fMappedItemsAms && fMappedItemsAms->GetEntries() > 0) {
             Int_t nHits = fMappedItemsAms->GetEntries();
             Int_t ndetr = 0, ndetl = 0;
             R3BAmsMappedData** mappedData = new R3BAmsMappedData*[nHits];
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BAmsMappedData*)(fMappedItemsAms->At(i));
                 if (mappedData[i]->GetDetectorId() < 3)
                     ndetr++;
@@ -717,15 +660,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[3]++;
         }
 
-        if (fMwpc1MappedDataCA && fMwpc1MappedDataCA->GetEntries() > 0)
-        {
+        if (fMwpc1MappedDataCA && fMwpc1MappedDataCA->GetEntries() > 0) {
             Int_t nHits = fMwpc1MappedDataCA->GetEntries();
             R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BMwpcMappedData*)(fMwpc1MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1 || planeId == 2)
@@ -740,15 +681,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[4]++;
         }
 
-        if (fTwimMappedDataCA && fTwimMappedDataCA->GetEntries() > 0)
-        {
+        if (fTwimMappedDataCA && fTwimMappedDataCA->GetEntries() > 0) {
             Int_t nHits = fTwimMappedDataCA->GetEntries();
             R3BTwimMappedData** mappedData = new R3BTwimMappedData*[nHits];
             Int_t secId = 0;
             Int_t anodeId = 0;
             Int_t sumanodes = 0;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BTwimMappedData*)(fTwimMappedDataCA->At(i));
                 secId = mappedData[i]->GetSecID();
                 anodeId = mappedData[i]->GetAnodeID();
@@ -761,15 +700,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[5]++;
         }
 
-        if (fMwpc2MappedDataCA && fMwpc2MappedDataCA->GetEntries() > 0)
-        {
+        if (fMwpc2MappedDataCA && fMwpc2MappedDataCA->GetEntries() > 0) {
             Int_t nHits = fMwpc2MappedDataCA->GetEntries();
             R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BMwpcMappedData*)(fMwpc2MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1 || planeId == 2)
@@ -784,15 +721,13 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[6]++;
         }
 
-        if (fMwpc3MappedDataCA && fMwpc3MappedDataCA->GetEntries() > 0)
-        {
+        if (fMwpc3MappedDataCA && fMwpc3MappedDataCA->GetEntries() > 0) {
             Int_t nHits = fMwpc3MappedDataCA->GetEntries();
             R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BMwpcMappedData*)(fMwpc3MappedDataCA->At(i));
                 planeId = mappedData[i]->GetPlane();
                 if (planeId == 1)
@@ -807,14 +742,12 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
                 fCounterDet[7]++;
         }
 
-        if (fTofWMappedDataCA && fTofWMappedDataCA->GetEntries() > 0)
-        {
+        if (fTofWMappedDataCA && fTofWMappedDataCA->GetEntries() > 0) {
 
             Int_t nHits = fTofWMappedDataCA->GetEntries();
             R3BSofTofWMappedData** mappedData = new R3BSofTofWMappedData*[nHits];
             UShort_t iDet = -1;
-            for (Int_t i = 0; i < nHits; i++)
-            {
+            for (Int_t i = 0; i < nHits; i++) {
                 mappedData[i] = (R3BSofTofWMappedData*)fTofWMappedDataCA->At(i);
                 iDet = mappedData[i]->GetDetector();
             }
@@ -826,11 +759,9 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
     }
 
     // Update histograms
-    if (fNEvents > 9999)
-    {
+    if (fNEvents > 9999) {
 
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             gh->SetPoint(i, i + 1., fCounterDet[i] / fNEvents);
             gh->Draw("ap");
             // std::cout<<fCounterDet[i] <<" "<< fNEvents<<std::endl;
@@ -859,8 +790,7 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         cTotNbTrig->Modified();
         cTotNbTrig->cd();
 
-        for (int j = 0; j < 10; j++)
-        {
+        for (int j = 0; j < 10; j++) {
             fCounterDet[j] = 0.;
         }
         fNEvents = 0;
@@ -870,30 +800,24 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
 void R3BSofStatusOnlineSpectra::FinishEvent()
 {
 
-    LOG(DEBUG) << "Clearing Structure";
+    LOG(debug) << "Clearing Structure";
 
-    if (fWRItemsMaster)
-    {
+    if (fWRItemsMaster) {
         fWRItemsMaster->Clear();
     }
-    if (fWRItemsSofia)
-    {
+    if (fWRItemsSofia) {
         fWRItemsSofia->Clear();
     }
-    if (fWRItemsCalifa)
-    {
+    if (fWRItemsCalifa) {
         fWRItemsCalifa->Clear();
     }
-    if (fWRItemsNeuland)
-    {
+    if (fWRItemsNeuland) {
         fWRItemsNeuland->Clear();
     }
-    if (fWRItemsS2)
-    {
+    if (fWRItemsS2) {
         fWRItemsS2->Clear();
     }
-    if (fWRItemsS8)
-    {
+    if (fWRItemsS8) {
         fWRItemsS8->Clear();
     }
 }
@@ -904,8 +828,7 @@ void R3BSofStatusOnlineSpectra::FinishTask()
     cTrigger->Write();
     cDetGeneralView->Write();
     cTotNbTrig->Write();
-    if (fWRItemsMaster && fWRItemsSofia)
-    {
+    if (fWRItemsMaster && fWRItemsSofia) {
         cWr->Write();
         cWrs->Write();
     }

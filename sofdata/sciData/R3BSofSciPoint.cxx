@@ -15,8 +15,7 @@ R3BSofSciPoint::R3BSofSciPoint()
     , fPx_out(0.)
     , fPy_out(0.)
     , fPz_out(0.)
-{
-}
+{}
 
 // -----   Standard constructor   ------------------------------------------
 R3BSofSciPoint::R3BSofSciPoint(Int_t trackID,

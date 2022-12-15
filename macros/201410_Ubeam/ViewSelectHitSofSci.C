@@ -100,7 +100,7 @@ void ViewSelectHitSofSci(UInt_t FirstRun=1355){
 	  Tns[signal] = iTns;
 	}
 	else{
-	  cout << "ERROR : iDet=" << iDet << ", iCh=" << iCh << endl;
+	  cout << "error : iDet=" << iDet << ", iCh=" << iCh << endl;
 	  continue;
 	}
       }

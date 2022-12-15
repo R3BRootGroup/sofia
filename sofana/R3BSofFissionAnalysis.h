@@ -16,6 +16,7 @@
 #include "TRandom.h"
 #include "TRotation.h"
 #include "TVector3.h"
+
 #include <TRandom.h>
 #include <iomanip>
 
@@ -85,10 +86,10 @@ class R3BSofFissionAnalysis : public FairTask
     Double_t GetVelocity(Double_t len, Double_t tof);
     Double_t GetAoverq(Double_t brho, Double_t vel);
 
-    Bool_t fOnline; // Don't store data for online
+    Bool_t fOnline;   // Don't store data for online
 
     // Parameters from par file
-    Double_t fOffsetAq; // Offset in A/q
+    Double_t fOffsetAq;   // Offset in A/q
 
     // Parameters set with accessor functions
     Double_t fFieldCentre, fEffLength, fBfield_Glad;

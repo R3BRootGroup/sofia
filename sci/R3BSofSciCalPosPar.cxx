@@ -2,7 +2,6 @@
 
 #include "FairLogger.h"
 #include "FairParamList.h"
-
 #include "TArrayF.h"
 #include "TMath.h"
 #include "TString.h"
@@ -24,8 +23,7 @@ R3BSofSciCalPosPar::R3BSofSciCalPosPar(const char* name, const char* title, cons
 R3BSofSciCalPosPar::~R3BSofSciCalPosPar()
 {
     clear();
-    if (fAllParams)
-    {
+    if (fAllParams) {
         delete fAllParams;
     }
 }
@@ -40,16 +38,15 @@ void R3BSofSciCalPosPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofSciCalPosPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofSciCalPosPar::putParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofSciCalPosPar::putParams() called";
+    if (!list) {
         return;
     }
 
     list->add("nDets", fNumDets);
     list->add("nCalPosParsPerDet", fNumParamsPerDet);
     Int_t array_size = fNumDets * fNumParamsPerDet;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
     fAllParams->Set(array_size);
     list->add("CalPosPar", *fAllParams);
 }
@@ -57,27 +54,23 @@ void R3BSofSciCalPosPar::putParams(FairParamList* list)
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofSciCalPosPar::getParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofSciCalPosPar::getParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofSciCalPosPar::getParams() called";
+    if (!list) {
         return kFALSE;
     }
-    if (!list->fill("nDets", &fNumDets))
-    {
+    if (!list->fill("nDets", &fNumDets)) {
         return kFALSE;
     }
-    if (!list->fill("nCalPosParsPerDet", &fNumParamsPerDet))
-    {
+    if (!list->fill("nCalPosParsPerDet", &fNumParamsPerDet)) {
         return kFALSE;
     }
 
     Int_t array_size = fNumDets * fNumParamsPerDet;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
     fAllParams->Set(array_size);
 
-    if (!(list->fill("CalPosPar", fAllParams)))
-    {
-        LOG(INFO) << "---Could not initialize fAllParams";
+    if (!(list->fill("CalPosPar", fAllParams))) {
+        LOG(info) << "---Could not initialize fAllParams";
         return kFALSE;
     }
 
@@ -87,12 +80,11 @@ Bool_t R3BSofSciCalPosPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofSciCalPosPar::printParams()
 {
-    LOG(INFO) << "R3BSofSciCalPosPar: SofSciCalPos Parameters: ";
+    LOG(info) << "R3BSofSciCalPosPar: SofSciCalPos Parameters: ";
     Int_t array_size = fNumDets * fNumParamsPerDet;
 
-    for (Int_t det = 0; det < fNumDets; det++)
-    {
-        LOG(INFO) << "SofSci" << det + 1 << ": p0 = " << fAllParams->GetAt(2 * det)
+    for (Int_t det = 0; det < fNumDets; det++) {
+        LOG(info) << "SofSci" << det + 1 << ": p0 = " << fAllParams->GetAt(2 * det)
                   << " , p1=" << fAllParams->GetAt(2 * det + 1);
     }
 }

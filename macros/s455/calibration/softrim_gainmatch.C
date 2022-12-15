@@ -84,8 +84,8 @@ void softrim_gainmatch()
   // --- Initialize --- //
   // --- ---------- --- //
   run->Init();
-  FairLogger::GetLogger()->SetLogScreenLevel("INFO");
-  //FairLogger::GetLogger()->SetLogScreenLevel("WARNING");
+  FairLogger::GetLogger()->SetLogScreenLevel("info");
+  //FairLogger::GetLogger()->SetLogScreenLevel("warn");
 
   // --- ------------------------------------------- --- //
   // --- output parameters :                         --- //

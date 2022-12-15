@@ -2,7 +2,6 @@
 
 #include "FairLogger.h"
 #include "FairParamList.h"
-
 #include "TArrayF.h"
 #include "TMath.h"
 #include "TString.h"
@@ -27,8 +26,7 @@ R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, cons
 R3BSofSciRawTofPar::~R3BSofSciRawTofPar()
 {
     clear();
-    if (fAllSignalsRawTofParams)
-    {
+    if (fAllSignalsRawTofParams) {
         delete fAllSignalsRawTofParams;
     }
 }
@@ -43,14 +41,13 @@ void R3BSofSciRawTofPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofSciRawTofPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofSciRawTofPar::putParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofSciRawTofPar::putParams() called";
+    if (!list) {
         return;
     }
 
     Int_t array_size = fNumSignals * fNumParsPerSignal;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
 
     fAllSignalsRawTofParams->Set(array_size);
 
@@ -67,47 +64,38 @@ void R3BSofSciRawTofPar::putParams(FairParamList* list)
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofSciRawTofPar::getParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofSciRawTofPar::getParams() called";
+    if (!list) {
         return kFALSE;
     }
-    if (!list->fill("nDetsRawTofPar", &fNumDets))
-    {
+    if (!list->fill("nDetsRawTofPar", &fNumDets)) {
         return kFALSE;
     }
-    if (!list->fill("nChannelsRawTofPar", &fNumChannels))
-    {
+    if (!list->fill("nChannelsRawTofPar", &fNumChannels)) {
         return kFALSE;
     }
-    if (!list->fill("idDetCaveC", &fDetIdCaveC))
-    {
+    if (!list->fill("idDetCaveC", &fDetIdCaveC)) {
         return kFALSE;
     }
-    if (!list->fill("idDetS2", &fDetIdS2))
-    {
+    if (!list->fill("idDetS2", &fDetIdS2)) {
         return kFALSE;
     }
-    if (!list->fill("idDetS8", &fDetIdS8))
-    {
+    if (!list->fill("idDetS8", &fDetIdS8)) {
         return kFALSE;
     }
-    if (!list->fill("nSignalsRawTofPar", &fNumSignals))
-    {
+    if (!list->fill("nSignalsRawTofPar", &fNumSignals)) {
         return kFALSE;
     }
-    if (!list->fill("nRawTofParsPerSignal", &fNumParsPerSignal))
-    {
+    if (!list->fill("nRawTofParsPerSignal", &fNumParsPerSignal)) {
         return kFALSE;
     }
 
     Int_t array_size = fNumSignals * fNumParsPerSignal;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
     fAllSignalsRawTofParams->Set(array_size);
 
-    if (!(list->fill("RawTofPar", fAllSignalsRawTofParams)))
-    {
-        LOG(INFO) << "---Could not initialize fAllSignalsRawTofParams";
+    if (!(list->fill("RawTofPar", fAllSignalsRawTofParams))) {
+        LOG(info) << "---Could not initialize fAllSignalsRawTofParams";
         return kFALSE;
     }
 
@@ -117,15 +105,14 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofSciRawTofPar::printParams()
 {
-    LOG(INFO) << "R3BSofSciRawTofPar: SofSciRawTof Parameters: ";
+    LOG(info) << "R3BSofSciRawTofPar: SofSciRawTof Parameters: ";
     Int_t array_size = fNumSignals * fNumParsPerSignal;
 
-    LOG(INFO) << "--- --------------------------------------------";
-    LOG(INFO) << "--- Single Tcal RawTof Parameters :  ";
-    LOG(INFO) << "--- --------------------------------------------";
-    for (Int_t param = 0; param < array_size; param++)
-    {
-        LOG(INFO) << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param);
+    LOG(info) << "--- --------------------------------------------";
+    LOG(info) << "--- Single Tcal RawTof Parameters :  ";
+    LOG(info) << "--- --------------------------------------------";
+    for (Int_t param = 0; param < array_size; param++) {
+        LOG(info) << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param);
     }
 }
 

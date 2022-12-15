@@ -9,26 +9,26 @@
  */
 
 #include "R3BSofFrsOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BFrsData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BFrsData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -43,19 +43,17 @@ R3BSofFrsOnlineSpectra::R3BSofFrsOnlineSpectra()
     : FairTask("SofFrsOnlineSpectra", 1)
     , fHitItemsFrs(NULL)
     , fNEvents(0)
-{
-}
+{}
 
 R3BSofFrsOnlineSpectra::R3BSofFrsOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fHitItemsFrs(NULL)
     , fNEvents(0)
-{
-}
+{}
 
 R3BSofFrsOnlineSpectra::~R3BSofFrsOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofFrsOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofFrsOnlineSpectra::Delete instance";
     if (fHitItemsFrs)
         delete fHitItemsFrs;
 }
@@ -63,7 +61,7 @@ R3BSofFrsOnlineSpectra::~R3BSofFrsOnlineSpectra()
 InitStatus R3BSofFrsOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofFrsOnlineSpectra::Init ";
+    LOG(info) << "R3BSofFrsOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -78,8 +76,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
     // get access to mapped data of FRS
     fHitItemsFrs = (TClonesArray*)mgr->GetObject("FrsData");
-    if (!fHitItemsFrs)
-    {
+    if (!fHitItemsFrs) {
         return kFATAL;
     }
 
@@ -175,7 +172,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
 void R3BSofFrsOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofFrsOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofFrsOnlineSpectra::Reset_Histo";
 
     fh1_beta->Reset();
     fh1_brho->Reset();
@@ -190,11 +187,9 @@ void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BSofFRSOnlineSpectra::Exec FairRootManager not found";
 
     // Fill Hit data
-    if (fHitItemsFrs && fHitItemsFrs->GetEntriesFast() > 0)
-    {
+    if (fHitItemsFrs && fHitItemsFrs->GetEntriesFast() > 0) {
         Int_t nHits = fHitItemsFrs->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BFrsData* hit = (R3BFrsData*)fHitItemsFrs->At(ihit);
             if (!hit)
                 continue;
@@ -210,16 +205,14 @@ void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
 
 void R3BSofFrsOnlineSpectra::FinishEvent()
 {
-    if (fHitItemsFrs)
-    {
+    if (fHitItemsFrs) {
         fHitItemsFrs->Clear();
     }
 }
 
 void R3BSofFrsOnlineSpectra::FinishTask()
 {
-    if (fHitItemsFrs)
-    {
+    if (fHitItemsFrs) {
         cBeta->Write();
         cBrho->Write();
         cXs2vsBeta->Write();

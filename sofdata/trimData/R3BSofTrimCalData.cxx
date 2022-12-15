@@ -12,8 +12,7 @@ R3BSofTrimCalData::R3BSofTrimCalData()
     , fDriftTimeAligned(-1000000)
     , fEnergySub(0)
     , fEnergyMatch(0)
-{
-}
+{}
 // -------------------------------------------------------------------------
 
 // -----   Standard constructors   ------------------------------------------
@@ -24,8 +23,7 @@ R3BSofTrimCalData::R3BSofTrimCalData(Int_t secID, Int_t anodeID)
     , fDriftTimeAligned(-1000000)
     , fEnergySub(0)
     , fEnergyMatch(0)
-{
-}
+{}
 
 R3BSofTrimCalData::R3BSofTrimCalData(Int_t secID,
                                      Int_t anodeID,
@@ -39,8 +37,7 @@ R3BSofTrimCalData::R3BSofTrimCalData(Int_t secID,
     , fDriftTimeAligned(dtal)
     , fEnergySub(esub)
     , fEnergyMatch(ematch)
-{
-}
+{}
 // -------------------------------------------------------------------------
 
 ClassImp(R3BSofTrimCalData)

@@ -20,7 +20,7 @@ class R3BSofTofWContFact : public FairContFact
     R3BSofTofWContFact();
     ~R3BSofTofWContFact() {}
     FairParSet* createContainer(FairContainer* c);
-    ClassDef(R3BSofTofWContFact, 0) // Factory for all TofWall parameter containers
+    ClassDef(R3BSofTofWContFact, 0)   // Factory for all TofWall parameter containers
 };
 
-#endif // !R3BSofTofWContFact_H
+#endif   // !R3BSofTofWContFact_H

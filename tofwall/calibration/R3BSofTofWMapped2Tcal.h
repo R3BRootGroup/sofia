@@ -8,7 +8,6 @@
 #define R3BSOFTOFW_MAPPED2TCAL_H
 
 #include "FairTask.h"
-
 #include "R3BSofTofWTcalData.h"
 
 // ROOT headers
@@ -48,14 +47,14 @@ class R3BSofTofWMapped2Tcal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    Bool_t fOnline; // Don't store data for online
+    Bool_t fOnline;   // Don't store data for online
 
-    TClonesArray* fMapped; // input data - SofTofWMappedData
-    TClonesArray* fTcal;   // output data
+    TClonesArray* fMapped;   // input data - SofTofWMappedData
+    TClonesArray* fTcal;     // output data
 
-    R3BSofTcalPar* fTcalPar; // tcal parameters container
+    R3BSofTcalPar* fTcalPar;   // tcal parameters container
 
-    UInt_t fNumTcal; // number of Tcal items per event
+    UInt_t fNumTcal;   // number of Tcal items per event
 
     UInt_t fNevent;
     TRandom3 rand;
@@ -69,4 +68,4 @@ class R3BSofTofWMapped2Tcal : public FairTask
     ClassDef(R3BSofTofWMapped2Tcal, 1)
 };
 
-#endif // R3BSOFTOFW_MAPPED2TCAL_H
+#endif   // R3BSOFTOFW_MAPPED2TCAL_H

@@ -2,14 +2,13 @@
 #define __R3BSofSciSingleTcal2CalPosCaveCPar_H__ 1
 
 #include "FairTask.h"
+#include "R3BSofSciCalPosPar.h"
+#include "R3BTGeoPar.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TF1.h"
 #include "TH1F.h"
 #include "TH2D.h"
-
-#include "R3BSofSciCalPosPar.h"
-#include "R3BTGeoPar.h"
-#include "TClonesArray.h"
 
 class R3BSofSciSingleTcal2CalPosCaveCPar : public FairTask
 {
@@ -52,9 +51,9 @@ class R3BSofSciSingleTcal2CalPosCaveCPar : public FairTask
     void SetFitMax(Float_t RawPosNsMax) { fFitMax = RawPosNsMax; }
 
   protected:
-    Int_t fNumDets;         // number of detectors 2 if FRS, 1 if Cave C only
-    Int_t fNumParamsPerDet; // 2 if pol1
-    Int_t fMinStatistics;   // minimum statistics to proceed to the calibration
+    Int_t fNumDets;           // number of detectors 2 if FRS, 1 if Cave C only
+    Int_t fNumParamsPerDet;   // 2 if pol1
+    Int_t fMinStatistics;     // minimum statistics to proceed to the calibration
     Float_t fFitMin;
     Float_t fFitMax;
 
@@ -85,4 +84,4 @@ class R3BSofSciSingleTcal2CalPosCaveCPar : public FairTask
     ClassDef(R3BSofSciSingleTcal2CalPosCaveCPar, 0);
 };
 
-#endif //__R3BSOFSCITCAL2RAWPOSPAR_H__
+#endif   //__R3BSOFSCITCAL2RAWPOSPAR_H__

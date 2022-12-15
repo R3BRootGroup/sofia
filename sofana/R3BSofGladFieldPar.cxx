@@ -11,8 +11,7 @@ R3BSofGladFieldPar::R3BSofGladFieldPar(const TString& name, const TString& title
     , fBz(0.)
     , fEffLength(0.)
     , fFieldCentre(0.)
-{
-}
+{}
 
 // ----  Destructor ------------------------------------------------------------
 R3BSofGladFieldPar::~R3BSofGladFieldPar() { clear(); }
@@ -27,9 +26,8 @@ void R3BSofGladFieldPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofGladFieldPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofGladFieldPar::putParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofGladFieldPar::putParams() called";
+    if (!list) {
         return;
     }
     list->add("Bz", fBz);
@@ -40,9 +38,8 @@ void R3BSofGladFieldPar::putParams(FairParamList* list)
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofGladFieldPar::getParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofGladFieldPar::getParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofGladFieldPar::getParams() called";
+    if (!list) {
         return kFALSE;
     }
 
@@ -61,10 +58,10 @@ Bool_t R3BSofGladFieldPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofGladFieldPar::printParams()
 {
-    LOG(INFO) << "R3BSofGladFieldPar: GLAD field parameters: ";
-    LOG(INFO) << "Field Bz: " << fBz << " [T]";
-    LOG(INFO) << "Effective length: " << fEffLength << " [cm]";
-    LOG(INFO) << "Field centre in z: " << fFieldCentre << " [cm]";
+    LOG(info) << "R3BSofGladFieldPar: GLAD field parameters: ";
+    LOG(info) << "Field Bz: " << fBz << " [T]";
+    LOG(info) << "Effective length: " << fEffLength << " [cm]";
+    LOG(info) << "Field centre in z: " << fFieldCentre << " [cm]";
 }
 
 ClassImp(R3BSofGladFieldPar);

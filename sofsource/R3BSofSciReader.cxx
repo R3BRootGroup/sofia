@@ -1,8 +1,8 @@
+#include "R3BSofSciReader.h"
+
 #include "FairLogger.h"
 #include "FairRootManager.h"
-
 #include "R3BSofSciMappedData.h"
-#include "R3BSofSciReader.h"
 
 extern "C"
 {
@@ -16,24 +16,21 @@ using namespace std;
 
 R3BSofSciReader::R3BSofSciReader(EXT_STR_h101_SOFSCI* data, size_t offset)
     : R3BSofSciReader(data, offset, 1)
-{
-}
+{}
 
 R3BSofSciReader::R3BSofSciReader(EXT_STR_h101_SOFSCI* data, size_t offset, Int_t NumSci)
     : R3BReader("R3BSofSciReader")
     , fData(data)
     , fOffset(offset)
     , fOnline(kFALSE)
-    , fArray(new TClonesArray("R3BSofSciMappedData")) // class name
+    , fArray(new TClonesArray("R3BSofSciMappedData"))   // class name
     , fNumSci(NumSci)
-{
-}
+{}
 
 R3BSofSciReader::~R3BSofSciReader()
 {
-    LOG(DEBUG) << "R3BSofSciReader: Delete instance";
-    if (fArray)
-    {
+    LOG(debug) << "R3BSofSciReader: Delete instance";
+    if (fArray) {
         delete fArray;
     }
 }
@@ -41,12 +38,11 @@ R3BSofSciReader::~R3BSofSciReader()
 Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofSciReader::Init()";
+    LOG(info) << "R3BSofSciReader::Init()";
     EXT_STR_h101_SOFSCI_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFSCI, 0);
-    if (!ok)
-    {
+    if (!ok) {
         perror("ext_data_struct_info_item");
-        LOG(ERROR) << "R3BSofSciReader::Failed to setup structure information.";
+        LOG(error) << "R3BSofSciReader::Failed to setup structure information.";
         return kFALSE;
     }
 
@@ -89,33 +85,26 @@ Bool_t R3BSofSciReader::Read()
     */
 
     // loop over all detectors
-    for (Int_t d = 0; d < fNumSci; d++)
-    {
+    for (Int_t d = 0; d < fNumSci; d++) {
         uint32_t numberOfPMTsWithHits_TF = data->SOFSCI[d].TFM;
         uint32_t numberOfPMTsWithHits_TC = data->SOFSCI[d].TCM;
-        if (numberOfPMTsWithHits_TF != numberOfPMTsWithHits_TC)
-        {
-            LOG(ERROR) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between TF and TC for SofSci !";
-        }
-        else
-        {
+        if (numberOfPMTsWithHits_TF != numberOfPMTsWithHits_TC) {
+            LOG(error) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between TF and TC for SofSci !";
+        } else {
             // loop over channels with hits
             uint32_t curChannelStart = 0;
-            for (Int_t pmmult = 0; pmmult < numberOfPMTsWithHits_TF; pmmult++)
-            {
+            for (Int_t pmmult = 0; pmmult < numberOfPMTsWithHits_TF; pmmult++) {
                 uint32_t pmtid_TF = data->SOFSCI[d].TFMI[pmmult];
                 uint32_t pmtid_TC = data->SOFSCI[d].TCMI[pmmult];
-                if (pmtid_TF != pmtid_TC)
-                {
-                    LOG(ERROR) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between the PMT id for TF "
+                if (pmtid_TF != pmtid_TC) {
+                    LOG(error) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between the PMT id for TF "
                                   "and TC for SofSci !";
                 }
                 uint32_t nextChannelStart = data->SOFSCI[d].TFME[pmmult];
                 // put the mapped items {det,pmt,finetime, coarsetime} one after the other in the fArray
-                for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++)
-                {
+                for (Int_t hit = curChannelStart; hit < nextChannelStart; hit++) {
                     auto item =
-                        new ((*fArray)[fArray->GetEntriesFast()]) R3BSofSciMappedData(d + 1, // 1-based numbering
+                        new ((*fArray)[fArray->GetEntriesFast()]) R3BSofSciMappedData(d + 1,   // 1-based numbering
                                                                                       pmtid_TF,
                                                                                       data->SOFSCI[d].TCv[hit],
                                                                                       data->SOFSCI[d].TFv[hit]);
@@ -123,7 +112,7 @@ Bool_t R3BSofSciReader::Read()
                 curChannelStart = nextChannelStart;
             }
         }
-    } // end of for(d)
+    }   // end of for(d)
     return kTRUE;
 }
 

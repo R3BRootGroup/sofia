@@ -50,7 +50,7 @@ class R3BSofSciSingleTcal2Hit : public FairTask
     }
 
   private:
-    Bool_t fOnline; // Don't store data for online
+    Bool_t fOnline;   // Don't store data for online
     Double_t fTof;
     Double_t fOffsetTof;
 

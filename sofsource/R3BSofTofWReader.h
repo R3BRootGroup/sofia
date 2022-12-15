@@ -3,6 +3,7 @@
 
 #include "R3BReader.h"
 #include "TClonesArray.h"
+
 #include <Rtypes.h>
 
 struct EXT_STR_h101_SOFTOFW_t;
@@ -46,4 +47,4 @@ class R3BSofTofWReader : public R3BReader
     ClassDefOverride(R3BSofTofWReader, 0);
 };
 
-#endif // R3BSOFTOFWREADER_H
+#endif   // R3BSOFTOFWREADER_H
