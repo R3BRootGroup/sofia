@@ -4,7 +4,7 @@ on: pull_request
 
 jobs:
   cpp-linter:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: cpp-linter/cpp-linter-action@v2
@@ -13,7 +13,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           style: file
-          repo-root: 
+#          repo-root: 
 
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
