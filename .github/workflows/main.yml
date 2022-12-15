@@ -20,6 +20,6 @@ jobs:
 
     steps:
       - name: c-linter
-        uses: ArtificialAmateur/cpp-linter-action@master
+        uses: ArtificialAmateur/cpp-linter-action@master clang-format-8
     env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
