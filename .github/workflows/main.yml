@@ -22,7 +22,7 @@ jobs:
       - name: Code formatting
         run: |
           cd $GITHUB_WORKSPACE   
-          singularity exec $PWD/travis-clang-format-check.sh clang-format-8
+          singularity exec /data.local2/kresan/debian10-jun19p2-v18.2.1-ucesb.sif .$PWD/travis-clang-format-check.sh clang-format-8
 
 #     - name: c-linter
 #        uses: ArtificialAmateur/cpp-linter-action@master
