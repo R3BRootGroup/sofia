@@ -26,16 +26,15 @@
 #include "FairTask.h"
 
 // SOFIA headers
-#include "R3BLogger.h"
 #include "R3BEventHeader.h"
+#include "R3BLogger.h"
+#include "R3BMusicHitData.h"
 #include "R3BMwpcHitData.h"
+#include "R3BSofFragmentAnaPar.h"
 #include "R3BSofTofWHitData.h"
 #include "R3BSofTrackingData.h"
 #include "R3BTGeoPar.h"
-#include "R3BMusicHitData.h"
 #include "R3BTwimHitData.h"
-#include "R3BTwimHitPar.h"
-#include "R3BSofFragmentAnaPar.h"
 #include "R3BTwimHitPar.h"
 
 class TClonesArray;
@@ -105,7 +104,7 @@ class R3BSofFragmentAnalysis : public FairTask
     Double_t fOffsetAq, fOffsetZ;                     // Offsets in A/q and Z
     // Double_t fDist_mw3_tof;
     // Double_t fDist_start_glad;
-    
+
     TClonesArray* fMwpc0HitDataCA; /**< Array with Mwpc Hit-input data. >*/
     TClonesArray* fMwpc1HitDataCA; /**< Array with Mwpc Hit-input data. >*/
     TClonesArray* fMwpc2HitDataCA; /**< Array with Mwpc Hit-input data. >*/
@@ -114,7 +113,7 @@ class R3BSofFragmentAnalysis : public FairTask
     TClonesArray* fTwimHitDataCA;  /**< Array with Twim Hit-input data. >*/
     TClonesArray* fTofWHitDataCA;  /**< Array with ToF Hit-input data. >*/
     TClonesArray* fTrackingDataCA; /**< Array with Tracking-output data. >*/
-    TClonesArray* fRoluPosDataCA; /**< Array with reconstructed ROLU positions. >*/
+    TClonesArray* fRoluPosDataCA;  /**< Array with reconstructed ROLU positions. >*/
 
     R3BSofTofWHitData** HitTofW;
     R3BMusicHitData** HitMusic;

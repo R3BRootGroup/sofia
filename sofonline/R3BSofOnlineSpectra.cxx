@@ -14,8 +14,6 @@
 #include "R3BEventHeader.h"
 #include "R3BMusicOnlineSpectra.h"
 #include "R3BMwpcCorrelationOnlineSpectra.h"
-#include "R3BMwpcCorrelationOnlineSpectra.h"
-#include "R3BMwpcOnlineSpectra.h"
 #include "R3BMwpcOnlineSpectra.h"
 #include "R3BSofAtOnlineSpectra.h"
 #include "R3BSofCorrOnlineSpectra.h"

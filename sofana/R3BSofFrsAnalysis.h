@@ -27,7 +27,6 @@
 // SOFIA headers
 #include "R3BFrsData.h"
 #include "R3BSofFrsAnaPar.h"
-#include "R3BFrsData.h"
 #include "R3BSofSciSingleTcalData.h"
 
 class TClonesArray;
@@ -93,9 +92,9 @@ class R3BSofFrsAnalysis : public FairTask
 
     // Parameters set at the construction
     R3BSofFrsAnaPar* fFrs_Par; // Parameter container
-    R3BMusicHitPar* fCal_Par; /// Parameter container
-    Bool_t fOnline; // Don't store data for online    UChar_t fNbSci;
-    Bool_t fBetaCorr; // Option to gate on beta correlation between s2-cave and s8-cave to avoid s2 pileup
+    R3BMusicHitPar* fCal_Par;  /// Parameter container
+    Bool_t fOnline;            // Don't store data for online    UChar_t fNbSci;
+    Bool_t fBetaCorr;          // Option to gate on beta correlation between s2-cave and s8-cave to avoid s2 pileup
     UChar_t fNbTof;
     UChar_t fNbSci;
     UChar_t fIdS2;
@@ -118,13 +117,20 @@ class R3BSofFrsAnalysis : public FairTask
     TArrayF* CalZParams;
     Float_t fZ0 = 0., fZ1 = 0., fZ2 = 0.; // CalibPar for R3BMUSIC
     Double_t MusicZ = NAN, MusicE = NAN;
-    
+
     Double_t* xpos;
     Float_t Tof_wTref_S2_Cave = NAN, Tof_wTref_S2_S8 = NAN, Tof_wTref_S8_Cave = NAN;
-    
+
     /** Private method FrsData **/
     //** Adds a FrsData to the analysis
-    R3BFrsData* AddData(Int_t StaId, Int_t StoId, Double_t z = NAN, Double_t aq = NAN, Double_t betaval = NAN, Double_t brhoval = NAN, Double_t xs2 = NAN, Double_t xc = NAN);
+    R3BFrsData* AddData(Int_t StaId,
+                        Int_t StoId,
+                        Double_t z = NAN,
+                        Double_t aq = NAN,
+                        Double_t betaval = NAN,
+                        Double_t brhoval = NAN,
+                        Double_t xs2 = NAN,
+                        Double_t xc = NAN);
 
   public:
     // Class definition

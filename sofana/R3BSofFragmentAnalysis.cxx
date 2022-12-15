@@ -335,9 +335,8 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     {
         // Calculate estimated ROLU position
         Double_t rolux = mw[0][0] + MusicTheta * (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) * 10.; // mm
-        Double_t roluy = mw[0][1] +
-                         (mw[1][1] - mw[0][1]) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) *
-                             (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ());
+        Double_t roluy = mw[0][1] + (mw[1][1] - mw[0][1]) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) *
+                                        (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ());
         AddRoluPos(rolux, roluy);
     }
     //

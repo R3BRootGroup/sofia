@@ -131,8 +131,7 @@ void R3BSofFragmentAnaPar::printParams()
 
         R3BLOG(INFO,
                "Sci " << s + 1 << " in use " << fIn_use->GetAt(s) << ", ToF offset: " << fTofW_Offset->GetAt(s)
-                      << ", Effective Length: "
-                      << fEffective_Length->GetAt(s));
+                      << ", Effective Length: " << fEffective_Length->GetAt(s));
     }
 
     R3BLOG(INFO, "R3BSofFragmentAnaPar: " << fNumBrhoParam << " parameters for Brho reconstruction in use: ");

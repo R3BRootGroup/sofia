@@ -48,8 +48,8 @@ class R3BSofFragmentAnaPar : public FairParGenericSet
     const Float_t GetTofWOffset(Int_t sci) { return fTofW_Offset->GetAt(sci - 1); }
     const Float_t GetEffectivLength(Int_t sci) { return fEffective_Length->GetAt(sci - 1); }
     const Int_t GetNumBrhoParameters() { return fNumBrhoParam; }
-    const Float_t GetBrhoParameter(Int_t index) {return fBrhoParameter->GetAt(index); }
-    
+    const Float_t GetBrhoParameter(Int_t index) { return fBrhoParameter->GetAt(index); }
+
     void SetNumSci(Int_t nb) { fNumSci = nb; }
     void SetInUse(Int_t value, Int_t sci) { fIn_use->AddAt(value, sci - 1); }
     void SetTofWOffset(Float_t value, Int_t sci) { fTofW_Offset->AddAt(value, sci - 1); }
