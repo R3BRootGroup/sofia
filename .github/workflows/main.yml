@@ -21,9 +21,3 @@ jobs:
         # for actual deployment
         # run: exit 1
         
-notifications:
-  email:
-    recipients:
-      - joseluis.rodriguez.sanchez@usc.es
-    on_success: always
-    on_failure: always
