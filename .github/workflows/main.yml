@@ -17,8 +17,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    
     steps:
+      - name: Code formatting
+        run: |
+          cd $GITHUB_WORKSPACE   
+          ./travis-clang-format-check.sh clang-format-8
+
       - name: c-linter
         uses: ArtificialAmateur/cpp-linter-action@master
     env:
