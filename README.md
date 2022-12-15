@@ -1,4 +1,4 @@
-![GitHub release (latest SemVer)](https://github.com/R3BRootGroup/sofia/releases/sofia/sofia-action?style=flat-square)
+![GitHub release (latest SemVer)](https://github.com/R3BRootGroup/sofia/releases/feb22)
 
 # Purpose
 
