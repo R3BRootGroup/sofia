@@ -22,6 +22,6 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Code formatting
-#        run: |
+        run: |
 #          cd $GITHUB_WORKSPACE
 #          exec $PWD/travis-clang-format-check.sh clang-format-8
