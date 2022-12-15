@@ -1,44 +1,29 @@
-name: Code Formatting
-      os: linux
-      dist: xenial
-      language: minimal
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-xenial-8
-          packages:
-            - clang-format-8
-      script:
-        - ./travis-clang-format-check.sh clang-format-8
+name: cpp-linter
 
-    - name: Build and Test
-      os: linux
-      dist: xenial
-      language: minimal
-      services:
-        - docker
-      env:
-        - FAIRSOFT_VERSION=jun19p1
-        - FAIRROOT_VERSION=18.2.1
-      before_install:
-        - curl -O https://www.r3broot.gsi.de/system/files/fairroot_${FAIRROOT_VERSION}_${FAIRSOFT_VERSION}_ubuntu.tar.gz
-        - docker load --input fairroot_${FAIRROOT_VERSION}_${FAIRSOFT_VERSION}_ubuntu.tar.gz
-      before_script:
-        - cd $HOME && mkdir container && cd container
-        - ${TRAVIS_BUILD_DIR}/travis-generate-dockerfile-sofia.sh | tee Dockerfile
-        - docker build -t r3broot:${TRAVIS_COMMIT} .
-        - cd $HOME
-      script:
-        - docker run -v $HOME/build/R3BRootGroup/R3BRoot:/root/R3BRoot r3broot:${TRAVIS_COMMIT}
-        
+on: pull_request
+
+jobs:
+  cpp-linter:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: file
+#          repo-root: 
+
+      - name: Fail fast?!
+        if: steps.linter.outputs.checks-failed > 0
         run: echo "Some files failed the linting checks!"
         # for actual deployment
         # run: exit 1
-
+        
 notifications:
   email:
     recipients:
       - joseluis.rodriguez.sanchez@usc.es
     on_success: always
     on_failure: always
-
