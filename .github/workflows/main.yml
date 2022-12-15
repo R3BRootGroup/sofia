@@ -21,7 +21,6 @@ jobs:
         # for actual deployment
         # run: exit 1
 
-  include:
     - name: Code Formatting
       os: linux
       dist: xenial
