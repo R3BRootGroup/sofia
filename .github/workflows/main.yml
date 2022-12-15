@@ -23,3 +23,5 @@ jobs:
         uses: ArtificialAmateur/cpp-linter-action@master
     env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      build_path: /$PWD/travis-clang-format-check.sh clang-format-8
