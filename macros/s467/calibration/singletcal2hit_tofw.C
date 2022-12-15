@@ -486,7 +486,7 @@ void singletcal2hit_tofw()
 
     // Initialize -------------------------------------------
     run->Init();
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
     
     
     FairParAsciiFileIo* parOut = new FairParAsciiFileIo();

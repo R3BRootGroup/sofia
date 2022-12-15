@@ -8,29 +8,29 @@
  */
 
 #include "R3BSofSciVsMusicOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BMusicCalData.h"
-#include "R3BMusicHitData.h"
-#include "R3BSofSciCalData.h"
-#include "R3BSofSciTcalData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BMusicCalData.h"
+#include "R3BMusicHitData.h"
+#include "R3BSofSciCalData.h"
+#include "R3BSofSciTcalData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1.h"
 #include "TH2.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -82,7 +82,7 @@ R3BSofSciVsMusicOnlineSpectra::R3BSofSciVsMusicOnlineSpectra(const char* name, I
 
 R3BSofSciVsMusicOnlineSpectra::~R3BSofSciVsMusicOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofSciVsMusicOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofSciVsMusicOnlineSpectra::Delete instance";
     if (fTcalSci)
         delete fTcalSci;
     if (fCalSci)
@@ -96,7 +96,7 @@ R3BSofSciVsMusicOnlineSpectra::~R3BSofSciVsMusicOnlineSpectra()
 InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofSciVsMusicOnlineSpectra::Init ";
+    LOG(info) << "R3BSofSciVsMusicOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -113,8 +113,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     // --- get access to tcal data of the Sci --- //
     // --- ---------------------------------- --- //
     fTcalSci = (TClonesArray*)mgr->GetObject("SofSciTcalData");
-    if (!fTcalSci)
-    {
+    if (!fTcalSci) {
         return kFATAL;
     }
 
@@ -122,8 +121,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     // --- get access to cal data of the Sci --- //
     // --- --------------------------------- --- //
     fCalSci = (TClonesArray*)mgr->GetObject("SofSciCalData");
-    if (!fCalSci)
-    {
+    if (!fCalSci) {
         return kFATAL;
     }
 
@@ -132,14 +130,14 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     // --- --------------------------------------- --- //
     fMusHitItems = (TClonesArray*)mgr->GetObject("MusicHitData");
     if (!fMusHitItems)
-        LOG(WARNING) << "R3BSofSciVsMusicOnlineSpectra: MusicHitData not found";
+        LOG(warn) << "R3BSofSciVsMusicOnlineSpectra: MusicHitData not found";
 
     // --- --------------------------------------- --- //
     // --- get access to cal data of the R3B-MUSIC --- //
     // --- --------------------------------------- --- //
     fMusCalItems = (TClonesArray*)mgr->GetObject("MusicCalData");
     if (!fMusCalItems)
-        LOG(WARNING) << "R3BSofSciVsMusicOnlineSpectra: MusicCalData not found";
+        LOG(warn) << "R3BSofSciVsMusicOnlineSpectra: MusicCalData not found";
 
     // --- ------------------------------- --- //
     // --- Create histograms for detectors --- //
@@ -151,8 +149,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     fh2_MusZvsCalPos = new TH2F*[fNbDetectors];
 
     // === R3B MUSIC CHARGE VERSUS RAW POSITION === //
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
+    for (Int_t i = 0; i < fNbDetectors; i++) {
         sprintf(Name1, "R3BMusZ_vs_PosSci%02d", i + 1);
         cMusicZvsCalPos[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
         cMusicZvsCalPos[i]->cd();
@@ -186,14 +183,12 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     fh2_MusDTvsCalPos->Draw("col");
 
     // === MUSIC HIT DATA VERSUS TOF FROM S2
-    if (fIdS2 > 0)
-    {
+    if (fIdS2 > 0) {
         cMusicZvsCalTofS2 = new TCanvas*[fNbDetectors - fIdS2];
         fh2_MusZvsCalTofS2 = new TH2F*[fNbDetectors - fIdS2];
         Float_t minS2 = 0, maxS2 = 1;
 
-        for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
-        {
+        for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++) {
             sprintf(Name1, "R3BMusZ_vs_CalTofS2-Sci%02d", dstop + 1);
             cMusicZvsCalTofS2[dstop - fIdS2] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
             cMusicZvsCalTofS2[dstop - fIdS2]->cd();
@@ -217,13 +212,11 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     }
 
     // === MUSIC HIT DATA VERSUS TOF FROM S8
-    if (fIdS8 > 0)
-    {
+    if (fIdS8 > 0) {
         cMusicZvsCalTofS8 = new TCanvas*[fNbDetectors - fIdS8];
         fh2_MusZvsCalTofS8 = new TH2F*[fNbDetectors - fIdS8];
         Float_t minS8 = 0, maxS8 = 1;
-        for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++)
-        {
+        for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++) {
             sprintf(Name1, "R3BMusZ_vs_CalTofS8-Sci%02d", dstop + 1);
             cMusicZvsCalTofS8[dstop - fIdS8] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
             cMusicZvsCalTofS8[dstop - fIdS8]->cd();
@@ -246,8 +239,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         }
     }
 
-    if (fIdS2 > 0)
-    {
+    if (fIdS2 > 0) {
         // === HIT DATA AoverQ VERSUS Q === //
 
         cAqvsq = new TCanvas("FRSv_AoverQ_vs_Q", "A/q versus q 2D", 10, 10, 800, 700);
@@ -304,8 +296,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         fh2_EcorrvsAoQ[5] =
             new TH2F("Ecorr_vs_AoQ_multup20", "Ecorr_vs_AoQ_multup20", 800, 2.25, 2.650, 1100, 1000, 6500);
 
-        for (Int_t i = 0; i < 6; i++)
-        {
+        for (Int_t i = 0; i < 6; i++) {
             fh2_EvsAoQ[i]->GetXaxis()->SetTitle("A/Q");
             fh2_EvsAoQ[i]->GetYaxis()->SetTitle("Esum [channels]");
             fh2_EvsAoQ[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -384,28 +375,23 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         cEcorrvsAoQall->cd();
         fh2_EcorrVsAoQ_all->Draw("col");
 
-    } // end of if(fIdS2>0)
+    }   // end of if(fIdS2>0)
 
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
     // --- --------------- --- //
     TFolder* mainfol = new TFolder("SofSci-R3BMusic", "SofSci vs R3B-Music");
     mainfol->Add(cMusicDTvsCalPos);
-    for (UShort_t d = 0; d < fNbDetectors; d++)
-    {
+    for (UShort_t d = 0; d < fNbDetectors; d++) {
         mainfol->Add(cMusicZvsCalPos[d]);
     }
-    if (fIdS8 > 0)
-    {
-        for (UShort_t d = fIdS8; d < fNbDetectors; d++)
-        {
+    if (fIdS8 > 0) {
+        for (UShort_t d = fIdS8; d < fNbDetectors; d++) {
             mainfol->Add(cMusicZvsCalTofS8[d - fIdS8]);
         }
     }
-    if (fIdS2 > 0)
-    {
-        for (UShort_t d = fIdS2; d < fNbDetectors; d++)
-        {
+    if (fIdS2 > 0) {
+        for (UShort_t d = fIdS2; d < fNbDetectors; d++) {
             mainfol->Add(cMusicZvsCalTofS2[d - fIdS2]);
         }
         mainfol->Add(cAqvsq);
@@ -426,26 +412,22 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 
 void R3BSofSciVsMusicOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofSciVsMusicOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofSciVsMusicOnlineSpectra::Reset_Histo";
 
     fh2_MusDTvsCalPos->Reset();
 
-    for (Int_t d = 0; d < fNbDetectors; d++)
-    {
+    for (Int_t d = 0; d < fNbDetectors; d++) {
         fh2_MusZvsCalPos[d]->Reset();
     }
 
-    if (fIdS2 > 0)
-    {
+    if (fIdS2 > 0) {
 
-        for (Int_t d = fIdS2; d < fNbDetectors; d++)
-        {
+        for (Int_t d = fIdS2; d < fNbDetectors; d++) {
             fh2_MusZvsCalTofS2[d - fIdS2]->Reset();
         }
         fh2_Aqvsq->Reset();
         fh2_Aqvsq_mult1Tref->Reset();
-        for (Int_t i = 0; i < 6; i++)
-        {
+        for (Int_t i = 0; i < 6; i++) {
             fh2_EvsAoQ[i]->Reset();
             fh2_EcorrvsAoQ[i]->Reset();
         }
@@ -459,10 +441,8 @@ void R3BSofSciVsMusicOnlineSpectra::Reset_Histo()
         fh2_EcorrVsAoQ_all->Reset();
     }
 
-    if (fIdS8)
-    {
-        for (Int_t d = fIdS8; d < fNbDetectors; d++)
-        {
+    if (fIdS8) {
+        for (Int_t d = fIdS8; d < fNbDetectors; d++) {
             fh2_MusZvsCalTofS8[d - fIdS8]->Reset();
         }
     }
@@ -480,10 +460,8 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     Double_t TofS8[fNbDetectors - fIdS8];
     Double_t Gamma, Brho, xS2, AoQ;
 
-    for (Int_t det = 0; det < fNbDetectors; det++)
-    {
-        for (Int_t pmt = 0; pmt < 3; pmt++)
-        {
+    for (Int_t det = 0; det < fNbDetectors; det++) {
+        for (Int_t pmt = 0; pmt < 3; pmt++) {
             multTcal[det * 3 + pmt] = 0;
         }
     }
@@ -495,11 +473,9 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     Double_t MusicDT = -1000000.;
     Double_t Esum = 0.;
 
-    if (fMusHitItems && fMusHitItems->GetEntriesFast() > 0)
-    {
+    if (fMusHitItems && fMusHitItems->GetEntriesFast() > 0) {
         nHits = fMusHitItems->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BMusicHitData* hit = (R3BMusicHitData*)fMusHitItems->At(ihit);
             if (!hit)
                 continue;
@@ -511,16 +487,13 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     // --- -------------- --- //
     // --- MUSIC Cal data --- //
     // --- -------------- --- //
-    if (fMusCalItems && fMusCalItems->GetEntriesFast() > 0)
-    {
+    if (fMusCalItems && fMusCalItems->GetEntriesFast() > 0) {
         nHits = fMusCalItems->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BMusicCalData* hit = (R3BMusicCalData*)fMusCalItems->At(ihit);
             if (!hit)
                 continue;
-            if (hit->GetAnodeID() == 5)
-            {
+            if (hit->GetAnodeID() == 5) {
                 MusicDT = hit->GetDTime();
             }
         }
@@ -529,11 +502,9 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     // --- ---------------- --- //
     // --- SofSci tcal data --- //
     // --- ---------------- --- //
-    if (fTcalSci && fTcalSci->GetEntriesFast())
-    {
+    if (fTcalSci && fTcalSci->GetEntriesFast()) {
         nHits = fTcalSci->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BSofSciTcalData* hit = (R3BSofSciTcalData*)fTcalSci->At(ihit);
             if (!hit)
                 continue;
@@ -550,8 +521,7 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
     Double_t Ebeta_vs_DT_p0 = 3404.87;
     Double_t Ebeta_vs_DT_p1 = -1.43623;
     Double_t EDT = 0.;
-    if (fCalSci && fCalSci->GetEntriesFast())
-    {
+    if (fCalSci && fCalSci->GetEntriesFast()) {
         xS2 = 0.;
         Gamma = 1.;
 
@@ -560,36 +530,31 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
         for (Int_t i = fIdS8; i < fNbDetectors; i++)
             TofS8[i - fIdS8] = 0;
         nHits = fCalSci->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BSofSciCalData* hit = (R3BSofSciCalData*)fCalSci->At(ihit);
-            if (!hit)
-            {
+            if (!hit) {
                 continue;
             }
             fh2_MusZvsCalPos[hit->GetDetector() - 1]->Fill(hit->GetPosMm(), MusicZ);
-            if (hit->GetDetector() == fNbDetectors)
-            {
+            if (hit->GetDetector() == fNbDetectors) {
                 fh2_MusDTvsCalPos->Fill(hit->GetPosMm(), MusicDT);
             }
-            if (hit->GetDetector() == fIdS2)
-            {
+            if (hit->GetDetector() == fIdS2) {
                 xS2 = hit->GetPosMm();
             }
-            if (fIdS2 > 0 && hit->GetDetector() > fIdS2)
-            {
+            if (fIdS2 > 0 && hit->GetDetector() > fIdS2) {
                 fh2_MusZvsCalTofS2[hit->GetDetector() - 1 - fIdS2]->Fill(hit->GetTofNs_S2(), MusicZ);
-                if (hit->GetDetector() == fNbDetectors)
-                {
-                    Ebeta = Esum / (Esum_vs_beta_p0 + Esum_vs_beta_p1 * hit->GetBeta_S2() +
-                                    Esum_vs_beta_p2 * hit->GetBeta_S2() * hit->GetBeta_S2());
+                if (hit->GetDetector() == fNbDetectors) {
+                    Ebeta = Esum
+                            / (Esum_vs_beta_p0 + Esum_vs_beta_p1 * hit->GetBeta_S2()
+                               + Esum_vs_beta_p2 * hit->GetBeta_S2() * hit->GetBeta_S2());
                     EDT = Ebeta * Ebeta_vs_DT_p0 / (Ebeta_vs_DT_p0 + Ebeta_vs_DT_p1 * MusicDT);
                     Gamma = 1. / (TMath::Sqrt(1. - TMath::Power(hit->GetBeta_S2(), 2)));
                     // if X is increasing from left to right:
                     //    Brho = fBhro0 * (1 - xMwpc0/fDCC + xS2/fDS2)
                     // in R3BRoot, X is increasing from right to left
                     //    Bro = fBrho0 * (1 + xMwpc0/fDCC - xS2/fDS2)
-                    Brho = fBrho0 * (1. - xS2 / fDS2); // + X_mwpc0/fDCC
+                    Brho = fBrho0 * (1. - xS2 / fDS2);   // + X_mwpc0/fDCC
                     AoQ = Brho / (3.10716 * Gamma * hit->GetBeta_S2());
                     fh2_EcorrVsAoQ_all->Fill(AoQ, EDT);
                     fh2_Aqvsq->Fill(AoQ, MusicZ);
@@ -600,41 +565,29 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
                     fh1_EcorrBetaDT->Fill(EDT);
                     fh2_EcorrBetaVsDT->Fill(MusicDT, Ebeta);
                     fh2_EcorrBetaDTVsDT->Fill(MusicDT, EDT);
-                    if (multTcal[3 * (fNbDetectors - 1) + 2] == 1 && multTcal[3 * (fIdS2 - 1) + 2] == 1)
-                    {
+                    if (multTcal[3 * (fNbDetectors - 1) + 2] == 1 && multTcal[3 * (fIdS2 - 1) + 2] == 1) {
                         fh2_Aqvsq_mult1Tref->Fill(AoQ, MusicZ);
 
-                        if (multTcal[3 * (fIdS2 - 1)] == 1 && multTcal[3 * (fIdS2 - 1) + 1] == 1)
-                        {
+                        if (multTcal[3 * (fIdS2 - 1)] == 1 && multTcal[3 * (fIdS2 - 1) + 1] == 1) {
                             fh2_EvsAoQ[0]->Fill(AoQ, Esum);
                             fh2_EcorrvsAoQ[0]->Fill(AoQ, EDT);
-                        }
-                        else if ((2 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 5) &&
-                                 (2 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 5))
-                        {
+                        } else if ((2 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 5)
+                                   && (2 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 5)) {
                             fh2_EvsAoQ[1]->Fill(AoQ, Esum);
                             fh2_EcorrvsAoQ[1]->Fill(AoQ, EDT);
-                        }
-                        else if ((6 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 10) &&
-                                 (6 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 10))
-                        {
+                        } else if ((6 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 10)
+                                   && (6 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 10)) {
                             fh2_EvsAoQ[2]->Fill(AoQ, Esum);
                             fh2_EcorrvsAoQ[2]->Fill(AoQ, EDT);
-                        }
-                        else if ((11 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 15) &&
-                                 (11 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 15))
-                        {
+                        } else if ((11 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 15)
+                                   && (11 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 15)) {
                             fh2_EvsAoQ[3]->Fill(AoQ, Esum);
                             fh2_EcorrvsAoQ[3]->Fill(AoQ, EDT);
-                        }
-                        else if ((16 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 20) &&
-                                 (16 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 20))
-                        {
+                        } else if ((16 <= multTcal[3 * (fIdS2 - 1)] && multTcal[3 * (fIdS2 - 1)] <= 20)
+                                   && (16 <= multTcal[3 * (fIdS2 - 1) + 1] && multTcal[3 * (fIdS2 - 1) + 1] <= 20)) {
                             fh2_EvsAoQ[4]->Fill(AoQ, Esum);
                             fh2_EcorrvsAoQ[4]->Fill(AoQ, EDT);
-                        }
-                        else if ((21 <= multTcal[3 * (fIdS2 - 1)]) && (21 <= multTcal[3 * (fIdS2 - 1) + 1]))
-                        {
+                        } else if ((21 <= multTcal[3 * (fIdS2 - 1)]) && (21 <= multTcal[3 * (fIdS2 - 1) + 1])) {
                             fh2_EvsAoQ[5]->Fill(AoQ, Esum);
                             fh2_EcorrvsAoQ[5]->Fill(AoQ, EDT);
                         }
@@ -649,46 +602,38 @@ void R3BSofSciVsMusicOnlineSpectra::Exec(Option_t* option)
 }
 
 // -----   Public method Reset   ------------------------------------------------
-void R3BSofSciVsMusicOnlineSpectra::Reset() { LOG(DEBUG) << "Clearing TofWHitData Structure"; }
+void R3BSofSciVsMusicOnlineSpectra::Reset() { LOG(debug) << "Clearing TofWHitData Structure"; }
 
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciVsMusicOnlineSpectra::FinishEvent()
 {
-    if (fTcalSci)
-    {
+    if (fTcalSci) {
         fTcalSci->Clear();
     }
-    if (fCalSci)
-    {
+    if (fCalSci) {
         fCalSci->Clear();
     }
-    if (fMusHitItems)
-    {
+    if (fMusHitItems) {
         fMusHitItems->Clear();
     }
-    if (fMusCalItems)
-    {
+    if (fMusCalItems) {
         fMusCalItems->Clear();
     }
 }
 
 void R3BSofSciVsMusicOnlineSpectra::FinishTask()
 {
-    if (fMusCalItems)
-    {
+    if (fMusCalItems) {
         fh2_MusDTvsCalPos->Write();
-        for (Int_t d = 0; d < fNbDetectors; d++)
-        {
+        for (Int_t d = 0; d < fNbDetectors; d++) {
             fh2_MusZvsCalPos[d]->Write();
         }
-        if (fIdS2 > 0)
-        {
+        if (fIdS2 > 0) {
             fh2_Aqvsq->Write();
             fh2_Aqvsq_mult1Tref->Write();
             for (Int_t d = fIdS2; d < fNbDetectors; d++)
                 fh2_MusZvsCalTofS2[d - fIdS2]->Write();
-            for (Int_t i = 0; i < 6; i++)
-            {
+            for (Int_t i = 0; i < 6; i++) {
                 fh2_EvsAoQ[i]->Write();
                 fh2_EcorrvsAoQ[i]->Write();
             }
@@ -701,8 +646,7 @@ void R3BSofSciVsMusicOnlineSpectra::FinishTask()
             fh2_EcorrBetaDTVsDT->Write();
             fh2_EcorrVsAoQ_all->Write();
         }
-        if (fIdS8 > 0)
-        {
+        if (fIdS8 > 0) {
             for (Int_t d = fIdS8; d < fNbDetectors; d++)
                 fh2_MusZvsCalTofS8[d - fIdS8]->Write();
         }

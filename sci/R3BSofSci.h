@@ -89,22 +89,22 @@ class R3BSofSci : public R3BDetector
   private:
     /** Track information to be stored until the track leaves the
         active volume. **/
-    Int_t fTrackID;  //!  track index
-    Int_t fTrackPID; //!  particle identification
+    Int_t fTrackID;    //!  track index
+    Int_t fTrackPID;   //!  particle identification
     Int_t fDetCopyID;
-    Int_t fVolumeID;                //!  volume id
-    Int_t fUniqueID;                //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
-    TLorentzVector fPosIn, fPosOut; //!  position
-    TLorentzVector fMomIn, fMomOut; //!  momentum
-    Double32_t fTime;               //!  time
-    Double32_t fLength;             //!  length
-    Double32_t fELoss;              //!  energy loss
-    Int_t fPosIndex;                //!
-    Int_t fNSteps;                  //!  Number of steps in the active volume
-    Bool_t kGeoSaved;               //!
-    TList* flGeoPar;                //!
+    Int_t fVolumeID;                  //!  volume id
+    Int_t fUniqueID;                  //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
+    TLorentzVector fPosIn, fPosOut;   //!  position
+    TLorentzVector fMomIn, fMomOut;   //!  momentum
+    Double32_t fTime;                 //!  time
+    Double32_t fLength;               //!  length
+    Double32_t fELoss;                //!  energy loss
+    Int_t fPosIndex;                  //!
+    Int_t fNSteps;                    //!  Number of steps in the active volume
+    Bool_t kGeoSaved;                 //!
+    TList* flGeoPar;                  //!
 
-    TClonesArray* fSofSCICollection; //!  The point collection
+    TClonesArray* fSofSCICollection;   //!  The point collection
 
     /** Private method AddHit
      **

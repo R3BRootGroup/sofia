@@ -8,29 +8,29 @@
  */
 
 #include "R3BSofSciOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BSofSciCalData.h"
-#include "R3BSofSciMappedData.h"
-#include "R3BSofSciSingleTcalData.h"
-#include "R3BSofSciTcalData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BSofSciCalData.h"
+#include "R3BSofSciMappedData.h"
+#include "R3BSofSciSingleTcalData.h"
+#include "R3BSofSciTcalData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1.h"
 #include "TH2.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -83,7 +83,7 @@ R3BSofSciOnlineSpectra::R3BSofSciOnlineSpectra(const char* name, Int_t iVerbose)
 
 R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofSciOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofSciOnlineSpectra::Delete instance";
     if (fMapped)
         delete fMapped;
     if (fTcal)
@@ -97,7 +97,7 @@ R3BSofSciOnlineSpectra::~R3BSofSciOnlineSpectra()
 InitStatus R3BSofSciOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofSciOnlineSpectra::Init()";
+    LOG(info) << "R3BSofSciOnlineSpectra::Init()";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -117,8 +117,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- get access to mapped data --- //
     // --- ------------------------- --- //
     fMapped = (TClonesArray*)mgr->GetObject("SofSciMappedData");
-    if (!fMapped)
-    {
+    if (!fMapped) {
         return kFATAL;
     }
 
@@ -126,8 +125,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- get access to tcal data  --- //
     // --- ------------------------ --- //
     fTcal = (TClonesArray*)mgr->GetObject("SofSciTcalData");
-    if (!fTcal)
-    {
+    if (!fTcal) {
         return kFATAL;
     }
 
@@ -135,8 +133,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- get access to single tcal data --- //
     // --- ------------------------------ --- //
     fSingleTcal = (TClonesArray*)mgr->GetObject("SofSciSingleTcalData");
-    if (!fSingleTcal)
-    {
+    if (!fSingleTcal) {
         return kFATAL;
     }
 
@@ -144,8 +141,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- get access to cal data --- //
     // --- ---------------------- --- //
     fCal = (TClonesArray*)mgr->GetObject("SofSciCalData");
-    if (!fSingleTcal)
-    {
+    if (!fSingleTcal) {
         return kFATAL;
     }
 
@@ -180,8 +176,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     fh1_CalPos = new TH1F*[fNbDetectors];
     fh2_RawPosVsCalPos = new TH2F*[fNbDetectors];
 
-    if (fIdS2 > 0)
-    {
+    if (fIdS2 > 0) {
         // === TIME-OF-FLIGHT FROM S2 AT TCAL, SINGLE TCAL AND CAL LEVELS === //
         cTofFromS2 = new TCanvas*[fNbDetectors - fIdS2];
         fh1_RawTofFromS2_TcalMult1 = new TH1D*[fNbDetectors - fIdS2];
@@ -196,8 +191,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         fh2_PosVsTofS2 = new TH2D*[2 * (fNbDetectors - fIdS2)];
     }
 
-    if (fIdS8 > 0)
-    {
+    if (fIdS8 > 0) {
         // === TIME-OF-FLIGHT FROM S8 AT TCAL, SINGLE TCAL AND CAL LEVELS === //
         cTofFromS8 = new TCanvas*[fNbDetectors - fIdS8];
         fh1_RawTofFromS8_TcalMult1 = new TH1D*[fNbDetectors - fIdS8];
@@ -258,8 +252,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     cDeltaClockPerSci->Divide(2, fNbDetectors);
     fh1_deltaClockPerSci = new TH1F*[fNbDetectors * 2];
     fh1_deltaClockPerSci_condTpat = new TH1F*[fNbDetectors * 2];
-    for (int d = 0; d < fNbDetectors; d++)
-    {
+    for (int d = 0; d < fNbDetectors; d++) {
         // with condition on TPAT
         sprintf(Name1, "DeltaClock_Sci%i_TrefRight", d + 1);
         sprintf(Name2, "DeltaClock_Sci%i_TrefRight (blue no condition on TPAT and red TPAT = 1 or 2)", d + 1);
@@ -293,14 +286,12 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         fh1_deltaClockPerSci_condTpat[2 * d + 1]->Draw("sames");
     }
 
-    if (fNbDetectors > 1)
-    {
+    if (fNbDetectors > 1) {
         // === Delta Tref at TCAL === //
         cDeltaTref = new TCanvas("DeltaTref", "DeltaTref", 10, 10, 800, 700);
         cDeltaTref->Divide(1, fNbDetectors - 1);
         fh1_DeltaTref = new TH1D*[fNbDetectors - 1];
-        for (int d = 0; d < fNbDetectors - 1; d++)
-        {
+        for (int d = 0; d < fNbDetectors - 1; d++) {
             sprintf(Name1, "DeltaTref_Sci%02d_to_SciCaveC", d + 1);
             fh1_DeltaTref[d] = new TH1D(Name1, Name1, 45000, -20000, 25000);
             cDeltaTref->cd(d + 1);
@@ -308,8 +299,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         }
     }
 
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
+    for (Int_t i = 0; i < fNbDetectors; i++) {
         // === TH1I: 1D-mult at SingleTcal level === //
         sprintf(Name1, "Sci%i_MultPerEvent_SingleTcal", i + 1);
         sprintf(Name2, "Sci%i_MultPerEvent_SingleTcal (blue no Tpat condition, red: Tpat=1 or 2)", i + 1);
@@ -375,8 +365,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         sprintf(Name1, "Sci%i_RawPosVsCalPos", i + 1);
         cRawPosVsCalPos[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
 
-        for (Int_t j = 0; j < fNbChannels; j++)
-        {
+        for (Int_t j = 0; j < fNbChannels; j++) {
             // === TH1I: 1D-mult at map level === //
             sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Mapped", i + 1, j + 1);
             sprintf(Name2,
@@ -466,8 +455,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_finetime[i * fNbChannels + j]->Draw("");
         }
 
-        for (Int_t pmt = 0; pmt < fNbChannels - 1; pmt++)
-        {
+        for (Int_t pmt = 0; pmt < fNbChannels - 1; pmt++) {
             sprintf(Name1, "SofSci%i_MultMap_TrefVsPmt%i", i + 1, pmt + 1);
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] = new TH2I(Name1, Name1, 70, -0.5, 69.5, 5, -0.5, 4.5);
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitle("Mult Pmt");
@@ -603,17 +591,15 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitleSize(0.05);
         cRawPosVsCalPos[i]->cd();
         fh2_RawPosVsCalPos[i]->Draw("col");
-    } // end of loop over fNbDetectors
+    }   // end of loop over fNbDetectors
 
-    if (fIdS2)
-    {
+    if (fIdS2) {
         // === TCanvas: position verus Tof from S2 at cal level ===//
         cPosVsTofS2 = new TCanvas("PosVsTofS2", "PosVsTofS2", 10, 10, 800, 700);
         cPosVsTofS2->Divide(2, fNbDetectors - fIdS2);
         Float_t minS2 = 0, maxS2 = 1;
 
-        for (Int_t i = fIdS2; i < fNbDetectors; i++)
-        {
+        for (Int_t i = fIdS2; i < fNbDetectors; i++) {
             // === TCanvas: time of flight from S2 calculated with Tref signal === //
             sprintf(Name1, "Tof_S2_Sci%d", i + 1);
             cTofFromS2[i - fIdS2] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
@@ -714,17 +700,15 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             cPosVsTofS2->cd((i - fIdS2) * 2 + 2);
             fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->Draw("col");
         }
-    } // end of if SofSci at S2
+    }   // end of if SofSci at S2
 
-    if (fIdS8)
-    {
+    if (fIdS8) {
         // === TCanvas: position verus Tof from S8 at cal level ===//
         cPosVsTofS8 = new TCanvas("PosVsTofS8", "PosVsTofS28", 10, 10, 800, 700);
         cPosVsTofS8->Divide(2, fNbDetectors - fIdS8);
         Int_t minS8 = 0, maxS8 = 1;
 
-        for (Int_t i = fIdS8; i < fNbDetectors; i++)
-        {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++) {
             // === TCanvas: time of flight from S8 calculated with Tref signal === //
             sprintf(Name1, "Tof_S8_Sci%d", i + 1);
             cTofFromS8[i - fIdS8] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
@@ -824,7 +808,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             cPosVsTofS8->cd((i - fIdS8) * 2 + 2);
             fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->Draw("col");
         }
-    } // end of if SofSci at S8
+    }   // end of if SofSci at S8
 
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
@@ -839,27 +823,22 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
     TFolder* mainfolSci = new TFolder("SofSci", "SofSci info");
     mainfolSci->Add(cDeltaClockPerSci);
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
+    for (Int_t i = 0; i < fNbDetectors; i++) {
         mainfolSci->Add(cMapped[i]);
         mainfolSci->Add(cPos[i]);
         mainfolSci->Add(cRawPosVsCalPos[i]);
     }
     if (fNbDetectors > 1)
         mainfolSci->Add(cDeltaTref);
-    if (fIdS2 > 0)
-    {
-        for (Int_t i = fIdS2; i < fNbDetectors; i++)
-        {
+    if (fIdS2 > 0) {
+        for (Int_t i = fIdS2; i < fNbDetectors; i++) {
             mainfolSci->Add(cTofFromS2[i - fIdS2]);
             mainfolSci->Add(cBetaFromS2[i - fIdS2]);
         }
         mainfolSci->Add(cPosVsTofS2);
     }
-    if (fIdS8 > 0)
-    {
-        for (Int_t i = fIdS8; i < fNbDetectors; i++)
-        {
+    if (fIdS8 > 0) {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++) {
             mainfolSci->Add(cTofFromS8[i - fIdS8]);
             mainfolSci->Add(cBetaFromS8[i - fIdS8]);
         }
@@ -876,15 +855,13 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
 void R3BSofSciOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofSciOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofSciOnlineSpectra::Reset_Histo";
     for (Int_t d = 0; d < fNbDetectors; d++)
-        for (Int_t p = 0; p < 2; p++)
-        {
+        for (Int_t p = 0; p < 2; p++) {
             fh1_deltaClockPerSci[2 * d + p]->Reset();
             fh1_deltaClockPerSci_condTpat[2 * d + p]->Reset();
         }
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
+    for (Int_t i = 0; i < fNbDetectors; i++) {
         // === MULTIPLICITY === //
         fh1_multMap[i]->Reset();
         fh1_multTcal[i]->Reset();
@@ -897,8 +874,7 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh2_mult[i]->Reset();
         fh2_mult_RvsL[i]->Reset();
         fh2_mult_RvsL_condTpat[i]->Reset();
-        for (Int_t j = 0; j < fNbChannels - 1; j++)
-        {
+        for (Int_t j = 0; j < fNbChannels - 1; j++) {
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Reset();
             fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + j]->Reset();
         }
@@ -914,16 +890,13 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
         fh2_RawPosVsCalPos[i]->Reset();
     }
 
-    if (fNbDetectors > 1)
-    {
+    if (fNbDetectors > 1) {
         for (int d = 0; d < fNbDetectors - 1; d++)
             fh1_DeltaTref[d]->Reset();
     }
     // === TIME OF FLIGHT AND BETA === //
-    if (fIdS2 > 0)
-    {
-        for (Int_t i = fIdS2; i < fNbDetectors; i++)
-        {
+    if (fIdS2 > 0) {
+        for (Int_t i = fIdS2; i < fNbDetectors; i++) {
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->Reset();
             fh1_RawTofFromS2_SingleTcal[i - fIdS2]->Reset();
             fh1_CalTofFromS2[i - fIdS2]->Reset();
@@ -932,10 +905,8 @@ void R3BSofSciOnlineSpectra::Reset_Histo()
             fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->Reset();
         }
     }
-    if (fIdS8 > 0)
-    {
-        for (Int_t i = fIdS8; i < fNbDetectors; i++)
-        {
+    if (fIdS8 > 0) {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++) {
             fh1_RawTofFromS8_TcalMult1[i - fIdS8]->Reset();
             fh1_RawTofFromS8_SingleTcal[i - fIdS8]->Reset();
             fh1_CalTofFromS8[i - fIdS8]->Reset();
@@ -956,10 +927,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     // --- TPAT CONDITION --- //
     // --- -------------- --- //
     Bool_t BeamOrFission = kFALSE;
-    if (fEventHeader->GetTpat() > 0)
-    {
-        if ((fEventHeader->GetTpat() & 0x1) == 1 || // beam
-            (fEventHeader->GetTpat() & 0x2) == 2)   // fission
+    if (fEventHeader->GetTpat() > 0) {
+        if ((fEventHeader->GetTpat() & 0x1) == 1 ||   // beam
+            (fEventHeader->GetTpat() & 0x2) == 2)     // fission
             BeamOrFission = kTRUE;
     }
 
@@ -968,8 +938,8 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     // --- --------------- --- //
 
     Int_t nHits;
-    Int_t iDet; // 0-based
-    Int_t iCh;  // 0-based
+    Int_t iDet;   // 0-based
+    Int_t iCh;    // 0-based
     Float_t iRawPos;
     Double_t iRawTof;
     Double_t TofS2[fNbDetectors - fIdS2];
@@ -985,10 +955,8 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
     Float_t iClock[fNbDetectors * fNbChannels];
     Float_t iCoarse[fNbDetectors * fNbChannels];
 
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
-        for (Int_t j = 0; j < fNbChannels; j++)
-        {
+    for (Int_t i = 0; i < fNbDetectors; i++) {
+        for (Int_t j = 0; j < fNbChannels; j++) {
             multMap[i * fNbChannels + j] = 0;
             multTcal[i * fNbChannels + j] = 0;
             iRawTimeNs[i * fNbChannels + j] = 0;
@@ -1001,14 +969,12 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
         CalPos[i] = -100000.;
     }
 
-    if (fMapped && fMapped->GetEntriesFast())
-    {
+    if (fMapped && fMapped->GetEntriesFast()) {
         // --- ---------------- --- //
         // --- read mapped data --- //
         // --- ---------------- --- //
         nHits = fMapped->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits; ihit++) {
             R3BSofSciMappedData* hitmapped = (R3BSofSciMappedData*)fMapped->At(ihit);
             if (!hitmapped)
                 continue;
@@ -1017,16 +983,14 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             multMap[iDet * fNbChannels + iCh]++;
             fh1_finetime[iDet * fNbChannels + iCh]->Fill(hitmapped->GetTimeFine());
             iCoarse[iDet * fNbChannels + iCh] = (Float_t)hitmapped->GetTimeCoarse();
-        } // end of loop over mapped data
+        }   // end of loop over mapped data
 
-        if (fTcal && fTcal->GetEntriesFast())
-        {
+        if (fTcal && fTcal->GetEntriesFast()) {
             // --- -------------- --- //
             // --- read tcal data --- //
             // --- -------------- --- //
             nHits = fTcal->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BSofSciTcalData* hittcal = (R3BSofSciTcalData*)fTcal->At(ihit);
                 if (!hittcal)
                     continue;
@@ -1035,22 +999,19 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 multTcal[iDet * fNbChannels + iCh]++;
                 iRawTimeNs[iDet * fNbChannels + iCh] = hittcal->GetRawTimeNs();
                 iClock[iDet * fNbChannels + iCh] = (Float_t)hittcal->GetCoarseTime();
-                if (multMap[iDet * fNbChannels + iCh] == 1 &&
-                    iCoarse[iDet * fNbChannels + iCh] != iClock[iDet * fNbChannels + iCh])
-                {
+                if (multMap[iDet * fNbChannels + iCh] == 1
+                    && iCoarse[iDet * fNbChannels + iCh] != iClock[iDet * fNbChannels + iCh]) {
                     std::cout << "iCoarse[" << iDet * fNbChannels + iCh << "] = " << iCoarse[iDet * fNbChannels + iCh]
                               << ", iClock[" << iDet * fNbChannels + iCh << "]" << iClock[iDet * fNbChannels + iCh]
                               << std::endl;
                 }
-            } // --- end of loop over Tcal data --- //
+            }   // --- end of loop over Tcal data --- //
 
-            if (fNbDetectors > 1)
-            {
-                for (int d = 0; d < fNbDetectors - 1; d++)
-                {
+            if (fNbDetectors > 1) {
+                for (int d = 0; d < fNbDetectors - 1; d++) {
                     if (multMap[(fNbDetectors - 1) * fNbChannels + 2] == 1 && multMap[d * fNbChannels + 2] == 1)
-                        fh1_DeltaTref[d]->Fill(iRawTimeNs[d * fNbChannels + 2] -
-                                               iRawTimeNs[(fNbDetectors - 1) * fNbChannels + 2]);
+                        fh1_DeltaTref[d]->Fill(iRawTimeNs[d * fNbChannels + 2]
+                                               - iRawTimeNs[(fNbDetectors - 1) * fNbChannels + 2]);
                     // std::cout << "index first tref : " << d*fNbChannels+2 << ", index cave C Tref = " <<
                     // (fNbDetectors-1)*fNbChannels+2 << std::endl;
                 }
@@ -1059,11 +1020,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             // --- --------------------- --- //
             // --- read single tcal data --- //
             // --- --------------------- --- //
-            if (fSingleTcal && fSingleTcal->GetEntries())
-            {
+            if (fSingleTcal && fSingleTcal->GetEntries()) {
                 nHits = fSingleTcal->GetEntriesFast();
-                for (Int_t ihit = 0; ihit < nHits; ihit++)
-                {
+                for (Int_t ihit = 0; ihit < nHits; ihit++) {
                     R3BSofSciSingleTcalData* hitstcal = (R3BSofSciSingleTcalData*)fSingleTcal->At(ihit);
                     if (!hitstcal)
                         continue;
@@ -1075,10 +1034,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                         fh1_RawTofFromS2_SingleTcal[iDet - fIdS2]->Fill(hitstcal->GetRawTofNs_FromS2());
                     if (fIdS8 > 0 && hitstcal->GetDetector() > fIdS8)
                         fh1_RawTofFromS8_SingleTcal[iDet - fIdS8]->Fill(hitstcal->GetRawTofNs_FromS8());
-                } // --- end of loop over SingleTcal data --- //
+                }   // --- end of loop over SingleTcal data --- //
 
-                if (fCal && fCal->GetEntries())
-                {
+                if (fCal && fCal->GetEntries()) {
                     // --- ------------- --- //
                     // --- read cal data --- //
                     // --- ------------- --- //
@@ -1087,8 +1045,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                     for (Int_t i = fIdS8; i < fNbDetectors; i++)
                         TofS8[i - fIdS8] = 0;
                     nHits = fCal->GetEntriesFast();
-                    for (Int_t ihit = 0; ihit < nHits; ihit++)
-                    {
+                    for (Int_t ihit = 0; ihit < nHits; ihit++) {
                         R3BSofSciCalData* hitcal = (R3BSofSciCalData*)fCal->At(ihit);
                         if (!hitcal)
                             continue;
@@ -1096,123 +1053,105 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                         multCal[iDet]++;
                         fh1_CalPos[iDet]->Fill(hitcal->GetPosMm());
                         CalPos[iDet] = hitcal->GetPosMm();
-                        if (fIdS2 > 0 && hitcal->GetDetector() > fIdS2)
-                        {
+                        if (fIdS2 > 0 && hitcal->GetDetector() > fIdS2) {
                             fh1_CalTofFromS2[iDet - fIdS2]->Fill(hitcal->GetTofNs_S2());
                             fh1_BetaFromS2[iDet - fIdS2]->Fill(hitcal->GetBeta_S2());
                             TofS2[iDet - fIdS2] = hitcal->GetTofNs_S2();
                             fh2_PosVsTofS2[2 * (iDet - fIdS2) + 1]->Fill(hitcal->GetTofNs_S2(), hitcal->GetPosMm());
                         }
-                        if (fIdS8 > 0 && hitcal->GetDetector() > fIdS8)
-                        {
+                        if (fIdS8 > 0 && hitcal->GetDetector() > fIdS8) {
                             fh1_CalTofFromS8[iDet - fIdS8]->Fill(hitcal->GetTofNs_S8());
                             fh1_BetaFromS8[iDet - fIdS8]->Fill(hitcal->GetBeta_S8());
                             TofS8[iDet - fIdS8] = hitcal->GetTofNs_S8();
                             fh2_PosVsTofS8[2 * (iDet - fIdS8) + 1]->Fill(TofS8[iDet - fIdS8], hitcal->GetPosMm());
                         }
-                    } // --- end of loop over Cal data --- //
-                }     // --- end of if Cal data --- //
-            }         // --- end of if SingleTcal data --- //
-        }             //--- end of if Tcal data --- //
+                    }   // --- end of loop over Cal data --- //
+                }       // --- end of if Cal data --- //
+            }           // --- end of if SingleTcal data --- //
+        }               //--- end of if Tcal data --- //
 
         // --- ----------------------------------------- --- //
         // --- filling some histogramms outside the loop --- //
         // --- ----------------------------------------- --- //
         Float_t delta = 0;
-        for (Int_t i = 0; i < fNbDetectors; i++)
-        {
+        for (Int_t i = 0; i < fNbDetectors; i++) {
             fh2_mult_RvsL[i]->Fill(multMap[i * fNbChannels + 1], multMap[i * fNbChannels]);
             for (Int_t j = 0; j < (fNbChannels - 1); j++)
                 fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
                                                                     multMap[i * fNbChannels + 2]);
-            if (BeamOrFission == kTRUE)
-            {
+            if (BeamOrFission == kTRUE) {
                 fh2_mult_RvsL_condTpat[i]->Fill(multMap[i * fNbChannels + 1], multMap[i * fNbChannels]);
                 for (Int_t j = 0; j < (fNbChannels - 1); j++)
                     fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + j]->Fill(multMap[i * fNbChannels + j],
                                                                                  multMap[i * fNbChannels + 2]);
             }
 
-            for (Int_t j = 0; j < fNbChannels; j++)
-            {
+            for (Int_t j = 0; j < fNbChannels; j++) {
                 fh2_mult[i]->Fill(j + 1, multMap[i * fNbChannels + j]);
                 fh1_multMap[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
                 fh1_multTcal[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
-                if (BeamOrFission == kTRUE)
-                {
+                if (BeamOrFission == kTRUE) {
                     fh1_multMap_condTpat[i * fNbChannels + j]->Fill(multMap[i * fNbChannels + j]);
                     fh1_multTcal_condTpat[i * fNbChannels + j]->Fill(multTcal[i * fNbChannels + j]);
                 }
             }
             fh1_multSingleTcal[i]->Fill(multSTcal[i]);
             fh1_multCal[i]->Fill(multCal[i]);
-            if (BeamOrFission == kTRUE)
-            {
+            if (BeamOrFission == kTRUE) {
                 fh1_multSingleTcal_condTpat[i]->Fill(multSTcal[i]);
                 // fh1_multCal_condTpat[i]->Fill(multCal[i]);
             }
-            if ((multTcal[i * fNbChannels] == 1) && (multTcal[i * fNbChannels + 1] == 1))
-            {
+            if ((multTcal[i * fNbChannels] == 1) && (multTcal[i * fNbChannels + 1] == 1)) {
                 // TrawRIGHT-TrawLEFT = 5*(CCr-CCl)+(FTl-FTr) : x is increasing from RIGHT to LEFT
                 iRawPos = iRawTimeNs[i * fNbChannels] - iRawTimeNs[i * fNbChannels + 1];
                 fh1_RawPos_TcalMult1[i]->Fill(iRawPos);
-                if (multTcal[i * fNbChannels + 2] == 1)
-                {
-                    if (fNbDetectors > 1 && fIdS2 > 0)
-                    {
-                        if (i == 0)
-                        {
+                if (multTcal[i * fNbChannels + 2] == 1) {
+                    if (fNbDetectors > 1 && fIdS2 > 0) {
+                        if (i == 0) {
                             fh1_deltaClockPerSci[2 * i]->Fill(
-                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
-                                (Float_t)(DeltaClockTrefRight_S2));
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels])
+                                - (Float_t)(DeltaClockTrefRight_S2));
                             fh1_deltaClockPerSci[2 * i + 1]->Fill(
-                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
-                                (Float_t)(DeltaClockTrefLeft_S2));
-                            if (BeamOrFission == kTRUE)
-                            {
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1])
+                                - (Float_t)(DeltaClockTrefLeft_S2));
+                            if (BeamOrFission == kTRUE) {
                                 fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
-                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
-                                    (Float_t)(DeltaClockTrefRight_S2));
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels])
+                                    - (Float_t)(DeltaClockTrefRight_S2));
                                 fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
-                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
-                                    (Float_t)(DeltaClockTrefLeft_S2));
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1])
+                                    - (Float_t)(DeltaClockTrefLeft_S2));
+                            }
+                        } else if (i == 1) {
+                            fh1_deltaClockPerSci[2 * i]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels])
+                                - (Float_t)(DeltaClockTrefRight_CaveC));
+                            fh1_deltaClockPerSci[2 * i + 1]->Fill(
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1])
+                                - (Float_t)(DeltaClockTrefLeft_CaveC));
+                            if (BeamOrFission == kTRUE) {
+                                fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels])
+                                    - (Float_t)(DeltaClockTrefRight_CaveC));
+                                fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
+                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1])
+                                    - (Float_t)(DeltaClockTrefLeft_CaveC));
                             }
                         }
-                        else if (i == 1)
-                        {
-                            fh1_deltaClockPerSci[2 * i]->Fill(
-                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
-                                (Float_t)(DeltaClockTrefRight_CaveC));
-                            fh1_deltaClockPerSci[2 * i + 1]->Fill(
-                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
-                                (Float_t)(DeltaClockTrefLeft_CaveC));
-                            if (BeamOrFission == kTRUE)
-                            {
-                                fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
-                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
-                                    (Float_t)(DeltaClockTrefRight_CaveC));
-                                fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
-                                    (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
-                                    (Float_t)(DeltaClockTrefLeft_CaveC));
-                            }
-                        }
-                    }
-                    else if (fNbDetectors == 1)
-                    {
+                    } else if (fNbDetectors == 1) {
                         fh1_deltaClockPerSci[2 * i]->Fill(
-                            (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
-                            (Float_t)(DeltaClockTrefRight_CaveC));
+                            (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels])
+                            - (Float_t)(DeltaClockTrefRight_CaveC));
                         fh1_deltaClockPerSci[2 * i + 1]->Fill(
-                            (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
-                            (Float_t)(DeltaClockTrefLeft_CaveC));
-                        if (BeamOrFission == kTRUE)
-                        {
+                            (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1])
+                            - (Float_t)(DeltaClockTrefLeft_CaveC));
+                        if (BeamOrFission == kTRUE) {
                             fh1_deltaClockPerSci_condTpat[2 * i]->Fill(
-                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels]) -
-                                (Float_t)(DeltaClockTrefRight_CaveC));
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels])
+                                - (Float_t)(DeltaClockTrefRight_CaveC));
                             fh1_deltaClockPerSci_condTpat[2 * i + 1]->Fill(
-                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1]) -
-                                (Float_t)(DeltaClockTrefLeft_CaveC));
+                                (Float_t)(iClock[i * fNbChannels + 2] - iClock[i * fNbChannels + 1])
+                                - (Float_t)(DeltaClockTrefLeft_CaveC));
                         }
                     }
                 }
@@ -1220,48 +1159,44 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
             fh2_RawPosVsCalPos[i]->Fill(CalPos[i], RawPos[i]);
         }
 
-        if (fIdS2 > 0)
-        {
-            for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
-            {
-                if ((multTcal[(fIdS2 - 1) * fNbChannels] == 1) &&     // SofSci at S2: PMT RIGHT
-                    (multTcal[(fIdS2 - 1) * fNbChannels + 1] == 1) && // SofSci at S2: PMT LEFT
-                    (multTcal[(fIdS2 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S2
-                    (multTcal[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
-                    (multTcal[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
-                    (multTcal[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
+        if (fIdS2 > 0) {
+            for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++) {
+                if ((multTcal[(fIdS2 - 1) * fNbChannels] == 1) &&       // SofSci at S2: PMT RIGHT
+                    (multTcal[(fIdS2 - 1) * fNbChannels + 1] == 1) &&   // SofSci at S2: PMT LEFT
+                    (multTcal[(fIdS2 - 1) * fNbChannels + 2] == 1) &&   // Tref of SofSci at S2
+                    (multTcal[dstop * fNbChannels] == 1) &&             // SofSci stop: PMT RIGHT
+                    (multTcal[dstop * fNbChannels + 1] == 1) &&         // SofSci stop: PMT LEFT
+                    (multTcal[dstop * fNbChannels + 2] == 1))           // Tref of SofSci stop
                 {
                     iRawTof =
-                        0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
-                        0.5 * (iRawTimeNs[(fIdS2 - 1) * fNbChannels] + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 1]) +
-                        iRawTimeNs[(fIdS2 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
+                        0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1])
+                        - 0.5 * (iRawTimeNs[(fIdS2 - 1) * fNbChannels] + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 1])
+                        + iRawTimeNs[(fIdS2 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
                     fh1_RawTofFromS2_TcalMult1[dstop - fIdS2]->Fill(iRawTof);
                 }
                 fh2_PosVsTofS2[2 * (dstop - fIdS2)]->Fill(TofS2[dstop - fIdS2], CalPos[fIdS2 - 1]);
             }
-        } // --- end of if SofSci at S2 --- //
+        }   // --- end of if SofSci at S2 --- //
 
-        if (fIdS8 > 0)
-        {
-            for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++)
-            {
-                if ((multMap[(fIdS8 - 1) * fNbChannels] == 1) &&     // SofSci at S8: PMT RIGHT
-                    (multMap[(fIdS8 - 1) * fNbChannels + 1] == 1) && // SofSci at S8: PMT LEFT
-                    (multMap[(fIdS8 - 1) * fNbChannels + 2] == 1) && // Tref of SofSci at S8
-                    (multMap[dstop * fNbChannels] == 1) &&           // SofSci stop: PMT RIGHT
-                    (multMap[dstop * fNbChannels + 1] == 1) &&       // SofSci stop: PMT LEFT
-                    (multMap[dstop * fNbChannels + 2] == 1))         // Tref of SofSci stop
+        if (fIdS8 > 0) {
+            for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++) {
+                if ((multMap[(fIdS8 - 1) * fNbChannels] == 1) &&       // SofSci at S8: PMT RIGHT
+                    (multMap[(fIdS8 - 1) * fNbChannels + 1] == 1) &&   // SofSci at S8: PMT LEFT
+                    (multMap[(fIdS8 - 1) * fNbChannels + 2] == 1) &&   // Tref of SofSci at S8
+                    (multMap[dstop * fNbChannels] == 1) &&             // SofSci stop: PMT RIGHT
+                    (multMap[dstop * fNbChannels + 1] == 1) &&         // SofSci stop: PMT LEFT
+                    (multMap[dstop * fNbChannels + 2] == 1))           // Tref of SofSci stop
                 {
                     iRawTof =
-                        0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1]) -
-                        0.5 * (iRawTimeNs[(fIdS8 - 1) * fNbChannels] + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 1]) +
-                        iRawTimeNs[(fIdS8 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
+                        0.5 * (iRawTimeNs[dstop * fNbChannels] + iRawTimeNs[dstop * fNbChannels + 1])
+                        - 0.5 * (iRawTimeNs[(fIdS8 - 1) * fNbChannels] + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 1])
+                        + iRawTimeNs[(fIdS8 - 1) * fNbChannels + 2] - iRawTimeNs[dstop * fNbChannels + 2];
                     fh1_RawTofFromS8_TcalMult1[dstop - fIdS8]->Fill(iRawTof);
                 }
                 fh2_PosVsTofS8[2 * (dstop - fIdS8)]->Fill(TofS8[dstop - fIdS8], CalPos[fIdS8 - 1]);
             }
-        } // --- end of if SofSci at S8 --- //
-    }     // --- end of if Mapped data --- //
+        }   // --- end of if SofSci at S8 --- //
+    }       // --- end of if Mapped data --- //
 
     fNEvents++;
 }
@@ -1272,20 +1207,16 @@ void R3BSofSciOnlineSpectra::Reset() {}
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciOnlineSpectra::FinishEvent()
 {
-    if (fMapped)
-    {
+    if (fMapped) {
         fMapped->Clear();
     }
-    if (fTcal)
-    {
+    if (fTcal) {
         fTcal->Clear();
     }
-    if (fSingleTcal)
-    {
+    if (fSingleTcal) {
         fSingleTcal->Clear();
     }
-    if (fCal)
-    {
+    if (fCal) {
         fCal->Clear();
     }
 }
@@ -1293,75 +1224,60 @@ void R3BSofSciOnlineSpectra::FinishEvent()
 void R3BSofSciOnlineSpectra::FinishTask()
 {
 
-    for (Int_t i = 0; i < fNbDetectors; i++)
-    {
-        if (fMapped)
-        {
+    for (Int_t i = 0; i < fNbDetectors; i++) {
+        if (fMapped) {
             cMapped[i]->Write();
             fh2_mult[i]->Write();
             fh2_mult_RvsL[i]->Write();
             fh2_mult_RvsL_condTpat[i]->Write();
-            for (Int_t j = 0; j < (fNbChannels - 1); j++)
-            {
+            for (Int_t j = 0; j < (fNbChannels - 1); j++) {
                 fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + j]->Write();
                 fh2_mult_TrefVsPmt_condTpat[i * (fNbChannels - 1) + j]->Write();
             }
         }
 
-        if (fTcal)
-        {
+        if (fTcal) {
             cPos[i]->Write();
             fh1_RawPos_TcalMult1[i]->Write();
             cDeltaClockPerSci->Write();
         }
 
-        if (fSingleTcal)
-        {
+        if (fSingleTcal) {
             fh1_RawPos_SingleTcal[i]->Write();
             fh1_multSingleTcal[i]->Write();
         }
 
-        if (fCal)
-        {
+        if (fCal) {
             fh1_CalPos[i]->Write();
             fh1_multCal[i]->Write();
             cRawPosVsCalPos[i]->Write();
             fh2_RawPosVsCalPos[i]->Write();
         }
 
-        for (Int_t j = 0; j < fNbChannels; j++)
-        {
-            if (fMapped)
-            {
+        for (Int_t j = 0; j < fNbChannels; j++) {
+            if (fMapped) {
                 fh1_finetime[i * fNbChannels + j]->Write();
                 fh1_multMap[i * fNbChannels + j]->Write();
             }
-            if (fTcal)
-            {
+            if (fTcal) {
                 fh1_multTcal[i * fNbChannels + j]->Write();
             }
         }
-    } // end of loop over fNbDetectors
+    }   // end of loop over fNbDetectors
 
-    if (fNbDetectors > 1 && fTcal)
-    {
+    if (fNbDetectors > 1 && fTcal) {
         cDeltaTref->Write();
     }
-    if (fIdS2 > 0)
-    {
-        for (Int_t i = fIdS2; i < fNbDetectors; i++)
-        {
+    if (fIdS2 > 0) {
+        for (Int_t i = fIdS2; i < fNbDetectors; i++) {
             cTofFromS2[i - fIdS2]->Write();
-            if (fTcal)
-            {
+            if (fTcal) {
                 fh1_RawTofFromS2_TcalMult1[i - fIdS2]->Write();
             }
-            if (fSingleTcal)
-            {
+            if (fSingleTcal) {
                 fh1_RawTofFromS2_SingleTcal[i - fIdS2]->Write();
             }
-            if (fCal)
-            {
+            if (fCal) {
                 cBetaFromS2[i - fIdS2]->Write();
                 fh1_CalTofFromS2[i - fIdS2]->Write();
                 fh2_PosVsTofS2[2 * (i - fIdS2)]->Write();
@@ -1369,28 +1285,23 @@ void R3BSofSciOnlineSpectra::FinishTask()
             }
         }
         // cPosVsTofS2->Write();
-    } // end of SofSci at S2
+    }   // end of SofSci at S2
 
-    if (fIdS8 > 0)
-    {
-        for (Int_t i = fIdS8; i < fNbDetectors; i++)
-        {
+    if (fIdS8 > 0) {
+        for (Int_t i = fIdS8; i < fNbDetectors; i++) {
             cTofFromS8[i - fIdS8]->Write();
-            if (fTcal)
-            {
+            if (fTcal) {
                 fh1_RawTofFromS8_TcalMult1[i - fIdS8]->Write();
             }
-            if (fSingleTcal)
-            {
+            if (fSingleTcal) {
                 fh1_RawTofFromS8_SingleTcal[i - fIdS8]->Write();
             }
-            if (fCal)
-            {
+            if (fCal) {
                 fh1_CalTofFromS8[i - fIdS8]->Write();
                 fh2_PosVsTofS8[2 * (i - fIdS8)]->Write();
                 fh2_PosVsTofS8[2 * (i - fIdS8) + 1]->Write();
             }
             // cPosVsTofS8->Write();
         }
-    } // end of SofSci at S8
+    }   // end of SofSci at S8
 }

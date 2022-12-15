@@ -291,7 +291,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     // Initialize -------------------------------------------
     timer.Start();
     run->Init();
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // Run --------------------------------------------------
     if (nev > -1)

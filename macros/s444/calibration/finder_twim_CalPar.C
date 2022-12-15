@@ -217,7 +217,7 @@ void finder_twim_CalPar()
 
     // Initialize -------------------------------------------
     run->Init();
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // Ascii file with the Calibartion Parameters
     FairParAsciiFileIo* parIo = new FairParAsciiFileIo();

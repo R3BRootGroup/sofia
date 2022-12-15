@@ -5,12 +5,12 @@
 #ifndef R3BSofTrimCalPar_H
 #define R3BSofTrimCalPar_H
 
-#include "FairParGenericSet.h" // for FairParGenericSet
-
+#include "FairParGenericSet.h"   // for FairParGenericSet
 #include "TArrayD.h"
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
+
 #include <TObjString.h>
 
 class FairParamList;
@@ -76,11 +76,11 @@ class R3BSofTrimCalPar : public FairParGenericSet
     // Create more Methods if you need them!
 
   private:
-    Int_t fNumSections;         // number of sections
-    Int_t fNumAnodes;           // number of anodes per section
-    TArrayD* fDriftTimeOffsets; // Drift Time offset to align drift time for a similar position
-    TArrayF* fEnergyPedestals;  // Energy pedestals
-    TArrayF* fEnergyMatchGains; // Gain matching of the triangular pair of anodes
+    Int_t fNumSections;           // number of sections
+    Int_t fNumAnodes;             // number of anodes per section
+    TArrayD* fDriftTimeOffsets;   // Drift Time offset to align drift time for a similar position
+    TArrayF* fEnergyPedestals;    // Energy pedestals
+    TArrayF* fEnergyMatchGains;   // Gain matching of the triangular pair of anodes
 
     const R3BSofTrimCalPar& operator=(const R3BSofTrimCalPar&); /*< an assignment operator>*/
 

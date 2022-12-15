@@ -9,8 +9,7 @@ R3BSofTofWMappedData::R3BSofTofWMappedData()
     , fTimeFine(0)
     , fEnergy(0)
     , fFlag(kFALSE)
-{
-}
+{}
 
 R3BSofTofWMappedData::R3BSofTofWMappedData(UShort_t detector, UShort_t pmt, UInt_t tc, UInt_t tf, UInt_t e, Bool_t flag)
     : fDetector(detector)
@@ -19,7 +18,6 @@ R3BSofTofWMappedData::R3BSofTofWMappedData(UShort_t detector, UShort_t pmt, UInt
     , fTimeFine(tf)
     , fEnergy(e)
     , fFlag(flag)
-{
-}
+{}
 
 ClassImp(R3BSofTofWMappedData)

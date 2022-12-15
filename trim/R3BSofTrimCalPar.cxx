@@ -6,7 +6,6 @@
 
 #include "FairLogger.h"
 #include "FairParamList.h"
-
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TMath.h"
@@ -47,14 +46,13 @@ void R3BSofTrimCalPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofTrimCalPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofTrimCalPar::putParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofTrimCalPar::putParams() called";
+    if (!list) {
         return;
     }
     Int_t array_size;
     array_size = fNumSections * fNumAnodes;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
     fDriftTimeOffsets->Set(array_size);
     fEnergyPedestals->Set(array_size);
     fEnergyMatchGains->Set(array_size);
@@ -70,43 +68,37 @@ void R3BSofTrimCalPar::putParams(FairParamList* list)
 Bool_t R3BSofTrimCalPar::getParams(FairParamList* list)
 {
 
-    LOG(INFO) << "R3BSofTrimCalPar::getParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofTrimCalPar::getParams() called";
+    if (!list) {
         return kFALSE;
     }
 
-    if (!list->fill("trimNumSections", &fNumSections))
-    {
+    if (!list->fill("trimNumSections", &fNumSections)) {
         return kFALSE;
     }
 
-    if (!list->fill("trimNumAnodesPerSection", &fNumAnodes))
-    {
+    if (!list->fill("trimNumAnodesPerSection", &fNumAnodes)) {
         return kFALSE;
     }
 
     Int_t array_anode = fNumSections * fNumAnodes;
-    LOG(INFO) << "Array Size for anode in use: " << array_anode;
+    LOG(info) << "Array Size for anode in use: " << array_anode;
 
     fDriftTimeOffsets->Set(array_anode);
-    if (!(list->fill("trimDriftTimeOffsets", fDriftTimeOffsets)))
-    {
-        LOG(INFO) << "---Could not initialize trimDriftTimeOffsets";
+    if (!(list->fill("trimDriftTimeOffsets", fDriftTimeOffsets))) {
+        LOG(info) << "---Could not initialize trimDriftTimeOffsets";
         return kFALSE;
     }
 
     fEnergyPedestals->Set(array_anode);
-    if (!(list->fill("trimEnergyPedestals", fEnergyPedestals)))
-    {
-        LOG(INFO) << "---Could not initialize trimEnergyPedestals";
+    if (!(list->fill("trimEnergyPedestals", fEnergyPedestals))) {
+        LOG(info) << "---Could not initialize trimEnergyPedestals";
         return kFALSE;
     }
 
     fEnergyMatchGains->Set(array_anode);
-    if (!(list->fill("trimEnergyMatchGains", fEnergyMatchGains)))
-    {
-        LOG(INFO) << "---Could not initialize trimEnergyMatchGains";
+    if (!(list->fill("trimEnergyMatchGains", fEnergyMatchGains))) {
+        LOG(info) << "---Could not initialize trimEnergyMatchGains";
         return kFALSE;
     }
 
@@ -116,34 +108,28 @@ Bool_t R3BSofTrimCalPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofTrimCalPar::printParams()
 {
-    LOG(INFO) << "R3BSofTrimCalPar: Triple MUSIC offsets for drift time: ";
+    LOG(info) << "R3BSofTrimCalPar: Triple MUSIC offsets for drift time: ";
 
-    for (Int_t s = 0; s < fNumSections; s++)
-    {
-        LOG(INFO) << "Trim section: " << s + 1;
-        for (Int_t a = 0; a < fNumAnodes; a++)
-        {
-            LOG(INFO) << "Anode number: " << a + 1 << ": Drift time offset = " << GetDriftTimeOffset(s + 1, a + 1);
+    for (Int_t s = 0; s < fNumSections; s++) {
+        LOG(info) << "Trim section: " << s + 1;
+        for (Int_t a = 0; a < fNumAnodes; a++) {
+            LOG(info) << "Anode number: " << a + 1 << ": Drift time offset = " << GetDriftTimeOffset(s + 1, a + 1);
         }
     }
 
-    LOG(INFO) << "R3BSofTrimCalPar: Triple MUSIC energy pedestal: ";
-    for (Int_t s = 0; s < fNumSections; s++)
-    {
-        LOG(INFO) << "Trim section: " << s + 1;
-        for (Int_t a = 0; a < fNumAnodes; a++)
-        {
-            LOG(INFO) << "Anode number: " << a + 1 << ": Energy pedestal = " << GetEnergyPedestal(s + 1, a + 1);
+    LOG(info) << "R3BSofTrimCalPar: Triple MUSIC energy pedestal: ";
+    for (Int_t s = 0; s < fNumSections; s++) {
+        LOG(info) << "Trim section: " << s + 1;
+        for (Int_t a = 0; a < fNumAnodes; a++) {
+            LOG(info) << "Anode number: " << a + 1 << ": Energy pedestal = " << GetEnergyPedestal(s + 1, a + 1);
         }
     }
 
-    LOG(INFO) << "R3BSofTrimCalPar: Triple MUSIC energy match gain per pair of down/up anode: ";
-    for (Int_t s = 0; s < fNumSections; s++)
-    {
-        LOG(INFO) << "Trim section: " << s + 1;
-        for (Int_t a = 0; a < fNumAnodes; a++)
-        {
-            LOG(INFO) << "Anode number: " << a + 1 << ": Energy Match Gain = " << GetEnergyMatchGain(s + 1, a + 1);
+    LOG(info) << "R3BSofTrimCalPar: Triple MUSIC energy match gain per pair of down/up anode: ";
+    for (Int_t s = 0; s < fNumSections; s++) {
+        LOG(info) << "Trim section: " << s + 1;
+        for (Int_t a = 0; a < fNumAnodes; a++) {
+            LOG(info) << "Anode number: " << a + 1 << ": Energy Match Gain = " << GetEnergyMatchGain(s + 1, a + 1);
         }
     }
 }

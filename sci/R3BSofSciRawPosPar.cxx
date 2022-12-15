@@ -2,7 +2,6 @@
 
 #include "FairLogger.h"
 #include "FairParamList.h"
-
 #include "TArrayF.h"
 #include "TMath.h"
 #include "TString.h"
@@ -24,8 +23,7 @@ R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, cons
 R3BSofSciRawPosPar::~R3BSofSciRawPosPar()
 {
     clear();
-    if (fAllRawPosParams)
-    {
+    if (fAllRawPosParams) {
         delete fAllRawPosParams;
     }
 }
@@ -40,14 +38,13 @@ void R3BSofSciRawPosPar::clear()
 // ----  Method putParams ------------------------------------------------------
 void R3BSofSciRawPosPar::putParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofSciRawPosPar::putParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofSciRawPosPar::putParams() called";
+    if (!list) {
         return;
     }
 
     Int_t array_size = fNumSignals * fNumParsPerSignal;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
 
     fAllRawPosParams->Set(array_size);
 
@@ -61,35 +58,29 @@ void R3BSofSciRawPosPar::putParams(FairParamList* list)
 // ----  Method getParams ------------------------------------------------------
 Bool_t R3BSofSciRawPosPar::getParams(FairParamList* list)
 {
-    LOG(INFO) << "R3BSofSciRawPosPar::getParams() called";
-    if (!list)
-    {
+    LOG(info) << "R3BSofSciRawPosPar::getParams() called";
+    if (!list) {
         return kFALSE;
     }
-    if (!list->fill("nDetectorsRawPosPar", &fNumDets))
-    {
+    if (!list->fill("nDetectorsRawPosPar", &fNumDets)) {
         return kFALSE;
     }
-    if (!list->fill("nChannelsRawPosPar", &fNumPmts))
-    {
+    if (!list->fill("nChannelsRawPosPar", &fNumPmts)) {
         return kFALSE;
     }
-    if (!list->fill("nSignalsRawPosPar", &fNumSignals))
-    {
+    if (!list->fill("nSignalsRawPosPar", &fNumSignals)) {
         return kFALSE;
     }
-    if (!list->fill("nRawPosParsPerSignal", &fNumParsPerSignal))
-    {
+    if (!list->fill("nRawPosParsPerSignal", &fNumParsPerSignal)) {
         return kFALSE;
     }
 
     Int_t array_size = fNumSignals * fNumParsPerSignal;
-    LOG(INFO) << "Array Size: " << array_size;
+    LOG(info) << "Array Size: " << array_size;
     fAllRawPosParams->Set(array_size);
 
-    if (!(list->fill("RawPosPar", fAllRawPosParams)))
-    {
-        LOG(INFO) << "---Could not initialize fAllRawPosParams";
+    if (!(list->fill("RawPosPar", fAllRawPosParams))) {
+        LOG(info) << "---Could not initialize fAllRawPosParams";
         return kFALSE;
     }
 
@@ -99,15 +90,14 @@ Bool_t R3BSofSciRawPosPar::getParams(FairParamList* list)
 // ----  Method printParams ----------------------------------------------------
 void R3BSofSciRawPosPar::printParams()
 {
-    LOG(INFO) << "R3BSofSciRawPosPar: SofSciRawPos Parameters: ";
+    LOG(info) << "R3BSofSciRawPosPar: SofSciRawPos Parameters: ";
     Int_t array_size = fNumSignals * fNumParsPerSignal;
 
-    LOG(INFO) << "--- --------------------------------------------";
-    LOG(INFO) << "--- Single Tcal Parameters :  ";
-    LOG(INFO) << "--- --------------------------------------------";
-    for (Int_t param = 0; param < array_size; param++)
-    {
-        LOG(INFO) << "LIMIT " << param << " = " << fAllRawPosParams->GetAt(param);
+    LOG(info) << "--- --------------------------------------------";
+    LOG(info) << "--- Single Tcal Parameters :  ";
+    LOG(info) << "--- --------------------------------------------";
+    for (Int_t param = 0; param < array_size; param++) {
+        LOG(info) << "LIMIT " << param << " = " << fAllRawPosParams->GetAt(param);
     }
 }
 

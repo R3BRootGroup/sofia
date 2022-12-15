@@ -1,9 +1,9 @@
 
+#include "R3BSofWhiterabbitReader.h"
+
 #include "FairLogger.h"
 #include "FairRootManager.h"
-
 #include "R3BEventHeader.h"
-#include "R3BSofWhiterabbitReader.h"
 #include "R3BWRData.h"
 #include "TClonesArray.h"
 
@@ -26,12 +26,11 @@ R3BSofWhiterabbitReader::R3BSofWhiterabbitReader(EXT_STR_h101_WRSOFIA* data,
     , fWhiterabbitId2(whiterabbit_id2)
     , fEventHeader(nullptr)
     , fArray(new TClonesArray("R3BWRData"))
-{
-}
+{}
 
 R3BSofWhiterabbitReader::~R3BSofWhiterabbitReader()
 {
-    LOG(DEBUG) << "R3BSofWhiterabbitReader: Delete instance";
+    LOG(debug) << "R3BSofWhiterabbitReader: Delete instance";
     if (fArray)
         delete fArray;
 }
@@ -39,24 +38,21 @@ R3BSofWhiterabbitReader::~R3BSofWhiterabbitReader()
 Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
 {
     Int_t ok;
-    LOG(INFO) << "R3BSofWhiterabbitReader::Init()";
+    LOG(info) << "R3BSofWhiterabbitReader::Init()";
     EXT_STR_h101_WRSOFIA_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_WRSOFIA, 0);
 
-    if (!ok)
-    {
-        LOG(ERROR) << "R3BSofWhiterabbitReader::Failed to setup structure information.";
+    if (!ok) {
+        LOG(error) << "R3BSofWhiterabbitReader::Failed to setup structure information.";
         return kFALSE;
     }
 
     // Look for the R3BEventHeader
     FairRootManager* frm = FairRootManager::Instance();
     fEventHeader = (R3BEventHeader*)frm->GetObject("EventHeader.");
-    if (!fEventHeader)
-    {
-        LOG(WARNING) << "R3BSofWhiterabbitReader::Init() EventHeader. not found";
-    }
-    else
-        LOG(INFO) << "R3BSofWhiterabbitReader::Init() R3BEventHeader found";
+    if (!fEventHeader) {
+        LOG(warn) << "R3BSofWhiterabbitReader::Init() EventHeader. not found";
+    } else
+        LOG(info) << "R3BSofWhiterabbitReader::Init() R3BEventHeader found";
 
     // Register output array in tree
     FairRootManager::Instance()->Register("SofWRData", "SofWR", fArray, !fOnline);
@@ -69,15 +65,11 @@ Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
 
 Bool_t R3BSofWhiterabbitReader::Read()
 {
-    if (!fData->TIMESTAMP_SOFIA1ID)
-    {
+    if (!fData->TIMESTAMP_SOFIA1ID) {
         return kTRUE;
-    }
-    else if (fData->TIMESTAMP_SOFIA1ID && !fData->TIMESTAMP_SOFIA2ID)
-    {
+    } else if (fData->TIMESTAMP_SOFIA1ID && !fData->TIMESTAMP_SOFIA2ID) {
 
-        if (fWhiterabbitId1 != fData->TIMESTAMP_SOFIA1ID)
-        {
+        if (fWhiterabbitId1 != fData->TIMESTAMP_SOFIA1ID) {
             char strMessage[1000];
             snprintf(strMessage,
                      sizeof strMessage,
@@ -88,29 +80,23 @@ Bool_t R3BSofWhiterabbitReader::Read()
             LOG(error) << strMessage;
         }
 
-        if (fEventHeader != nullptr)
-        {
+        if (fEventHeader != nullptr) {
             uint64_t timestamp =
-                ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T3 << 32) |
-                ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA1WR_T1;
+                ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T3 << 32)
+                | ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA1WR_T1;
 
             // fEventHeader->SetTimeStamp(timestamp);
             fNEvent = fEventHeader->GetEventno();
             new ((*fArray)[fArray->GetEntriesFast()]) R3BWRData(timestamp);
-        }
-        else
-        {
+        } else {
             fNEvent++;
         }
 
         fData->TIMESTAMP_SOFIA1ID = 0;
         return kTRUE;
-    }
-    else if (fData->TIMESTAMP_SOFIA1ID && fData->TIMESTAMP_SOFIA2ID)
-    {
+    } else if (fData->TIMESTAMP_SOFIA1ID && fData->TIMESTAMP_SOFIA2ID) {
 
-        if (fWhiterabbitId1 != fData->TIMESTAMP_SOFIA1ID)
-        {
+        if (fWhiterabbitId1 != fData->TIMESTAMP_SOFIA1ID) {
             char strMessage[1000];
             snprintf(strMessage,
                      sizeof strMessage,
@@ -121,8 +107,7 @@ Bool_t R3BSofWhiterabbitReader::Read()
             LOG(error) << strMessage;
         }
 
-        if (fWhiterabbitId2 != fData->TIMESTAMP_SOFIA2ID)
-        {
+        if (fWhiterabbitId2 != fData->TIMESTAMP_SOFIA2ID) {
             char strMessage[1000];
             snprintf(strMessage,
                      sizeof strMessage,
@@ -133,23 +118,20 @@ Bool_t R3BSofWhiterabbitReader::Read()
             LOG(error) << strMessage;
         }
 
-        if (fEventHeader != nullptr)
-        {
+        if (fEventHeader != nullptr) {
             uint64_t timestamp1 =
-                ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T3 << 32) |
-                ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA1WR_T1;
+                ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T3 << 32)
+                | ((uint64_t)fData->TIMESTAMP_SOFIA1WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA1WR_T1;
 
             // fEventHeader->SetTimeStamp(timestamp);
             fNEvent = fEventHeader->GetEventno();
             new ((*fArray)[fArray->GetEntriesFast()]) R3BWRData(timestamp1);
 
             uint64_t timestamp2 =
-                ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T3 << 32) |
-                ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA2WR_T1;
+                ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T4 << 48) | ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T3 << 32)
+                | ((uint64_t)fData->TIMESTAMP_SOFIA2WR_T2 << 16) | (uint64_t)fData->TIMESTAMP_SOFIA2WR_T1;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BWRData(timestamp2);
-        }
-        else
-        {
+        } else {
             fNEvent++;
         }
 

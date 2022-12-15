@@ -11,8 +11,8 @@
 #include "R3BSofTcalContFact.h"
 
 #include "FairLogger.h"
-#include "FairParSet.h"    // for FairParSet
-#include "FairRuntimeDb.h" // for FairRuntimeDb
+#include "FairParSet.h"      // for FairParSet
+#include "FairRuntimeDb.h"   // for FairRuntimeDb
 #include "R3BSofTcalPar.h"
 
 static R3BSofTcalContFact gR3BSofTcalContFact;
@@ -34,30 +34,30 @@ void R3BSofTcalContFact::setAllContainers()
     // --- --------------------------------------------------- --- //
     // --- VFTX calibration for scintillators at S2 and Cave C --- //
     // --- --------------------------------------------------- --- //
-   /* FairContainer* p1 = new FairContainer("SofSciTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
-    p1->addContext("SofTcalParContext");
-    containers->Add(p1);
+    /* FairContainer* p1 = new FairContainer("SofSciTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
+     p1->addContext("SofTcalParContext");
+     containers->Add(p1);
 
-    // --- ---------------------------------------- --- //
-    // --- VFTX calibration for time-of-flight wall --- //
-    // --- ---------------------------------------- --- //
-    FairContainer* p2 = new FairContainer("SofTofWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
-    p2->addContext("SofTcalParContext");
-    containers->Add(p2);
+     // --- ---------------------------------------- --- //
+     // --- VFTX calibration for time-of-flight wall --- //
+     // --- ---------------------------------------- --- //
+     FairContainer* p2 = new FairContainer("SofTofWTcalPar", "Sof Tcal Parameters", "SofTcalParContext");
+     p2->addContext("SofTcalParContext");
+     containers->Add(p2);
 
-    // --- ----------------------------------------------- --- //
-    // --- Clock offset for scintillators at S2 and Cave C --- //
-    // --- ----------------------------------------------- --- //
-    FairContainer* p3 = new FairContainer("SofSciClockOffsetPar", "Sof Tcal Parameters", "SofTcalParContext");
-    p3->addContext("SofTcalParContext");
-    containers->Add(p3);
+     // --- ----------------------------------------------- --- //
+     // --- Clock offset for scintillators at S2 and Cave C --- //
+     // --- ----------------------------------------------- --- //
+     FairContainer* p3 = new FairContainer("SofSciClockOffsetPar", "Sof Tcal Parameters", "SofTcalParContext");
+     p3->addContext("SofTcalParContext");
+     containers->Add(p3);
 
-    // --- ------------------------------------ --- //
-    // --- Clock offset for time-of-flight wall --- //
-    // --- ------------------------------------ --- //
-    FairContainer* p4 = new FairContainer("SofTofWClockOffsetPar", "Sof Tcal Parameters", "SofTcalParContext");
-    p4->addContext("SofTcalParContext");
-    containers->Add(p4);*/
+     // --- ------------------------------------ --- //
+     // --- Clock offset for time-of-flight wall --- //
+     // --- ------------------------------------ --- //
+     FairContainer* p4 = new FairContainer("SofTofWClockOffsetPar", "Sof Tcal Parameters", "SofTcalParContext");
+     p4->addContext("SofTcalParContext");
+     containers->Add(p4);*/
 }
 
 FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
@@ -67,28 +67,28 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
      * of this container, the name is concatinated with the context. */
 
     const char* name = c->GetName();
-    LOG(INFO) << "R3BSofTcalContFact: Create container name: " << name;
+    LOG(info) << "R3BSofTcalContFact: Create container name: " << name;
     FairParSet* p = 0;
-/*
-    if (strcmp(name, "SofSciTcalPar") == 0)
-    {
-        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
+    /*
+        if (strcmp(name, "SofSciTcalPar") == 0)
+        {
+            p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+        }
 
-    else if (strcmp(name, "SofTofWTcalPar") == 0)
-    {
-        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
+        else if (strcmp(name, "SofTofWTcalPar") == 0)
+        {
+            p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+        }
 
-    else if (strcmp(name, "SofSciClockOffsetPar") == 0)
-    {
-        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
+        else if (strcmp(name, "SofSciClockOffsetPar") == 0)
+        {
+            p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+        }
 
-    else if (strcmp(name, "SofTofWClockOffsetPar") == 0)
-    {
-        p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }*/
+        else if (strcmp(name, "SofTofWClockOffsetPar") == 0)
+        {
+            p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
+        }*/
 
     return p;
 }

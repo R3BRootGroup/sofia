@@ -82,8 +82,8 @@ void calib02_rawpos_Sci(Int_t First=1320)
   // --- Initialize --- //
   // --- ---------- --- //
   run->Init();
-  FairLogger::GetLogger()->SetLogScreenLevel("INFO");
-  //FairLogger::GetLogger()->SetLogScreenLevel("WARNING");
+  FairLogger::GetLogger()->SetLogScreenLevel("info");
+  //FairLogger::GetLogger()->SetLogScreenLevel("warn");
 
   // --- ------------------------------------------- --- //
   // --- output parameters :                         --- //

@@ -123,7 +123,7 @@ void analysis01_unpack(Int_t FirstRun=1365)
   // --- Initialize --- //
   // --- ---------- --- //
   run->Init();
-  FairLogger::GetLogger()->SetLogScreenLevel("WARNING");
+  FairLogger::GetLogger()->SetLogScreenLevel("warn");
   
   // --- --- --- //
   // --- Run --- //

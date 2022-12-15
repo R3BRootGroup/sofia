@@ -5,12 +5,12 @@
 #ifndef R3BSofTrimHitPar_H
 #define R3BSofTrimHitPar_H
 
-#include "FairParGenericSet.h" // for FairParGenericSet
-
+#include "FairParGenericSet.h"   // for FairParGenericSet
 #include "TArrayD.h"
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
+
 #include <TObjString.h>
 
 class FairParamList;
@@ -67,18 +67,18 @@ class R3BSofTrimHitPar : public FairParGenericSet
 
     Float_t GetEnergyCorrDeltaDTPar(Int_t section, Int_t signal, Int_t degree)
     {
-        return fEnergyCorrDeltaDTPars->GetAt((section - 1) * (fNumCorrDeltaDTParsPerSignal * fNumSignalsPerSection) +
-                                             (signal - 1) * fNumCorrDeltaDTParsPerSignal + degree);
-    } // section is 1-based, signal is 1-based, degree is 0-based
+        return fEnergyCorrDeltaDTPars->GetAt((section - 1) * (fNumCorrDeltaDTParsPerSignal * fNumSignalsPerSection)
+                                             + (signal - 1) * fNumCorrDeltaDTParsPerSignal + degree);
+    }   // section is 1-based, signal is 1-based, degree is 0-based
 
     TArrayF* GetEnergyCorrDeltaDTPars() { return fEnergyCorrDeltaDTPars; }
 
     void SetEnergyCorrDeltaDTPar(Float_t val, Int_t section, Int_t signal, Int_t degree)
     {
         fEnergyCorrDeltaDTPars->AddAt(val,
-                                      (section - 1) * (fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal) +
-                                          (signal - 1) * fNumCorrDeltaDTParsPerSignal + degree);
-    } // section is 1-based, signal is 1-based, degree is 0-based
+                                      (section - 1) * (fNumSignalsPerSection * fNumCorrDeltaDTParsPerSignal)
+                                          + (signal - 1) * fNumCorrDeltaDTParsPerSignal + degree);
+    }   // section is 1-based, signal is 1-based, degree is 0-based
 
     // === ==================================== === //
     // === ALIGNEMENT OF THE ENERGY PER SECTION === //
@@ -104,20 +104,20 @@ class R3BSofTrimHitPar : public FairParGenericSet
     Float_t GetEnergyCorrBetaPar(Int_t section, Int_t degree)
     {
         return fEnergyCorrBetaPars->GetAt((section - 1) * fNumCorrBetaParsPerSection + degree);
-    } // degree is 0-based
+    }   // degree is 0-based
 
     TArrayF* GetEnergyCorrBetaPars() { return fEnergyCorrBetaPars; }
 
     void SetEnergyCorrBetaPar(Float_t val, Int_t section, Int_t degree)
     {
         fEnergyCorrBetaPars->AddAt(val, (section - 1) * fNumCorrBetaParsPerSection + degree);
-    } // section is 1-based, degree is 0-based
+    }   // section is 1-based, degree is 0-based
 
   private:
-    Int_t fNumSections;                 // number of sections
-    Int_t fNumSignalsPerSection;        // 6 if Rectangular anodes, 3 if Triangular anodes
-    Int_t fNumCorrDeltaDTParsPerSignal; // if pol3 -> 4 parameters (P0, P1, P2, P3)
-    Int_t fNumCorrBetaParsPerSection;   // if pol2 -> 3 parameters (P0, P1, P2)
+    Int_t fNumSections;                   // number of sections
+    Int_t fNumSignalsPerSection;          // 6 if Rectangular anodes, 3 if Triangular anodes
+    Int_t fNumCorrDeltaDTParsPerSignal;   // if pol3 -> 4 parameters (P0, P1, P2, P3)
+    Int_t fNumCorrBetaParsPerSection;     // if pol2 -> 3 parameters (P0, P1, P2)
 
     TArrayF* fEnergyCorrDeltaDTPars;
     TArrayF* fEnergyAlignOffsets;

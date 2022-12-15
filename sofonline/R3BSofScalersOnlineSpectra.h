@@ -12,6 +12,7 @@
 #include "TH1I.h"
 #include "TH2F.h"
 #include "TMath.h"
+
 #include <array>
 #include <cstdlib>
 #include <fstream>
@@ -19,9 +20,9 @@
 #include <sstream>
 
 #define NbScalers 14
-#define NbChannelsPerScaler \
-    {                       \
-      7, 56 , 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16   \
+#define NbChannelsPerScaler                                                                                            \
+    {                                                                                                                  \
+        7, 56, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16                                                          \
     }
 
 class TClonesArray;
@@ -95,17 +96,17 @@ class R3BSofScalersOnlineSpectra : public FairTask
     TClonesArray* fMappedItemsTrloii;
 
     // check for trigger should be done globablly (somewhere else)
-    R3BEventHeader* header; /**< Event header.      */
+    R3BEventHeader* header;  /**< Event header.      */
     Int_t fNEvents, fNSpill; /**< Event counter.     */
     Bool_t read_trloii;
     ULong64_t fTrloii[16][16] = {{0}}, fScaler[8] = {0}, fcounts[10] = {0};
     Double_t frate[10] = {0.};
 
     // Canvas
-    TCanvas* cScalersGeneralView[NbScalers], *cRate;
+    TCanvas *cScalersGeneralView[NbScalers], *cRate;
 
     // Histograms for Mapped data : accumulate statistics per channel
-    TH1D* fh1_GeneralView[NbScalers], *h_RatePerSpill;
+    TH1D *fh1_GeneralView[NbScalers], *h_RatePerSpill;
 
   public:
     ClassDef(R3BSofScalersOnlineSpectra, 1)

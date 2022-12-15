@@ -9,10 +9,9 @@
 #ifndef R3BSofTrimPoint_H
 #define R3BSofTrimPoint_H
 
+#include "FairMCPoint.h"
 #include "TObject.h"
 #include "TVector3.h"
-
-#include "FairMCPoint.h"
 
 class R3BSofTrimPoint : public FairMCPoint
 {

@@ -1,8 +1,8 @@
-#include "FairLogger.h"
+#include "R3BSofCorrmReader.h"
 
+#include "FairLogger.h"
 #include "FairRootManager.h"
 #include "R3BSofCorrmMappedData.h"
-#include "R3BSofCorrmReader.h"
 
 extern "C"
 {
@@ -21,30 +21,25 @@ R3BSofCorrmReader::R3BSofCorrmReader(EXT_STR_h101_SOFCORRM* data, UInt_t offset)
     , fOnline(kFALSE)
     , fLogger(FairLogger::GetLogger())
     , fArray(new TClonesArray("R3BSofCorrmMappedData"))
-{
-}
+{}
 
 R3BSofCorrmReader::~R3BSofCorrmReader() {}
 
 Bool_t R3BSofCorrmReader::Init(ext_data_struct_info* a_struct_info)
 {
     int ok;
-    LOG(INFO) << "R3BSofCorrmReader::Init";
+    LOG(info) << "R3BSofCorrmReader::Init";
     EXT_STR_h101_SOFCORRM_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFCORRM, 0);
-    if (!ok)
-    {
+    if (!ok) {
         perror("ext_data_struct_info_item");
-        LOG(ERROR) << "R3BSofCorrmReader::Failed to setup structure information.";
+        LOG(error) << "R3BSofCorrmReader::Failed to setup structure information.";
         return kFALSE;
     }
 
     // Register output array in tree
-    if (!fOnline)
-    {
+    if (!fOnline) {
         FairRootManager::Instance()->Register("CorrmMappedData", "SofCorrm", fArray, kTRUE);
-    }
-    else
-    {
+    } else {
         FairRootManager::Instance()->Register("CorrmMappedData", "SofCorrm", fArray, kFALSE);
     }
 
@@ -63,22 +58,19 @@ Bool_t R3BSofCorrmReader::Read()
     EXT_STR_h101_SOFCORRM_onion* data = (EXT_STR_h101_SOFCORRM_onion*)fData;
 
     // only one TR=correlation signal and TT=trig signal
-    if (data->SOFCORRM_TRM == 0 || data->SOFCORRM_TTM == 0)
-    {
+    if (data->SOFCORRM_TRM == 0 || data->SOFCORRM_TTM == 0) {
         return kTRUE;
     }
 
     // only one TR=correlation signal and TT=trig signal
-    if (data->SOFCORRM_TRM > 1 || data->SOFCORRM_TTM > 1)
-    {
+    if (data->SOFCORRM_TRM > 1 || data->SOFCORRM_TTM > 1) {
         LOG(FATAL) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
                    << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
         return kFALSE;
     }
 
     // signal ids are 1-based
-    if (data->SOFCORRM_TRMI[0] != 1 || data->SOFCORRM_TTMI[0] != 1)
-    {
+    if (data->SOFCORRM_TRMI[0] != 1 || data->SOFCORRM_TTMI[0] != 1) {
         LOG(INFO) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
                   << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
         LOG(FATAL) << "R3BSofCorrmReader::Read(), SOFCORRM_TRMI=" << data->SOFCORRM_TRMI[0]
@@ -87,16 +79,14 @@ Bool_t R3BSofCorrmReader::Read()
     }
 
     // MDPP16 is multi-hit capability, but we should only have one trigger hit per event
-    if (data->SOFCORRM_TT != 1)
-    {
+    if (data->SOFCORRM_TT != 1) {
         LOG(FATAL) << "R3BSofCorrmReader::Read(), SOFCORRN_TT=" << data->SOFCORRM_TT;
         return kFALSE;
     }
 
     // read the correlation signal of the sofia_mesy DAQ
     // if the searching window is too large, might have several signals
-    for (int i = 0; i < data->SOFCORRM_TRME[0]; i++)
-    {
+    for (int i = 0; i < data->SOFCORRM_TRME[0]; i++) {
         new ((*fArray)[fArray->GetEntriesFast()]) R3BSofCorrmMappedData(data->SOFCORRM_TRv[i], data->SOFCORRM_TTv[0]);
     }
 

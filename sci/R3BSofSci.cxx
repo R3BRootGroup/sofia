@@ -3,11 +3,11 @@
 // -----                  Created 24/11/17  by H.Alvarez-Pol           -----
 // -------------------------------------------------------------------------
 #include "R3BSofSci.h"
+
 #include "FairRootManager.h"
 #include "FairRun.h"
 #include "FairRuntimeDb.h"
 #include "FairVolume.h"
-
 #include "R3BMCStack.h"
 #include "R3BSofSciPoint.h"
 #include "TClonesArray.h"
@@ -20,13 +20,11 @@
 
 R3BSofSci::R3BSofSci()
     : R3BSofSci("")
-{
-}
+{}
 
 R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofSci(geoFile, { trans, rot })
-{
-}
+    : R3BSofSci(geoFile, {trans, rot})
+{}
 
 R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofSci", kSOFSCI, geoFile, combi)
@@ -41,12 +39,10 @@ R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoCombiTrans& combi)
 
 R3BSofSci::~R3BSofSci()
 {
-    if (flGeoPar)
-    {
+    if (flGeoPar) {
         delete flGeoPar;
     }
-    if (fSofSCICollection)
-    {
+    if (fSofSCICollection) {
         fSofSCICollection->Delete();
         delete fSofSCICollection;
     }
@@ -56,19 +52,18 @@ void R3BSofSci::Initialize()
 {
     FairDetector::Initialize();
 
-    LOG(INFO) << "R3BSofSci: initialisation";
-    LOG(DEBUG) << "R3BSofSci: Vol (McId) def";
+    LOG(info) << "R3BSofSci: initialisation";
+    LOG(debug) << "R3BSofSci: Vol (McId) def";
 }
 
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofSci::ProcessHits(FairVolume* vol)
 {
-    if (gMC->IsTrackEntering())
-    {
+    if (gMC->IsTrackEntering()) {
         gGeoManager->cd(gMC->CurrentVolPath());
         Int_t nodeId = gGeoManager->GetNodeId();
         fELoss = 0.;
-        fNSteps = 0; // FIXME
+        fNSteps = 0;   // FIXME
         fTime = gMC->TrackTime() * 1.0e09;
         fLength = gMC->TrackLength();
         gMC->TrackPosition(fPosIn);
@@ -78,14 +73,12 @@ Bool_t R3BSofSci::ProcessHits(FairVolume* vol)
     // Sum energy loss for all steps in the active volume
     fELoss += gMC->Edep();
 
-    if (gMC->Edep() > 0)
-    {
+    if (gMC->Edep() > 0) {
 
         fNSteps++;
 
         // Set additional parameters at exit of active volume. Create R3BSofSciPoint.
-        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
-        {
+        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared()) {
 
             fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
             fVolumeID = vol->getMCid();
@@ -151,7 +144,7 @@ TClonesArray* R3BSofSci::GetCollection(Int_t iColl) const
 void R3BSofSci::Print(Option_t* option) const
 {
     Int_t nHits = fSofSCICollection->GetEntriesFast();
-    LOG(INFO) << "R3BSofSci: " << nHits << " points registered in this event";
+    LOG(info) << "R3BSofSci: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
@@ -165,18 +158,17 @@ void R3BSofSci::Reset()
 void R3BSofSci::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 {
     Int_t nEntries = cl1->GetEntriesFast();
-    LOG(INFO) << "R3BSofSci: " << nEntries << " entries to add";
+    LOG(info) << "R3BSofSci: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
     R3BSofSciPoint* oldpoint = NULL;
-    for (Int_t i = 0; i < nEntries; i++)
-    {
+    for (Int_t i = 0; i < nEntries; i++) {
         oldpoint = (R3BSofSciPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
         new (clref[fPosIndex]) R3BSofSciPoint(*oldpoint);
         fPosIndex++;
     }
-    LOG(INFO) << "R3BSofSci: " << cl2->GetEntriesFast() << " merged entries";
+    LOG(info) << "R3BSofSci: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -194,7 +186,7 @@ R3BSofSciPoint* R3BSofSci::AddPoint(Int_t trackID,
     TClonesArray& clref = *fSofSCICollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
-        LOG(INFO) << "R3BSofSci: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
+        LOG(info) << "R3BSofSci: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size]) R3BSofSciPoint(trackID, detID, copyID, posIn, posOut, momIn, momOut, time, length, eLoss);
 }
@@ -202,8 +194,7 @@ R3BSofSciPoint* R3BSofSci::AddPoint(Int_t trackID,
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofSci::CheckIfSensitive(std::string name)
 {
-    if (TString(name).Contains("Sci_"))
-    { // check at the simulation
+    if (TString(name).Contains("Sci_")) {   // check at the simulation
         return kTRUE;
     }
     return kFALSE;

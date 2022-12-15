@@ -131,7 +131,7 @@ void analysis02_tcal(Int_t FirstRun=1355)
   // --- Initialize --- //
   // --- ---------- --- //
   run->Init();
-  FairLogger::GetLogger()->SetLogScreenLevel("WARNING");
+  FairLogger::GetLogger()->SetLogScreenLevel("warn");
   
   // --- --- --- //
   // --- Run --- //

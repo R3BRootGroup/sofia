@@ -12,6 +12,7 @@
 #include "TH2D.h"
 #include "TH2F.h"
 #include "TMath.h"
+
 #include <array>
 #include <cstdlib>
 #include <fstream>
@@ -130,10 +131,10 @@ class R3BSofSciVsMusicOnlineSpectra : public FairTask
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas
-    TCanvas** cMusicZvsCalPos; // [fNbDetectors];
+    TCanvas** cMusicZvsCalPos;   // [fNbDetectors];
     TCanvas* cMusicDTvsCalPos;
-    TCanvas** cMusicZvsCalTofS2; // [fNbDetectors-fIdS2];
-    TCanvas** cMusicZvsCalTofS8; // [fNbDetectors-fIdS8];
+    TCanvas** cMusicZvsCalTofS2;   // [fNbDetectors-fIdS2];
+    TCanvas** cMusicZvsCalTofS8;   // [fNbDetectors-fIdS8];
     TCanvas* cAqvsq;
     TCanvas* cAqvsq_mult1Tref;
     TCanvas* cEvsAoQ;
@@ -143,10 +144,10 @@ class R3BSofSciVsMusicOnlineSpectra : public FairTask
     TCanvas* cEcorrvsAoQall;
 
     // Histogram for correlation with R3B-Music
-    TH2F** fh2_MusZvsCalPos; //[fNbDetectors];
+    TH2F** fh2_MusZvsCalPos;   //[fNbDetectors];
     TH2F* fh2_MusDTvsCalPos;
-    TH2F** fh2_MusZvsCalTofS2; //[fNbDetectors-fIdS2];
-    TH2F** fh2_MusZvsCalTofS8; //[fNbDetectors-fIdS8];
+    TH2F** fh2_MusZvsCalTofS2;   //[fNbDetectors-fIdS2];
+    TH2F** fh2_MusZvsCalTofS8;   //[fNbDetectors-fIdS8];
     TH2F* fh2_Aqvsq;
     TH2F* fh2_Aqvsq_mult1Tref;
     TH2F** fh2_EvsAoQ;

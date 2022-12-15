@@ -41,7 +41,7 @@ void create_mwpc1and2_geo(int geoId = 0)
 
     if (detName != "MWPC1" && detName != "MWPC2")
     {
-        std::cout << "ERROR: Detector name not valid, should be MWPC1 or MWPC2" << std::endl;
+        std::cout << "error: Detector name not valid, should be MWPC1 or MWPC2" << std::endl;
         return;
     }
 

@@ -3,6 +3,7 @@
 
 #include "R3BReader.h"
 #include "TClonesArray.h"
+
 #include <Rtypes.h>
 
 struct EXT_STR_h101_SOFSCI_t;
@@ -47,4 +48,4 @@ class R3BSofSciReader : public R3BReader
     ClassDefOverride(R3BSofSciReader, 0);
 };
 
-#endif // R3BSOFSCIREADER_H
+#endif   // R3BSOFSCIREADER_H

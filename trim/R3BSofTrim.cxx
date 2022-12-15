@@ -12,7 +12,6 @@
 #include "FairRun.h"
 #include "FairRuntimeDb.h"
 #include "FairVolume.h"
-
 #include "R3BMCStack.h"
 #include "R3BSofTrimPoint.h"
 #include "TClonesArray.h"
@@ -22,6 +21,7 @@
 #include "TParticle.h"
 #include "TVirtualMC.h"
 #include "TVirtualMCStack.h"
+
 #include <iostream>
 #include <stdlib.h>
 
@@ -29,13 +29,11 @@
 
 R3BSofTrim::R3BSofTrim()
     : R3BSofTrim("")
-{
-}
+{}
 
 R3BSofTrim::R3BSofTrim(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofTrim(geoFile, { trans, rot })
-{
-}
+    : R3BSofTrim(geoFile, {trans, rot})
+{}
 
 R3BSofTrim::R3BSofTrim(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofTrim", kSOFTRIM, geoFile, combi)
@@ -50,12 +48,10 @@ R3BSofTrim::R3BSofTrim(const TString& geoFile, const TGeoCombiTrans& combi)
 
 R3BSofTrim::~R3BSofTrim()
 {
-    if (flGeoPar)
-    {
+    if (flGeoPar) {
         delete flGeoPar;
     }
-    if (fSofTRIMCollection)
-    {
+    if (fSofTRIMCollection) {
         fSofTRIMCollection->Delete();
         delete fSofTRIMCollection;
     }
@@ -65,19 +61,18 @@ void R3BSofTrim::Initialize()
 {
     FairDetector::Initialize();
 
-    LOG(INFO) << "R3BSofTrim: initialisation";
-    LOG(DEBUG) << "R3BSofTrim: Vol (McId) def";
+    LOG(info) << "R3BSofTrim: initialisation";
+    LOG(debug) << "R3BSofTrim: Vol (McId) def";
 }
 
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofTrim::ProcessHits(FairVolume* vol)
 {
-    if (gMC->IsTrackEntering())
-    {
+    if (gMC->IsTrackEntering()) {
         gGeoManager->cd(gMC->CurrentVolPath());
         Int_t nodeId = gGeoManager->GetNodeId();
         fELoss = 0.;
-        fNSteps = 0; // FIXME
+        fNSteps = 0;   // FIXME
         fTime = gMC->TrackTime() * 1.0e09;
         fLength = gMC->TrackLength();
         gMC->TrackPosition(fPosIn);
@@ -90,14 +85,12 @@ Bool_t R3BSofTrim::ProcessHits(FairVolume* vol)
     if (fELoss == 0.)
         return kFALSE;
 
-    if (fELoss > 0)
-    {
+    if (fELoss > 0) {
 
         fNSteps++;
 
         // Set additional parameters at exit of active volume. Create R3BSofTrimPoint.
-        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
-        {
+        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared()) {
 
             fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
             fVolumeID = vol->getMCid();
@@ -167,7 +160,7 @@ TClonesArray* R3BSofTrim::GetCollection(Int_t iColl) const
 void R3BSofTrim::Print(Option_t* option) const
 {
     Int_t nHits = fSofTRIMCollection->GetEntriesFast();
-    LOG(INFO) << "R3BSofTrim: " << nHits << " points registered in this event";
+    LOG(info) << "R3BSofTrim: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
@@ -181,18 +174,17 @@ void R3BSofTrim::Reset()
 void R3BSofTrim::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 {
     Int_t nEntries = cl1->GetEntriesFast();
-    LOG(INFO) << "R3BSofTrim: " << nEntries << " entries to add";
+    LOG(info) << "R3BSofTrim: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
     R3BSofTrimPoint* oldpoint = NULL;
-    for (Int_t i = 0; i < nEntries; i++)
-    {
+    for (Int_t i = 0; i < nEntries; i++) {
         oldpoint = (R3BSofTrimPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
         new (clref[fPosIndex]) R3BSofTrimPoint(*oldpoint);
         fPosIndex++;
     }
-    LOG(INFO) << "R3BSofTrim: " << cl2->GetEntriesFast() << " merged entries";
+    LOG(info) << "R3BSofTrim: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddPoint   --------------------------------------------
@@ -212,7 +204,7 @@ R3BSofTrimPoint* R3BSofTrim::AddPoint(Int_t trackID,
     TClonesArray& clref = *fSofTRIMCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
-        LOG(INFO) << "R3BSofTrim: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
+        LOG(info) << "R3BSofTrim: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size])
         R3BSofTrimPoint(trackID, detID, detCopyID, zf, af, posIn, posOut, momIn, momOut, time, length, eLoss);
@@ -221,8 +213,7 @@ R3BSofTrimPoint* R3BSofTrim::AddPoint(Int_t trackID,
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofTrim::CheckIfSensitive(std::string name)
 {
-    if (TString(name).Contains("TrimAnode"))
-    { // check at the simulation
+    if (TString(name).Contains("TrimAnode")) {   // check at the simulation
         return kTRUE;
     }
     return kFALSE;

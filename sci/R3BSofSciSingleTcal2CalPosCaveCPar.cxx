@@ -1,15 +1,13 @@
 #include "R3BSofSciSingleTcal2CalPosCaveCPar.h"
 
-#include "R3BMwpcHitData.h"
-#include "R3BSofSciSingleTcalData.h"
-
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
-#include "TGeoManager.h"
-
+#include "R3BMwpcHitData.h"
+#include "R3BSofSciSingleTcalData.h"
 #include "TClonesArray.h"
+#include "TGeoManager.h"
 #include "TGeoMatrix.h"
 #include "TMath.h"
 #include "TObjArray.h"
@@ -29,8 +27,7 @@ R3BSofSciSingleTcal2CalPosCaveCPar::R3BSofSciSingleTcal2CalPosCaveCPar()
     , fCalPosPar(NULL)
     , fMwpc0GeoPar(NULL)
     , fOutputFile(NULL)
-{
-}
+{}
 
 // R3BSofSciSingleTcal2CalPosCaveCPar: Standard Constructor --------------------------
 R3BSofSciSingleTcal2CalPosCaveCPar::R3BSofSciSingleTcal2CalPosCaveCPar(const char* name, Int_t iVerbose)
@@ -46,8 +43,7 @@ R3BSofSciSingleTcal2CalPosCaveCPar::R3BSofSciSingleTcal2CalPosCaveCPar(const cha
     , fMwpc0GeoPar(NULL)
     , fOutputFile(NULL)
 
-{
-}
+{}
 
 // R3BSofSciSingleTcal2CalPosCaveCPar: Destructor ----------------------------------------
 R3BSofSciSingleTcal2CalPosCaveCPar::~R3BSofSciSingleTcal2CalPosCaveCPar()
@@ -63,11 +59,10 @@ R3BSofSciSingleTcal2CalPosCaveCPar::~R3BSofSciSingleTcal2CalPosCaveCPar()
 InitStatus R3BSofSciSingleTcal2CalPosCaveCPar::Init()
 {
 
-    LOG(INFO) << "R3BSofSciSingleTcal2CalPosCaveCPar: Init";
+    LOG(info) << "R3BSofSciSingleTcal2CalPosCaveCPar: Init";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm)
-    {
+    if (!rm) {
         return kFATAL;
     }
 
@@ -76,9 +71,8 @@ InitStatus R3BSofSciSingleTcal2CalPosCaveCPar::Init()
     // --- -------------------- --- //
 
     fHitMw0 = (TClonesArray*)rm->GetObject("Mwpc0HitData");
-    if (!fHitMw0)
-    {
-        LOG(ERROR)
+    if (!fHitMw0) {
+        LOG(error)
             << "R3BSofSciSingleTcal2CalPosCaveCPar::Init() Couldn't get handle on SofSciSingleTcalData container";
         return kFATAL;
     }
@@ -87,9 +81,8 @@ InitStatus R3BSofSciSingleTcal2CalPosCaveCPar::Init()
     // --- ------------------------- --- //
 
     fSTcalSci = (TClonesArray*)rm->GetObject("SofSciSingleTcalData");
-    if (!fSTcalSci)
-    {
-        LOG(ERROR)
+    if (!fSTcalSci) {
+        LOG(error)
             << "R3BSofSciSingleTcal2CalPosCaveCPar::Init() Couldn't get handle on SofSciSingleTcalData container";
         return kFATAL;
     }
@@ -99,15 +92,13 @@ InitStatus R3BSofSciSingleTcal2CalPosCaveCPar::Init()
     // --- ----------------------------------- --- //
 
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
+    if (!rtdb) {
         return kFATAL;
     }
 
     fCalPosPar = (R3BSofSciCalPosPar*)rtdb->getContainer("SofSciCalPosPar");
-    if (!fCalPosPar)
-    {
-        LOG(ERROR) << "R3BSofSciSingleTcal2CalPosCaveCPar::Init() Couldn't get handle on SofSciCalPosPar container";
+    if (!fCalPosPar) {
+        LOG(error) << "R3BSofSciSingleTcal2CalPosCaveCPar::Init() Couldn't get handle on SofSciCalPosPar container";
         return kFATAL;
     }
 
@@ -115,14 +106,12 @@ InitStatus R3BSofSciSingleTcal2CalPosCaveCPar::Init()
     // ---  GEOMETRY OF THE MWPC0 --- //
     // --- ---------------------- --- //
     fMwpc0GeoPar = (R3BTGeoPar*)rtdb->getContainer("mwpc0GeoPar");
-    if (!fMwpc0GeoPar)
-    {
-        LOG(ERROR) << "R3BSofSciSingleTcal2CalPosCaveCPar::SetParContainers() : Could not get access to mwpc0GeoPar "
+    if (!fMwpc0GeoPar) {
+        LOG(error) << "R3BSofSciSingleTcal2CalPosCaveCPar::SetParContainers() : Could not get access to mwpc0GeoPar "
                       "container.";
         return kFATAL;
-    }
-    else
-        LOG(INFO) << "R3BSofSciSingleTcal2CalPosCaveCPar::SetParContainers() : Container mwpc0GeoPar found.";
+    } else
+        LOG(info) << "R3BSofSciSingleTcal2CalPosCaveCPar::SetParContainers() : Container mwpc0GeoPar found.";
 
     // --- ---------------------- --- //
     // --- HISTOGRAMS DECLARATION --- //
@@ -156,8 +145,7 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::Exec(Option_t* opt)
 {
     Int_t nHits;
 
-    if (fHitMw0 && fHitMw0->GetEntriesFast() == 1)
-    {
+    if (fHitMw0 && fHitMw0->GetEntriesFast() == 1) {
         // --- -------------------------- --- //
         // --- read the hit data of Mwpc0 --- //
         // --- -------------------------- --- //
@@ -166,23 +154,20 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::Exec(Option_t* opt)
         // --- ------------------------------ --- //
         // --- loop over sci single tcal data --- //
         // --- ------------------------------ --- //
-        if (fSTcalSci && fSTcalSci->GetEntriesFast())
-        {
+        if (fSTcalSci && fSTcalSci->GetEntriesFast()) {
             nHits = fSTcalSci->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++)
-            {
+            for (Int_t ihit = 0; ihit < nHits; ihit++) {
                 R3BSofSciSingleTcalData* hitstcal = (R3BSofSciSingleTcalData*)fSTcalSci->At(ihit);
                 if (!hitstcal)
                     continue;
-                if (hitstcal->GetDetector() == fNumDets && hitMwpc0)
-                {
-                    fh2_X0_vs_RawPosCaveC->Fill(
-                        hitstcal->GetRawPosNs(),
-                        hitMwpc0->GetX() + 10. * fMwpc0GeoPar->GetPosX()); // attention GetPosX() in cm !
+                if (hitstcal->GetDetector() == fNumDets && hitMwpc0) {
+                    fh2_X0_vs_RawPosCaveC->Fill(hitstcal->GetRawPosNs(),
+                                                hitMwpc0->GetX()
+                                                    + 10. * fMwpc0GeoPar->GetPosX());   // attention GetPosX() in cm !
                 }
             }
         }
-    } // end of HitMwpc0
+    }   // end of HitMwpc0
 }
 
 // ---- Public method Finish   --------------------------------------------------
@@ -195,24 +180,22 @@ void R3BSofSciSingleTcal2CalPosCaveCPar::FinishTask()
 // ------------------------------
 void R3BSofSciSingleTcal2CalPosCaveCPar::CalculateCalPosCaveCParams()
 {
-    LOG(INFO) << "R3BSofSciSingleTcal2CalPosCaveCPar: CalculateCalPosCaveCParams()";
+    LOG(info) << "R3BSofSciSingleTcal2CalPosCaveCPar: CalculateCalPosCaveCParams()";
     fCalPosPar->SetNumDets(fNumDets);
     fCalPosPar->SetNumParamsPerDet(fNumParamsPerDet);
     fCalPosPar->SetNumParams(fNumDets * fNumParamsPerDet);
-    LOG(INFO) << "Number of entries for the 2D histo: " << fh2_X0_vs_RawPosCaveC->GetEntries();
+    LOG(info) << "Number of entries for the 2D histo: " << fh2_X0_vs_RawPosCaveC->GetEntries();
 
-    if (fh2_X0_vs_RawPosCaveC->GetEntries() > fMinStatistics)
-    {
+    if (fh2_X0_vs_RawPosCaveC->GetEntries() > fMinStatistics) {
         fh2_X0_vs_RawPosCaveC->Write();
         fh1_pfx = (TH1D*)fh2_X0_vs_RawPosCaveC->ProfileX("X_vs_RawPos_pfx");
         fh1_pfx->Fit(fit_Xmm_vs_RawPosNs, "R");
         fh1_pfx->Write();
         fit_Xmm_vs_RawPosNs->Write();
-        LOG(INFO) << "Fit Done: p0 = " << fit_Xmm_vs_RawPosNs->GetParameter(0)
+        LOG(info) << "Fit Done: p0 = " << fit_Xmm_vs_RawPosNs->GetParameter(0)
                   << ", p1=" << fit_Xmm_vs_RawPosNs->GetParameter(1);
 
-        for (Int_t degree = 0; degree < fNumParamsPerDet; degree++)
-        {
+        for (Int_t degree = 0; degree < fNumParamsPerDet; degree++) {
             fCalPosPar->SetParam(fit_Xmm_vs_RawPosNs->GetParameter(degree), (fNumDets - 1) * fNumParamsPerDet + degree);
         }
     }

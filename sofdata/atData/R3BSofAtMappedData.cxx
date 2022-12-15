@@ -11,8 +11,7 @@ R3BSofAtMappedData::R3BSofAtMappedData()
     , fTime(0)
     , fPileup(kFALSE)
     , fOverflow(kFALSE)
-{
-}
+{}
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
@@ -22,8 +21,7 @@ R3BSofAtMappedData::R3BSofAtMappedData(UShort_t a, UShort_t e, UShort_t t, Bool_
     , fTime(t)
     , fPileup(pu)
     , fOverflow(ov)
-{
-}
+{}
 // -------------------------------------------------------------------------
 
 ClassImp(R3BSofAtMappedData)

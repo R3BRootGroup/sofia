@@ -67,12 +67,12 @@ class R3BSofSciTcal2RawTofPar : public FairTask
   protected:
     Int_t fNumDets;
     Int_t fNumChannels;
-    Int_t fDetIdCaveC;       // detector number (1-based) at Cave C versus which ToFraw will be calculated
-    Int_t fDetIdS2;          // detector number (1-based) at Cave C versus which ToFraw will be calculated
-    Int_t fDetIdS8;          // detector number (1-based) at Cave C versus which ToFraw will be calculated
-    Int_t fNumSignals;       // number of signal = number of detector -1 (Tof selection from Sci to Sci(caveC))
-    Int_t fNumParsPerSignal; // =2 for each signal
-    Int_t fMinStatistics;    // minimum statistics to proceed to the calibration
+    Int_t fDetIdCaveC;         // detector number (1-based) at Cave C versus which ToFraw will be calculated
+    Int_t fDetIdS2;            // detector number (1-based) at Cave C versus which ToFraw will be calculated
+    Int_t fDetIdS8;            // detector number (1-based) at Cave C versus which ToFraw will be calculated
+    Int_t fNumSignals;         // number of signal = number of detector -1 (Tof selection from Sci to Sci(caveC))
+    Int_t fNumParsPerSignal;   // =2 for each signal
+    Int_t fMinStatistics;      // minimum statistics to proceed to the calibration
 
     // calibration parameters
     R3BSofSciRawTofPar* fRawTofPar;
@@ -91,4 +91,4 @@ class R3BSofSciTcal2RawTofPar : public FairTask
     ClassDef(R3BSofSciTcal2RawTofPar, 0);
 };
 
-#endif //__R3BSOFSCITCAL2RAWTOFPAR_H__
+#endif   //__R3BSOFSCITCAL2RAWTOFPAR_H__

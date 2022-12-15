@@ -288,7 +288,7 @@ void unpack_offline(const Int_t fRunId = 273, const Int_t nev = -1, const Int_t 
     // Initialize -------------------------------------------
     timer.Start();
     run->Init();
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // Run --------------------------------------------------
     run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);

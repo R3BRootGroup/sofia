@@ -95,8 +95,8 @@ void tcal_VFTX()
   
   /* Initialize ------------------------------------------- */
   run->Init();
-  FairLogger::GetLogger()->SetLogScreenLevel("INFO");
-  //FairLogger::GetLogger()->SetLogScreenLevel("WARNING");
+  FairLogger::GetLogger()->SetLogScreenLevel("info");
+  //FairLogger::GetLogger()->SetLogScreenLevel("warn");
   /* ------------------------------------------------------ */
   
   // Ascii file with the Calibration Parameters

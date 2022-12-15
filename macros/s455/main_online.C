@@ -837,8 +837,8 @@ void main_online()
 
     // Initialize -------------------------------------------
     run->Init();
-    FairLogger::GetLogger()->SetLogScreenLevel("INFO");
-    //FairLogger::GetLogger()->SetLogScreenLevel("DEBUG1");
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
+    //FairLogger::GetLogger()->SetLogScreenLevel("debug1");
 
     // Run --------------------------------------------------
     run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);

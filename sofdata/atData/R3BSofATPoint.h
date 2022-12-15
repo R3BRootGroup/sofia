@@ -9,10 +9,9 @@
 #ifndef R3BSOFATPOINT_H
 #define R3BSOFATPOINT_H
 
+#include "FairMCPoint.h"
 #include "TObject.h"
 #include "TVector3.h"
-
-#include "FairMCPoint.h"
 
 class R3BSofATPoint : public FairMCPoint
 {

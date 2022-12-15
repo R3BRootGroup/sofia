@@ -3,6 +3,7 @@
 
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
+
 #include <map>
 
 class TClonesArray;
@@ -100,25 +101,25 @@ class R3BSofAT : public R3BDetector
   private:
     /** Track information to be stored until the track leaves the
         active volume. **/
-    Int_t fTrackID;                 //!  track index
-    Int_t fTrackPID;                //!  particle identification
-    Int_t fVolumeID;                //!  volume id
-    Int_t fParentTrackID;           //!  parent track index
-    Int_t fUniqueID;                //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
-    TLorentzVector fPosIn, fPosOut; //!  position
-    TLorentzVector fMomIn, fMomOut; //!  momentum
-    Double32_t fTime;               //!  time
-    Double32_t fLength;             //!  length
-    Double32_t fELoss;              //!  energy loss
-    Double32_t fNf;                 //!  fast CsI(Tl) amplitude
-    Double32_t fNs;                 //!  slow CsI(Tl) amplitude
-    Int_t fPosIndex;                //!
-    Int_t fNSteps;                  //!  Number of steps in the active volume
-    Double32_t fEinc;               //!  Total incident energy
-    Bool_t kGeoSaved;               //!
-    TList* flGeoPar;                //!
+    Int_t fTrackID;                   //!  track index
+    Int_t fTrackPID;                  //!  particle identification
+    Int_t fVolumeID;                  //!  volume id
+    Int_t fParentTrackID;             //!  parent track index
+    Int_t fUniqueID;                  //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
+    TLorentzVector fPosIn, fPosOut;   //!  position
+    TLorentzVector fMomIn, fMomOut;   //!  momentum
+    Double32_t fTime;                 //!  time
+    Double32_t fLength;               //!  length
+    Double32_t fELoss;                //!  energy loss
+    Double32_t fNf;                   //!  fast CsI(Tl) amplitude
+    Double32_t fNs;                   //!  slow CsI(Tl) amplitude
+    Int_t fPosIndex;                  //!
+    Int_t fNSteps;                    //!  Number of steps in the active volume
+    Double32_t fEinc;                 //!  Total incident energy
+    Bool_t kGeoSaved;                 //!
+    TList* flGeoPar;                  //!
 
-    TClonesArray* fSofATCollection; //!  The point collection
+    TClonesArray* fSofATCollection;   //!  The point collection
 
     /** Private method AddHit
      **

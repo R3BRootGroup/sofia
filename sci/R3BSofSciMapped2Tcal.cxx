@@ -17,8 +17,7 @@ R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal()
     , fMapped(NULL)
     , fTcalPar(NULL)
     , fOnline(kFALSE)
-{
-}
+{}
 
 // --- Standard Constructor
 R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal(const char* name, Int_t iVerbose)
@@ -28,19 +27,16 @@ R3BSofSciMapped2Tcal::R3BSofSciMapped2Tcal(const char* name, Int_t iVerbose)
     , fMapped(NULL)
     , fTcalPar(NULL)
     , fOnline(kFALSE)
-{
-}
+{}
 
 // --- Destructor
 R3BSofSciMapped2Tcal::~R3BSofSciMapped2Tcal()
 {
-    LOG(INFO) << "R3BSofSciMapped2Tcal: Delete instance";
-    if (fMapped)
-    {
+    LOG(info) << "R3BSofSciMapped2Tcal: Delete instance";
+    if (fMapped) {
         delete fMapped;
     }
-    if (fTcal)
-    {
+    if (fTcal) {
         delete fTcal;
     }
 }
@@ -49,53 +45,43 @@ R3BSofSciMapped2Tcal::~R3BSofSciMapped2Tcal()
 void R3BSofSciMapped2Tcal::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
-        LOG(ERROR) << "FairRuntimeDb not opened!";
+    if (!rtdb) {
+        LOG(error) << "FairRuntimeDb not opened!";
     }
 
     fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofSciTcalPar");
-    if (!fTcalPar)
-    {
-        LOG(ERROR) << "R3BSofSciMapped2Tcal::SetParContainers() : Could not get access to SofSciTcalPar-Container.";
+    if (!fTcalPar) {
+        LOG(error) << "R3BSofSciMapped2Tcal::SetParContainers() : Could not get access to SofSciTcalPar-Container.";
         return;
-    }
-    else
-    {
-        LOG(INFO) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with "
+    } else {
+        LOG(info) << "R3BSofSciMapped2Tcal::SetParContainers() : SofSciTcalPar-Container found with "
                   << fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
     }
 }
 
 InitStatus R3BSofSciMapped2Tcal::Init()
 {
-    LOG(INFO) << "R3BSofSciMapped2Tcal::Init()";
+    LOG(info) << "R3BSofSciMapped2Tcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm)
-    {
-        LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() Couldn't instance the FairRootManager";
+    if (!rm) {
+        LOG(error) << "R3BSofSciMapped2Tcal::Init() Couldn't instance the FairRootManager";
         return kFATAL;
     }
 
     // Input data
     fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData");
-    if (!fMapped)
-    {
-        LOG(ERROR) << "R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSciMappedData container";
+    if (!fMapped) {
+        LOG(error) << "R3BSofSciMapped2Tcal::Init() Couldn't get handle on SofSciMappedData container";
         return kFATAL;
-    }
-    else
-        LOG(INFO) << "R3BSofSciMapped2Tcal::Init() SofSciMappedData items found";
+    } else
+        LOG(info) << "R3BSofSciMapped2Tcal::Init() SofSciMappedData items found";
 
     // Register output array in tree
     fTcal = new TClonesArray("R3BSofSciTcalData", 25);
-    if (!fOnline)
-    {
+    if (!fOnline) {
         rm->Register("SofSciTcalData", "SofSci", fTcal, kTRUE);
-    }
-    else
-    {
+    } else {
         rm->Register("SofSciTcalData", "SofSci", fTcal, kFALSE);
     }
 
@@ -121,8 +107,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
 
     // Loop over the entries of the Mapped TClonesArray
     Int_t nHitsPerEvent_SofSci = fMapped->GetEntries();
-    for (Int_t ihit = 0; ihit < nHitsPerEvent_SofSci; ihit++)
-    {
+    for (Int_t ihit = 0; ihit < nHitsPerEvent_SofSci; ihit++) {
         R3BSofSciMappedData* hit = (R3BSofSciMappedData*)fMapped->At(ihit);
         if (!hit)
             continue;
@@ -131,15 +116,13 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
         tf = hit->GetTimeFine();
         tc = hit->GetTimeCoarse();
 
-        if ((det < 1) || (det > fTcalPar->GetNumDetectors()))
-        {
-            LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << det
+        if ((det < 1) || (det > fTcalPar->GetNumDetectors())) {
+            LOG(info) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iDet = " << det
                       << "is out of range, item skipped ";
             continue;
         }
-        if ((ch < 1) || (ch > fTcalPar->GetNumChannels()))
-        {
-            LOG(INFO) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << ch
+        if ((ch < 1) || (ch > fTcalPar->GetNumChannels())) {
+            LOG(info) << "R3BSofSciMapped2Tcal::Exec() : In SofSciMappedData, iCh = " << ch
                       << "is out of range, item skipped ";
             continue;
         }
@@ -148,7 +131,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
     }
 
     if (nHitsPerEvent_SofSci != fTcal->GetEntries())
-        LOG(WARNING) << "R3BSofSciMapped2Tcal::Exec() mismatch between TClonesArray entries ";
+        LOG(warn) << "R3BSofSciMapped2Tcal::Exec() mismatch between TClonesArray entries ";
 
     ++fNevent;
     return;
@@ -157,7 +140,7 @@ void R3BSofSciMapped2Tcal::Exec(Option_t* option)
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofSciMapped2Tcal::Reset()
 {
-    LOG(DEBUG) << "Clearing TcalData Structure";
+    LOG(debug) << "Clearing TcalData Structure";
     if (fTcal)
         fTcal->Clear();
 }
@@ -174,13 +157,10 @@ Double_t R3BSofSciMapped2Tcal::CalculateTimeNs(UShort_t iDet, UShort_t iCh, UInt
     //  std::cout << "R3BSofSciMapped2Tcal::CalculateTimeNs : iDet=" << iDet << ", iCh=" << iCh << ", iTf=" << iTf << ",
     //  rank=" << rank  << std::endl;
 
-    if (r < 0)
-    {
+    if (r < 0) {
         Double_t iParPrev = fTcalPar->GetSignalTcalParams(rank - 1);
         iTf_ns = iPar + r * (iPar - iParPrev);
-    }
-    else
-    {
+    } else {
         Double_t iParNext = fTcalPar->GetSignalTcalParams(rank + 1);
         iTf_ns = iPar + r * (iParNext - iPar);
     }

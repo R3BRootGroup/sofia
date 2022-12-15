@@ -9,27 +9,27 @@
  */
 
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BSofTrimHitData.h"
-#include "R3BTwimHitData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BSofTrimHitData.h"
+#include "R3BTwimHitData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -42,20 +42,18 @@ R3BSofTwimvsTrimOnlineSpectra::R3BSofTwimvsTrimOnlineSpectra()
     , fHitItemsTrim(NULL)
     , fHitItemsTwim(NULL)
     , fNEvents(0)
-{
-}
+{}
 
 R3BSofTwimvsTrimOnlineSpectra::R3BSofTwimvsTrimOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fHitItemsTrim(NULL)
     , fHitItemsTwim(NULL)
     , fNEvents(0)
-{
-}
+{}
 
 R3BSofTwimvsTrimOnlineSpectra::~R3BSofTwimvsTrimOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofTwimvsTrimOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofTwimvsTrimOnlineSpectra::Delete instance";
     if (fHitItemsTrim)
         delete fHitItemsTrim;
     if (fHitItemsTwim)
@@ -65,7 +63,7 @@ R3BSofTwimvsTrimOnlineSpectra::~R3BSofTwimvsTrimOnlineSpectra()
 InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofTwimvsTrimOnlineSpectra::Init ";
+    LOG(info) << "R3BSofTwimvsTrimOnlineSpectra::Init ";
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -80,16 +78,15 @@ InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
 
     // get access to hit data of the Trim detector
     fHitItemsTrim = (TClonesArray*)mgr->GetObject("TrimHitData");
-    if (!fHitItemsTrim)
-    {
-        LOG(WARNING) << "R3BSofTwimvsTrimOnlineSpectra: TrimHitData not found";
+    if (!fHitItemsTrim) {
+        LOG(warn) << "R3BSofTwimvsTrimOnlineSpectra: TrimHitData not found";
         return kERROR;
     }
 
     // get access to hit data of the Twim
     fHitItemsTwim = (TClonesArray*)mgr->GetObject("TwimHitData");
     if (!fHitItemsTwim)
-        LOG(WARNING) << "R3BSofTwimvsTrimOnlineSpectra: TwimHitData not found";
+        LOG(warn) << "R3BSofTwimvsTrimOnlineSpectra: TwimHitData not found";
 
     // Create histograms for detectors
     char Name1[255];
@@ -128,8 +125,7 @@ InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
 
     // MAIN FOLDER-Twim-Music
     TFolder* mainfolTwim = new TFolder("TWIM_vs_TRIM", "Twim vs Trim info");
-    if (fHitItemsTwim && fHitItemsTrim)
-    {
+    if (fHitItemsTwim && fHitItemsTrim) {
         mainfolTwim->Add(c_Z);
         // mainfolTwim->Add(c_theta);
     }
@@ -143,10 +139,9 @@ InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
 
 void R3BSofTwimvsTrimOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofTwimvsTrimOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofTwimvsTrimOnlineSpectra::Reset_Histo";
 
-    if (fHitItemsTwim && fHitItemsTrim)
-    {
+    if (fHitItemsTwim && fHitItemsTrim) {
         fh2_hit_z->Reset();
         fh2_hit_theta->Reset();
     }
@@ -159,13 +154,11 @@ void R3BSofTwimvsTrimOnlineSpectra::Exec(Option_t* option)
         LOG(FATAL) << "R3BSofTwimvsTrimOnlineSpectra::Exec FairRootManager not found";
 
     // Fill hit data
-    if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0)
-    {
-        Float_t z1 = 0., z2 = 0.; // , theta1 = 0., theta2 = 0.;
+    if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0) {
+        Float_t z1 = 0., z2 = 0.;   // , theta1 = 0., theta2 = 0.;
         // TRIM
         Int_t nHits1 = fHitItemsTrim->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits1; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits1; ihit++) {
             R3BSofTrimHitData* hit = (R3BSofTrimHitData*)fHitItemsTrim->At(ihit);
             if (!hit)
                 continue;
@@ -174,8 +167,7 @@ void R3BSofTwimvsTrimOnlineSpectra::Exec(Option_t* option)
         }
         // TWIM
         Int_t nHits2 = fHitItemsTwim->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits2; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHits2; ihit++) {
             R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
             if (!hit)
                 continue;
@@ -188,20 +180,17 @@ void R3BSofTwimvsTrimOnlineSpectra::Exec(Option_t* option)
 
 void R3BSofTwimvsTrimOnlineSpectra::FinishEvent()
 {
-    if (fHitItemsTrim)
-    {
+    if (fHitItemsTrim) {
         fHitItemsTrim->Clear();
     }
-    if (fHitItemsTwim)
-    {
+    if (fHitItemsTwim) {
         fHitItemsTwim->Clear();
     }
 }
 
 void R3BSofTwimvsTrimOnlineSpectra::FinishTask()
 {
-    if (fHitItemsTwim && fHitItemsTrim)
-    {
+    if (fHitItemsTwim && fHitItemsTrim) {
         fh2_hit_z->Write();
         fh2_hit_theta->Write();
     }

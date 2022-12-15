@@ -10,6 +10,7 @@
 #include "TClonesArray.h"
 #include "TH1F.h"
 #include "TMath.h"
+
 #include <TRandom.h>
 
 // Fair headers
@@ -74,7 +75,7 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
 
     R3BEventHeader* header; /**< Event header. */
 
-    Bool_t fOnline; // Don't store data for online
+    Bool_t fOnline;   // Don't store data for online
     Int_t fExpId;
 
     TClonesArray* fTCalDataCA; /**< Array with Cal input data. >*/

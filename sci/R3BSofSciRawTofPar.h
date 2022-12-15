@@ -1,10 +1,11 @@
 #ifndef __R3BSOFSCIRAWTOFPAR_H__
 #define __R3BSOFSCIRAWTOFPAR_H__ 1
 
-#include "FairParGenericSet.h" // for FairParGenericSet
+#include "FairParGenericSet.h"   // for FairParGenericSet
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
+
 #include <TObjString.h>
 
 class FairParamList;
@@ -56,18 +57,18 @@ class R3BSofSciRawTofPar : public FairParGenericSet
     void SetSignalParams(Double_t parval, Int_t rank) { fAllSignalsRawTofParams->AddAt(parval, rank); }
 
   private:
-    TArrayF* fAllSignalsRawTofParams; // Calibration Parameters for all signals of one detector
+    TArrayF* fAllSignalsRawTofParams;   // Calibration Parameters for all signals of one detector
     Int_t fNumDets;
     Int_t fNumChannels;
     Int_t fDetIdS2;
     Int_t fDetIdS8;
     Int_t fDetIdCaveC;
-    Int_t fNumSignals;       // = number of Tof spectra from det to det@cave C = fNumDets-1
-    Int_t fNumParsPerSignal; // = 2
+    Int_t fNumSignals;         // = number of Tof spectra from det to det@cave C = fNumDets-1
+    Int_t fNumParsPerSignal;   // = 2
     const R3BSofSciRawTofPar& operator=(const R3BSofSciRawTofPar&);
-    R3BSofSciRawTofPar(const R3BSofSciRawTofPar&); // a copy constructor
+    R3BSofSciRawTofPar(const R3BSofSciRawTofPar&);   // a copy constructor
 
     ClassDef(R3BSofSciRawTofPar, 1);
 };
 
-#endif //__R3BSOFSCIRAWTOFPAR_H__
+#endif   //__R3BSOFSCIRAWTOFPAR_H__

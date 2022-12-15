@@ -4,13 +4,12 @@
 #include "FairLogger.h"
 #include "FairParSet.h"
 #include "FairRuntimeDb.h"
-#include "R3BTGeoPar.h"
-
 #include "R3BSofSciCalPosPar.h"
 #include "R3BSofSciCalTofPar.h"
 #include "R3BSofSciRawPosPar.h"
 #include "R3BSofSciRawTofPar.h"
 #include "R3BSofTcalPar.h"
+#include "R3BTGeoPar.h"
 
 static R3BSofSciContFact gR3BSofSciContFact;
 
@@ -59,31 +58,20 @@ FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
      * of this container, the name is concatinated with the context. */
 
     const char* name = c->GetName();
-    LOG(INFO) << "R3BSofSciContFact: Create container name: " << name;
+    LOG(info) << "R3BSofSciContFact: Create container name: " << name;
     FairParSet* p = 0;
 
-    if (strcmp(name, "SofSciTcalPar") == 0)
-    {
+    if (strcmp(name, "SofSciTcalPar") == 0) {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "SofSciRawPosPar") == 0)
-    {
+    } else if (strcmp(name, "SofSciRawPosPar") == 0) {
         p = new R3BSofSciRawPosPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "SofSciRawTofPar") == 0)
-    {
+    } else if (strcmp(name, "SofSciRawTofPar") == 0) {
         p = new R3BSofSciRawTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "SofSciCalPosPar") == 0)
-    {
+    } else if (strcmp(name, "SofSciCalPosPar") == 0) {
         p = new R3BSofSciCalPosPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "SofSciCalTofPar") == 0)
-    {
+    } else if (strcmp(name, "SofSciCalTofPar") == 0) {
         p = new R3BSofSciCalTofPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    }
-    else if (strcmp(name, "SofSciGeoPar") == 0)
-    {
+    } else if (strcmp(name, "SofSciGeoPar") == 0) {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;

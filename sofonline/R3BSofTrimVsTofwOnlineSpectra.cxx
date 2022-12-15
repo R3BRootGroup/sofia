@@ -3,27 +3,27 @@
  */
 
 #include "R3BSofTrimVsTofwOnlineSpectra.h"
-#include "R3BEventHeader.h"
-#include "R3BSofTofWHitData.h"
-#include "R3BSofTrimHitData.h"
-#include "THttpServer.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+#include "R3BEventHeader.h"
+#include "R3BSofTofWHitData.h"
+#include "R3BSofTrimHitData.h"
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TFolder.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "TVector3.h"
-
-#include "TClonesArray.h"
+#include "THttpServer.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TVector3.h"
+
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -39,8 +39,7 @@ R3BSofTrimVsTofwOnlineSpectra::R3BSofTrimVsTofwOnlineSpectra()
     , fTofwHit(NULL)
     , fNEvents(0)
     , fNumSections(3)
-{
-}
+{}
 
 R3BSofTrimVsTofwOnlineSpectra::R3BSofTrimVsTofwOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
@@ -48,12 +47,11 @@ R3BSofTrimVsTofwOnlineSpectra::R3BSofTrimVsTofwOnlineSpectra(const TString& name
     , fTofwHit(NULL)
     , fNEvents(0)
     , fNumSections(3)
-{
-}
+{}
 
 R3BSofTrimVsTofwOnlineSpectra::~R3BSofTrimVsTofwOnlineSpectra()
 {
-    LOG(INFO) << "R3BSofTrimVsTofwOnlineSpectra::Delete instance";
+    LOG(info) << "R3BSofTrimVsTofwOnlineSpectra::Delete instance";
     if (fTrimHit)
         delete fTrimHit;
     if (fTofwHit)
@@ -63,7 +61,7 @@ R3BSofTrimVsTofwOnlineSpectra::~R3BSofTrimVsTofwOnlineSpectra()
 InitStatus R3BSofTrimVsTofwOnlineSpectra::Init()
 {
 
-    LOG(INFO) << "R3BSofTrimVsTofwOnlineSpectra::Init() fNumSections = " << fNumSections;
+    LOG(info) << "R3BSofTrimVsTofwOnlineSpectra::Init() fNumSections = " << fNumSections;
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
@@ -80,18 +78,16 @@ InitStatus R3BSofTrimVsTofwOnlineSpectra::Init()
     // === Triple-MUSIC HIT DATA === //
     // === ===================== === //
     fTrimHit = (TClonesArray*)mgr->GetObject("TrimHitData");
-    if (!fTrimHit)
-    {
-        LOG(WARNING) << " R3BSofTrimVsTofwOnlineSpectra::Init(), TrimHitData not found ... is ok !";
+    if (!fTrimHit) {
+        LOG(warn) << " R3BSofTrimVsTofwOnlineSpectra::Init(), TrimHitData not found ... is ok !";
     }
 
     // === ================= === //
     // === Tof-WALL HIT DATA === //
     // === ================= === //
     fTofwHit = (TClonesArray*)mgr->GetObject("TofWHitData");
-    if (!fTofwHit)
-    {
-        LOG(WARNING) << " R3BSofTrimVsTofwOnlineSpectra::Init(), TofwHitData not found ... is ok !";
+    if (!fTofwHit) {
+        LOG(warn) << " R3BSofTrimVsTofwOnlineSpectra::Init(), TofwHitData not found ... is ok !";
     }
 
     // === =============================== === //
@@ -99,10 +95,8 @@ InitStatus R3BSofTrimVsTofwOnlineSpectra::Init()
     // === =============================== === //
     char Name1[255];
     char Name2[255];
-    if (fTrimHit && fTofwHit)
-    {
-        for (int section = 0; section < 3; section++)
-        {
+    if (fTrimHit && fTofwHit) {
+        for (int section = 0; section < 3; section++) {
             sprintf(Name1, "ES%02d_vs_Tof", section + 1);
             c_TrimE_vs_TofCaveC[section] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
             c_TrimE_vs_TofCaveC[section]->cd();
@@ -117,10 +111,8 @@ InitStatus R3BSofTrimVsTofwOnlineSpectra::Init()
     // === ================ === //
 
     TFolder* mainfol = new TFolder("TrimVsTofW", "Trim vs TofW info");
-    if (fTrimHit && fTofwHit)
-    {
-        for (int section = 0; section < 3; section++)
-        {
+    if (fTrimHit && fTofwHit) {
+        for (int section = 0; section < 3; section++) {
             mainfol->Add(c_TrimE_vs_TofCaveC[section]);
         }
     }
@@ -134,13 +126,11 @@ InitStatus R3BSofTrimVsTofwOnlineSpectra::Init()
 
 void R3BSofTrimVsTofwOnlineSpectra::Reset_Histo()
 {
-    LOG(INFO) << "R3BSofTrimVsTofwOnlineSpectra::Reset_Histo";
+    LOG(info) << "R3BSofTrimVsTofwOnlineSpectra::Reset_Histo";
 
     // Hit data
-    if (fTrimHit && fTofwHit)
-    {
-        for (int section = 0; section < 3; section++)
-        {
+    if (fTrimHit && fTofwHit) {
+        for (int section = 0; section < 3; section++) {
             fh2_TrimE_vs_TofCaveC[section]->Reset();
         }
     }
@@ -156,11 +146,9 @@ void R3BSofTrimVsTofwOnlineSpectra::Exec(Option_t* option)
     // === Tof-wall Hit data
     Int_t nHitsTofW = 0;
     Double_t Tof = 0;
-    if (fTofwHit && fTofwHit->GetEntriesFast() > 0)
-    {
+    if (fTofwHit && fTofwHit->GetEntriesFast() > 0) {
         nHitsTofW = fTrimHit->GetEntriesFast();
-        if (nHitsTofW == 1)
-        {
+        if (nHitsTofW == 1) {
             R3BSofTofWHitData* hit = (R3BSofTofWHitData*)fTofwHit->At(0);
             if (hit)
                 Tof = hit->GetTof();
@@ -168,16 +156,14 @@ void R3BSofTrimVsTofwOnlineSpectra::Exec(Option_t* option)
     }
 
     // === Triple-MUSIC Hit data
-    if (fTrimHit && fTrimHit->GetEntriesFast() > 0 && nHitsTofW == 1)
-    {
+    if (fTrimHit && fTrimHit->GetEntriesFast() > 0 && nHitsTofW == 1) {
         Int_t nHits = fTrimHit->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHitsTofW; ihit++)
-        {
+        for (Int_t ihit = 0; ihit < nHitsTofW; ihit++) {
             R3BSofTrimHitData* hit = (R3BSofTrimHitData*)fTrimHit->At(ihit);
             if (!hit)
                 continue;
             fh2_TrimE_vs_TofCaveC[hit->GetSecID() - 1]->Fill(Tof, hit->GetEnergyTheta());
-        } // end of loop over the HitData TClonesArray
+        }   // end of loop over the HitData TClonesArray
     }
 
     fNEvents += 1;
@@ -193,10 +179,8 @@ void R3BSofTrimVsTofwOnlineSpectra::FinishEvent()
 
 void R3BSofTrimVsTofwOnlineSpectra::FinishTask()
 {
-    if (fTrimHit && fTofwHit)
-    {
-        for (int section = 0; section < 3; section++)
-        {
+    if (fTrimHit && fTofwHit) {
+        for (int section = 0; section < 3; section++) {
             c_TrimE_vs_TofCaveC[section]->Write();
         }
     }

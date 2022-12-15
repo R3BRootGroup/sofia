@@ -3,6 +3,7 @@
 // -----                  Created 24/11/17  by H.Alvarez-Pol           -----
 // -------------------------------------------------------------------------
 #include "R3BSofTofW.h"
+
 #include "FairGeoInterface.h"
 #include "FairGeoLoader.h"
 #include "FairGeoNode.h"
@@ -23,6 +24,7 @@
 #include "TParticle.h"
 #include "TVirtualMC.h"
 #include "TVirtualMCStack.h"
+
 #include <iostream>
 #include <stdlib.h>
 
@@ -30,13 +32,11 @@
 
 R3BSofTofW::R3BSofTofW()
     : R3BSofTofW("")
-{
-}
+{}
 
 R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofTofW(geoFile, { trans, rot })
-{
-}
+    : R3BSofTofW(geoFile, {trans, rot})
+{}
 
 R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofTofW", kSOFTofWall, geoFile, combi)
@@ -52,12 +52,10 @@ R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi)
 
 R3BSofTofW::~R3BSofTofW()
 {
-    if (flGeoPar)
-    {
+    if (flGeoPar) {
         delete flGeoPar;
     }
-    if (fSofTofWallCollection)
-    {
+    if (fSofTofWallCollection) {
         fSofTofWallCollection->Delete();
         delete fSofTofWallCollection;
     }
@@ -72,8 +70,8 @@ void R3BSofTofW::Initialize()
 {
     FairDetector::Initialize();
 
-    LOG(INFO) << "R3BSofTofW: initialisation";
-    LOG(DEBUG) << "R3BSofTofW: Vol (McId) def";
+    LOG(info) << "R3BSofTofW: initialisation";
+    LOG(debug) << "R3BSofTofW: Vol (McId) def";
 
     // TGeoVolume* vol = gGeoManager->GetVolume("SofTofWallWorld");
     // vol->SetVisibility(kFALSE);
@@ -82,20 +80,18 @@ void R3BSofTofW::Initialize()
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
 {
-    if (gMC->IsTrackEntering())
-    {
+    if (gMC->IsTrackEntering()) {
         gGeoManager->cd(gMC->CurrentVolPath());
         Int_t nodeId = gGeoManager->GetNodeId();
     }
-    if (gMC->IsTrackEntering())
-    {
+    if (gMC->IsTrackEntering()) {
         fELoss = 0.;
-        fNSteps = 0; // FIXME
+        fNSteps = 0;   // FIXME
         fTime = gMC->TrackTime() * 1.0e09;
         fLength = gMC->TrackLength();
         gMC->TrackPosition(fPosIn);
         gMC->TrackMomentum(fMomIn);
-        fEinc = gMC->Etot() - gMC->TrackMass(); // be aware!! Relativistic mass!
+        fEinc = gMC->Etot() - gMC->TrackMass();   // be aware!! Relativistic mass!
     }
 
     // Sum energy loss for all steps in the active volume
@@ -106,19 +102,17 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
     Double_t M_in = gMC->TrackMass() * 1000.;
     Double_t fA_in = M_in / U_MEV;
     // Charge and mass are now obtained from PDG Code
-    Double_t fZ_in = int(gMC->TrackPid() / 10000) - 100000.; // gMC->TrackCharge();
+    Double_t fZ_in = int(gMC->TrackPid() / 10000) - 100000.;   // gMC->TrackCharge();
     fA_in = 0.1 * (gMC->TrackPid() - (100000 + fZ_in) * 10000.);
 
     fELoss += gMC->Edep();
 
-    if (fELoss > 0)
-    {
+    if (fELoss > 0) {
 
         fNSteps++;
 
         // Set additional parameters at exit of active volume. Create R3BSofTofWPoint.
-        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
-        {
+        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared()) {
 
             fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
             fParentTrackID = gMC->GetStack()->GetCurrentParentTrackNumber();
@@ -222,9 +216,9 @@ TClonesArray* R3BSofTofW::GetCollection(Int_t iColl) const
 void R3BSofTofW::Print(Option_t* option) const
 {
     Int_t nHits = fSofTofWallCollection->GetEntriesFast();
-    LOG(INFO) << "R3BSofTofW: " << nHits << " points registered in this event";
+    LOG(info) << "R3BSofTofW: " << nHits << " points registered in this event";
     // Int_t nCalHits = fSofTofWallCalCollection->GetEntriesFast();
-    // LOG(INFO) << "R3BSofTofWCalData: " << nCalHits << " points registered in this event";
+    // LOG(info) << "R3BSofTofWCalData: " << nCalHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------
@@ -239,18 +233,17 @@ void R3BSofTofW::Reset()
 void R3BSofTofW::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
 {
     Int_t nEntries = cl1->GetEntriesFast();
-    LOG(INFO) << "R3BSofTofW: " << nEntries << " entries to add";
+    LOG(info) << "R3BSofTofW: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
     R3BSofTofWPoint* oldpoint = NULL;
-    for (Int_t i = 0; i < nEntries; i++)
-    {
+    for (Int_t i = 0; i < nEntries; i++) {
         oldpoint = (R3BSofTofWPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
         new (clref[fPosIndex]) R3BSofTofWPoint(*oldpoint);
         fPosIndex++;
     }
-    LOG(INFO) << "R3BSofTofW: " << cl2->GetEntriesFast() << " merged entries";
+    LOG(info) << "R3BSofTofW: " << cl2->GetEntriesFast() << " merged entries";
 }
 
 // -----   Private method AddCalPoint   --------------------------------------------
@@ -259,7 +252,7 @@ void R3BSofTofW::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
     TClonesArray& clref = *fSofTofWallCalCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
-        LOG(INFO) << "TofWCalData: Adding Point at detector " << ident << ", pmt " << pmt << ", time " << time << " ps"
+        LOG(info) << "TofWCalData: Adding Point at detector " << ident << ", pmt " << pmt << ", time " << time << " ps"
                   << ", energy loss " << eLoss << " MeV";
     return new (clref[size]) R3BSofTofWCalData(ident, pmt, time, eLoss);
 }*/
@@ -281,7 +274,7 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
     TClonesArray& clref = *fSofTofWallCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
-        LOG(INFO) << "R3BSofTofW: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
+        LOG(info) << "R3BSofTofW: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
     return new (clref[size])
         R3BSofTofWPoint(trackID, detID, volid, Z, A, posIn, posOut, momIn, momOut, time, length, eLoss);
@@ -290,9 +283,8 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofTofW::CheckIfSensitive(std::string name)
 {
-    if (TString(name).Contains("TOF_FFs"))
-    {
-        LOG(DEBUG) << "Found TOF SOFIA geometry from ROOT file: " << name;
+    if (TString(name).Contains("TOF_FFs")) {
+        LOG(debug) << "Found TOF SOFIA geometry from ROOT file: " << name;
         return kTRUE;
     }
     return kFALSE;

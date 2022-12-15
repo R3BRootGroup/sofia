@@ -25,4 +25,4 @@ class R3BSofTcalContFact : public FairContFact
     ClassDef(R3BSofTcalContFact, 1);
 };
 
-#endif // R3BTCALCONTFACT_H
+#endif   // R3BTCALCONTFACT_H

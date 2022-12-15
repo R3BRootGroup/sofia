@@ -1,12 +1,10 @@
 #include "R3BSofTofWMapped2TcalPar.h"
 
-#include "R3BSofTcalPar.h"
-#include "R3BSofTofWMappedData.h"
-
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRuntimeDb.h"
-
+#include "R3BSofTcalPar.h"
+#include "R3BSofTofWMappedData.h"
 #include "TClonesArray.h"
 #include "TF1.h"
 #include "TH1F.h"
@@ -27,8 +25,7 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar()
     , fMappedTofW(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
-{
-}
+{}
 
 // R3BSofTofWMapped2TcalPar: Standard Constructor --------------------------
 R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerbose)
@@ -41,8 +38,7 @@ R3BSofTofWMapped2TcalPar::R3BSofTofWMapped2TcalPar(const char* name, Int_t iVerb
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 
-{
-}
+{}
 
 // R3BSofTofWMapped2TcalPar: Destructor ----------------------------------------
 R3BSofTofWMapped2TcalPar::~R3BSofTofWMapped2TcalPar()
@@ -56,12 +52,11 @@ R3BSofTofWMapped2TcalPar::~R3BSofTofWMapped2TcalPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTofWMapped2TcalPar::Init()
 {
-    LOG(INFO) << "R3BSofTofWMapped2TcalPar::Init()";
+    LOG(info) << "R3BSofTofWMapped2TcalPar::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() FairRootManager not found";
+    if (!rm) {
+        LOG(error) << "R3BSofTofWMapped2TcalPar::Init() FairRootManager not found";
         return kFATAL;
     }
 
@@ -69,10 +64,9 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     // --- INPUT MAPPED DATA --- //
     // --- ----------------- --- //
 
-    fMappedTofW = (TClonesArray*)rm->GetObject("SofTofWMappedData"); // see Instance->Register in R3BSofTofWReader.cxx
-    if (!fMappedTofW)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() SofTofWMappedData not found";
+    fMappedTofW = (TClonesArray*)rm->GetObject("SofTofWMappedData");   // see Instance->Register in R3BSofTofWReader.cxx
+    if (!fMappedTofW) {
+        LOG(error) << "R3BSofTofWMapped2TcalPar::Init() SofTofWMappedData not found";
         return kFATAL;
     }
 
@@ -81,15 +75,13 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     // --- ---------------------------------- --- //
 
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() FairRuntimeDb not found";
+    if (!rtdb) {
+        LOG(error) << "R3BSofTofWMapped2TcalPar::Init() FairRuntimeDb not found";
         return kFATAL;
     }
     fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofTofWTcalPar");
-    if (!fTcalPar)
-    {
-        LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Init() Couldn't get handle on SofTofWTcalPar container";
+    if (!fTcalPar) {
+        LOG(error) << "R3BSofTofWMapped2TcalPar::Init() Couldn't get handle on SofTofWTcalPar container";
         return kFATAL;
     }
 
@@ -100,10 +92,8 @@ InitStatus R3BSofTofWMapped2TcalPar::Init()
     char name[100];
     fh_TimeFineBin = new TH1F*[fNumDetectors * fNumChannels];
     fh_TimeFineNs = new TH1F*[fNumDetectors * fNumChannels];
-    for (Int_t det = 0; det < fNumDetectors; det++)
-    {
-        for (Int_t ch = 0; ch < fNumChannels; ch++)
-        {
+    for (Int_t det = 0; det < fNumDetectors; det++) {
+        for (Int_t ch = 0; ch < fNumChannels; ch++) {
             sprintf(name, "TimeFineBin_TofW_P%i_Pmt%i_Sig%i", det + 1, ch + 1, det * fNumChannels + ch);
             fh_TimeFineBin[det * fNumChannels + ch] =
                 new TH1F(name, name, fNumTcalParsPerSignal, 0, fNumTcalParsPerSignal);
@@ -129,13 +119,11 @@ void R3BSofTofWMapped2TcalPar::Exec(Option_t* opt)
 
     // nHits = number of hits per event
     UInt_t nHits = fMappedTofW->GetEntries();
-    for (UInt_t ihit = 0; ihit < nHits; ihit++)
-    {
+    for (UInt_t ihit = 0; ihit < nHits; ihit++) {
         R3BSofTofWMappedData* hit = (R3BSofTofWMappedData*)fMappedTofW->At(ihit);
-        if (!hit)
-        {
-            LOG(WARNING) << "R3BSofTofWMapped2TcalPar::Exec() : could not get hit";
-            continue; // should not happen
+        if (!hit) {
+            LOG(warn) << "R3BSofTofWMapped2TcalPar::Exec() : could not get hit";
+            continue;   // should not happen
         }
 
         // *** ************************************* *** //
@@ -157,12 +145,12 @@ void R3BSofTofWMapped2TcalPar::Exec(Option_t* opt)
         if ((0 <= iSignal) && (iSignal < fNumDetectors * fNumChannels))
             fh_TimeFineBin[iSignal]->Fill(hit->GetTimeFine());
         else
-            LOG(ERROR) << "R3BSofTofWMapped2TcalPar::Exec() Number of signals out of range: " << iSignal
+            LOG(error) << "R3BSofTofWMapped2TcalPar::Exec() Number of signals out of range: " << iSignal
                        << " instead of [0," << fNumDetectors * fNumChannels << "] "
                        << " det = " << hit->GetDetector() << " fNumChannels = " << fNumChannels
                        << " pmt = " << hit->GetPmt();
 
-    } // end of loop over the number of hits per event in MappedTofW
+    }   // end of loop over the number of hits per event in MappedTofW
 }
 
 // ---- Public method Reset   --------------------------------------------------
@@ -180,7 +168,7 @@ void R3BSofTofWMapped2TcalPar::FinishTask()
 //------------------
 void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
 {
-    LOG(INFO) << "R3BSofTofWMapped2TcalPar: CalculateVftxTcalParams()";
+    LOG(info) << "R3BSofTofWMapped2TcalPar: CalculateVftxTcalParams()";
 
     fTcalPar->SetNumDetectors(fNumDetectors);
     fTcalPar->SetNumChannels(fNumChannels);
@@ -190,14 +178,11 @@ void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
     UInt_t IntegralPartial;
     Double_t Bin2Ns[fNumTcalParsPerSignal];
 
-    for (Int_t sig = 0; sig < fNumDetectors * fNumChannels; sig++)
-    {
-        if (fh_TimeFineBin[sig]->GetEntries() > fMinStatistics)
-        {
+    for (Int_t sig = 0; sig < fNumDetectors * fNumChannels; sig++) {
+        if (fh_TimeFineBin[sig]->GetEntries() > fMinStatistics) {
             IntegralTot = fh_TimeFineBin[sig]->Integral();
             IntegralPartial = 0;
-            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
-            {
+            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++) {
                 IntegralPartial += fh_TimeFineBin[sig]->GetBinContent(bin + 1);
                 Bin2Ns[bin] = 5. * ((Double_t)IntegralPartial) / (Double_t)IntegralTot;
                 fh_TimeFineNs[sig]->SetBinContent(bin + 1, Bin2Ns[bin]);
@@ -205,7 +190,7 @@ void R3BSofTofWMapped2TcalPar::CalculateVftxTcalParams()
             }
             fTcalPar->SetClockOffset(0.0, sig);
         }
-        fh_TimeFineNs[sig]->Write(); // will be empty if fh_TimeFineBin[sig]->GetEntries()<fMinStatistics
+        fh_TimeFineNs[sig]->Write();   // will be empty if fh_TimeFineBin[sig]->GetEntries()<fMinStatistics
         fh_TimeFineBin[sig]->Write();
     }
     fTcalPar->setChanged();
