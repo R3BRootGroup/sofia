@@ -24,4 +24,4 @@ jobs:
       - name: Code formatting
         run: |
           cd $GITHUB_WORKSPACE
-          singularity exec $PWD/travis-clang-format-check.sh clang-format-8
+          exec $PWD/travis-clang-format-check.sh clang-format-8
