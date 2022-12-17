@@ -27,19 +27,6 @@ set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} )
 
 link_directories( ${LINK_DIRECTORIES})
 
-#set(SRCS
-#Put here your sourcefiles
-#R3BSofTofW.cxx
-#R3BSofTofWDigitizer.cxx
-#R3BSofTofWContFact.cxx
-#R3BSofTofWMapped2Tcal.cxx
-#R3BSofTofWMapped2TcalPar.cxx
-#R3BSofTofWTcal2SingleTcal.cxx
-#R3BSofTofWSingleTCal2HitPar.cxx
-#R3BSofTofWSingleTCal2Hit.cxx
-#R3BSofTofWHitPar.cxx
-#)
-
 file(GLOB SRCS ./sim/*.cxx ./digi/*.cxx ./pars/*.cxx ./calibration/*.cxx)
 
 # fill list of header files from list of source files
@@ -52,3 +39,5 @@ set(DEPENDENCIES
     R3BData R3BSofTcal R3BSofData R3BTracking)
 
 GENERATE_LIBRARY()
+
+add_subdirectory(test)
