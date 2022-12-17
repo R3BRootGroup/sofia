@@ -18,7 +18,6 @@ class FairParamList;
 
 class R3BSofTofWHitPar : public FairParGenericSet
 {
-
   public:
     /** Standard constructor **/
     R3BSofTofWHitPar(const char* name = "tofwHitPar",
@@ -69,6 +68,7 @@ class R3BSofTofWHitPar : public FairParGenericSet
 
     R3BSofTofWHitPar(const R3BSofTofWHitPar&); /*< a copy constructor >*/
 
+  public:
     ClassDef(R3BSofTofWHitPar, 2);
 };
 
