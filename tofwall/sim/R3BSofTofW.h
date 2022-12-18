@@ -4,11 +4,8 @@
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
 
-#include <map>
-
 class TClonesArray;
 class R3BSofTofWPoint;
-// class R3BSofTofWCalData;
 class FairVolume;
 class TGeoRotation;
 
@@ -32,7 +29,7 @@ class R3BSofTofW : public R3BDetector
     R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
 
     /** Destructor **/
-    ~R3BSofTofW();
+    ~R3BSofTofW() override;
 
     /** Virtual method ProcessHits
      **
@@ -41,63 +38,38 @@ class R3BSofTofW : public R3BDetector
      ** to the collection.
      *@param vol  Pointer to the active volume
      **/
-    virtual Bool_t ProcessHits(FairVolume* vol = 0);
-
-    /** Virtual method BeginEvent
-     **
-     ** Actions at the begin of the event
-     **/
-    virtual void BeginEvent();
+    Bool_t ProcessHits(FairVolume* vol = 0) override;
 
     /** Virtual method EndOfEvent
      **
      ** If verbosity level is set, print hit collection at the
      ** end of the event and resets it afterwards.
      **/
-    virtual void EndOfEvent();
+    void EndOfEvent() override;
 
     /** Virtual method Register
      **
      ** Registers the hit collection in the ROOT manager.
      **/
-    virtual void Register();
+    void Register() override;
 
-    /** Accessor to the hit collection **/
-    virtual TClonesArray* GetCollection(Int_t iColl) const;
+    /** Gets the produced collections */
+    TClonesArray* GetCollection(Int_t iColl) const override;
 
     /** Virtual method Print
      **
      ** Screen output of hit collection.
      **/
-    virtual void Print(Option_t* option = "") const;
+    void Print(Option_t* option = "") const override;
 
-    /** Virtual method Reset
-     **
-     ** Clears the hit collection
-     **/
-    virtual void Reset();
+    /**      has to be called after each event to reset the containers      */
+    void Reset() override;
 
-    /** Virtual method CopyClones
-     **
-     ** Copies the hit collection with a given track index offset
-     *@param cl1     Origin
-     *@param cl2     Target
-     *@param offset  Index offset
-     **/
-    virtual void CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset);
+    Bool_t CheckIfSensitive(std::string name) override;
 
-    virtual Bool_t CheckIfSensitive(std::string name);
+    void Initialize() override;
 
-    /** Public method SetNonUniformity
-     **
-     ** Defines the fNonUniformity parameter in % deviation from the central value
-     *@param nonU  Double parameter setting the maximum non-uniformity allowed
-     **/
-
-    virtual void Initialize();
-    virtual void SetSpecialPhysicsCuts() {}
-
-    //  void SaveGeoParams();
+    void SetSpecialPhysicsCuts() override { ; }
 
   private:
     /** Track information to be stored until the track leaves the
@@ -108,23 +80,16 @@ class R3BSofTofW : public R3BDetector
     Int_t fDetCopyID;                 //!  Det volume id
     Double_t fZ;                      //!  atomic number fragment
     Double_t fA;                      //!  mass number fragment
-    Int_t fParentTrackID;             //!  parent track index
-    Int_t fUniqueID;                  //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
     TLorentzVector fPosIn, fPosOut;   //!  position
     TLorentzVector fMomIn, fMomOut;   //!  momentum
     Double32_t fTime;                 //!  time
     Double32_t fLength;               //!  length
     Double32_t fELoss;                //!  energy loss
     Int_t fPosIndex;                  //!
-    Int_t fNSteps;                    //!  Number of steps in the active volume
-    Double32_t fEinc;                 //!  Total incident energy
-    Bool_t kGeoSaved;                 //!
-    TList* flGeoPar;                  //!
 
     TClonesArray* fSofTofWallCollection;   //  The point collection
-    // TClonesArray* fSofTofWallCalCollection; //  The Cal point collection
 
-    /** Private method AddHit
+    /** Private method AddPoint
      **
      ** Adds a SofTofWallPoint to the HitCollection
      **/
@@ -141,31 +106,28 @@ class R3BSofTofW : public R3BDetector
                               Double_t length,
                               Double_t eLoss);
 
-    /** Adds a SofTofWCalData to the HitCollection
-     **/
-    // R3BSofTofWCalData* AddCalHit(UShort_t ident, UShort_t pmt, Double_t time, Float_t eLoss);
-
     /** Private method ResetParameters
      **
      ** Resets the private members for the track parameters
      **/
     void ResetParameters();
 
-    TGeoRotation* createMatrix(Double_t phi, Double_t theta, Double_t psi);
+    R3BSofTofW(const R3BSofTofW&);
+    R3BSofTofW& operator=(const R3BSofTofW&);
 
-    ClassDef(R3BSofTofW, 1);
+  public:
+    ClassDefOverride(R3BSofTofW, 1);
 };
 
 inline void R3BSofTofW::ResetParameters()
 {
-    fTrackID = fVolumeID = fParentTrackID = fTrackPID = fUniqueID = 0;
+    fTrackID = fVolumeID = fTrackPID;
     fPosIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fPosOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
-    fTime = fLength = fELoss = fEinc = fZ = fA = 0;
+    fTime = fLength = fELoss = fZ = fA = 0;
     fPosIndex = 0;
-    fNSteps = 0;
 };
 
-#endif
+#endif /* R3BSofTofW_H */
