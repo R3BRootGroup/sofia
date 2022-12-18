@@ -6,11 +6,18 @@ The R3BRoot software is based on the FairRoot framework and can be used to perfo
 
 For the software-related user support you can post a new topic on our [forum](https://forum.gsi.de/index.php?t=index&cat=40&).
 
+# Release information
+Please see [Releases](https://github.com/R3BRootGroup/sofia/releases)
+
 # Install
 
 ### Required software
 
-First, you will need to install FairSoft and FairRoot. For more details: [instructions](https://www.r3broot.gsi.de/installation).
+First, you will need to install FairSoft and FairRoot. For more details:
+
+1. Install [FairSoft](https://github.com/FairRootGroup/FairSoft)
+
+2. Install [FairRoot](http://fairroot.gsi.de)
 
 ### Installation of R3BRoot and sofia (as part of R3BRoot)
 
@@ -76,7 +83,7 @@ Each section has 6 anodes (3 pairs of trapezoidal anodes) which are readout in e
 Energy losses obtained from each section are independant.
 We need to combine them to get rid, as much as possible, of the charge states of the secondary beam.
 
-- Twin-MUSIC (SofTwiM)
+- Twin-MUSIC
 SofTwiM is a double detector with a common central cathod.
 There are 2 anodes planes (plane 1: right plane, plane 2: left plane).
 Each anode plane is vertically segmented (section 1: lower section, section 2: upper section), 
@@ -84,7 +91,7 @@ and has 16 anodes along the beam axis.
 This defines 4 different detection volumes.
 With this geometry, we can simultaneously measure both fission fragments in coincidence, as long as each fragment are going through the SofTwiM in two different detection volumes
 
-- MWPC (SofMWPC)
+- MWPC
 There are 3 types of MWMPCs. 
 The first type (MWPC0) is coupled to SofTriM, to get the (x,y) position of the beam. In x, there are 64 vertical pads and in y, 64 horizontal pads.
 The second type is located before and after the SofTwiM detector to get the (x,y) position of each fission fragment before the magnet. This second kind of MWPC is vertically segmented into two sections. Therefore, in x, there are 64 down pads and 64 up pads, and in y, there are 40 vertically pads.
@@ -102,11 +109,11 @@ This directory contains all the detector geometries generated from the macros lo
 - mwpc_0.geo.root for the MWPC0 detector
 - targetvacuumchamber_ams_s455.geo.root for the vacuum chamber and AMS silicon detectors
 - mwpc_1.geo.root for the MWPC1 detector
-- twinmusic_v19a.geo.root for the twin-Music detector
+- twinmusic_v22.geo.root for the twin-Music detector
 - mwpc_2.geo.root for the MWPC2 detector
 - mwpc_3.geo.root for the MWPC3 detector
 - glad_s455.geo.root for GLAD magnet
-- sof_tof_v19.geo.root for the ToF-Wall detector
+- sof_tof_v21.geo.root for the ToF-Wall detector
 
 ### sofia/macros/coulexsim
 
@@ -195,21 +202,18 @@ This directory contains all the data TCloneArray structures for the different le
 This directory contains all the readers related to SOFIA detectors :
 
 - R3BSofAtReader for the Active target detector
-- R3BSofMwpcReader for the MWPC tracking detectors
 - R3BSofTrimReader for the triple ionization chamber
 - R3BSofSciReader for the plastic scintillator located at the FRS and at the entrance of Cave-C (Start)
-- R3BSofTwimReader for the double ionization chamber located in front of target
 - R3BSofToFWReader for the large area ToF-Wall located behind GLAD
 - R3BSofScalersReader for the scalers
 - R3BSofCorrvReader for time correlations of DAQ sub-systems
+- Readers for the TWIM and MWPC detectors can be found on [R3BRoot](https://github.com/R3BRootGroup/R3BRoot)
 
 and UCESB data structures are located at sofsource/ext :
 
 - ext_h101_sofat.h
-- ext_h101_sofmwpc.h
 - ext_h101_softrim.h
 - ext_h101_sofsci.h
-- ext_h101_softwim.h
 - ext_h101_softofw.h
 - ext_h101_sofscalers.h
 - ext_h101_sofcorrv.h
