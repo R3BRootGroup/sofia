@@ -83,7 +83,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofTrimOnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofTrimOnlineSpectra::Init FairRootManager not found";
     // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
@@ -91,21 +91,24 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
 
     // === get access to mapped data of the Triple-MUSIC
     fMappedItemsTrim = (TClonesArray*)mgr->GetObject("TrimMappedData");
-    if (!fMappedItemsTrim) {
-        LOG(FATAL) << " R3BSofTrimOnlineSpectra::Init(), TrimMappedData not found";
+    if (!fMappedItemsTrim)
+    {
+        LOG(fatal) << " R3BSofTrimOnlineSpectra::Init(), TrimMappedData not found";
         return kFATAL;
     }
 
     // === get access to cal data of the Triple-MUSIC === //
     fCalItemsTrim = (TClonesArray*)mgr->GetObject("TrimCalData");
-    if (!fCalItemsTrim) {
-        LOG(FATAL) << " R3BSofTrimOnlineSpectra::Init(), TrimCalData not found";
+    if (!fCalItemsTrim)
+    {
+        LOG(fatal) << " R3BSofTrimOnlineSpectra::Init(), TrimCalData not found";
         return kFATAL;
     }
 
     // === get access to hit data of the Triple-MUSIC === //
     fHitItemsTrim = (TClonesArray*)mgr->GetObject("TrimHitData");
-    if (!fHitItemsTrim) {
+    if (!fHitItemsTrim)
+    {
         LOG(error) << " R3BSofTrimOnlineSpectra::Init(), TrimHitData not found ... is ok !";
     }
 
@@ -125,18 +128,20 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     cTrimMap_Mult = new TCanvas*[fNumSections];
     fh1_trimmap_Mult = new TH1F*[fNumSections];
 
-    for (Int_t i = 0; i < fNumSections; i++) {
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
         sprintf(Name1, "Trim_Emap_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
         cTrimMap_E[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
-        cTrimMap_E[i]->Divide(2, 3);   // 2 col and 3 raws (if triangular anodes: one raw per pair)
+        cTrimMap_E[i]->Divide(2, 3); // 2 col and 3 raws (if triangular anodes: one raw per pair)
 
         sprintf(Name1, "Trim_DTmap_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
         cTrimMap_DT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
         cTrimMap_DT[i]->Divide(2, 3);
 
-        for (Int_t j = 0; j < fNumAnodes; j++) {
+        for (Int_t j = 0; j < fNumAnodes; j++)
+        {
             sprintf(Name1, "fh1_trim_Emap_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
             fh1_trimmap_E[j + fNumAnodes * i] = new TH1F(Name1, Name2, 16384, 0, 65536);
@@ -190,14 +195,15 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         fh1_trimmap_Mult[i]->GetYaxis()->SetTitleSize(0.045);
         fh1_trimmap_Mult[i]->SetFillColor(31);
         fh1_trimmap_Mult[i]->Draw("");
-    }   // end of for(i, fNumSections) 1D-MAPPED
+    } // end of for(i, fNumSections) 1D-MAPPED
 
     // --- TRIM: 1-D MAPPED data for Delta T = Tref - Ttrig for each section
     cTrimMap_DeltaTrefTtrig = new TCanvas("Trim_TrefTtrig", "Delta T (Tref-Trig)", 10, 10, 800, 700);
     cTrimMap_DeltaTrefTtrig->Divide(fNumSections, 1);
     fh1_trimmap_DeltaTrefTtrig = new TH1F*[fNumSections];
 
-    for (Int_t i = 0; i < fNumSections; i++) {
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
         sprintf(Name1, "fh1_trim_Sec%d_DeltaTrefTtrig", i + 1);
         sprintf(Name2, "Delta T (Tref-Trig) in section %d [channels, 100ps TDC resolution] 1ns/bin", i + 1);
         fh1_trimmap_DeltaTrefTtrig[i] = new TH1F(Name1, Name2, 8000, -40000, 40000);
@@ -210,7 +216,8 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh2_trimmap_EvsDT = new TH2F*[fNumSections * fNumAnodes];
     cTrimMap_DTvsDT = new TCanvas*[fNumSections];
     fh2_trimmap_DTvsDT = new TH2F*[fNumSections * (fNumAnodes - 1)];
-    for (Int_t i = 0; i < fNumSections; i++) {
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
         sprintf(Name1, "Trim_EvsDT_Sec_%d", i + 1);
         sprintf(Name2, "Section %d", i + 1);
         cTrimMap_EvsDT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
@@ -221,7 +228,8 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         cTrimMap_DTvsDT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
         cTrimMap_DTvsDT[i]->Divide(2, 3);
 
-        for (Int_t j = 0; j < fNumAnodes; j++) {
+        for (Int_t j = 0; j < fNumAnodes; j++)
+        {
             sprintf(Name1, "fh1_trim_EvsDT_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d", i + 1, j + 1);
             fh2_trimmap_EvsDT[j + fNumAnodes * i] = new TH2F(Name1, Name2, 400, 0, 20000, 590, 1000, 60000);
@@ -239,7 +247,8 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
             fh2_trimmap_EvsDT[j + fNumAnodes * i]->Draw("col");
         }
 
-        for (Int_t j = 0; j < fNumAnodes - 1; j++) {
+        for (Int_t j = 0; j < fNumAnodes - 1; j++)
+        {
             sprintf(Name1, "fh2_trimmap_DTvsDT_sec%d_a%d", i + 1, j);
             sprintf(Name2, "Sec %d: DT_%d vs DT_%d", i + 1, j + 1, j + 2);
             fh2_trimmap_DTvsDT[j + (fNumAnodes - 1) * i] = new TH2F(Name1, Name2, 400, 0, 20000, 400, 0, 20000);
@@ -257,7 +266,7 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
             cTrimMap_DTvsDT[i]->cd(j + 1);
             fh2_trimmap_DTvsDT[j + (fNumAnodes - 1) * i]->Draw("col");
         }
-    }   // end of for (i, fNumSections) 2-D MAPPED
+    } // end of for (i, fNumSections) 2-D MAPPED
 
     // === ======== === //
     // === CAL DATA === //
@@ -281,18 +290,20 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     fh2_trimcal_EnePairVsDT = new TH2F*[fNumSections * fNumPairs];
     fh2_trimcal_EnePairVsDeltaDT = new TH2F*[fNumSections * fNumPairs];
 
-    for (Int_t i = 0; i < fNumSections; i++) {
+    for (Int_t i = 0; i < fNumSections; i++)
+    {
         sprintf(Name1, "TrimCal_E_PerAnode_Sec_%d", i + 1);
         sprintf(Name2, "Energy Section %d", i + 1);
         cTrimCal_Ene[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
-        cTrimCal_Ene[i]->Divide(2, 3);   // 2 col and 3 raws (if triangular anodes: one raw per pair)
+        cTrimCal_Ene[i]->Divide(2, 3); // 2 col and 3 raws (if triangular anodes: one raw per pair)
 
         sprintf(Name1, "TrimCal_DT_PerAnode_Sec_%d", i + 1);
         sprintf(Name2, "Drift Time Section %d", i + 1);
         cTrimCal_DT[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
-        cTrimCal_DT[i]->Divide(2, 3);   // 2 col and 3 raws (if triangular anodes: one raw per pair)
+        cTrimCal_DT[i]->Divide(2, 3); // 2 col and 3 raws (if triangular anodes: one raw per pair)
 
-        for (Int_t j = 0; j < fNumAnodes; j++) {
+        for (Int_t j = 0; j < fNumAnodes; j++)
+        {
             sprintf(Name1, "fh1_trimcal_Esub_sec%d_a%d", i + 1, j + 1);
             sprintf(Name2, "Sec %d:Anode %d: Sub in blue, Match in red", i + 1, j + 1);
             fh1_trimcal_Esub[j + fNumAnodes * i] = new TH1F(Name1, Name2, 8192, 0, 65536);
@@ -359,9 +370,10 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
             cTrimCal_DT[i]->cd(j + 1);
             fh1_trimcal_DTalign[j + fNumAnodes * i]->Draw("sames");
 
-        }   // end of loop over the anodes
+        } // end of loop over the anodes
 
-        for (int j = 0; j < fNumPairs; j++) {
+        for (int j = 0; j < fNumPairs; j++)
+        {
             sprintf(Name1, "fh1_trimcal_Ematch_Sec%d_Pair%d", i + 1, j + 1);
             sprintf(Name2, "Epair, Sec %d:Pair %d", i + 1, j + 1);
             fh1_trimcal_EmatchPair[j + fNumPairs * i] = new TH1F(Name1, Name2, 8192, 0, 65536);
@@ -413,13 +425,14 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
             cTrimCal_EnePairVsDeltaDT->cd(j + 1 + fNumPairs * i);
             fh2_trimcal_EnePairVsDeltaDT[j + fNumPairs * i]->Draw("col");
         }
-    }   // end of loop over the sections
+    } // end of loop over the sections
 
     // === ======== === //
     // === HIT DATA === //
     // === ======== === //
 
-    if (fHitItemsTrim) {
+    if (fHitItemsTrim)
+    {
         cTrimHit_ErawPair = new TCanvas("TrimHitErawPerPair", "TrimEraw per pair", 10, 10, 800, 700);
         cTrimHit_ErawPair->Divide(3, 3);
         fh1_trimhit_ErawPair = new TH1F*[fNumSections * fNumPairs];
@@ -438,9 +451,11 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         fh1_trimhit_Edt = new TH1F*[fNumSections];
         fh1_trimhit_Etheta = new TH1F*[fNumSections];
         fh1_trimhit_Z = new TH1F*[fNumSections + 2];
-        for (Int_t i = 0; i < fNumSections; i++) {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
 
-            for (int j = 0; j < fNumPairs; j++) {
+            for (int j = 0; j < fNumPairs; j++)
+            {
                 sprintf(Name1, "fh1_trimhit_Eraw_Sec%d_Pair%d", i + 1, j + 1);
                 sprintf(Name2, "Epair, Sec %d:Pair %d", i + 1, j + 1);
                 fh1_trimhit_ErawPair[j + fNumPairs * i] = new TH1F(Name1, Name2, 8100, 0, 45000);
@@ -578,7 +593,8 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         fh2_trimhit_Edt_vs_theta = new TH2F*[fNumSections];
         fh2_trimhit_Etheta_vs_theta = new TH2F*[fNumSections];
 
-        for (Int_t i = 0; i < fNumSections; i++) {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
             sprintf(Name1, "TrimHit_Corr_Sec_%d", i + 1);
             sprintf(Name2, "Section %d", i + 1);
             cTrimHit_CorrDep[i] = new TCanvas(Name1, Name2, 10, 10, 800, 700);
@@ -770,7 +786,8 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
     TFolder* folTrimMap = new TFolder("Map", "Mapped Trim info");
     TFolder* folTrimCal = new TFolder("Cal", "Cal Trim info");
     TFolder* folTrimHit = new TFolder("Hit", "Hit Trim info");
-    if (fMappedItemsTrim) {
+    if (fMappedItemsTrim)
+    {
         for (Int_t i = 0; i < fNumSections; i++)
             folTrimMap->Add(cTrimMap_E[i]);
         for (Int_t i = 0; i < fNumSections; i++)
@@ -778,13 +795,15 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         for (Int_t i = 0; i < fNumSections; i++)
             folTrimMap->Add(cTrimMap_Mult[i]);
         folTrimMap->Add(cTrimMap_DeltaTrefTtrig);
-        for (Int_t i = 0; i < fNumSections; i++) {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
             folTrimMap->Add(cTrimMap_EvsDT[i]);
             folTrimMap->Add(cTrimMap_DTvsDT[i]);
         }
         mainfolTrim->Add(folTrimMap);
     }
-    if (fCalItemsTrim) {
+    if (fCalItemsTrim)
+    {
         for (Int_t i = 0; i < fNumSections; i++)
             folTrimCal->Add(cTrimCal_Ene[i]);
         for (Int_t i = 0; i < fNumSections; i++)
@@ -794,7 +813,8 @@ InitStatus R3BSofTrimOnlineSpectra::Init()
         folTrimCal->Add(cTrimCal_EnePairVsDeltaDT);
         mainfolTrim->Add(folTrimCal);
     }
-    if (fHitItemsTrim) {
+    if (fHitItemsTrim)
+    {
         folTrimHit->Add(cTrimHit_ErawPair);
         folTrimHit->Add(cTrimHit_E);
         for (Int_t i = 0; i < fNumSections; i++)
@@ -818,30 +838,38 @@ void R3BSofTrimOnlineSpectra::Reset_Histo()
     LOG(info) << "R3BSofTrimOnlineSpectra::Reset_Histo";
 
     // Mapped data
-    if (fMappedItemsTrim) {
-        for (Int_t i = 0; i < fNumSections; i++) {
+    if (fMappedItemsTrim)
+    {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
             fh1_trimmap_DeltaTrefTtrig[i]->Reset();
             fh1_trimmap_Mult[i]->Reset();
-            for (Int_t j = 0; j < fNumAnodes; j++) {
+            for (Int_t j = 0; j < fNumAnodes; j++)
+            {
                 fh1_trimmap_E[i * fNumAnodes + j]->Reset();
                 fh1_trimmap_DT[i * fNumAnodes + j]->Reset();
                 fh2_trimmap_EvsDT[i * fNumAnodes + j]->Reset();
             }
-            for (Int_t j = 0; j < fNumAnodes - 1; j++) {
+            for (Int_t j = 0; j < fNumAnodes - 1; j++)
+            {
                 fh2_trimmap_DTvsDT[i * (fNumAnodes - 1) + j]->Reset();
             }
         }
     }
     // Cal data
-    if (fCalItemsTrim) {
-        for (Int_t i = 0; i < fNumSections; i++) {
-            for (Int_t j = 0; j < fNumAnodes; j++) {
+    if (fCalItemsTrim)
+    {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
+            for (Int_t j = 0; j < fNumAnodes; j++)
+            {
                 fh1_trimcal_Esub[i * fNumAnodes + j]->Reset();
                 fh1_trimcal_Ematch[i * fNumAnodes + j]->Reset();
                 fh1_trimcal_DTraw[i * fNumAnodes + j]->Reset();
                 fh1_trimcal_DTalign[i * fNumAnodes + j]->Reset();
             }
-            for (Int_t j = 0; j < fNumPairs; j++) {
+            for (Int_t j = 0; j < fNumPairs; j++)
+            {
                 fh1_trimcal_EmatchPair[i * fNumPairs + j]->Reset();
                 fh2_trimcal_EnePairVsDT[i * fNumPairs + j]->Reset();
                 fh2_trimcal_EnePairVsDeltaDT[i * fNumPairs + j]->Reset();
@@ -849,8 +877,10 @@ void R3BSofTrimOnlineSpectra::Reset_Histo()
         }
     }
     // Hit data
-    if (fHitItemsTrim) {
-        for (Int_t i = 0; i < fNumSections; i++) {
+    if (fHitItemsTrim)
+    {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
             for (Int_t j = 0; j < fNumPairs; j++)
                 fh1_trimhit_ErawPair[i * fNumPairs + j]->Reset();
             fh1_trimhit_Eraw[i]->Reset();
@@ -864,7 +894,8 @@ void R3BSofTrimOnlineSpectra::Reset_Histo()
             fh2_trimhit_Edt_vs_theta[i]->Reset();
             fh2_trimhit_Etheta_vs_theta[i]->Reset();
         }
-        for (Int_t i = 0; i < 3; i++) {
+        for (Int_t i = 0; i < 3; i++)
+        {
             fh2_trimhit_EvsE[i]->Reset();
             fh2_trimhit_ZvsZ[i]->Reset();
         }
@@ -876,7 +907,7 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofTrimOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofTrimOnlineSpectra::Exec FairRootManager not found";
 
     Int_t nHits;
 
@@ -885,42 +916,50 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
     // ===               For Anode ID [1:6] : Eraw, Traw
     // ===               For Anode ID 7     : 0,    Traw of the ref signal
     // ===               For Anode ID 8     : 0,    Traw of the trig signal
-    if (fMappedItemsTrim && fMappedItemsTrim->GetEntriesFast() > 0) {
+    if (fMappedItemsTrim && fMappedItemsTrim->GetEntriesFast() > 0)
+    {
 
         Double_t Eraw[fNumSections][fNumAnodes];
         Double_t Traw[fNumSections][fNumAnodes + fNumTref + fNumTtrig];
         UInt_t mult[fNumSections][fNumAnodes + fNumTref + fNumTtrig];
         for (Int_t j = 0; j < fNumSections; j++)
             for (Int_t i = 0; i < fNumAnodes; i++)
-                Eraw[j][i] = 0.;   // attention, only first hit
+                Eraw[j][i] = 0.; // attention, only first hit
         for (Int_t j = 0; j < fNumSections; j++)
-            for (Int_t i = 0; i < fNumAnodes + fNumTref + fNumTtrig; i++) {
-                Traw[j][i] = -1.;   // attention, only first hit
+            for (Int_t i = 0; i < fNumAnodes + fNumTref + fNumTtrig; i++)
+            {
+                Traw[j][i] = -1.; // attention, only first hit
                 mult[j][i] = 0;
             }
 
         nHits = fMappedItemsTrim->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofTrimMappedData* mapitem = (R3BSofTrimMappedData*)fMappedItemsTrim->At(ihit);
             if (!mapitem)
                 continue;
             fh1_trimmap_Mult[mapitem->GetSecID() - 1]->Fill(mapitem->GetAnodeID());
             mult[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1]++;
             // ATTENTION: take into accound only the first hit
-            if (mult[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] == 1) {
-                if (mapitem->GetEnergy() < 65535 && mapitem->GetEnergy() > 0)   // Eraw=0 for Tref and Ttrig
+            if (mult[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] == 1)
+            {
+                if (mapitem->GetEnergy() < 65535 && mapitem->GetEnergy() > 0) // Eraw=0 for Tref and Ttrig
                     Eraw[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] = mapitem->GetEnergy();
                 Traw[mapitem->GetSecID() - 1][mapitem->GetAnodeID() - 1] = mapitem->GetTime();
             }
         }
 
-        for (Int_t s = 0; s < fNumSections; s++) {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
             if (mult[s][fNumAnodes] == 1 && mult[s][fNumAnodes + 1] == 1)
                 fh1_trimmap_DeltaTrefTtrig[s]->Fill(Traw[s][fNumAnodes] - Traw[s][fNumAnodes + 1]);
-            for (Int_t a = 0; a < fNumAnodes; a++) {
-                if (mult[s][a] == 1) {
+            for (Int_t a = 0; a < fNumAnodes; a++)
+            {
+                if (mult[s][a] == 1)
+                {
                     fh1_trimmap_E[s * fNumAnodes + a]->Fill(Eraw[s][a]);
-                    if (mult[s][fNumAnodes] == 1) {
+                    if (mult[s][fNumAnodes] == 1)
+                    {
                         fh1_trimmap_DT[s * fNumAnodes + a]->Fill(Traw[s][a] - Traw[s][fNumAnodes]);
                         fh2_trimmap_EvsDT[s * fNumAnodes + a]->Fill(Traw[s][a] - Traw[s][fNumAnodes], Eraw[s][a]);
                     }
@@ -930,9 +969,9 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
                 if (mult[s][a] == 1 && mult[s][a + 1] == 1 && mult[s][fNumAnodes] == 1)
                     fh2_trimmap_DTvsDT[s * (fNumAnodes - 1) + a]->Fill(Traw[s][a] - Traw[s][fNumAnodes],
                                                                        Traw[s][a + 1] - Traw[s][fNumAnodes]);
-        }   // end of for(fNumSections)
+        } // end of for(fNumSections)
 
-    }   // end of if (MappedItemsTrim)
+    } // end of if (MappedItemsTrim)
 
     // === extract some values from TClonesArray
     Int_t iSec, iAnode, iPair;
@@ -943,8 +982,10 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
     Float_t ErawPair[fNumSections * fNumPairs];
     Float_t DTalignedPair[fNumSections * fNumPairs];
     Int_t multPair[fNumSections * fNumPairs];
-    for (Int_t s = 0; s < fNumSections; s++) {
-        for (Int_t p = 0; p < fNumPairs; p++) {
+    for (Int_t s = 0; s < fNumSections; s++)
+    {
+        for (Int_t p = 0; p < fNumPairs; p++)
+        {
             // cal level
             EmatchPair[s * fNumPairs + p] = 0.;
             DTalignedPair[s * fNumPairs + p] = 0.;
@@ -962,9 +1003,11 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
     }
 
     // === CAL data
-    if (fCalItemsTrim && fCalItemsTrim->GetEntriesFast() > 0) {
+    if (fCalItemsTrim && fCalItemsTrim->GetEntriesFast() > 0)
+    {
         nHits = fCalItemsTrim->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofTrimCalData* calitem = (R3BSofTrimCalData*)fCalItemsTrim->At(ihit);
             if (!calitem)
                 continue;
@@ -980,10 +1023,13 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
             EmatchPair[iPair + iSec * fNumPairs] += 0.5 * calitem->GetEnergyMatch();
             DTalignedPair[iPair + iSec * fNumPairs] += 0.5 * calitem->GetDriftTimeAligned();
             multPair[iPair + iSec * fNumPairs]++;
-        }   // end of lopp over the cal data
-        for (Int_t s = 0; s < fNumSections; s++) {
-            for (Int_t p = 0; p < fNumPairs; p++) {
-                if (multPair[fNumPairs * s + p] == 2) {
+        } // end of lopp over the cal data
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
+            for (Int_t p = 0; p < fNumPairs; p++)
+            {
+                if (multPair[fNumPairs * s + p] == 2)
+                {
                     fh1_trimcal_EmatchPair[fNumPairs * s + p]->Fill(EmatchPair[fNumPairs * s + p]);
                     // if(4800<DTalignedPair[fNumPairs*s+p]&&DTalignedPair[fNumPairs*s+p]<5200){
                     //  fh1_trimcal_EmatchPair[fNumPairs*s+p]->Fill(EmatchPair[fNumPairs*s+p]);
@@ -1001,9 +1047,11 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
     }
 
     // === HIT data
-    if (fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0) {
+    if (fHitItemsTrim && fHitItemsTrim->GetEntriesFast() > 0)
+    {
         nHits = fHitItemsTrim->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofTrimHitData* hititem = (R3BSofTrimHitData*)fHitItemsTrim->At(ihit);
             if (!hititem)
                 continue;
@@ -1031,7 +1079,7 @@ void R3BSofTrimOnlineSpectra::Exec(Option_t* option)
             fh2_trimhit_Edt_vs_DT[iSec]->Fill(DTaligned[iSec], Edt[iSec]);
             fh2_trimhit_Edt_vs_theta[iSec]->Fill(DTdiff, Edt[iSec]);
             fh2_trimhit_Etheta_vs_theta[iSec]->Fill(DTdiff, Etheta[iSec]);
-        }   // end of loop over the HitData TClonesArray
+        } // end of loop over the HitData TClonesArray
         fh2_trimhit_EvsE[0]->Fill(Etheta[0], Etheta[1]);
         fh2_trimhit_ZvsZ[0]->Fill(Z[0], Z[1]);
         fh2_trimhit_EvsE[1]->Fill(Etheta[1], Etheta[2]);
@@ -1056,9 +1104,11 @@ void R3BSofTrimOnlineSpectra::FinishEvent()
 
 void R3BSofTrimOnlineSpectra::FinishTask()
 {
-    if (fMappedItemsTrim) {
+    if (fMappedItemsTrim)
+    {
         cTrimMap_DeltaTrefTtrig->Write();
-        for (Int_t i = 0; i < fNumSections; i++) {
+        for (Int_t i = 0; i < fNumSections; i++)
+        {
             cTrimMap_E[i]->Write();
             cTrimMap_DT[i]->Write();
             cTrimMap_Mult[i]->Write();
@@ -1067,26 +1117,32 @@ void R3BSofTrimOnlineSpectra::FinishTask()
         }
     }
 
-    if (fCalItemsTrim) {
-        for (Int_t s = 0; s < fNumSections; s++) {
+    if (fCalItemsTrim)
+    {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
             cTrimCal_Ene[s]->Write();
             cTrimCal_DT[s]->Write();
         }
         cTrimCal_EnePair->Write();
         cTrimCal_EnePairVsDT->Write();
         cTrimCal_EnePairVsDeltaDT->Write();
-        for (Int_t p = 0; p < fNumSections * fNumPairs; p++) {
+        for (Int_t p = 0; p < fNumSections * fNumPairs; p++)
+        {
             fh1_trimcal_EmatchPair[p]->Write();
             fh2_trimcal_EnePairVsDT[p]->Write();
             fh2_trimcal_EnePairVsDeltaDT[p]->Write();
         }
     }
-    if (fHitItemsTrim) {
+    if (fHitItemsTrim)
+    {
         cTrimHit_ErawPair->Write();
-        for (Int_t p = 0; p < fNumSections * fNumPairs; p++) {
+        for (Int_t p = 0; p < fNumSections * fNumPairs; p++)
+        {
             fh1_trimhit_ErawPair[p]->Write();
         }
-        for (Int_t s = 0; s < fNumSections; s++) {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
             fh1_trimhit_Eraw[s]->Write();
             fh2_trimhit_Eraw_vs_DT[s]->Write();
             fh2_trimhit_Edt_vs_theta[s]->Write();

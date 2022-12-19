@@ -8,8 +8,8 @@
 #include "R3BSofTofWContFact.h"
 
 #include "FairLogger.h"
-#include "FairParSet.h"      // for FairParSet
-#include "FairRuntimeDb.h"   // for FairRuntimeDb
+#include "FairParSet.h"    // for FairParSet
+#include "FairRuntimeDb.h" // for FairRuntimeDb
 #include "R3BSofTcalPar.h"
 #include "R3BSofTofWHitPar.h"
 #include "R3BTGeoPar.h"
@@ -57,15 +57,18 @@ FairParSet* R3BSofTofWContFact::createContainer(FairContainer* c)
     LOG(info) << "R3BSofTofWContFact: Create container name: " << name;
     FairParSet* p = 0;
 
-    if (strcmp(name, "tofwHitPar") == 0) {
+    if (strcmp(name, "tofwHitPar") == 0)
+    {
         p = new R3BSofTofWHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
-    else if (strcmp(name, "TofwGeoPar") == 0) {
+    else if (strcmp(name, "TofwGeoPar") == 0)
+    {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 
-    else if (strcmp(name, "SofTofWTcalPar") == 0) {
+    else if (strcmp(name, "SofTofWTcalPar") == 0)
+    {
         p = new R3BSofTcalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
 

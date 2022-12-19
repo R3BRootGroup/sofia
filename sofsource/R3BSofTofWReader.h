@@ -47,4 +47,4 @@ class R3BSofTofWReader : public R3BReader
     ClassDefOverride(R3BSofTofWReader, 0);
 };
 
-#endif   // R3BSOFTOFWREADER_H
+#endif // R3BSOFTOFWREADER_H

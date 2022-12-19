@@ -79,7 +79,7 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofCorrOnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofCorrOnlineSpectra::Init FairRootManager not found";
     // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
@@ -89,7 +89,8 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     // --- CORRM at MAPPED --- //
     // --- --------------- --- //
     fCorrmMapped = (TClonesArray*)mgr->GetObject("CorrmMappedData");
-    if (!fCorrmMapped) {
+    if (!fCorrmMapped)
+    {
         LOG(error) << "R3BSofCorrOnlineSpectra:: CorrmMappedData not found";
         return kFATAL;
     }
@@ -98,7 +99,8 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     // --- CORRV at MAPPED --- //
     // --- --------------- --- //
     fCorrvMapped = (TClonesArray*)mgr->GetObject("CorrvMappedData");
-    if (!fCorrvMapped) {
+    if (!fCorrvMapped)
+    {
         LOG(error) << "R3BSofCorrOnlineSpectra:: CorrvMappedData not found";
         return kFATAL;
     }
@@ -107,7 +109,8 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     // --- SCI at TCAL --- //
     // --- ----------- --- //
     fSciTcal = (TClonesArray*)mgr->GetObject("SofSciTcalData");
-    if (!fSciTcal) {
+    if (!fSciTcal)
+    {
         LOG(error) << "R3BSofCorrOnlineSpectra:: SofSciTcalData not found";
         return kFATAL;
     }
@@ -117,7 +120,8 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     char Name2[255];
 
     // SOFIA_VFTX DAQ SUBSYSTEM
-    if (fCorrvMapped && fSciTcal && fCorrmMapped) {
+    if (fCorrvMapped && fSciTcal && fCorrmMapped)
+    {
         cMap_CorrV = new TCanvas("sofia_vftx", "sofia_vftx", 10, 10, 800, 700);
         cMap_CorrV->Divide(2, 3);
 
@@ -195,7 +199,8 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     }
 
     // sofia_mesy
-    if (fCorrmMapped) {
+    if (fCorrmMapped)
+    {
         cMap_CorrM = new TCanvas("sofia_mesy", "sofia_mesy", 10, 10, 800, 700);
         cMap_CorrM->Divide(2, 2);
         fh1_CorrM = new TH1D*[3];
@@ -230,7 +235,8 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     }
 
     // Correlation between sofia_vftx et sofia_mesy
-    if (fCorrvMapped && fSciTcal && fCorrmMapped) {
+    if (fCorrvMapped && fSciTcal && fCorrmMapped)
+    {
         cMap_Corr = new TCanvas("Corr_sofia_daqs", "Corr_sofia_daqs", 10, 10, 800, 700);
         fh2_Correlation = new TH2F*[3];
 
@@ -243,13 +249,16 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
 
     // Folder
     TFolder* FoldCorr = new TFolder("Corr", "Correlation");
-    if (fCorrvMapped && fSciTcal) {
+    if (fCorrvMapped && fSciTcal)
+    {
         FoldCorr->Add(cMap_CorrV);
     }
-    if (fCorrmMapped) {
+    if (fCorrmMapped)
+    {
         FoldCorr->Add(cMap_CorrM);
     }
-    if (fCorrvMapped && fSciTcal && fCorrmMapped) {
+    if (fCorrvMapped && fSciTcal && fCorrmMapped)
+    {
         FoldCorr->Add(cMap_Corr);
     }
 
@@ -264,18 +273,21 @@ void R3BSofCorrOnlineSpectra::Reset_Histo()
 {
     LOG(info) << "R3BSofCorrOnlineSpectra::Reset_Histo";
 
-    if (fCorrvMapped && fSciTcal) {
+    if (fCorrvMapped && fSciTcal)
+    {
         fh1_FineTime_CorrV->Reset();
         fh1_CoarseTime_CorrV->Reset();
         fh1_RawTime_CorrV->Reset();
         fh1_RawTime_TrefCorrV->Reset();
         fh1_DeltaT_sofia_vftx->Reset();
     }
-    if (fCorrmMapped) {
+    if (fCorrmMapped)
+    {
         fh1_CorrM[0]->Reset();
         fh1_CorrM[1]->Reset();
     }
-    if (fCorrvMapped && fSciTcal && fCorrmMapped) {
+    if (fCorrvMapped && fSciTcal && fCorrmMapped)
+    {
         fh2_Correlation[0]->Reset();
     }
 }
@@ -284,14 +296,16 @@ void R3BSofCorrOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofCorrOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofCorrOnlineSpectra::Exec FairRootManager not found";
 
     Double_t CoarseCorrV = -1000000000.;
     Double_t FineCorrV = -1000000000.;
     Double_t TimeCorrV_Ns = -1000000000.;
     Double_t DeltaT_CorrV = -1000000000.;
-    if (fCorrvMapped && fCorrvMapped->GetEntriesFast() > 0) {
-        for (Int_t entry1 = 0; entry1 < fCorrvMapped->GetEntriesFast(); entry1++) {
+    if (fCorrvMapped && fCorrvMapped->GetEntriesFast() > 0)
+    {
+        for (Int_t entry1 = 0; entry1 < fCorrvMapped->GetEntriesFast(); entry1++)
+        {
             R3BSofCorrvMappedData* corrvmap = (R3BSofCorrvMappedData*)fCorrvMapped->At(entry1);
             if (!corrvmap)
                 continue;
@@ -303,24 +317,29 @@ void R3BSofCorrOnlineSpectra::Exec(Option_t* option)
             fh1_CoarseTime_CorrV->Fill(CoarseCorrV);
             fh1_RawTime_CorrV->Fill(TimeCorrV_Ns);
 
-            if (fSciTcal && fSciTcal->GetEntriesFast()) {
-                for (Int_t entry2 = 0; entry2 < fSciTcal->GetEntriesFast(); entry2++) {
+            if (fSciTcal && fSciTcal->GetEntriesFast())
+            {
+                for (Int_t entry2 = 0; entry2 < fSciTcal->GetEntriesFast(); entry2++)
+                {
                     R3BSofSciTcalData* scitcal = (R3BSofSciTcalData*)fSciTcal->At(entry2);
                     if (!scitcal)
                         continue;
-                    if (scitcal->GetPmt() == 3 && scitcal->GetDetector() == fTrefId_Corrv) {
+                    if (scitcal->GetPmt() == 3 && scitcal->GetDetector() == fTrefId_Corrv)
+                    {
                         fh1_RawTime_TrefCorrV->Fill(scitcal->GetRawTimeNs());
                         DeltaT_CorrV = TimeCorrV_Ns - scitcal->GetRawTimeNs();
                         fh1_DeltaT_sofia_vftx->Fill(DeltaT_CorrV);
                     }
-                }   // end of loop over entry2
+                } // end of loop over entry2
             }
-        }   // end of loop over entry1
-    }       // end of if(CorrVMappedData)
+        } // end of loop over entry1
+    }     // end of if(CorrVMappedData)
 
     Double_t DeltaT_CorrM;
-    if (fCorrmMapped && fCorrmMapped->GetEntriesFast() > 0) {
-        for (Int_t entry = 0; entry < fCorrmMapped->GetEntriesFast(); entry++) {
+    if (fCorrmMapped && fCorrmMapped->GetEntriesFast() > 0)
+    {
+        for (Int_t entry = 0; entry < fCorrmMapped->GetEntriesFast(); entry++)
+        {
             R3BSofCorrmMappedData* corrmmap = (R3BSofCorrmMappedData*)fCorrmMapped->At(entry);
             if (!corrmmap)
                 continue;
@@ -345,7 +364,8 @@ void R3BSofCorrOnlineSpectra::FinishEvent()
 
 void R3BSofCorrOnlineSpectra::FinishTask()
 {
-    if (fCorrvMapped && fSciTcal && fCorrmMapped) {
+    if (fCorrvMapped && fSciTcal && fCorrmMapped)
+    {
         cMap_CorrV->Write();
         cMap_CorrM->Write();
         cMap_Corr->Write();

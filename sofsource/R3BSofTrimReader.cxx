@@ -16,7 +16,8 @@ using namespace std;
 
 R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, size_t offset)
     : R3BSofTrimReader(data, offset, 3)
-{}
+{
+}
 
 R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, size_t offset, Int_t num)
     : R3BReader("R3BSofTrimReader")
@@ -25,7 +26,8 @@ R3BSofTrimReader::R3BSofTrimReader(EXT_STR_h101_SOFTRIM* data, size_t offset, In
     , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofTrimMappedData"))
     , fSections(num)
-{}
+{
+}
 
 R3BSofTrimReader::~R3BSofTrimReader()
 {
@@ -39,7 +41,8 @@ Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
     Int_t ok;
     LOG(info) << "R3BSofTrimReader::Init()";
     EXT_STR_h101_SOFTRIM_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTRIM, 0);
-    if (!ok) {
+    if (!ok)
+    {
         perror("ext_data_struct_info_item");
         LOG(error) << "R3BSofTrimReader::Failed to setup structure information.";
         return kFALSE;
@@ -52,7 +55,8 @@ Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFTRIM_onion* data = (EXT_STR_h101_SOFTRIM_onion*)fData;
-    for (int s = 0; s < fSections; s++) {
+    for (int s = 0; s < fSections; s++)
+    {
         data->SOFTRIM_S[s].EM = 0;
         data->SOFTRIM_S[s].TM = 0;
         data->SOFTRIM_S[s].TREFM = 0;
@@ -68,7 +72,8 @@ Bool_t R3BSofTrimReader::Read()
     EXT_STR_h101_SOFTRIM_onion* data = (EXT_STR_h101_SOFTRIM_onion*)fData;
 
     // loop over all planes and sections
-    for (UShort_t s = 0; s < fSections; s++) {
+    for (UShort_t s = 0; s < fSections; s++)
+    {
         ReadData(data, s);
     }
     return kTRUE;
@@ -99,16 +104,16 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
         std::cout << "------------------------------" << std::endl;
         std::cout << "R3BSofTrimReader::ReadData section = " << section <<std::endl;
         std::cout << "------------------------------" << std::endl;
-        LOG(INFO) << "nAnodesTref = " << nAnodesTref;
-        LOG(INFO) << "nAnodesTtrig = " << nAnodesTtrig;
-        LOG(INFO) << "nAnodesEnergy = " << nAnodesEnergy;
-        LOG(INFO) << "nAnodesTime = " << nAnodesTime;
+        LOG(info) << "nAnodesTref = " << nAnodesTref;
+        LOG(info) << "nAnodesTtrig = " << nAnodesTtrig;
+        LOG(info) << "nAnodesEnergy = " << nAnodesEnergy;
+        LOG(info) << "nAnodesTime = " << nAnodesTime;
         std::cout << "------------------------------" << std::endl;
         }
         for (UShort_t a = 0; a < nAnodesEnergy; a++)
         {
           // EMI gives the 1-based anode number
-          LOG(INFO) << " idAnodeEnergy = " << data->SOFTRIM_S[section].EMI[a] ;
+          LOG(info) << " idAnodeEnergy = " << data->SOFTRIM_S[section].EMI[a] ;
        }
      */
 
@@ -124,11 +129,13 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     // TREF id Anode = 7
     // Attention section 1 and 2 are connected to the same MDPP16
     // Therefore, it is mandatory to duplicate the section 1 Tref
-    for (UShort_t a = 0; a < nAnodesTref; a++) {
+    for (UShort_t a = 0; a < nAnodesTref; a++)
+    {
         // TREFMI gives the 1-based Tref number
-        idAnodeTref = data->SOFTRIM_S[section].TREFMI[a] + 6;   // idAnodeTref = 7
+        idAnodeTref = data->SOFTRIM_S[section].TREFMI[a] + 6; // idAnodeTref = 7
         nextTref = data->SOFTRIM_S[section].TREFME[a];
-        for (int hit = curTref; hit < nextTref; hit++) {
+        for (int hit = curTref; hit < nextTref; hit++)
+        {
             pileupFLAG = (data->SOFTRIM_S[section].TREFv[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFTRIM_S[section].TREFv[hit] & 0x00080000) >> 19;
             // section is 0-based
@@ -147,11 +154,13 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     UShort_t idAnodeTtrig = 0;
 
     // TTRIG id Anode = 8
-    for (UShort_t a = 0; a < nAnodesTtrig; a++) {
+    for (UShort_t a = 0; a < nAnodesTtrig; a++)
+    {
         // again TTRIGMI is 1 based
-        idAnodeTtrig = data->SOFTRIM_S[section].TTRIGMI[a] + 7;   // idAnodeTtrig = 8
+        idAnodeTtrig = data->SOFTRIM_S[section].TTRIGMI[a] + 7; // idAnodeTtrig = 8
         nextTtrig = data->SOFTRIM_S[section].TTRIGME[a];
-        for (int hit = curTtrig; hit < nextTtrig; hit++) {
+        for (int hit = curTtrig; hit < nextTtrig; hit++)
+        {
             pileupFLAG = (data->SOFTRIM_S[section].TTRIGv[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFTRIM_S[section].TTRIGv[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTrimMappedData(
@@ -171,7 +180,8 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
     // ENERGY AND TIME ARE SORTED
     uint32_t curAnodeTimeStart = 0;
     uint32_t curAnodeEnergyStart = 0;
-    for (UShort_t a = 0; a < nAnodesTime; a++) {
+    for (UShort_t a = 0; a < nAnodesTime; a++)
+    {
         // EMI and TMI give the 1-based anode number
         UShort_t idAnodeTime = data->SOFTRIM_S[section].TMI[a];
         UShort_t idAnodeEnergy = data->SOFTRIM_S[section].EMI[a];
@@ -182,7 +192,8 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
         uint32_t nextAnodeEnergyStart = data->SOFTRIM_S[section].EME[a];
         if ((nextAnodeTimeStart - curAnodeTimeStart) != (nextAnodeEnergyStart - curAnodeEnergyStart))
             LOG(error) << "R3BSofTrimReader::ReadData error ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
-        for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++) {
+        for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
+        {
             pileupFLAG = (data->SOFTRIM_S[section].Ev[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFTRIM_S[section].Ev[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTrimMappedData(section + 1,
@@ -194,7 +205,7 @@ Bool_t R3BSofTrimReader::ReadData(EXT_STR_h101_SOFTRIM_onion* data, UShort_t sec
         }
         curAnodeEnergyStart = nextAnodeEnergyStart;
         curAnodeTimeStart = nextAnodeTimeStart;
-    }   // end of loop over the anodes from 1 to 6
+    } // end of loop over the anodes from 1 to 6
 
     return kTRUE;
 }

@@ -32,11 +32,11 @@ class R3BSofSciCalData : public TObject
 
   private:
     UShort_t fDetector;
-    Double_t fPosMm;      // attention, x is increasing from right to left
-    Double_t fBeta_S2;    // Beta from RawTof from S2
-    Double_t fBeta_S8;    // Beta from RawTof from S8
-    Double_t fTofNs_S2;   // ToF from S2 to fDetector
-    Double_t fTofNs_S8;   // ToF from S8 to fDetector
+    Double_t fPosMm;    // attention, x is increasing from right to left
+    Double_t fBeta_S2;  // Beta from RawTof from S2
+    Double_t fBeta_S8;  // Beta from RawTof from S8
+    Double_t fTofNs_S2; // ToF from S2 to fDetector
+    Double_t fTofNs_S8; // ToF from S8 to fDetector
 
     /*
        Reminder: fRawPosNs:

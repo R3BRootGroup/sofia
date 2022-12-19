@@ -27,7 +27,8 @@ R3BSofSciSingleTcal2Hit::R3BSofSciSingleTcal2Hit()
     , fRawTofPar(NULL)
     , fTof(0.)
     , fOnline(kFALSE)
-{}
+{
+}
 
 // R3BSofSciSingleTcal2Hit: Standard Constructor --------------------------
 R3BSofSciSingleTcal2Hit::R3BSofSciSingleTcal2Hit(const char* name, Int_t iVerbose)
@@ -38,7 +39,8 @@ R3BSofSciSingleTcal2Hit::R3BSofSciSingleTcal2Hit(const char* name, Int_t iVerbos
     , fOffsetTof(0.)
     , fTof(0.)
     , fOnline(kFALSE)
-{}
+{
+}
 
 // Virtual R3BSofSciSingleTcal2Hit: Destructor
 R3BSofSciSingleTcal2Hit::~R3BSofSciSingleTcal2Hit()
@@ -53,11 +55,13 @@ R3BSofSciSingleTcal2Hit::~R3BSofSciSingleTcal2Hit()
 void R3BSofSciSingleTcal2Hit::SetParContainers()
 {
     fRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
-    if (!fRawTofPar) {
+    if (!fRawTofPar)
+    {
         LOG(error)
             << "R3BSofSciTcal2SingleTcal::SetParContainers() : Could not get access to SofSciRawTofPar-Container.";
         return;
-    } else
+    }
+    else
         LOG(info) << "R3BSofSciTcal2SingleTcal::SetParContainers() : SofSciRawTofPar-Container found with "
                   << fRawTofPar->GetNumDets() << " detector declare and " << fRawTofPar->GetNumSignals() << " signals";
 }
@@ -69,12 +73,14 @@ InitStatus R3BSofSciSingleTcal2Hit::Init()
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager) {
+    if (!rootManager)
+    {
         return kFATAL;
     }
 
     fSingleTcalDataCA = (TClonesArray*)rootManager->GetObject("SofSciSingleTcalData");
-    if (!fSingleTcalDataCA) {
+    if (!fSingleTcalDataCA)
+    {
         return kFATAL;
     }
 
@@ -82,20 +88,25 @@ InitStatus R3BSofSciSingleTcal2Hit::Init()
     // Hit data
     fHitDataCA = new TClonesArray("R3BSofSciHitData", 10);
 
-    if (!fOnline) {
+    if (!fOnline)
+    {
         rootManager->Register("SofSciHitData", "Sci-Hit", fHitDataCA, kTRUE);
-    } else {
+    }
+    else
+    {
         rootManager->Register("SofSciHitData", "Sci-Hit", fHitDataCA, kFALSE);
     }
 
     // --- ---------------------------- --- //
     // --- CHECK THE RAWTOFPAR VALIDITY --- //
     // --- ---------------------------- --- //
-    if (fRawTofPar->GetNumDets()
-        == 0) {   // DO NOT TEST fRawTofPar->GetNumSignals(), IT CAN BE 0 IN CASE OF PRIMARY BEAM EXPERIMENT
+    if (fRawTofPar->GetNumDets() == 0)
+    { // DO NOT TEST fRawTofPar->GetNumSignals(), IT CAN BE 0 IN CASE OF PRIMARY BEAM EXPERIMENT
         LOG(error) << "R3BSofSciSingleTcal2Hit::Init() : There are no SofSci detectors declared, should be at least 1 ";
         return kFATAL;
-    } else {
+    }
+    else
+    {
         LOG(info) << "R3BSofSciSingleTcal2Hit::Init() : fRawPosPar: fNumSignals=" << fRawTofPar->GetNumSignals()
                   << " 	 fNumDets=" << fRawTofPar->GetNumDets();
     }
@@ -121,11 +132,12 @@ void R3BSofSciSingleTcal2Hit::Exec(Option_t* option)
     if (!nHits)
         return;
 
-    double slope_calibs2 = -50.8;      // only for the s467 in position
-    double slope_calibcave = -74.09;   // only for the s467 in position
-    double offset_calibcave = 90.6;    // only for the s467 in position
+    double slope_calibs2 = -50.8;    // only for the s467 in position
+    double slope_calibcave = -74.09; // only for the s467 in position
+    double offset_calibcave = 90.6;  // only for the s467 in position
 
-    for (Int_t i = 0; i < nHits; i++) {
+    for (Int_t i = 0; i < nHits; i++)
+    {
 
         // Data from SingleTcal level
         R3BSofSciSingleTcalData* hit = (R3BSofSciSingleTcalData*)fSingleTcalDataCA->At(i);

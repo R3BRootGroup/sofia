@@ -74,20 +74,20 @@ class R3BSofTofW : public R3BDetector
   private:
     /** Track information to be stored until the track leaves the
         active volume. **/
-    Int_t fTrackID;                   //!  track index
-    Int_t fTrackPID;                  //!  particle identification
-    Int_t fVolumeID;                  //!  volume id
-    Int_t fDetCopyID;                 //!  Det volume id
-    Double_t fZ;                      //!  atomic number fragment
-    Double_t fA;                      //!  mass number fragment
-    TLorentzVector fPosIn, fPosOut;   //!  position
-    TLorentzVector fMomIn, fMomOut;   //!  momentum
-    Double32_t fTime;                 //!  time
-    Double32_t fLength;               //!  length
-    Double32_t fELoss;                //!  energy loss
-    Int_t fPosIndex;                  //!
+    Int_t fTrackID;                 //!  track index
+    Int_t fTrackPID;                //!  particle identification
+    Int_t fVolumeID;                //!  volume id
+    Int_t fDetCopyID;               //!  Det volume id
+    Double_t fZ;                    //!  atomic number fragment
+    Double_t fA;                    //!  mass number fragment
+    TLorentzVector fPosIn, fPosOut; //!  position
+    TLorentzVector fMomIn, fMomOut; //!  momentum
+    Double32_t fTime;               //!  time
+    Double32_t fLength;             //!  length
+    Double32_t fELoss;              //!  energy loss
+    Int_t fPosIndex;                //!
 
-    TClonesArray* fSofTofWallCollection;   //  The point collection
+    TClonesArray* fSofTofWallCollection; //  The point collection
 
     /** Private method AddPoint
      **

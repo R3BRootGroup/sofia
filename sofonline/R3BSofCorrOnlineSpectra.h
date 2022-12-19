@@ -86,9 +86,9 @@ class R3BSofCorrOnlineSpectra : public FairTask
     void SetTrefId_Corrv(Int_t id) { fTrefId_Corrv = id; }
 
   private:
-    TClonesArray* fCorrmMapped;   // Array with Corrm mapped items. //
-    TClonesArray* fCorrvMapped;   // Array with Corrv mapped items. //
-    TClonesArray* fSciTcal;       // Array with SofSci tcal items.  //
+    TClonesArray* fCorrmMapped; // Array with Corrm mapped items. //
+    TClonesArray* fCorrvMapped; // Array with Corrv mapped items. //
+    TClonesArray* fSciTcal;     // Array with SofSci tcal items.  //
 
     Int_t fFirstX_Corrv;
     Int_t fLastX_Corrv;

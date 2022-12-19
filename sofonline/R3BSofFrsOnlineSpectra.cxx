@@ -43,13 +43,15 @@ R3BSofFrsOnlineSpectra::R3BSofFrsOnlineSpectra()
     : FairTask("SofFrsOnlineSpectra", 1)
     , fHitItemsFrs(NULL)
     , fNEvents(0)
-{}
+{
+}
 
 R3BSofFrsOnlineSpectra::R3BSofFrsOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
     , fHitItemsFrs(NULL)
     , fNEvents(0)
-{}
+{
+}
 
 R3BSofFrsOnlineSpectra::~R3BSofFrsOnlineSpectra()
 {
@@ -68,7 +70,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofFrsOnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofFrsOnlineSpectra::Init FairRootManager not found";
     // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
@@ -76,7 +78,8 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
     // get access to mapped data of FRS
     fHitItemsFrs = (TClonesArray*)mgr->GetObject("FrsData");
-    if (!fHitItemsFrs) {
+    if (!fHitItemsFrs)
+    {
         return kFATAL;
     }
 
@@ -184,12 +187,14 @@ void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofFRSOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofFRSOnlineSpectra::Exec FairRootManager not found";
 
     // Fill Hit data
-    if (fHitItemsFrs && fHitItemsFrs->GetEntriesFast() > 0) {
+    if (fHitItemsFrs && fHitItemsFrs->GetEntriesFast() > 0)
+    {
         Int_t nHits = fHitItemsFrs->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BFrsData* hit = (R3BFrsData*)fHitItemsFrs->At(ihit);
             if (!hit)
                 continue;
@@ -205,14 +210,16 @@ void R3BSofFrsOnlineSpectra::Exec(Option_t* option)
 
 void R3BSofFrsOnlineSpectra::FinishEvent()
 {
-    if (fHitItemsFrs) {
+    if (fHitItemsFrs)
+    {
         fHitItemsFrs->Clear();
     }
 }
 
 void R3BSofFrsOnlineSpectra::FinishTask()
 {
-    if (fHitItemsFrs) {
+    if (fHitItemsFrs)
+    {
         cBeta->Write();
         cBrho->Write();
         cXs2vsBeta->Write();

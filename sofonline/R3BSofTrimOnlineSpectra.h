@@ -98,20 +98,20 @@ class R3BSofTrimOnlineSpectra : public FairTask
     Int_t fNEvents;         /**< Event counter.     */
 
     // Canvas for Mapped data
-    TCanvas** cTrimMap_E;      //[NbSectionsTrim];
-    TCanvas** cTrimMap_DT;     //[NbSectionsTrim];
-    TCanvas** cTrimMap_Mult;   //[NbSectionsTrim];
+    TCanvas** cTrimMap_E;    //[NbSectionsTrim];
+    TCanvas** cTrimMap_DT;   //[NbSectionsTrim];
+    TCanvas** cTrimMap_Mult; //[NbSectionsTrim];
     TCanvas* cTrimMap_DeltaTrefTtrig;
-    TCanvas** cTrimMap_EvsDT;    //[NbSectionsTrim];
-    TCanvas** cTrimMap_DTvsDT;   //[NbSectionsTrim];
+    TCanvas** cTrimMap_EvsDT;  //[NbSectionsTrim];
+    TCanvas** cTrimMap_DTvsDT; //[NbSectionsTrim];
 
     // Histograms for Mapped data
-    TH1F** fh1_trimmap_E;                //[NbSectionsTrim][NbAnodesTrim];
-    TH1F** fh1_trimmap_DT;               //[NbSectionsTrim][NbAnodesTrim];
-    TH1F** fh1_trimmap_Mult;             //[NbSectionsTrim];
-    TH1F** fh1_trimmap_DeltaTrefTtrig;   //[NbSectionsTrim];
-    TH2F** fh2_trimmap_EvsDT;            //[NbSectionsTrim][NbAnodesTrim];
-    TH2F** fh2_trimmap_DTvsDT;           //[NbSectionsTrim][NbAnodesTrim-1];
+    TH1F** fh1_trimmap_E;              //[NbSectionsTrim][NbAnodesTrim];
+    TH1F** fh1_trimmap_DT;             //[NbSectionsTrim][NbAnodesTrim];
+    TH1F** fh1_trimmap_Mult;           //[NbSectionsTrim];
+    TH1F** fh1_trimmap_DeltaTrefTtrig; //[NbSectionsTrim];
+    TH2F** fh2_trimmap_EvsDT;          //[NbSectionsTrim][NbAnodesTrim];
+    TH2F** fh2_trimmap_DTvsDT;         //[NbSectionsTrim][NbAnodesTrim-1];
 
     // Canvas for Cal data
     TCanvas** cTrimCal_Ene;

@@ -67,11 +67,11 @@ class R3BSofTcalPar : public FairParGenericSet
     /** Create more Methods if you need them! **/
 
   private:
-    TArrayF* fAllClockOffsets;        // Clock offsets
-    TArrayF* fAllSignalsTcalParams;   // Calibration Parameters for all signals of one detector
-    Int_t fNumDetectors;              // number of detectors (=2 for Sci, =28 for TofW)
-    Int_t fNumChannels;               // number of channels  (=3 for Sci, =2 for TofW)
-    Int_t fNumSignals;                // fNumDetectors * fNumChannels
+    TArrayF* fAllClockOffsets;      // Clock offsets
+    TArrayF* fAllSignalsTcalParams; // Calibration Parameters for all signals of one detector
+    Int_t fNumDetectors;            // number of detectors (=2 for Sci, =28 for TofW)
+    Int_t fNumChannels;             // number of channels  (=3 for Sci, =2 for TofW)
+    Int_t fNumSignals;              // fNumDetectors * fNumChannels
     Int_t fNumTcalParsPerSignal;
 
     const R3BSofTcalPar& operator=(const R3BSofTcalPar&);
@@ -80,4 +80,4 @@ class R3BSofTcalPar : public FairParGenericSet
     ClassDef(R3BSofTcalPar, 1);
 };
 
-#endif   // R3BSOFTCALPAR_H
+#endif // R3BSOFTCALPAR_H

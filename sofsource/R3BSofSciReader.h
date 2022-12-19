@@ -48,4 +48,4 @@ class R3BSofSciReader : public R3BReader
     ClassDefOverride(R3BSofSciReader, 0);
 };
 
-#endif   // R3BSOFSCIREADER_H
+#endif // R3BSOFSCIREADER_H

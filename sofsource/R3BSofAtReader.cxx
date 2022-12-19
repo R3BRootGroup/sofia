@@ -20,7 +20,8 @@ R3BSofAtReader::R3BSofAtReader(EXT_STR_h101_SOFAT* data, size_t offset)
     , fOffset(offset)
     , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofAtMappedData"))
-{}
+{
+}
 
 R3BSofAtReader::~R3BSofAtReader()
 {
@@ -35,7 +36,8 @@ Bool_t R3BSofAtReader::Init(ext_data_struct_info* a_struct_info)
     Int_t ok;
     LOG(info) << "R3BSofAtReader::Init()";
     EXT_STR_h101_SOFAT_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFAT, 0);
-    if (!ok) {
+    if (!ok)
+    {
         perror("ext_data_struct_info_item");
         LOG(error) << "R3BSofAtReader::Failed to setup structure information.";
         return kFALSE;
@@ -78,11 +80,13 @@ Bool_t R3BSofAtReader::ReadData(EXT_STR_h101_SOFAT_onion* data)
     // --- energy and time are sorted
     uint32_t curAnodeTimeStart = 0;
     uint32_t curAnodeEnergyStart = 0;
-    for (UShort_t a = 0; a < nAnodesTime; a++) {
+    for (UShort_t a = 0; a < nAnodesTime; a++)
+    {
         // EMI and TMI give the 1-based anode number
         UShort_t idAnodeTime = data->SOFAT_TMI[a];
         UShort_t idAnodeEnergy = data->SOFAT_EMI[a];
-        if (idAnodeEnergy != idAnodeTime) {
+        if (idAnodeEnergy != idAnodeTime)
+        {
             LOG(error) << "R3BSofAtReader::ReadData error ! MISMATCH FOR ANODE ID ";
             LOG(error) << "IN ENERGY #" << idAnodeEnergy << " AND TIME #" << idAnodeTime;
         }
@@ -90,7 +94,8 @@ Bool_t R3BSofAtReader::ReadData(EXT_STR_h101_SOFAT_onion* data)
         uint32_t nextAnodeEnergyStart = data->SOFAT_EME[a];
         if ((nextAnodeTimeStart - curAnodeTimeStart) != (nextAnodeEnergyStart - curAnodeEnergyStart))
             LOG(error) << "R3BSofAtReader::ReadData error ! MISMATCH FOR MULTIPLICITY PER ANODE IN ENERGY AND TIME";
-        for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++) {
+        for (int hit = curAnodeTimeStart; hit < nextAnodeTimeStart; hit++)
+        {
             pileupFLAG = (data->SOFAT_Ev[hit] & 0x00040000) >> 18;
             overflowFLAG = (data->SOFAT_Ev[hit] & 0x00080000) >> 19;
             new ((*fArray)[fArray->GetEntriesFast()])
@@ -98,7 +103,7 @@ Bool_t R3BSofAtReader::ReadData(EXT_STR_h101_SOFAT_onion* data)
         }
         curAnodeEnergyStart = nextAnodeEnergyStart;
         curAnodeTimeStart = nextAnodeTimeStart;
-    }   // end of loop over the anodes from 1 to 6
+    } // end of loop over the anodes from 1 to 6
 
     return kTRUE;
 }

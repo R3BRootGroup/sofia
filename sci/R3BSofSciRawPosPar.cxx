@@ -23,7 +23,8 @@ R3BSofSciRawPosPar::R3BSofSciRawPosPar(const char* name, const char* title, cons
 R3BSofSciRawPosPar::~R3BSofSciRawPosPar()
 {
     clear();
-    if (fAllRawPosParams) {
+    if (fAllRawPosParams)
+    {
         delete fAllRawPosParams;
     }
 }
@@ -39,7 +40,8 @@ void R3BSofSciRawPosPar::clear()
 void R3BSofSciRawPosPar::putParams(FairParamList* list)
 {
     LOG(info) << "R3BSofSciRawPosPar::putParams() called";
-    if (!list) {
+    if (!list)
+    {
         return;
     }
 
@@ -59,19 +61,24 @@ void R3BSofSciRawPosPar::putParams(FairParamList* list)
 Bool_t R3BSofSciRawPosPar::getParams(FairParamList* list)
 {
     LOG(info) << "R3BSofSciRawPosPar::getParams() called";
-    if (!list) {
+    if (!list)
+    {
         return kFALSE;
     }
-    if (!list->fill("nDetectorsRawPosPar", &fNumDets)) {
+    if (!list->fill("nDetectorsRawPosPar", &fNumDets))
+    {
         return kFALSE;
     }
-    if (!list->fill("nChannelsRawPosPar", &fNumPmts)) {
+    if (!list->fill("nChannelsRawPosPar", &fNumPmts))
+    {
         return kFALSE;
     }
-    if (!list->fill("nSignalsRawPosPar", &fNumSignals)) {
+    if (!list->fill("nSignalsRawPosPar", &fNumSignals))
+    {
         return kFALSE;
     }
-    if (!list->fill("nRawPosParsPerSignal", &fNumParsPerSignal)) {
+    if (!list->fill("nRawPosParsPerSignal", &fNumParsPerSignal))
+    {
         return kFALSE;
     }
 
@@ -79,7 +86,8 @@ Bool_t R3BSofSciRawPosPar::getParams(FairParamList* list)
     LOG(info) << "Array Size: " << array_size;
     fAllRawPosParams->Set(array_size);
 
-    if (!(list->fill("RawPosPar", fAllRawPosParams))) {
+    if (!(list->fill("RawPosPar", fAllRawPosParams)))
+    {
         LOG(info) << "---Could not initialize fAllRawPosParams";
         return kFALSE;
     }
@@ -96,7 +104,8 @@ void R3BSofSciRawPosPar::printParams()
     LOG(info) << "--- --------------------------------------------";
     LOG(info) << "--- Single Tcal Parameters :  ";
     LOG(info) << "--- --------------------------------------------";
-    for (Int_t param = 0; param < array_size; param++) {
+    for (Int_t param = 0; param < array_size; param++)
+    {
         LOG(info) << "LIMIT " << param << " = " << fAllRawPosParams->GetAt(param);
     }
 }

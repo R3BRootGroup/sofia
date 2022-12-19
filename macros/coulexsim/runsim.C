@@ -25,6 +25,15 @@ void runsim(Int_t nEvents = 0)
     TString targetType = target4;
 
     Int_t fCalifaGeoVer = 2020;
+    
+    FairLogger* logger = FairLogger::GetLogger();
+    // logger->SetLogFileName("MyLog.log");
+    logger->SetLogToScreen(kTRUE);
+    // logger->SetLogToFile(kTRUE);
+    logger->SetLogVerbosityLevel("low");
+    // logger->SetLogFileLevel("debug4");
+    logger->SetLogScreenLevel("info");
+    logger->SetColoredLog(true);
 
     // ----    Debug option   -------------------------------------------------
     gDebug = 0;
@@ -70,13 +79,13 @@ void runsim(Int_t nEvents = 0)
     run->AddModule(new R3BSofAT("sof_at_v21.geo.root", { 0., 0., -65.5 }));
 
     // TWIM
-    run->AddModule(new R3BSofTwim("twinmusic_v21.geo.root", { 0., 0., 50. }));
+    run->AddModule(new R3BTwim("twinmusic_v22.geo.root", { 0., 0., 50. }));
 
     // MWPC1
-    run->AddModule(new R3BSofMwpc1("mwpc_1.geo.root", { 0., 0., 95. }));
+    run->AddModule(new R3BMwpc1("mwpc_1.geo.root", { 0., 0., 95. }));
 
     // MWPC3
-    run->AddModule(new R3BSofMwpc3("mwpc_3.geo.root"));
+    run->AddModule(new R3BMwpc3("mwpc_3.geo.root"));
 
     // ToF Wall
     run->AddModule(new R3BSofTofW("sof_tof_v21.geo.root"));

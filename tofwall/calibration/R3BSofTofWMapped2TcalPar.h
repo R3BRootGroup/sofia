@@ -53,16 +53,16 @@ class R3BSofTofWMapped2TcalPar : public FairTask
     void SetMinStatistics(Int_t minstat) { fMinStatistics = minstat; }
 
   private:
-    Int_t fNumDetectors;   // number of detectors (=28 for TofW)
-    Int_t fNumChannels;    // number of channels  (=2 for TofW)
+    Int_t fNumDetectors; // number of detectors (=28 for TofW)
+    Int_t fNumChannels;  // number of channels  (=2 for TofW)
     Int_t fNumTcalParsPerSignal;
-    Int_t fMinStatistics;   // minimum statistics to proceed to the calibration
+    Int_t fMinStatistics; // minimum statistics to proceed to the calibration
 
     // calibration parameters
-    R3BSofTcalPar* fTcalPar;   // Tcal Parameters
+    R3BSofTcalPar* fTcalPar; // Tcal Parameters
 
     // input data
-    TClonesArray* fMappedTofW;   // Array with mapped data from scintillator detectors - input data.
+    TClonesArray* fMappedTofW; // Array with mapped data from scintillator detectors - input data.
 
     // histograms
     TH1F** fh_TimeFineBin;
@@ -73,4 +73,4 @@ class R3BSofTofWMapped2TcalPar : public FairTask
     ClassDef(R3BSofTofWMapped2TcalPar, 0);
 };
 
-#endif   // R3BSOFTOFWMAPPED2TCALPAR_H
+#endif // R3BSOFTOFWMAPPED2TCALPAR_H

@@ -12,6 +12,7 @@ R3BSofSciSingleTcalData::R3BSofSciSingleTcalData(UShort_t det,
     , fRawPosNs(pos)
     , fS2RawTofNs(tofS2)
     , fS8RawTofNs(tofS8)
-{}
+{
+}
 
 ClassImp(R3BSofSciSingleTcalData)

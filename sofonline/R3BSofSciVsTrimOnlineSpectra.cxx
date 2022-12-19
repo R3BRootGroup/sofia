@@ -101,7 +101,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofSciVsTrimOnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofSciVsTrimOnlineSpectra::Init FairRootManager not found";
     // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
@@ -111,7 +111,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     // --- get access to tcal data of the Sci --- //
     // --- ---------------------------------- --- //
     fSciSTcal = (TClonesArray*)mgr->GetObject("SofSciSingleTcalData");
-    if (!fSciSTcal) {
+    if (!fSciSTcal)
+    {
         return kFATAL;
     }
 
@@ -119,7 +120,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     // --- get access to cal data of the Sci --- //
     // --- --------------------------------- --- //
     fSciCal = (TClonesArray*)mgr->GetObject("SofSciCalData");
-    if (!fSciCal) {
+    if (!fSciCal)
+    {
         return kFATAL;
     }
 
@@ -127,7 +129,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     // --- get access to hit data of the Triple-MUSIC --- //
     // --- ------------------------------------------ --- //
     fTrimCal = (TClonesArray*)mgr->GetObject("TrimCalData");
-    if (!fTrimCal) {
+    if (!fTrimCal)
+    {
         LOG(warn) << "R3BSofSciVsTrimOnlineSpectra: TrimCalData not found";
     }
 
@@ -135,7 +138,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     // --- get access to hit data of the Triple-MUSIC --- //
     // --- ------------------------------------------ --- //
     fTrimHit = (TClonesArray*)mgr->GetObject("TrimHitData");
-    if (!fTrimHit) {
+    if (!fTrimHit)
+    {
         LOG(warn) << "R3BSofSciVsTrimOnlineSpectra: TrimHitData not found";
     }
 
@@ -146,14 +150,17 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     char Name2[255];
 
     // === TRIPLE-MUSIC DRIFT TIME VERSUS RAW POSITION IN SCI === //
-    if (fSciSTcal && fTrimCal) {
+    if (fSciSTcal && fTrimCal)
+    {
         c_TrimDT_vs_SciPosRaw = new TCanvas*[fNbDetectors];
         fh2_TrimDT_vs_SciPosRaw = new TH2F*[fNbDetectors * 3];
-        for (Int_t i = 0; i < fNbDetectors; i++) {
+        for (Int_t i = 0; i < fNbDetectors; i++)
+        {
             sprintf(Name1, "TrimDT_vs_Sci%02dPosRaw", i + 1);
             c_TrimDT_vs_SciPosRaw[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
             c_TrimDT_vs_SciPosRaw[i]->Divide(1, 3);
-            for (Int_t j = 0; j < 3; j++) {
+            for (Int_t j = 0; j < 3; j++)
+            {
                 sprintf(Name1, "DTalignedS%02d_vs_PosRawSci%02d", j + 1, i + 1);
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 600, -10000, 30000);
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
@@ -173,10 +180,12 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     }
 
     // === TRIPLE-MUSIC ENERGY LOSS VERSUS POSITION / BETA / AoQ IN SCI === //
-    if (fSciSTcal && fTrimHit) {
+    if (fSciSTcal && fTrimHit)
+    {
         c_TrimEraw_vs_SciPosRaw = new TCanvas*[fNbDetectors];
         fh2_TrimEraw_vs_SciPosRaw = new TH2F*[fNbDetectors * 3];
-        if (fSciCal) {
+        if (fSciCal)
+        {
             c_TrimE_vs_SciPosCal = new TCanvas*[fNbDetectors];
             fh2_TrimE_vs_SciPosCal = new TH2F*[fNbDetectors * 3];
 
@@ -196,7 +205,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             c_AoQ_vs_PosS2_condTrim->Divide(2, 2);
             fh2_AoQ_vs_PosS2_condTrim = new TH2F*[4];
 
-            for (Int_t section = 0; section < 3; section++) {
+            for (Int_t section = 0; section < 3; section++)
+            {
                 c_TrimE_vs_BetaS2->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_BetaS2", section + 1);
                 fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
@@ -253,16 +263,19 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             fh2_AoQ_vs_PosS2_condTrim[3]->GetYaxis()->SetTitle("A/Q");
             fh2_AoQ_vs_PosS2_condTrim[3]->Draw("COL");
         }
-        for (Int_t i = 0; i < fNbDetectors; i++) {
+        for (Int_t i = 0; i < fNbDetectors; i++)
+        {
             sprintf(Name1, "TrimEraw_vs_Sci%02dPosRaw", i + 1);
             c_TrimEraw_vs_SciPosRaw[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
             c_TrimEraw_vs_SciPosRaw[i]->Divide(1, 3);
-            if (fSciCal) {
+            if (fSciCal)
+            {
                 sprintf(Name1, "TrimE_vs_Sci%02dPosCal", i + 1);
                 c_TrimE_vs_SciPosCal[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
                 c_TrimE_vs_SciPosCal[i]->Divide(1, 3);
             }
-            for (Int_t j = 0; j < 3; j++) {
+            for (Int_t j = 0; j < 3; j++)
+            {
                 sprintf(Name1, "ErawS%02d_vs_PosRawSci%02d", j + 1, i + 1);
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 900, 15000, 35000);
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
@@ -278,7 +291,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
                 c_TrimEraw_vs_SciPosRaw[i]->cd(j + 1);
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j]->Draw("colz");
 
-                if (fSciCal) {
+                if (fSciCal)
+                {
                     sprintf(Name1, "ES%02d_vs_PosCalSci%02d", j + 1, i + 1);
                     fh2_TrimE_vs_SciPosCal[i * 3 + j] = new TH2F(Name1, Name1, 1000, -20, 20, 900, 15000, 35000);
                     fh2_TrimE_vs_SciPosCal[i * 3 + j]->GetXaxis()->SetTitle(
@@ -302,18 +316,24 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     // --- MAIN FOLDER-Sci --- //
     // --- --------------- --- //
     TFolder* mainfol = new TFolder("SofSci-SofTrim", "SofSci vs SofTrim");
-    if (fSciSTcal && fTrimCal) {
-        for (UShort_t d = 0; d < fNbDetectors; d++) {
+    if (fSciSTcal && fTrimCal)
+    {
+        for (UShort_t d = 0; d < fNbDetectors; d++)
+        {
             mainfol->Add(c_TrimDT_vs_SciPosRaw[d]);
         }
     }
-    if (fSciSTcal && fTrimHit) {
-        for (UShort_t d = 0; d < fNbDetectors; d++) {
+    if (fSciSTcal && fTrimHit)
+    {
+        for (UShort_t d = 0; d < fNbDetectors; d++)
+        {
             mainfol->Add(c_TrimEraw_vs_SciPosRaw[d]);
         }
     }
-    if (fSciCal && fTrimHit) {
-        for (UShort_t d = 0; d < fNbDetectors; d++) {
+    if (fSciCal && fTrimHit)
+    {
+        for (UShort_t d = 0; d < fNbDetectors; d++)
+        {
             mainfol->Add(c_TrimE_vs_SciPosCal[d]);
         }
         mainfol->Add(c_TrimE_vs_BetaS2);
@@ -334,22 +354,29 @@ void R3BSofSciVsTrimOnlineSpectra::Reset_Histo()
 {
     LOG(info) << "R3BSofSciVsTrimOnlineSpectra::Reset_Histo";
 
-    if (fSciSTcal && fTrimCal) {
-        for (Int_t i = 0; i < fNbDetectors * 3; i++) {
+    if (fSciSTcal && fTrimCal)
+    {
+        for (Int_t i = 0; i < fNbDetectors * 3; i++)
+        {
             fh2_TrimDT_vs_SciPosRaw[i]->Reset();
         }
     }
-    if (fSciSTcal && fTrimHit) {
-        for (Int_t i = 0; i < fNbDetectors * 3; i++) {
+    if (fSciSTcal && fTrimHit)
+    {
+        for (Int_t i = 0; i < fNbDetectors * 3; i++)
+        {
             fh2_TrimEraw_vs_SciPosRaw[i]->Reset();
         }
     }
 
-    if (fSciSTcal && fTrimHit) {
-        for (Int_t i = 0; i < fNbDetectors * 3; i++) {
+    if (fSciSTcal && fTrimHit)
+    {
+        for (Int_t i = 0; i < fNbDetectors * 3; i++)
+        {
             fh2_TrimE_vs_SciPosCal[i]->Reset();
         }
-        for (Int_t i = 0; i < 4; i++) {
+        for (Int_t i = 0; i < 4; i++)
+        {
             fh2_TrimE_vs_BetaS2[i]->Reset();
             fh2_TrimE_vs_AoQraw[i]->Reset();
             fh2_TrimZ_vs_AoQ[i]->Reset();
@@ -362,14 +389,15 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofSciVsTrimOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofSciVsTrimOnlineSpectra::Exec FairRootManager not found";
 
     Int_t nHits;
     Float_t Eraw[3];
     Double_t DT[3];
     Float_t E[3];
     Float_t Z[3];
-    for (int section = 0; section < 3; section++) {
+    for (int section = 0; section < 3; section++)
+    {
         Eraw[section] = -1.;
         E[section] = -1.;
         DT[section] = -1000000.;
@@ -378,9 +406,11 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     // --- --------------------- --- //
     // --- TRIPLE-MUSIC Cal data --- //
     // --- --------------------- --- //
-    if (fTrimCal && fTrimCal->GetEntriesFast() > 0) {
+    if (fTrimCal && fTrimCal->GetEntriesFast() > 0)
+    {
         nHits = fTrimCal->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fTrimCal->At(ihit);
             if (!hit)
                 continue;
@@ -392,9 +422,11 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     // --- --------------------- --- //
     // --- TRIPLE-MUSIC Hit data --- //
     // --- --------------------- --- //
-    if (fTrimHit && fTrimHit->GetEntriesFast() > 0) {
+    if (fTrimHit && fTrimHit->GetEntriesFast() > 0)
+    {
         nHits = fTrimHit->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofTrimHitData* hit = (R3BSofTrimHitData*)fTrimHit->At(ihit);
             if (!hit)
                 continue;
@@ -407,13 +439,16 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     // --- ---------------------- --- //
     // --- SofSci SingleTCal data --- //
     // --- ---------------------- --- //
-    if (fSciSTcal && fSciSTcal->GetEntriesFast() && fTrimCal && fTrimHit) {
+    if (fSciSTcal && fSciSTcal->GetEntriesFast() && fTrimCal && fTrimHit)
+    {
         nHits = fSciSTcal->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofSciSingleTcalData* hit = (R3BSofSciSingleTcalData*)fSciSTcal->At(ihit);
             if (!hit)
                 continue;
-            for (Int_t s = 0; s < 3; s++) {
+            for (Int_t s = 0; s < 3; s++)
+            {
                 fh2_TrimEraw_vs_SciPosRaw[(hit->GetDetector() - 1) * 3 + s]->Fill(hit->GetRawPosNs(), Eraw[s]);
                 fh2_TrimDT_vs_SciPosRaw[(hit->GetDetector() - 1) * 3 + s]->Fill(hit->GetRawPosNs(), DT[s]);
             }
@@ -427,21 +462,26 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     Double_t xCC = 0.;
     Double_t BetaS2 = 1.;
     Double_t Gamma = 1.;
-    if (fSciCal && fSciCal->GetEntriesFast() && fTrimHit) {
+    if (fSciCal && fSciCal->GetEntriesFast() && fTrimHit)
+    {
         nHits = fSciCal->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofSciCalData* hit = (R3BSofSciCalData*)fSciCal->At(ihit);
             if (!hit)
                 continue;
-            if (hit->GetDetector() == fNbDetectors) {
+            if (hit->GetDetector() == fNbDetectors)
+            {
                 BetaS2 = hit->GetBeta_S2();
                 Gamma = 1. / (TMath::Sqrt(1. - TMath::Power(BetaS2, 2)));
                 xCC = hit->GetPosMm();
             }
-            if (hit->GetDetector() == fIdS2) {
+            if (hit->GetDetector() == fIdS2)
+            {
                 xS2 = hit->GetPosMm();
             }
-            for (Int_t s = 0; s < 3; s++) {
+            for (Int_t s = 0; s < 3; s++)
+            {
                 fh2_TrimE_vs_SciPosCal[(hit->GetDetector() - 1) * 3 + s]->Fill(hit->GetPosMm(), E[s]);
             }
         }
@@ -454,17 +494,20 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     //    Brho = fBhro0 * (1 - xMwpc0/fDCC + xS2/fDS2)
     // in R3BRoot, X is increasing from right to left
     //    Bro = fBrho0 * (1 + xMwpc0/fDCC - xS2/fDS2)
-    Double_t Brho = fBrho0 * (1. - xS2 / fDS2);   // + X_mwpc0/fDCC
+    Double_t Brho = fBrho0 * (1. - xS2 / fDS2); // + X_mwpc0/fDCC
     Double_t AoQraw = Brho / (3.10716 * Gamma * BetaS2);
     Double_t Emax = 0.;
     Int_t nSections = 0;
-    for (Int_t section = 0; section < 3; section++) {
-        if (E[section] > 500.) {
+    for (Int_t section = 0; section < 3; section++)
+    {
+        if (E[section] > 500.)
+        {
             nSections++;
             fh2_TrimE_vs_BetaS2[section]->Fill(BetaS2, E[section]);
             fh2_TrimE_vs_AoQraw[section]->Fill(AoQraw, E[section]);
             fh2_TrimZ_vs_AoQ[section]->Fill(AoQraw, Z[section]);
-            if (17000 < E[section] && E[section] < 17400) {
+            if (17000 < E[section] && E[section] < 17400)
+            {
                 fh2_AoQ_vs_PosS2_condTrim[section]->Fill(xS2, AoQraw);
             }
         }
@@ -473,7 +516,8 @@ void R3BSofSciVsTrimOnlineSpectra::Exec(Option_t* option)
     fh2_TrimE_vs_BetaS2[3]->Fill(BetaS2, Emax);
     fh2_TrimE_vs_AoQraw[3]->Fill(AoQraw, Emax);
     fh2_TrimZ_vs_AoQ[3]->Fill(AoQraw, TMath::Max(Z[0], Z[1]));
-    if (17000 < Emax && Emax < 17400) {
+    if (17000 < Emax && Emax < 17400)
+    {
         fh2_AoQ_vs_PosS2_condTrim[3]->Fill(xS2, AoQraw);
     }
 
@@ -486,37 +530,48 @@ void R3BSofSciVsTrimOnlineSpectra::Reset() { LOG(debug) << "Clearing TofWHitData
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciVsTrimOnlineSpectra::FinishEvent()
 {
-    if (fSciSTcal) {
+    if (fSciSTcal)
+    {
         fSciSTcal->Clear();
     }
-    if (fSciCal) {
+    if (fSciCal)
+    {
         fSciCal->Clear();
     }
-    if (fTrimCal) {
+    if (fTrimCal)
+    {
         fTrimCal->Clear();
     }
-    if (fTrimHit) {
+    if (fTrimHit)
+    {
         fTrimHit->Clear();
     }
 }
 
 void R3BSofSciVsTrimOnlineSpectra::FinishTask()
 {
-    if (fTrimCal && fSciSTcal) {
-        for (Int_t i = 0; i < fNbDetectors * 3; i++) {
+    if (fTrimCal && fSciSTcal)
+    {
+        for (Int_t i = 0; i < fNbDetectors * 3; i++)
+        {
             fh2_TrimDT_vs_SciPosRaw[i]->Write();
         }
     }
-    if (fTrimHit && fSciSTcal) {
-        for (Int_t i = 0; i < fNbDetectors * 3; i++) {
+    if (fTrimHit && fSciSTcal)
+    {
+        for (Int_t i = 0; i < fNbDetectors * 3; i++)
+        {
             fh2_TrimEraw_vs_SciPosRaw[i]->Write();
         }
     }
-    if (fTrimHit && fSciCal) {
-        for (Int_t i = 0; i < fNbDetectors * 3; i++) {
+    if (fTrimHit && fSciCal)
+    {
+        for (Int_t i = 0; i < fNbDetectors * 3; i++)
+        {
             fh2_TrimE_vs_SciPosCal[i]->Write();
         }
-        for (Int_t i = 0; i < 4; i++) {
+        for (Int_t i = 0; i < 4; i++)
+        {
             fh2_TrimE_vs_BetaS2[i]->Write();
             fh2_TrimE_vs_AoQraw[i]->Write();
             fh2_TrimZ_vs_AoQ[i]->Write();

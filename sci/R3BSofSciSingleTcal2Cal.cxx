@@ -18,7 +18,8 @@ R3BSofSciSingleTcal2Cal::R3BSofSciSingleTcal2Cal()
     , fTofPar(NULL)
     , fOnline(kFALSE)
     , fNevent(0)
-{}
+{
+}
 
 R3BSofSciSingleTcal2Cal::~R3BSofSciSingleTcal2Cal()
 {
@@ -32,14 +33,16 @@ R3BSofSciSingleTcal2Cal::~R3BSofSciSingleTcal2Cal()
 void R3BSofSciSingleTcal2Cal::SetParContainers()
 {
     fPosPar = (R3BSofSciCalPosPar*)FairRuntimeDb::instance()->getContainer("SofSciCalPosPar");
-    if (!fPosPar) {
+    if (!fPosPar)
+    {
         LOG(error)
             << "R3BSofSciSingleTcal2Cal::SetParContainers() : Could not get access to SofSciCalPosPar-Container.";
         return;
     }
 
     fTofPar = (R3BSofSciCalTofPar*)FairRuntimeDb::instance()->getContainer("SofSciCalTofPar");
-    if (!fTofPar) {
+    if (!fTofPar)
+    {
         LOG(error)
             << "R3BSofSciSingleTcal2Cal::SetParContainers() : Could not get access to SofSciCalTofPar-Container.";
         return;
@@ -52,7 +55,8 @@ InitStatus R3BSofSciSingleTcal2Cal::Init()
     LOG(info) << "R3BSofSciSingleTcal2Cal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm) {
+    if (!rm)
+    {
         LOG(error) << "R3BSofSciSingleTcal2Cal::Couldn't instance the FairRootManager";
         return kFATAL;
     }
@@ -62,10 +66,12 @@ InitStatus R3BSofSciSingleTcal2Cal::Init()
     // --- ---------------------- --- //
 
     fSingleTcal = (TClonesArray*)rm->GetObject("SofSciSingleTcalData");
-    if (!fSingleTcal) {
+    if (!fSingleTcal)
+    {
         LOG(error) << "R3BSofSciSingleTcal2Cal::Couldn't get handle on SofSciSingleTcalData container";
         return kFATAL;
-    } else
+    }
+    else
         LOG(info) << "R3BSofSciSingleTcal2Cal::SofSciSingleTcalData items found";
 
     // --- --------------- --- //
@@ -74,9 +80,12 @@ InitStatus R3BSofSciSingleTcal2Cal::Init()
 
     // Register output array in tree
     fCal = new TClonesArray("R3BSofSciCalData", fTofPar->GetNumDets());
-    if (!fOnline) {
+    if (!fOnline)
+    {
         rm->Register("SofSciCalData", "SofSci Cal", fCal, kTRUE);
-    } else {
+    }
+    else
+    {
         rm->Register("SofSciCalData", "SofSci Cal", fCal, kFALSE);
     }
 
@@ -96,7 +105,7 @@ void R3BSofSciSingleTcal2Cal::Exec(Option_t* option)
     UShort_t iDet, rank;
     Double_t RawPos_Ns, RawTofS2_Ns, RawTofS8_Ns;
     Double_t CalPos_Mm;
-    Double_t CalVeloS2_MNs, CalVeloS8_MNs;   // m/ns
+    Double_t CalVeloS2_MNs, CalVeloS8_MNs; // m/ns
     Double_t BetaS2, BetaS8;
     Double_t CalTofS2_Ns, CalTofS8_Ns;
 
@@ -104,7 +113,8 @@ void R3BSofSciSingleTcal2Cal::Exec(Option_t* option)
     Reset();
 
     Int_t nEntries = fSingleTcal->GetEntries();
-    for (Int_t entry = 0; entry < nEntries; entry++) {
+    for (Int_t entry = 0; entry < nEntries; entry++)
+    {
         R3BSofSciSingleTcalData* hitSTcal = (R3BSofSciSingleTcalData*)fSingleTcal->At(entry);
         if (!hitSTcal)
             continue;
@@ -114,27 +124,33 @@ void R3BSofSciSingleTcal2Cal::Exec(Option_t* option)
         CalPos_Mm = fPosPar->GetParam(iDet * 2) + RawPos_Ns * fPosPar->GetParam(iDet * 2 + 1);
 
         RawTofS2_Ns = hitSTcal->GetRawTofNs_FromS2();
-        if (RawTofS2_Ns != -100000. && fTofPar->GetDetIdS2() > 0 && hitSTcal->GetDetector() > fTofPar->GetDetIdS2()) {
+        if (RawTofS2_Ns != -100000. && fTofPar->GetDetIdS2() > 0 && hitSTcal->GetDetector() > fTofPar->GetDetIdS2())
+        {
             rank = hitSTcal->GetDetector() - fTofPar->GetDetIdS2() - 1;
             CalVeloS2_MNs =
                 1. / (fTofPar->GetTof2InvV_FromS2(rank * 2) + fTofPar->GetTof2InvV_FromS2(rank * 2 + 1) * RawTofS2_Ns);
             CalTofS2_Ns = fTofPar->GetFlightLength_FromS2(rank) / CalVeloS2_MNs;
 
             BetaS2 = CalVeloS2_MNs / (Double_t)SPEED_OF_LIGHT_MNS;
-        } else {
+        }
+        else
+        {
             CalVeloS2_MNs = -1;
             BetaS2 = -1;
             CalTofS2_Ns = -1;
         }
 
         RawTofS8_Ns = hitSTcal->GetRawTofNs_FromS8();
-        if (RawTofS8_Ns != -100000. && fTofPar->GetDetIdS8() > 0 && hitSTcal->GetDetector() > fTofPar->GetDetIdS8()) {
+        if (RawTofS8_Ns != -100000. && fTofPar->GetDetIdS8() > 0 && hitSTcal->GetDetector() > fTofPar->GetDetIdS8())
+        {
             rank = hitSTcal->GetDetector() - fTofPar->GetDetIdS8() - 1;
             CalVeloS8_MNs =
                 1. / (fTofPar->GetTof2InvV_FromS8(rank * 2) + fTofPar->GetTof2InvV_FromS8(rank * 2 + 1) * RawTofS8_Ns);
             CalTofS8_Ns = fTofPar->GetFlightLength_FromS8(rank) / CalVeloS8_MNs;
             BetaS8 = CalVeloS8_MNs / (Double_t)SPEED_OF_LIGHT_MNS;
-        } else {
+        }
+        else
+        {
             CalVeloS8_MNs = -1;
             BetaS8 = -1;
             CalTofS8_Ns = -1;
@@ -152,7 +168,8 @@ void R3BSofSciSingleTcal2Cal::Exec(Option_t* option)
 // -----   Public method  --------------------------------------------
 void R3BSofSciSingleTcal2Cal::Reset()
 {
-    if (fCal) {
+    if (fCal)
+    {
         fCal->Clear();
     }
 }

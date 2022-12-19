@@ -44,7 +44,8 @@ R3BSofSciVsMwpc0OnlineSpectra::R3BSofSciVsMwpc0OnlineSpectra()
     , fHitMwpc0(NULL)
     , fNEvents(0)
     , fNbDetectors(2)
-{}
+{
+}
 
 R3BSofSciVsMwpc0OnlineSpectra::R3BSofSciVsMwpc0OnlineSpectra(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
@@ -53,7 +54,8 @@ R3BSofSciVsMwpc0OnlineSpectra::R3BSofSciVsMwpc0OnlineSpectra(const char* name, I
     , fHitMwpc0(NULL)
     , fNEvents(0)
     , fNbDetectors(2)
-{}
+{
+}
 
 R3BSofSciVsMwpc0OnlineSpectra::~R3BSofSciVsMwpc0OnlineSpectra()
 {
@@ -76,7 +78,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofSciVsMwpc0OnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofSciVsMwpc0OnlineSpectra::Init FairRootManager not found";
     // header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
@@ -86,7 +88,8 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     // --- get access to single tcal data of the SofSci --- //
     // --- -------------------------------------------- --- //
     fSTcalSci = (TClonesArray*)mgr->GetObject("SofSciSingleTcalData");
-    if (!fSTcalSci) {
+    if (!fSTcalSci)
+    {
         return kFATAL;
     }
 
@@ -94,7 +97,8 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
     // --- get access to cal data of the SofSci --- //
     // --- ------------------------------------ --- //
     fCalSci = (TClonesArray*)mgr->GetObject("SofSciCalData");
-    if (!fCalSci) {
+    if (!fCalSci)
+    {
         return kFATAL;
     }
 
@@ -204,11 +208,12 @@ void R3BSofSciVsMwpc0OnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofSciVsMwpc0OnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofSciVsMwpc0OnlineSpectra::Exec FairRootManager not found";
 
     Int_t nHits;
 
-    if (fHitMwpc0 && fHitMwpc0->GetEntriesFast() == 1) {
+    if (fHitMwpc0 && fHitMwpc0->GetEntriesFast() == 1)
+    {
         // --- -------------------------- --- //
         // --- read the hit data of Mwpc0 --- //
         // --- -------------------------- --- //
@@ -217,13 +222,16 @@ void R3BSofSciVsMwpc0OnlineSpectra::Exec(Option_t* option)
         // --- ------------------------------ --- //
         // --- loop over sci single tcal data --- //
         // --- ------------------------------ --- //
-        if (fSTcalSci && fSTcalSci->GetEntriesFast()) {
+        if (fSTcalSci && fSTcalSci->GetEntriesFast())
+        {
             nHits = fSTcalSci->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BSofSciSingleTcalData* hitstcal = (R3BSofSciSingleTcalData*)fSTcalSci->At(ihit);
                 if (!hitstcal)
                     continue;
-                if (hitstcal->GetDetector() == fNbDetectors && hitMwpc0) {
+                if (hitstcal->GetDetector() == fNbDetectors && hitMwpc0)
+                {
                     fh2_Mwpc0XvsRawPos->Fill(hitstcal->GetRawPosNs(), hitMwpc0->GetX());
                     fh2_Mwpc0YvsRawPos->Fill(hitstcal->GetRawPosNs(), hitMwpc0->GetY());
                 }
@@ -232,19 +240,22 @@ void R3BSofSciVsMwpc0OnlineSpectra::Exec(Option_t* option)
         // --- ---------------------- --- //
         // --- loop over sci cal data --- //
         // --- ---------------------- --- //
-        if (fCalSci && fCalSci->GetEntriesFast()) {
+        if (fCalSci && fCalSci->GetEntriesFast())
+        {
             nHits = fCalSci->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BSofSciCalData* hitcal = (R3BSofSciCalData*)fCalSci->At(ihit);
                 if (!hitcal)
                     continue;
-                if (hitcal->GetDetector() == fNbDetectors && hitMwpc0) {
+                if (hitcal->GetDetector() == fNbDetectors && hitMwpc0)
+                {
                     fh2_Mwpc0XvsCalPos->Fill(hitcal->GetPosMm(), hitMwpc0->GetX());
                     fh2_Mwpc0YvsCalPos->Fill(hitcal->GetPosMm(), hitMwpc0->GetY());
                 }
             }
         }
-    }   // end of HitMwpc0
+    } // end of HitMwpc0
 
     fNEvents += 1;
 }
@@ -255,24 +266,29 @@ void R3BSofSciVsMwpc0OnlineSpectra::Reset() {}
 // -----   Public method Finish   -----------------------------------------------
 void R3BSofSciVsMwpc0OnlineSpectra::FinishEvent()
 {
-    if (fSTcalSci) {
+    if (fSTcalSci)
+    {
         fSTcalSci->Clear();
     }
-    if (fCalSci) {
+    if (fCalSci)
+    {
         fCalSci->Clear();
     }
-    if (fHitMwpc0) {
+    if (fHitMwpc0)
+    {
         fHitMwpc0->Clear();
     }
 }
 
 void R3BSofSciVsMwpc0OnlineSpectra::FinishTask()
 {
-    if (fSTcalSci && fHitMwpc0) {
+    if (fSTcalSci && fHitMwpc0)
+    {
         fh2_Mwpc0XvsRawPos->Write();
         fh2_Mwpc0YvsRawPos->Write();
     }
-    if (fCalSci && fHitMwpc0) {
+    if (fCalSci && fHitMwpc0)
+    {
         fh2_Mwpc0XvsCalPos->Write();
         fh2_Mwpc0YvsCalPos->Write();
     }

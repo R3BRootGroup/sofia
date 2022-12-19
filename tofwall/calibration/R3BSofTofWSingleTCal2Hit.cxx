@@ -11,7 +11,8 @@
 // R3BSofTofWSingleTCal2Hit: Default Constructor --------------------------
 R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit()
     : R3BSofTofWSingleTCal2Hit("R3BSofTofWSingleTCal2Hit", 1)
-{}
+{
+}
 
 // R3BSofTofWSingleTCal2Hit: Standard Constructor --------------------------
 R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit(const char* name, Int_t iVerbose)
@@ -21,7 +22,8 @@ R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit(const char* name, Int_t iVerb
     , fExpId(0)
     , fOnline(kFALSE)
     , fTof_lise(43.)
-{}
+{
+}
 
 // Virtual R3BSofTofWSingleTCal2Hit: Destructor
 R3BSofTofWSingleTCal2Hit::~R3BSofTofWSingleTCal2Hit()
@@ -38,18 +40,22 @@ void R3BSofTofWSingleTCal2Hit::SetParContainers()
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
 
     fTofWHitPar = (R3BSofTofWHitPar*)rtdb->getContainer("tofwHitPar");
-    if (!fTofWHitPar) {
+    if (!fTofWHitPar)
+    {
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Could not get access to tofwHitPar-Container.";
         return;
-    } else
+    }
+    else
         LOG(info) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container tofwHitPar found with "
                   << fTofWHitPar->GetNumSci() << " paddles.";
 
     fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
-    if (!fTofWGeoPar) {
+    if (!fTofWGeoPar)
+    {
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Could not get access to TofwGeoPar container.";
         return;
-    } else
+    }
+    else
         LOG(info) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container TofwGeoPar found.";
     return;
 }
@@ -57,10 +63,12 @@ void R3BSofTofWSingleTCal2Hit::SetParContainers()
 void R3BSofTofWSingleTCal2Hit::SetParameter()
 {
     //--- Parameter Container ---
-    if (fTofWHitPar) {
+    if (fTofWHitPar)
+    {
         LOG(info) << "R3BSofTofWSingleTCal2Hit::Tof alignment (in ns)" << fTofWHitPar->GetTofAlign();
         fTof_lise = fTofWHitPar->GetTofAlign();
-    } else
+    }
+    else
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SetParameter() : Could not get access to fTofWHitPar container.";
 
     return;
@@ -73,7 +81,8 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager) {
+    if (!rootManager)
+    {
         return kFATAL;
     }
 
@@ -82,7 +91,8 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
         header = (R3BEventHeader*)rootManager->GetObject("R3BEventHeader");
 
     fTCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
-    if (!fTCalDataCA) {
+    if (!fTCalDataCA)
+    {
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SofTofWSingleTcalData not found";
         return kFATAL;
     }
@@ -131,10 +141,11 @@ void R3BSofTofWSingleTCal2Hit::S455()
 
     // Data from cal level
     R3BSofTofWSingleTcalData** calDat = new R3BSofTofWSingleTcalData*[nHits];
-    Int_t fPaddleId = 0;   // from 1 to 28
+    Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0., posx = 0., posy = 0.;
 
-    for (Int_t i = 0; i < nHits; i++) {
+    for (Int_t i = 0; i < nHits; i++)
+    {
         calDat[i] = (R3BSofTofWSingleTcalData*)(fTCalDataCA->At(i));
         fPaddleId = calDat[i]->GetDetector();
         tofw = calDat[i]->GetRawTofNs();
@@ -164,11 +175,12 @@ void R3BSofTofWSingleTCal2Hit::S467()
 
     // Data from cal level
     R3BSofTofWSingleTcalData** calDat = new R3BSofTofWSingleTcalData*[nHits];
-    Int_t fPaddleId = 0;   // from 1 to 28
+    Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0., posx = 0., posy = 0.;
     Int_t mult = 0;
 
-    for (Int_t i = 0; i < nHits; i++) {
+    for (Int_t i = 0; i < nHits; i++)
+    {
         calDat[i] = (R3BSofTofWSingleTcalData*)(fTCalDataCA->At(i));
         fPaddleId = calDat[i]->GetDetector();
         if (fTofWHitPar->GetInUse(fPaddleId) != 1)
@@ -178,9 +190,9 @@ void R3BSofTofWSingleTCal2Hit::S467()
         posy = calDat[i]->GetRawPosNs();
     }
 
-    if (mult == 1) {
-        posx =
-            fTofWGeoPar->GetDimX() / 2.0 - 15. - (Double_t)(fPaddleId - 1) * 30.;   // x=0 at the gap of bars 14 and 15
+    if (mult == 1)
+    {
+        posx = fTofWGeoPar->GetDimX() / 2.0 - 15. - (Double_t)(fPaddleId - 1) * 30.; // x=0 at the gap of bars 14 and 15
         posy = posy - fTofWHitPar->GetPosOffsetPar(fPaddleId);
         tofw = tofw - fTofWHitPar->GetTofPar(fPaddleId) + fTof_lise;
         // TofPar is adjusted to align the time 0 with motor sweep runs,

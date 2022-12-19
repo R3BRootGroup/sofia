@@ -63,19 +63,24 @@ FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
     const char* name = c->GetName();
     LOG(info) << "R3BSofAnaContFact: Create container name: " << name;
     FairParSet* p = 0;
-    if (strcmp(name, "soffrsAnaPar") == 0) {
+    if (strcmp(name, "soffrsAnaPar") == 0)
+    {
         p = new R3BSofFrsAnaPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "soffragmentAnaPar") == 0) {
+    if (strcmp(name, "soffragmentAnaPar") == 0)
+    {
         p = new R3BSofFragmentAnaPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "GladFieldPar") == 0) {
+    if (strcmp(name, "GladFieldPar") == 0)
+    {
         p = new R3BSofGladFieldPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "TargetGeoPar") == 0) {
+    if (strcmp(name, "TargetGeoPar") == 0)
+    {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
-    if (strcmp(name, "RoluGeoPar") == 0) {
+    if (strcmp(name, "RoluGeoPar") == 0)
+    {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;

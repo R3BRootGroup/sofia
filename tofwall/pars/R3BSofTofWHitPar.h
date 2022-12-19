@@ -6,7 +6,7 @@
 #ifndef R3BSofTofWHitPar_H
 #define R3BSofTofWHitPar_H
 
-#include "FairParGenericSet.h"   // for FairParGenericSet
+#include "FairParGenericSet.h" // for FairParGenericSet
 #include "TArrayF.h"
 #include "TArrayI.h"
 #include "TObjArray.h"
@@ -57,11 +57,11 @@ class R3BSofTofWHitPar : public FairParGenericSet
     // Create more Methods if you need them!
 
   private:
-    TArrayF* fSci_tof;         // Calibration Parameters for tof
-    TArrayF* fSci_posoffset;   // Offset Calibration Parameters for pos
-    TArrayF* fSci_posslope;    // Slope Calibration Parameters for pos
-    TArrayI* fIn_use;          // 1: in use, 0:otherwise
-    Float_t fTofAlign;         // Tof alignment
+    TArrayF* fSci_tof;       // Calibration Parameters for tof
+    TArrayF* fSci_posoffset; // Offset Calibration Parameters for pos
+    TArrayF* fSci_posslope;  // Slope Calibration Parameters for pos
+    TArrayI* fIn_use;        // 1: in use, 0:otherwise
+    Float_t fTofAlign;       // Tof alignment
     Int_t fNumSci;
 
     const R3BSofTofWHitPar& operator=(const R3BSofTofWHitPar&); /*< an assignment operator>*/

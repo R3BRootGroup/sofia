@@ -20,11 +20,13 @@
 
 R3BSofSci::R3BSofSci()
     : R3BSofSci("")
-{}
+{
+}
 
 R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofSci(geoFile, {trans, rot})
-{}
+    : R3BSofSci(geoFile, { trans, rot })
+{
+}
 
 R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofSci", kSOFSCI, geoFile, combi)
@@ -39,10 +41,12 @@ R3BSofSci::R3BSofSci(const TString& geoFile, const TGeoCombiTrans& combi)
 
 R3BSofSci::~R3BSofSci()
 {
-    if (flGeoPar) {
+    if (flGeoPar)
+    {
         delete flGeoPar;
     }
-    if (fSofSCICollection) {
+    if (fSofSCICollection)
+    {
         fSofSCICollection->Delete();
         delete fSofSCICollection;
     }
@@ -59,11 +63,12 @@ void R3BSofSci::Initialize()
 // -----   Public method ProcessHits  --------------------------------------
 Bool_t R3BSofSci::ProcessHits(FairVolume* vol)
 {
-    if (gMC->IsTrackEntering()) {
+    if (gMC->IsTrackEntering())
+    {
         gGeoManager->cd(gMC->CurrentVolPath());
         Int_t nodeId = gGeoManager->GetNodeId();
         fELoss = 0.;
-        fNSteps = 0;   // FIXME
+        fNSteps = 0; // FIXME
         fTime = gMC->TrackTime() * 1.0e09;
         fLength = gMC->TrackLength();
         gMC->TrackPosition(fPosIn);
@@ -73,12 +78,14 @@ Bool_t R3BSofSci::ProcessHits(FairVolume* vol)
     // Sum energy loss for all steps in the active volume
     fELoss += gMC->Edep();
 
-    if (gMC->Edep() > 0) {
+    if (gMC->Edep() > 0)
+    {
 
         fNSteps++;
 
         // Set additional parameters at exit of active volume. Create R3BSofSciPoint.
-        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared()) {
+        if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
+        {
 
             fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
             fVolumeID = vol->getMCid();
@@ -161,7 +168,8 @@ void R3BSofSci::CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset)
     LOG(info) << "R3BSofSci: " << nEntries << " entries to add";
     TClonesArray& clref = *cl2;
     R3BSofSciPoint* oldpoint = NULL;
-    for (Int_t i = 0; i < nEntries; i++) {
+    for (Int_t i = 0; i < nEntries; i++)
+    {
         oldpoint = (R3BSofSciPoint*)cl1->At(i);
         Int_t index = oldpoint->GetTrackID() + offset;
         oldpoint->SetTrackID(index);
@@ -194,7 +202,8 @@ R3BSofSciPoint* R3BSofSci::AddPoint(Int_t trackID,
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofSci::CheckIfSensitive(std::string name)
 {
-    if (TString(name).Contains("Sci_")) {   // check at the simulation
+    if (TString(name).Contains("Sci_"))
+    { // check at the simulation
         return kTRUE;
     }
     return kFALSE;

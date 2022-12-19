@@ -25,7 +25,8 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar()
     , fMapped(NULL)
     , fTcalPar(NULL)
     , fOutputFile(NULL)
-{}
+{
+}
 
 // R3BSofSciMapped2TcalPar: Standard Constructor --------------------------
 R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbose)
@@ -38,7 +39,8 @@ R3BSofSciMapped2TcalPar::R3BSofSciMapped2TcalPar(const char* name, Int_t iVerbos
     , fTcalPar(NULL)
     , fOutputFile(NULL)
 
-{}
+{
+}
 
 // R3BSofSciMapped2TcalPar: Destructor ----------------------------------------
 R3BSofSciMapped2TcalPar::~R3BSofSciMapped2TcalPar()
@@ -55,7 +57,8 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     LOG(info) << "R3BSofSciMapped2TcalPar::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm) {
+    if (!rm)
+    {
         LOG(error) << "R3BSofSciMapped2TcalPar::Init() FairRootManager not found";
         return kFATAL;
     }
@@ -65,8 +68,9 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     // --- ----------------- --- //
 
     // scintillator at S2 and cave C
-    fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData");   // see Instance->Register in R3BSofSciReader.cxx
-    if (!fMapped) {
+    fMapped = (TClonesArray*)rm->GetObject("SofSciMappedData"); // see Instance->Register in R3BSofSciReader.cxx
+    if (!fMapped)
+    {
         LOG(error) << "R3BSofSciMapped2TcalPar::Init() SofSciMappedData not found";
         return kFATAL;
     }
@@ -76,13 +80,15 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     // --- --------------------------------- --- //
 
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         LOG(error) << "R3BSofSciMapped2TcalPar::Init() FairRuntimeDb not found";
         return kFATAL;
     }
 
     fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofSciTcalPar");
-    if (!fTcalPar) {
+    if (!fTcalPar)
+    {
         LOG(error) << "R3BSofSciMapped2TcalPar::Init() Couldn't get handle on SofSciTcalPar container";
         return kFATAL;
     }
@@ -99,8 +105,10 @@ InitStatus R3BSofSciMapped2TcalPar::Init()
     char name[100];
     fh_TimeFineBin = new TH1F*[fNumSci * fNumChannels];
     fh_TimeFineNs = new TH1F*[fNumSci * fNumChannels];
-    for (Int_t det = 0; det < fNumSci; det++) {
-        for (Int_t ch = 0; ch < fNumChannels; ch++) {
+    for (Int_t det = 0; det < fNumSci; det++)
+    {
+        for (Int_t ch = 0; ch < fNumChannels; ch++)
+        {
             sprintf(name, "TimeFineBin_Sci%i_Ch%i_Sig%i", det + 1, ch + 1, det * fNumChannels + ch);
             fh_TimeFineBin[det * fNumChannels + ch] =
                 new TH1F(name, name, fNumTcalParsPerSignal, 0, fNumTcalParsPerSignal);
@@ -126,13 +134,15 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt)
 
     // nHitsSci = number of hits per event
     // for the scintillator this number of hits can be very large especially for the detector at S2
-    UInt_t nHitsSci = fMapped->GetEntries();   // can be very high especially for S2 detector
+    UInt_t nHitsSci = fMapped->GetEntries(); // can be very high especially for S2 detector
     UInt_t iSignalSci;
-    for (UInt_t ihit = 0; ihit < nHitsSci; ihit++) {
+    for (UInt_t ihit = 0; ihit < nHitsSci; ihit++)
+    {
         R3BSofSciMappedData* hitSci = (R3BSofSciMappedData*)fMapped->At(ihit);
-        if (!hitSci) {
+        if (!hitSci)
+        {
             LOG(warn) << "R3BSofSciMapped2TcalPar::Exec() : could not get hitSci";
-            continue;   // should not happen
+            continue; // should not happen
         }
 
         // *** ******************************************* *** //
@@ -195,7 +205,7 @@ void R3BSofSciMapped2TcalPar::Exec(Option_t* opt)
                        << " instead of [0," << fNumSci * fNumChannels << "]: det=" << hitSci->GetDetector()
                        << ",  fNumChannels = " << fNumChannels << ",  pmt = " << hitSci->GetPmt();
 
-    }   // end of loop over the number of hits per event in MappedSci
+    } // end of loop over the number of hits per event in MappedSci
 }
 
 // ---- Public method Reset   --------------------------------------------------
@@ -223,11 +233,14 @@ void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
     UInt_t IntegralPartial;
     Double_t Bin2Ns[fNumTcalParsPerSignal];
 
-    for (Int_t sig = 0; sig < fNumSci * fNumChannels; sig++) {
-        if (fh_TimeFineBin[sig]->GetEntries() > fMinStatistics) {
+    for (Int_t sig = 0; sig < fNumSci * fNumChannels; sig++)
+    {
+        if (fh_TimeFineBin[sig]->GetEntries() > fMinStatistics)
+        {
             IntegralTot = fh_TimeFineBin[sig]->Integral();
             IntegralPartial = 0;
-            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++) {
+            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
+            {
                 IntegralPartial += fh_TimeFineBin[sig]->GetBinContent(bin + 1);
                 Bin2Ns[bin] = 5. * ((Double_t)IntegralPartial) / (Double_t)IntegralTot;
                 fh_TimeFineNs[sig]->SetBinContent(bin + 1, Bin2Ns[bin]);
@@ -235,7 +248,7 @@ void R3BSofSciMapped2TcalPar::CalculateVftxTcalParams()
             }
             fTcalPar->SetClockOffset(0.0, sig);
         }
-        fh_TimeFineNs[sig]->Write();   // empty histo if stat <fMinStatistics
+        fh_TimeFineNs[sig]->Write(); // empty histo if stat <fMinStatistics
         fh_TimeFineBin[sig]->Write();
     }
     fTcalPar->setChanged();

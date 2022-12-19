@@ -26,8 +26,8 @@ class R3BSofTofWMappedData : public TObject
     inline const Bool_t& WhichFlag() const { return fFlag; }
 
   private:
-    UShort_t fDetector;   // 1..28
-    UShort_t fPmt;        // 1..2
+    UShort_t fDetector; // 1..28
+    UShort_t fPmt;      // 1..2
     UInt_t fTimeCoarse;
     UInt_t fTimeFine;
     UInt_t fEnergy;

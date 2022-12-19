@@ -41,7 +41,7 @@ class R3BSofSciTcal2SingleTcal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    Bool_t fOnline;   // Don't store data for online
+    Bool_t fOnline; // Don't store data for online
     UInt_t fNevent;
     TRandom rand;
 
@@ -60,4 +60,4 @@ class R3BSofSciTcal2SingleTcal : public FairTask
     ClassDef(R3BSofSciTcal2SingleTcal, 1)
 };
 
-#endif   // R3BSOFSCI_TCAL2SINGLETCAL
+#endif // R3BSOFSCI_TCAL2SINGLETCAL

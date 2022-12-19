@@ -96,7 +96,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra()
     , fWRItemsS2(NULL)
     , fWRItemsS8(NULL)
     , fNEvents(0)
-{}
+{
+}
 
 R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     : FairTask(name, iVerbose)
@@ -135,7 +136,8 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
     , fWRItemsS2(NULL)
     , fWRItemsS8(NULL)
     , fNEvents(0)
-{}
+{
+}
 
 R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
 {
@@ -163,47 +165,53 @@ InitStatus R3BSofOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofOnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofOnlineSpectra::Init FairRootManager not found";
     fEventHeader = (R3BEventHeader*)mgr->GetObject("EventHeader.");
 
     FairRunOnline* run = FairRunOnline::Instance();
     if (NULL == run)
-        LOG(FATAL) << "R3BSofOnlineSpectra::Init FairRunOnline not found";
+        LOG(fatal) << "R3BSofOnlineSpectra::Init FairRunOnline not found";
     run->GetHttpServer()->Register("", this);
 
     // get access to WR-Master data
     fWRItemsMaster = (TClonesArray*)mgr->GetObject("WRMasterData");
-    if (!fWRItemsMaster) {
+    if (!fWRItemsMaster)
+    {
         LOG(warn) << "R3BSofOnlineSpectra::WRMasterData not found";
     }
 
     // get access to WR-Sofia data
     fWRItemsSofia = (TClonesArray*)mgr->GetObject("SofWRData");
-    if (!fWRItemsSofia) {
+    if (!fWRItemsSofia)
+    {
         LOG(warn) << "R3BSofOnlineSpectra::SofWRData not found";
     }
 
     // get access to WR-Califa data
     fWRItemsCalifa = (TClonesArray*)mgr->GetObject("WRCalifaData");
-    if (!fWRItemsCalifa) {
+    if (!fWRItemsCalifa)
+    {
         LOG(warn) << "R3BSofOnlineSpectra::WRCalifaData not found";
     }
 
     // get access to WR-Neuland data
     fWRItemsNeuland = (TClonesArray*)mgr->GetObject("WRNeulandData");
-    if (!fWRItemsNeuland) {
+    if (!fWRItemsNeuland)
+    {
         LOG(warn) << "R3BSofOnlineSpectra::WRNeulandData not found";
     }
 
     // get access to WR-S2 data
     fWRItemsS2 = (TClonesArray*)mgr->GetObject("WRS2Data");
-    if (!fWRItemsS2) {
+    if (!fWRItemsS2)
+    {
         LOG(warn) << "R3BSofOnlineSpectra::WRS2Data not found";
     }
 
     // get access to WR-S8 data
     fWRItemsS8 = (TClonesArray*)mgr->GetObject("WRS8Data");
-    if (!fWRItemsS8) {
+    if (!fWRItemsS8)
+    {
         LOG(warn) << "R3BSofOnlineSpectra::WRS8Data not found";
     }
 
@@ -392,7 +400,7 @@ InitStatus R3BSofOnlineSpectra::Init()
     sprintf(Name1, "WRs_Sofia_vs_others");
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     sprintf(Name2, "fh1_WR_Sofia_Wixhausen");
-    sprintf(Name3, "WR-Sofia - WR-Other");   // Messel (blue), Wixhausen (red)
+    sprintf(Name3, "WR-Sofia - WR-Other"); // Messel (blue), Wixhausen (red)
     fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wrs[0]->GetYaxis()->SetTitle("Counts");
@@ -443,21 +451,24 @@ InitStatus R3BSofOnlineSpectra::Init()
     entry->SetLineStyle(1);
     entry->SetLineWidth(3);
     entry->SetTextFont(62);
-    if (fWRItemsNeuland) {
+    if (fWRItemsNeuland)
+    {
         entry = leg->AddEntry("null", "Neuland", "l");
         entry->SetLineColor(3);
         entry->SetLineStyle(1);
         entry->SetLineWidth(3);
         entry->SetTextFont(62);
     }
-    if (fWRItemsS2) {
+    if (fWRItemsS2)
+    {
         entry = leg->AddEntry("null", "S2", "l");
         entry->SetLineColor(1);
         entry->SetLineStyle(1);
         entry->SetLineWidth(3);
         entry->SetTextFont(62);
     }
-    if (fWRItemsS8) {
+    if (fWRItemsS8)
+    {
         entry = leg->AddEntry("null", "S8", "l");
         entry->SetLineColor(5);
         entry->SetLineStyle(1);
@@ -485,11 +496,13 @@ void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
 {
     LOG(info) << "R3BSofOnlineSpectra::Reset_General_Histo";
     fh1_trigger->Reset();
-    if (fWRItemsMaster && fWRItemsSofia) {
+    if (fWRItemsMaster && fWRItemsSofia)
+    {
         fh1_wr[0]->Reset();
         fh1_wr[1]->Reset();
     }
-    if (fWRItemsCalifa && fWRItemsSofia) {
+    if (fWRItemsCalifa && fWRItemsSofia)
+    {
         fh1_wrs[0]->Reset();
         fh1_wrs[1]->Reset();
         if (fWRItemsNeuland)
@@ -586,30 +599,38 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofOnlineSpectra::Exec FairRootManager not found";
 
     // Fill histogram with trigger information
 
     Int_t tpatbin;
-    if (fEventHeader->GetTpat() > 0) {
-        for (Int_t i = 0; i < 16; i++) {
+    if (fEventHeader->GetTpat() > 0)
+    {
+        for (Int_t i = 0; i < 16; i++)
+        {
             tpatbin = (fEventHeader->GetTpat() & (1 << i));
             if (tpatbin != 0)
                 fh1_trigger->Fill(i + 1);
         }
-    } else if (fEventHeader->GetTpat() == 0) {
+    }
+    else if (fEventHeader->GetTpat() == 0)
+    {
         fh1_trigger->Fill(0);
-    } else {
+    }
+    else
+    {
         LOG(info) << fNEvents << " " << fEventHeader->GetTpat();
     }
     // fh1_trigger->Fill(fEventHeader->GetTpat());
 
     // WR data
-    if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0) {
+    if (fWRItemsSofia && fWRItemsSofia->GetEntriesFast() > 0)
+    {
         // SOFIA
         Int_t nHits = fWRItemsSofia->GetEntriesFast();
         int64_t wrs[2];
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BWRData* hit = (R3BWRData*)fWRItemsSofia->At(ihit);
             if (!hit)
                 continue;
@@ -617,22 +638,26 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
         }
 
         // Califa
-        if (fWRItemsCalifa && fWRItemsCalifa->GetEntriesFast() > 0) {
+        if (fWRItemsCalifa && fWRItemsCalifa->GetEntriesFast() > 0)
+        {
             nHits = fWRItemsCalifa->GetEntriesFast();
             int64_t wr[nHits];
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BWRData* hit = (R3BWRData*)fWRItemsCalifa->At(ihit);
                 if (!hit)
                     continue;
                 wr[ihit] = hit->GetTimeStamp();
             }
-            fh1_wrs[0]->Fill(wrs[0] - wr[0]);   // messel
-            fh1_wrs[1]->Fill(wrs[0] - wr[1]);   // wixhausen
+            fh1_wrs[0]->Fill(wrs[0] - wr[0]); // messel
+            fh1_wrs[1]->Fill(wrs[0] - wr[1]); // wixhausen
         }
         // Neuland
-        if (fWRItemsNeuland && fWRItemsNeuland->GetEntriesFast() > 0) {
+        if (fWRItemsNeuland && fWRItemsNeuland->GetEntriesFast() > 0)
+        {
             nHits = fWRItemsNeuland->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BWRData* hit = (R3BWRData*)fWRItemsNeuland->At(ihit);
                 if (!hit)
                     continue;
@@ -642,9 +667,11 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             fh1_wrs[0]->SetMaximum(5. * fh1_wrs[2]->GetBinContent(fh1_wrs[2]->GetMaximumBin()));
         }
         // S2
-        if (fWRItemsS2 && fWRItemsS2->GetEntriesFast() > 0) {
+        if (fWRItemsS2 && fWRItemsS2->GetEntriesFast() > 0)
+        {
             nHits = fWRItemsS2->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BWRData* hit = (R3BWRData*)fWRItemsS2->At(ihit);
                 if (!hit)
                     continue;
@@ -652,9 +679,11 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             }
         }
         // S8
-        if (fWRItemsS8 && fWRItemsS8->GetEntriesFast() > 0) {
+        if (fWRItemsS8 && fWRItemsS8->GetEntriesFast() > 0)
+        {
             nHits = fWRItemsS8->GetEntriesFast();
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BWRData* hit = (R3BWRData*)fWRItemsS8->At(ihit);
                 if (!hit)
                     continue;
@@ -662,10 +691,12 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
             }
         }
         // Master
-        if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0) {
+        if (fWRItemsMaster && fWRItemsMaster->GetEntriesFast() > 0)
+        {
             nHits = fWRItemsMaster->GetEntriesFast();
             int64_t wrm = 0.;
-            for (Int_t ihit = 0; ihit < nHits; ihit++) {
+            for (Int_t ihit = 0; ihit < nHits; ihit++)
+            {
                 R3BWRData* hit = (R3BWRData*)fWRItemsMaster->At(ihit);
                 if (!hit)
                     continue;
@@ -682,22 +713,28 @@ void R3BSofOnlineSpectra::Exec(Option_t* option)
 void R3BSofOnlineSpectra::FinishEvent()
 {
 
-    if (fWRItemsMaster) {
+    if (fWRItemsMaster)
+    {
         fWRItemsMaster->Clear();
     }
-    if (fWRItemsSofia) {
+    if (fWRItemsSofia)
+    {
         fWRItemsSofia->Clear();
     }
-    if (fWRItemsCalifa) {
+    if (fWRItemsCalifa)
+    {
         fWRItemsCalifa->Clear();
     }
-    if (fWRItemsNeuland) {
+    if (fWRItemsNeuland)
+    {
         fWRItemsNeuland->Clear();
     }
-    if (fWRItemsS2) {
+    if (fWRItemsS2)
+    {
         fWRItemsS2->Clear();
     }
-    if (fWRItemsS8) {
+    if (fWRItemsS8)
+    {
         fWRItemsS8->Clear();
     }
 }
@@ -706,7 +743,8 @@ void R3BSofOnlineSpectra::FinishTask()
 {
     // Write trigger canvas in the root file
     cTrigger->Write();
-    if (fWRItemsMaster && fWRItemsSofia) {
+    if (fWRItemsMaster && fWRItemsSofia)
+    {
         cWr->Write();
         cWrs->Write();
     }

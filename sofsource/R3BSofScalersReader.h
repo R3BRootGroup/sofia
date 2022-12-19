@@ -45,4 +45,4 @@ class R3BSofScalersReader : public R3BReader
     ClassDefOverride(R3BSofScalersReader, 0);
 };
 
-#endif   // R3BSOFSCALERSREADER_H
+#endif // R3BSOFSCALERSREADER_H

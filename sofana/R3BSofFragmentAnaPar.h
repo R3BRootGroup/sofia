@@ -62,7 +62,7 @@ class R3BSofFragmentAnaPar : public FairParGenericSet
   private:
     Int_t fNumSci;
     Int_t fNumBrhoParam;
-    TArrayI* fIn_use;   // 1: in use, 0:otherwise
+    TArrayI* fIn_use; // 1: in use, 0:otherwise
     TArrayF* fTofW_Offset;
     TArrayF* fEffective_Length;
     TArrayF* fBrhoParameter;

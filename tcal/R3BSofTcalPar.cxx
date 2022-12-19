@@ -24,10 +24,12 @@ R3BSofTcalPar::R3BSofTcalPar(const char* name, const char* title, const char* co
 R3BSofTcalPar::~R3BSofTcalPar()
 {
     clear();
-    if (fAllSignalsTcalParams) {
+    if (fAllSignalsTcalParams)
+    {
         delete fAllSignalsTcalParams;
     }
-    if (fAllClockOffsets) {
+    if (fAllClockOffsets)
+    {
         delete fAllClockOffsets;
     }
 }
@@ -43,7 +45,8 @@ void R3BSofTcalPar::clear()
 void R3BSofTcalPar::putParams(FairParamList* list)
 {
     LOG(info) << "R3BSofTcalPar::putParams() called";
-    if (!list) {
+    if (!list)
+    {
         return;
     }
 
@@ -70,23 +73,28 @@ Bool_t R3BSofTcalPar::getParams(FairParamList* list)
     LOG(info) << "R3BSofTcalPar::getParams() called";
     Int_t array_size;
 
-    if (!list) {
+    if (!list)
+    {
         return kFALSE;
     }
-    if (!list->fill("nDetectorsTcalPar", &fNumDetectors)) {
+    if (!list->fill("nDetectorsTcalPar", &fNumDetectors))
+    {
         return kFALSE;
     }
-    if (!list->fill("nChannelsTcalPar", &fNumChannels)) {
+    if (!list->fill("nChannelsTcalPar", &fNumChannels))
+    {
         return kFALSE;
     }
-    if (!list->fill("nTcalParsPerSignal", &fNumTcalParsPerSignal)) {
+    if (!list->fill("nTcalParsPerSignal", &fNumTcalParsPerSignal))
+    {
         return kFALSE;
     }
 
     array_size = fNumDetectors * fNumChannels * fNumTcalParsPerSignal;
     LOG(info) << "R3BSofTcalPar::getParams Array Size for VFTX tcal par: " << array_size;
     fAllSignalsTcalParams->Set(array_size);
-    if (!(list->fill("TcalPar", fAllSignalsTcalParams))) {
+    if (!(list->fill("TcalPar", fAllSignalsTcalParams)))
+    {
         LOG(error) << "---R3BSofTcalPar::getParams Could not initialize fAllSignalsTcalParams";
         return kFALSE;
     }
@@ -94,7 +102,8 @@ Bool_t R3BSofTcalPar::getParams(FairParamList* list)
     array_size = fNumDetectors * fNumChannels;
     LOG(info) << "R3BSofTcalPar::getParams Array Size for clock offset: " << array_size;
     fAllClockOffsets->Set(array_size);
-    if (!(list->fill("ClockOffsets", fAllClockOffsets))) {
+    if (!(list->fill("ClockOffsets", fAllClockOffsets)))
+    {
         LOG(error) << "---R3BSofTcalPar::getParams Could not initialize fAllClockOffsets";
         return kFALSE;
     }
@@ -108,8 +117,10 @@ void R3BSofTcalPar::printParams()
     LOG(info) << "R3BSofTcalPar: SofTcal Parameters: ";
     Int_t array_size = (fNumDetectors * fNumChannels) * fNumTcalParsPerSignal;
 
-    for (Int_t d = 0; d < fNumDetectors; d++) {
-        for (Int_t ch = 0; ch < fNumChannels; ch++) {
+    for (Int_t d = 0; d < fNumDetectors; d++)
+    {
+        for (Int_t ch = 0; ch < fNumChannels; ch++)
+        {
             Int_t sig = d * fNumChannels + ch;
             LOG(info) << "--- --------------------------------------------";
             LOG(info) << "--- Vftx Tcal Param for signal number: " << sig;
@@ -117,7 +128,8 @@ void R3BSofTcalPar::printParams()
             LOG(info) << "---       channel " << ch + 1;
             LOG(info) << "--- --------------------------------------------";
 
-            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++) {
+            for (Int_t bin = 0; bin < fNumTcalParsPerSignal; bin++)
+            {
                 LOG(debug) << "FineTime at Bin (" << bin
                            << ") = " << fAllSignalsTcalParams->GetAt(sig * fNumTcalParsPerSignal + bin);
             }
