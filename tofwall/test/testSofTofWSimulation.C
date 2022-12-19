@@ -34,7 +34,7 @@ void testSofTofWSimulation(int nbevents = 100)
     gSystem->Setenv("CONFIG_DIR", workDirectory + "/gconfig");
 
     // Output files
-    // const TString simufile = "test.simu.root";
+    const TString simufile = "test.simu.root";
     // const TString parafile = "test.para.root";
 
     // Basic simulation setup
@@ -42,7 +42,7 @@ void testSofTofWSimulation(int nbevents = 100)
     run->SetName("TGeant4");
     run->SetStoreTraj(false);
     run->SetMaterials("media_r3b.geo");
-    // run->SetSink(new FairRootFileSink(simufile));
+    run->SetSink(new FairRootFileSink(simufile));
 
     // Primary particle generator
     auto boxGen = new FairIonGenerator(82, 208, 82, 1, 0., 0., 1.09, 0., 0., 0.);
