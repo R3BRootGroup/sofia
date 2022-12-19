@@ -1,4 +1,6 @@
-# Purpose
+# SOFIA
+
+## The SOFIA framework
 
 SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed
 for the fission setup within the R3B/GLAD magnet.
@@ -6,10 +8,10 @@ The R3BRoot software is based on the FairRoot framework and can be used to perfo
 
 For the software-related user support you can post a new topic on our [forum](https://forum.gsi.de/index.php?t=index&cat=40&).
 
-# Release information
+## Release information
 Please see [Releases](https://github.com/R3BRootGroup/sofia/releases)
 
-# Install
+## Step by step installation
 
 ### Required software
 
@@ -24,23 +26,16 @@ First, you will need to install FairSoft and FairRoot. For more details:
 ~~~bash
 export SIMPATH=%PATH_TO_FAIRSOFT%
 export FAIRROOTPATH=%PATH_TO_FAIRROOT%
-git clone https://github.com/R3BRootGroup/R3BRoot.git
+git clone -b dev https://github.com/R3BRootGroup/R3BRoot.git
 cd R3BRoot
-git checkout dev
-git clone https://github.com/R3BRootGroup/macros.git
-cd macros
-git checkout dev
-cd ..
-git clone https://github.com/R3BRootGroup/sofia.git
-cd sofia
-git checkout dev
-cd ..
+git clone -b dev https://github.com/R3BRootGroup/macros.git
+git clone -b dev https://github.com/R3BRootGroup/sofia.git
 cd ..
 mkdir build
 cd build
 cmake ../R3BRoot/
 . config.sh
-make -j4
+make -j8
 ~~~
 
 ### Some details of the sofia set-up
@@ -97,7 +92,7 @@ The first type (MWPC0) is coupled to SofTriM, to get the (x,y) position of the b
 The second type is located before and after the SofTwiM detector to get the (x,y) position of each fission fragment before the magnet. This second kind of MWPC is vertically segmented into two sections. Therefore, in x, there are 64 down pads and 64 up pads, and in y, there are 40 vertically pads.
 The third type is located after the magnet and just before the SofToFW. In x, there are 288 vertical pads and in y, 120 horizontal pads.
 
-# Simulations (ongoing work)
+## Simulations (ongoing work)
 
 Some simulations of two experimental configurations are included inside the sofia directory. You can find the subdirectories :
 
@@ -189,7 +184,7 @@ root -l sim.root
 [] evt->StartViewer();
 ~~~
 
-# Data Analysis (ongoing work)
+## Data Analysis (ongoing work)
 
 Data analysis is included inside the sofia directory. You can find the subdirectories :
 
