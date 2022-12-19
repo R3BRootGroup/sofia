@@ -53,7 +53,8 @@ void R3BSofFrsAnaPar::clear()
 void R3BSofFrsAnaPar::putParams(FairParamList* list)
 {
     R3BLOG(info, "R3BSofFrsAnaPar::putParams() called");
-    if (!list) {
+    if (!list)
+    {
         return;
     }
     list->add("BrhoS2S8", fBrho0);
@@ -81,7 +82,8 @@ void R3BSofFrsAnaPar::putParams(FairParamList* list)
 Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
 {
     R3BLOG(info, "R3BSofFrsAnaPar::getParams() called");
-    if (!list) {
+    if (!list)
+    {
         return kFALSE;
     }
 
@@ -111,7 +113,8 @@ Bool_t R3BSofFrsAnaPar::getParams(FairParamList* list)
     if (!list->fill("S2PosOffset", &fS2PosOffset))
         return kFALSE;
 
-    if (!list->fill("NumBrhoCorrPar", &fNumBrhoCorrPar)) {
+    if (!list->fill("NumBrhoCorrPar", &fNumBrhoCorrPar))
+    {
 
         // return kFALSE;
     }
@@ -129,7 +132,8 @@ void R3BSofFrsAnaPar::printParams()
     R3BLOG(info, "R3BSofFrsAnaPar: Frs Analysis Parameters: ");
     R3BLOG(info, "BrhoS2S8: " << fBrho0);
     R3BLOG(info, "NumTof: " << fNumTof);
-    for (Int_t i = 0; i < fNumTof; i++) {
+    for (Int_t i = 0; i < fNumTof; i++)
+    {
         R3BLOG(info, "StaSciId(" << i << "): " << fStaSciId->GetAt(i));
         R3BLOG(info, "StoSciId(" << i << "): " << fStoSciId->GetAt(i));
         R3BLOG(info, "PathLength(" << i << "): " << fPathLength->GetAt(i));
@@ -138,7 +142,8 @@ void R3BSofFrsAnaPar::printParams()
     }
     R3BLOG(info, "S2PosCoef: " << fS2PosCoef);
     R3BLOG(info, "S2PosOffset: " << fS2PosOffset);
-    for (Int_t i = 0; i < fNumBrhoCorrPar; i++) {
+    for (Int_t i = 0; i < fNumBrhoCorrPar; i++)
+    {
         R3BLOG(info, "BrhoCorrPar(" << i << "): " << fBrhoCorrPar->GetAt(i));
     }
 }

@@ -42,12 +42,12 @@ class R3BSofSciMapped2Tcal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    Bool_t fOnline;   // Don't store data for online
+    Bool_t fOnline; // Don't store data for online
 
-    TClonesArray* fMapped;   // input data - SofSci
-    TClonesArray* fTcal;     // output data
+    TClonesArray* fMapped; // input data - SofSci
+    TClonesArray* fTcal;   // output data
 
-    R3BSofTcalPar* fTcalPar;   // tcal parameters container - SofSci
+    R3BSofTcalPar* fTcalPar; // tcal parameters container - SofSci
 
     UInt_t fNevent;
     TRandom3 rand;
@@ -62,4 +62,4 @@ class R3BSofSciMapped2Tcal : public FairTask
     ClassDef(R3BSofSciMapped2Tcal, 1)
 };
 
-#endif   // R3BSOFSCI_MAPPED2TCAL_H
+#endif // R3BSOFSCI_MAPPED2TCAL_H

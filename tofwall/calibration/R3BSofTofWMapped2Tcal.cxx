@@ -16,7 +16,8 @@ R3BSofTofWMapped2Tcal::R3BSofTofWMapped2Tcal()
     , fNumTcal(0)
     , fOnline(kFALSE)
     , fNevent(0)
-{}
+{
+}
 
 R3BSofTofWMapped2Tcal::~R3BSofTofWMapped2Tcal()
 {
@@ -31,17 +32,20 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
     LOG(info) << "R3BSofTofWMapped2Tcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm) {
+    if (!rm)
+    {
         LOG(error) << "R3BSofTofWMapped2Tcal::Init() Couldn't instance the FairRootManager";
         return kFATAL;
     }
 
     // scintillator at S2 and cave C
     fMapped = (TClonesArray*)rm->GetObject("SofTofWMappedData");
-    if (!fMapped) {
+    if (!fMapped)
+    {
         LOG(error) << "R3BSofTofWMapped2Tcal::Init() Couldn't get handle on SofTofWMappedData container";
         return kFATAL;
-    } else
+    }
+    else
         LOG(info) << "R3BSofTofWMapped2Tcal::Init() SofTofWMappedData items found";
 
     // Register output array in tree
@@ -54,15 +58,18 @@ InitStatus R3BSofTofWMapped2Tcal::Init()
 void R3BSofTofWMapped2Tcal::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         LOG(error) << "FairRuntimeDb not opened!";
     }
 
     fTcalPar = (R3BSofTcalPar*)rtdb->getContainer("SofTofWTcalPar");
-    if (!fTcalPar) {
+    if (!fTcalPar)
+    {
         LOG(error) << "R3BSofTofWMapped2Tcal::SetParContainers() : Could not get access to SofTofWTcalPar-Container.";
         return;
-    } else
+    }
+    else
         LOG(info) << "R3BSofTofWMapped2Tcal::SetParContainers() : SofTofWTcalPar-Container found with "
                   << fTcalPar->GetNumDetectors() << " detectors and " << fTcalPar->GetNumChannels() << " channels";
     return;
@@ -86,7 +93,8 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
     Double_t tns = 0.0;
 
     Int_t nHitsPerEvent_SofTofW = fMapped->GetEntriesFast();
-    for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++) {
+    for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
+    {
         R3BSofTofWMappedData* hit = (R3BSofTofWMappedData*)fMapped->At(ihit);
         if (!hit)
             continue;
@@ -95,12 +103,14 @@ void R3BSofTofWMapped2Tcal::Exec(Option_t* option)
         iTf = hit->GetTimeFine();
         iTc = hit->GetTimeCoarse();
 
-        if ((iDet < 1) || (iDet > fTcalPar->GetNumDetectors())) {
+        if ((iDet < 1) || (iDet > fTcalPar->GetNumDetectors()))
+        {
             LOG(info) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iDet = " << iDet
                       << "is out of range, item skipped ";
             continue;
         }
-        if ((iCh < 1) || (iCh > fTcalPar->GetNumChannels())) {
+        if ((iCh < 1) || (iCh > fTcalPar->GetNumChannels()))
+        {
             LOG(info) << "R3BSofTofWMapped2Tcal::Exec() : In SofTofWMappedData, iCh = " << iCh
                       << "is out of range, item skipped ";
             continue;

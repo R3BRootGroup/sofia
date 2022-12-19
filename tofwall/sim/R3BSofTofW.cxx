@@ -19,11 +19,13 @@
 
 R3BSofTofW::R3BSofTofW()
     : R3BSofTofW("")
-{}
+{
+}
 
 R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoTranslation& trans, const TGeoRotation& rot)
-    : R3BSofTofW(geoFile, {trans, rot})
-{}
+    : R3BSofTofW(geoFile, { trans, rot })
+{
+}
 
 R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofTofW", kSOFTofWall, geoFile, combi)
@@ -35,7 +37,8 @@ R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi)
 
 R3BSofTofW::~R3BSofTofW()
 {
-    if (fSofTofWallCollection) {
+    if (fSofTofWallCollection)
+    {
         fSofTofWallCollection->Delete();
         delete fSofTofWallCollection;
     }
@@ -53,7 +56,8 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
     /** This method is called from the MC stepping */
 
     // Set parameters at entrance of volume. Reset ELoss.
-    if (TVirtualMC::GetMC()->IsTrackEntering()) {
+    if (TVirtualMC::GetMC()->IsTrackEntering())
+    {
         fELoss = 0.;
         fTime = TVirtualMC::GetMC()->TrackTime() * 1.0e09;
         fLength = TVirtualMC::GetMC()->TrackLength();
@@ -67,10 +71,12 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
     Double_t fA_in = 0.1 * (TVirtualMC::GetMC()->TrackPid() - (100000 + fZ_in) * 10000.);
 
     fELoss += TVirtualMC::GetMC()->Edep();
-    if (fELoss > 0) {
+    if (fELoss > 0)
+    {
         // Set additional parameters at exit of active volume. Create R3BSofTofWPoint.
-        if (TVirtualMC::GetMC()->IsTrackExiting() || TVirtualMC::GetMC()->IsTrackStop()
-            || TVirtualMC::GetMC()->IsTrackDisappeared()) {
+        if (TVirtualMC::GetMC()->IsTrackExiting() || TVirtualMC::GetMC()->IsTrackStop() ||
+            TVirtualMC::GetMC()->IsTrackDisappeared())
+        {
 
             fTrackID = TVirtualMC::GetMC()->GetStack()->GetCurrentTrackNumber();
             fVolumeID = vol->getMCid();
@@ -80,7 +86,8 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
             gMC->TrackPosition(fPosOut);
             gMC->TrackMomentum(fMomOut);
 
-            if (fELoss == 0.) {
+            if (fELoss == 0.)
+            {
                 return kFALSE;
             }
 
@@ -109,7 +116,8 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
 // -----   Public method EndOfEvent   -----------------------------------------
 void R3BSofTofW::EndOfEvent()
 {
-    if (fVerboseLevel) {
+    if (fVerboseLevel)
+    {
         Print();
     }
     Reset();
@@ -124,9 +132,12 @@ void R3BSofTofW::Register()
 // -----   Public method GetCollection   --------------------------------------
 TClonesArray* R3BSofTofW::GetCollection(Int_t iColl) const
 {
-    if (iColl == 0) {
+    if (iColl == 0)
+    {
         return fSofTofWallCollection;
-    } else {
+    }
+    else
+    {
         return nullptr;
     }
 }
@@ -161,7 +172,8 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
 {
     TClonesArray& clref = *fSofTofWallCollection;
     Int_t size = clref.GetEntriesFast();
-    if (fVerboseLevel > 1) {
+    if (fVerboseLevel > 1)
+    {
         R3BLOG(info,
                "Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z() << ") cm,  detector " << detID
                                    << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV");
@@ -173,7 +185,8 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
 // -----  Public method CheckIfSensitive  ----------------------------------
 Bool_t R3BSofTofW::CheckIfSensitive(std::string name)
 {
-    if (TString(name).Contains("TOF_FFs")) {
+    if (TString(name).Contains("TOF_FFs"))
+    {
         // LOG(debug) << "Found TOF SOFIA geometry from ROOT file: " << name;
         return kTRUE;
     }

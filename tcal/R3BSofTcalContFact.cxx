@@ -11,8 +11,8 @@
 #include "R3BSofTcalContFact.h"
 
 #include "FairLogger.h"
-#include "FairParSet.h"      // for FairParSet
-#include "FairRuntimeDb.h"   // for FairRuntimeDb
+#include "FairParSet.h"    // for FairParSet
+#include "FairRuntimeDb.h" // for FairRuntimeDb
 #include "R3BSofTcalPar.h"
 
 static R3BSofTcalContFact gR3BSofTcalContFact;

@@ -36,13 +36,13 @@ class R3BSofSciSingleTcal2Cal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    Bool_t fOnline;   // Don't store data for online
+    Bool_t fOnline; // Don't store data for online
     UInt_t fNevent;
 
-    TClonesArray* fSingleTcal;     // array with SingleTcal input data
-    TClonesArray* fCal;            // array with Cal output data
-    R3BSofSciCalPosPar* fPosPar;   // calib param for x position in [mm]
-    R3BSofSciCalTofPar* fTofPar;   // calib param for Beta and Tof calibration
+    TClonesArray* fSingleTcal;   // array with SingleTcal input data
+    TClonesArray* fCal;          // array with Cal output data
+    R3BSofSciCalPosPar* fPosPar; // calib param for x position in [mm]
+    R3BSofSciCalTofPar* fTofPar; // calib param for Beta and Tof calibration
 
     /** Private method AddHitData **/
     // Add a SofSciCalData

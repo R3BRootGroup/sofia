@@ -16,7 +16,8 @@ using namespace std;
 
 R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, size_t offset)
     : R3BSofTofWReader(data, offset, 28)
-{}
+{
+}
 
 R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, size_t offset, Int_t NumPaddles)
     : R3BReader("R3BSofTofWReader")
@@ -25,12 +26,14 @@ R3BSofTofWReader::R3BSofTofWReader(EXT_STR_h101_SOFTOFW* data, size_t offset, In
     , fOnline(kFALSE)
     , fArray(new TClonesArray("R3BSofTofWMappedData"))
     , fNumPaddles(NumPaddles)
-{}
+{
+}
 
 R3BSofTofWReader::~R3BSofTofWReader()
 {
     LOG(debug) << "R3BSofTofWReader: Delete instance";
-    if (fArray) {
+    if (fArray)
+    {
         delete fArray;
     }
 }
@@ -40,7 +43,8 @@ Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
     Int_t ok;
     LOG(info) << "R3BSofTofWReader::Init()";
     EXT_STR_h101_SOFTOFW_ITEMS_INFO(ok, *a_struct_info, fOffset, EXT_STR_h101_SOFTOFW, 0);
-    if (!ok) {
+    if (!ok)
+    {
         perror("ext_data_struct_info_item");
         LOG(error) << "R3BSofTofWReader::Failed to setup structure information.";
         return kFALSE;
@@ -53,7 +57,8 @@ Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
     // clear struct_writer's output struct. Seems ucesb doesn't do that
     // for channels that are unknown to the current ucesb config.
     EXT_STR_h101_SOFTOFW_onion* data = (EXT_STR_h101_SOFTOFW_onion*)fData;
-    for (Int_t d = 0; d < fNumPaddles; d++) {
+    for (Int_t d = 0; d < fNumPaddles; d++)
+    {
         data->SOFTOFW_P[d].TFM = 0;
         data->SOFTOFW_P[d].TCM = 0;
         data->SOFTOFW_P[d].E[0] = 0;
@@ -91,10 +96,11 @@ Bool_t R3BSofTofWReader::Read()
     */
 
     // loop over all detectors
-    for (Int_t d = 0; d < fNumPaddles; d++) {
+    for (Int_t d = 0; d < fNumPaddles; d++)
+    {
 
-        uint32_t NumberOfPMTsWithHits = data->SOFTOFW_P[d].TFM;   // could also be data->SOFTOFW_P[d].TCM;
-        uint32_t TotalNumberOfHits = data->SOFTOFW_P[d].TF;       // could also be data->SOFTOFW_P[d].TC
+        uint32_t NumberOfPMTsWithHits = data->SOFTOFW_P[d].TFM; // could also be data->SOFTOFW_P[d].TCM;
+        uint32_t TotalNumberOfHits = data->SOFTOFW_P[d].TF;     // could also be data->SOFTOFW_P[d].TC
         Bool_t FLAG_P;
 
         FLAG_P = kFALSE;
@@ -103,17 +109,20 @@ Bool_t R3BSofTofWReader::Read()
 
         // loop over channels with hits
         uint32_t curChannelStart = 0;
-        for (Int_t pmmult = 0; pmmult < NumberOfPMTsWithHits; pmmult++) {
+        for (Int_t pmmult = 0; pmmult < NumberOfPMTsWithHits; pmmult++)
+        {
             uint32_t pmtval = data->SOFTOFW_P[d].TFMI[pmmult];
-            if (pmtval != data->SOFTOFW_P[d].TCMI[pmmult]) {
+            if (pmtval != data->SOFTOFW_P[d].TCMI[pmmult])
+            {
                 LOG(error) << "R3BSofTofWReader::Reader() mismatch in PMt id for TofW between TF / TC "
                            << "TF: PMT = " << data->SOFTOFW_P[d].TFMI[pmmult]
                            << "TC: PMT = " << data->SOFTOFW_P[d].TCMI[pmmult];
             }
             uint32_t nextChannelStart = data->SOFTOFW_P[d].TFME[pmmult];
             // put the mapped items {det,pmt,coarsetime,finetime} one after the other in the fArray
-            for (int hit = curChannelStart; hit < nextChannelStart; hit++) {
-                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTofWMappedData(d + 1,   // do not change into d !!!!!!!
+            for (int hit = curChannelStart; hit < nextChannelStart; hit++)
+            {
+                new ((*fArray)[fArray->GetEntriesFast()]) R3BSofTofWMappedData(d + 1, // do not change into d !!!!!!!
                                                                                pmtval,
                                                                                data->SOFTOFW_P[d].TCv[hit],
                                                                                data->SOFTOFW_P[d].TFv[hit],
@@ -123,7 +132,7 @@ Bool_t R3BSofTofWReader::Read()
             curChannelStart = nextChannelStart;
         }
 
-    }   // end of loop over the detectors
+    } // end of loop over the detectors
     return kTRUE;
 }
 

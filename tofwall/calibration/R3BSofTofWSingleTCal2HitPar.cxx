@@ -27,7 +27,8 @@
 // R3BSofTofWSingleTCal2HitPar: Default Constructor --------------------------
 R3BSofTofWSingleTCal2HitPar::R3BSofTofWSingleTCal2HitPar()
     : R3BSofTofWSingleTCal2HitPar("R3BSofTofWSingleTCal2HitPar", 1)
-{}
+{
+}
 
 // R3BSofTofWSingleTCal2HitParPar: Standard Constructor --------------------------
 R3BSofTofWSingleTCal2HitPar::R3BSofTofWSingleTCal2HitPar(const TString& name, Int_t iVerbose)
@@ -45,7 +46,8 @@ R3BSofTofWSingleTCal2HitPar::R3BSofTofWSingleTCal2HitPar(const TString& name, In
     , PosParams(NULL)
     , fHit_Par(NULL)
     , fTofCalDataCA(NULL)
-{}
+{
+}
 
 // Virtual R3BSofTofWSingleTCal2HitPar: Destructor
 R3BSofTofWSingleTCal2HitPar::~R3BSofTofWSingleTCal2HitPar()
@@ -62,23 +64,27 @@ InitStatus R3BSofTofWSingleTCal2HitPar::Init()
 
     // INPUT DATA
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager) {
+    if (!rootManager)
+    {
         return kFATAL;
     }
 
     fTofCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
-    if (!fTofCalDataCA) {
+    if (!fTofCalDataCA)
+    {
         LOG(error) << "R3BSofTofWSingleTCal2HitPar::SofTofWSingleTcalData not found";
         return kFATAL;
     }
 
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         return kFATAL;
     }
 
     fHit_Par = (R3BSofTofWHitPar*)rtdb->getContainer("tofwHitPar");
-    if (!fHit_Par) {
+    if (!fHit_Par)
+    {
         LOG(error) << "R3BSofTofWSingleTCal2HitPar:: Couldn't get handle on tofwHitPar container";
         return kFATAL;
     }
@@ -89,7 +95,8 @@ InitStatus R3BSofTofWSingleTCal2HitPar::Init()
     hpos = new TH1F*[fNumSci];
     fNbBinsTof = (int)(fLimit_right_tof - fLimit_left_tof) * 100.;
     fNbBinsPos = (int)(fLimit_right_pos - fLimit_left_pos) * 100.;
-    for (Int_t i = 0; i < fNumSci; i++) {
+    for (Int_t i = 0; i < fNumSci; i++)
+    {
         sprintf(Name1, "htof_%d", i + 1);
         htof[i] = new TH1F(Name1, Name1, fNbBinsTof, fLimit_left_tof, fLimit_right_tof);
         sprintf(Name1, "hpos_%d", i + 1);
@@ -113,7 +120,8 @@ void R3BSofTofWSingleTCal2HitPar::Exec(Option_t* option)
 
     R3BSofTofWSingleTcalData** calData = new R3BSofTofWSingleTcalData*[nHits];
     Int_t sciId = 0;
-    for (Int_t i = 0; i < nHits; i++) {
+    for (Int_t i = 0; i < nHits; i++)
+    {
         calData[i] = (R3BSofTofWSingleTcalData*)(fTofCalDataCA->At(i));
         sciId = calData[i]->GetDetector() - 1;
         htof[sciId]->Fill(calData[i]->GetRawTofNs());
@@ -137,13 +145,16 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
 
     TF1* fit1 = new TF1("fit1", "gaus", fLimit_left_pos, fLimit_right_pos);
     TF1* fit2 = new TF1("fit2", "gaus", fLimit_left_tof, fLimit_right_tof);
-    for (Int_t s = 0; s < fNumSci; s++) {
-        if (htof[s]->GetEntries() > fMinStatistics && htof[s]->GetEntries() > fMinStatistics) {
+    for (Int_t s = 0; s < fNumSci; s++)
+    {
+        if (htof[s]->GetEntries() > fMinStatistics && htof[s]->GetEntries() > fMinStatistics)
+        {
 
             // std::cout << s<< " " << htof[s]->GetMaximum() <<std::endl;
 
             // Bins with a number of counts less than 20% of the maximum are set to zero
-            for (Int_t k2 = 0; k2 < fNbBinsPos; k2++) {
+            for (Int_t k2 = 0; k2 < fNbBinsPos; k2++)
+            {
 
                 if (hpos[s]->GetBinContent(k2 + 1) < 0.2 * hpos[s]->GetMaximum())
                     hpos[s]->SetBinContent(k2 + 1, 0);
@@ -155,7 +166,8 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
             fit1->GetParameters(&par1[0]);
             fHit_Par->SetPosOffsetPar(par1[1], s + 1);
 
-            for (Int_t k2 = 0; k2 < fNbBinsTof; k2++) {
+            for (Int_t k2 = 0; k2 < fNbBinsTof; k2++)
+            {
 
                 if (htof[s]->GetBinContent(k2 + 1) < 0.2 * htof[s]->GetMaximum())
                     htof[s]->SetBinContent(k2 + 1, 0);
@@ -165,7 +177,9 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
             Double_t par2[3];
             fit2->GetParameters(&par2[0]);
             fHit_Par->SetTofPar(par2[1], s + 1);
-        } else {
+        }
+        else
+        {
             fHit_Par->SetInUse(0, s + 1);
         }
     }
@@ -173,7 +187,8 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
     // Set parameters
     fHit_Par->setChanged();
 
-    for (Int_t s = 0; s < fNumSci; s++) {
+    for (Int_t s = 0; s < fNumSci; s++)
+    {
         hpos[s]->Write();
         htof[s]->Write();
     }

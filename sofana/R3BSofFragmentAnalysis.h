@@ -96,13 +96,13 @@ class R3BSofFragmentAnalysis : public FairTask
 
     // Parameters set with accessor functions
     Double_t frho_Cave, fBfield_Glad, fTimeOffset, fTofWPos;
-    Bool_t fOnline;   // Don't store data for online
+    Bool_t fOnline; // Don't store data for online
     R3BSofFragmentAnaPar* fFragPar;
     R3BTwimHitPar* fTwimPar;
 
     // Parameters from par file
-    Float_t fTwimZ0 = 0., fTwimZ1 = 0., fTwimZ2 = 0.;   // CalibPar for Twim
-    Double_t fOffsetAq, fOffsetZ;                       // Offsets in A/q and Z
+    Float_t fTwimZ0 = 0., fTwimZ1 = 0., fTwimZ2 = 0.; // CalibPar for Twim
+    Double_t fOffsetAq, fOffsetZ;                     // Offsets in A/q and Z
     // Double_t fDist_mw3_tof;
     // Double_t fDist_start_glad;
 

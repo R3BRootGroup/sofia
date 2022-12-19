@@ -47,7 +47,8 @@ R3BSofMwpcvsMusicOnlineSpectra::R3BSofMwpcvsMusicOnlineSpectra()
     , fHitItemsMus(NULL)
     , fNameDet1("Mwpc0")
     , fNEvents(0)
-{}
+{
+}
 
 R3BSofMwpcvsMusicOnlineSpectra::R3BSofMwpcvsMusicOnlineSpectra(const TString& name,
                                                                Int_t iVerbose,
@@ -59,7 +60,8 @@ R3BSofMwpcvsMusicOnlineSpectra::R3BSofMwpcvsMusicOnlineSpectra(const TString& na
     , fHitItemsMus(NULL)
     , fNameDet1(namedet1)
     , fNEvents(0)
-{}
+{
+}
 
 R3BSofMwpcvsMusicOnlineSpectra::~R3BSofMwpcvsMusicOnlineSpectra()
 {
@@ -84,14 +86,15 @@ InitStatus R3BSofMwpcvsMusicOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSof" + fNameDet1 + "vsMusicOnlineSpectra::FairRootManager not found";
+        LOG(fatal) << "R3BSof" + fNameDet1 + "vsMusicOnlineSpectra::FairRootManager not found";
 
     FairRunOnline* run = FairRunOnline::Instance();
     run->GetHttpServer()->Register("", this);
 
     // get access to mapped data of the mwpc detector
     fCalItemsMwpc = (TClonesArray*)mgr->GetObject(fNameDet1 + "CalData");
-    if (!fCalItemsMwpc) {
+    if (!fCalItemsMwpc)
+    {
         return kFATAL;
     }
 
@@ -118,7 +121,8 @@ InitStatus R3BSofMwpcvsMusicOnlineSpectra::Init()
         new TCanvas("MusDT_" + fNameDet1, "Music: Correlation of DT with " + fNameDet1 + " (X,Y)", 10, 10, 800, 700);
     cMusDTCorMwpc0->Divide(2, 4);
 
-    for (Int_t j = 0; j < NbAnodesMus; j++) {
+    for (Int_t j = 0; j < NbAnodesMus; j++)
+    {
         sprintf(Name1, "fh2_MusDT%d_vs_X0", j + 1);
         sprintf(Name2, "Music: DRIFT TIME ANODE %d vs ", j + 1);
         fh2_MusCorMwpc0_DTvsX0[j] = new TH2F(Name1, Name2 + fNameDet1 + "-X", 500, -20, 20, 1500, 0, 30000);
@@ -179,7 +183,8 @@ void R3BSofMwpcvsMusicOnlineSpectra::Reset_Histo()
 {
     LOG(info) << "R3BSof" + fNameDet1 + "vsMusicOnlineSpectra::Reset_Histo";
     // Cal data
-    for (Int_t j = 0; j < NbAnodesMus; j++) {
+    for (Int_t j = 0; j < NbAnodesMus; j++)
+    {
         fh2_MusCorMwpc0_DTvsX0[j]->Reset();
     }
     fh2_MusCorMwpc0_EsumVsX0mm->Reset();
@@ -191,48 +196,59 @@ void R3BSofMwpcvsMusicOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSof" + fNameDet1 + "vsMusicOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSof" + fNameDet1 + "vsMusicOnlineSpectra::Exec FairRootManager not found";
 
     // Fill music mapped data
-    if (fMappedItemsMus && fMappedItemsMus->GetEntriesFast() > 0) {
+    if (fMappedItemsMus && fMappedItemsMus->GetEntriesFast() > 0)
+    {
         Double_t e1 = 0., e2 = 0.;
         Double_t n1 = 0., n2 = 0.;
         for (Int_t i = 0; i < NbAnodesMus; i++)
-            fE[i] = 0.;   // mult=1 !!!
-        for (Int_t i = 0; i < NbAnodesMus + 2; i++) {
-            fT[i] = 0.;   // mult=1 !!!
+            fE[i] = 0.; // mult=1 !!!
+        for (Int_t i = 0; i < NbAnodesMus + 2; i++)
+        {
+            fT[i] = 0.; // mult=1 !!!
             multhit[i] = 0;
         }
         Int_t nHits = fMappedItemsMus->GetEntriesFast();
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BMusicMappedData* hit = (R3BMusicMappedData*)fMappedItemsMus->At(ihit);
             if (!hit)
                 continue;
             multhit[hit->GetAnodeID()]++;
             if (fT[hit->GetAnodeID()] == 0)
-                fT[hit->GetAnodeID()] = hit->GetTime();   // mult=1 !!!
+                fT[hit->GetAnodeID()] = hit->GetTime(); // mult=1 !!!
 
-            if (hit->GetAnodeID() < NbAnodesMus / 2) {
+            if (hit->GetAnodeID() < NbAnodesMus / 2)
+            {
                 e1 = e1 + hit->GetEnergy();
                 n1++;
-            } else if (hit->GetAnodeID() < NbAnodesMus) {
+            }
+            else if (hit->GetAnodeID() < NbAnodesMus)
+            {
                 e2 = e2 + hit->GetEnergy();
                 n2++;
             }
         }
 
         // Fill data only if there are TREF signals
-        if (multhit[NbAnodesMus] == 1) {
+        if (multhit[NbAnodesMus] == 1)
+        {
 
-            if (fHitItemsMwpc && fHitItemsMwpc->GetEntriesFast() > 0) {
-                for (Int_t ihit = 0; ihit < fHitItemsMwpc->GetEntriesFast(); ihit++) {
+            if (fHitItemsMwpc && fHitItemsMwpc->GetEntriesFast() > 0)
+            {
+                for (Int_t ihit = 0; ihit < fHitItemsMwpc->GetEntriesFast(); ihit++)
+                {
                     R3BMwpcHitData* hit = (R3BMwpcHitData*)fHitItemsMwpc->At(ihit);
                     if (!hit)
                         continue;
                     fh2_MusCorMwpc0_EsumVsX0mm->Fill(hit->GetX(), (e1 + e2) / (n1 + n2));
                     fh2_MusCorMwpc0_EsumVsY0mm->Fill(hit->GetY(), (e1 + e2) / (n1 + n2));
-                    for (Int_t i = 0; i < NbAnodesMus; i++) {
-                        if (multhit[NbAnodesMus] == 1 && multhit[i] == 1) {
+                    for (Int_t i = 0; i < NbAnodesMus; i++)
+                    {
+                        if (multhit[NbAnodesMus] == 1 && multhit[i] == 1)
+                        {
                             fh2_MusCorMwpc0_DTvsX0[i]->Fill(hit->GetX(), fT[i] - fT[NbAnodesMus]);
                         }
                     }
@@ -246,16 +262,20 @@ void R3BSofMwpcvsMusicOnlineSpectra::Exec(Option_t* option)
 
 void R3BSofMwpcvsMusicOnlineSpectra::FinishEvent()
 {
-    if (fCalItemsMwpc) {
+    if (fCalItemsMwpc)
+    {
         fCalItemsMwpc->Clear();
     }
-    if (fHitItemsMwpc) {
+    if (fHitItemsMwpc)
+    {
         fHitItemsMwpc->Clear();
     }
-    if (fMappedItemsMus) {
+    if (fMappedItemsMus)
+    {
         fMappedItemsMus->Clear();
     }
-    if (fHitItemsMus) {
+    if (fHitItemsMus)
+    {
         fHitItemsMus->Clear();
     }
 }
@@ -263,8 +283,12 @@ void R3BSofMwpcvsMusicOnlineSpectra::FinishEvent()
 void R3BSofMwpcvsMusicOnlineSpectra::FinishTask()
 {
 
-    if (fCalItemsMwpc && fMappedItemsMus) {}
-    if (fHitItemsMwpc && fHitItemsMus) {}
+    if (fCalItemsMwpc && fMappedItemsMus)
+    {
+    }
+    if (fHitItemsMwpc && fHitItemsMus)
+    {
+    }
 }
 
 ClassImp(R3BSofMwpcvsMusicOnlineSpectra)

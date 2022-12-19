@@ -108,10 +108,10 @@ class R3BSofSciVsTrimOnlineSpectra : public FairTask
     Float_t GetEmax(Int_t rank) { return fEmax->GetAt(rank); }
 
   private:
-    TClonesArray* fSciSTcal;   // Array with SofSci Tcal items.
-    TClonesArray* fSciCal;     // Array with SofSci Cal items.
-    TClonesArray* fTrimCal;    // Array with Trim Cal items.
-    TClonesArray* fTrimHit;    // Array with Trim Hit items.
+    TClonesArray* fSciSTcal; // Array with SofSci Tcal items.
+    TClonesArray* fSciCal;   // Array with SofSci Cal items.
+    TClonesArray* fTrimCal;  // Array with Trim Cal items.
+    TClonesArray* fTrimHit;  // Array with Trim Hit items.
 
     Int_t fNbDetectors;
     Int_t fNbChannels;
@@ -125,26 +125,26 @@ class R3BSofSciVsTrimOnlineSpectra : public FairTask
     TArrayF* fEmax;
 
     // check for trigger should be done globablly (somewhere else)
-    R3BEventHeader* header;   // Event header.
-    Int_t fNEvents;           // Event counter.
+    R3BEventHeader* header; // Event header.
+    Int_t fNEvents;         // Event counter.
 
     // Canvas
-    TCanvas** c_TrimEraw_vs_SciPosRaw;   // [fNbDetectors]
-    TCanvas** c_TrimDT_vs_SciPosRaw;     // [fNbDetectors]
-    TCanvas** c_TrimE_vs_SciPosCal;      // [fNbDetectors]
+    TCanvas** c_TrimEraw_vs_SciPosRaw; // [fNbDetectors]
+    TCanvas** c_TrimDT_vs_SciPosRaw;   // [fNbDetectors]
+    TCanvas** c_TrimE_vs_SciPosCal;    // [fNbDetectors]
     TCanvas* c_TrimE_vs_BetaS2;
     TCanvas* c_TrimE_vs_AoQraw;
     TCanvas* c_TrimZ_vs_AoQ;
     TCanvas* c_AoQ_vs_PosS2_condTrim;
 
     // Histogram for correlation with Trim
-    TH2F** fh2_TrimEraw_vs_SciPosRaw;   // [fNbDetectors*3]
-    TH2F** fh2_TrimDT_vs_SciPosRaw;     // [fNbDetectors*3]
-    TH2F** fh2_TrimE_vs_SciPosCal;      // [fNbDetectors*3]
-    TH2F** fh2_TrimE_vs_BetaS2;         // [4]
-    TH2F** fh2_TrimE_vs_AoQraw;         // [4]
-    TH2F** fh2_TrimZ_vs_AoQ;            // [4]
-    TH2F** fh2_AoQ_vs_PosS2_condTrim;   // [4]
+    TH2F** fh2_TrimEraw_vs_SciPosRaw; // [fNbDetectors*3]
+    TH2F** fh2_TrimDT_vs_SciPosRaw;   // [fNbDetectors*3]
+    TH2F** fh2_TrimE_vs_SciPosCal;    // [fNbDetectors*3]
+    TH2F** fh2_TrimE_vs_BetaS2;       // [4]
+    TH2F** fh2_TrimE_vs_AoQraw;       // [4]
+    TH2F** fh2_TrimZ_vs_AoQ;          // [4]
+    TH2F** fh2_AoQ_vs_PosS2_condTrim; // [4]
 
   public:
     ClassDef(R3BSofSciVsTrimOnlineSpectra, 1)

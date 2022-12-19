@@ -48,7 +48,7 @@ void runsim(Int_t nEvents = 0)
     logger->SetLogToScreen(kTRUE);
     // logger->SetLogToFile(kTRUE);
     logger->SetLogVerbosityLevel("low");
-    // logger->SetLogFileLevel("DEBUG4");
+    // logger->SetLogFileLevel("debug4");
     logger->SetLogScreenLevel("info");
     logger->SetColoredLog(true);
 

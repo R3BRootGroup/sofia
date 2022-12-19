@@ -26,7 +26,8 @@ R3BSofSciRawTofPar::R3BSofSciRawTofPar(const char* name, const char* title, cons
 R3BSofSciRawTofPar::~R3BSofSciRawTofPar()
 {
     clear();
-    if (fAllSignalsRawTofParams) {
+    if (fAllSignalsRawTofParams)
+    {
         delete fAllSignalsRawTofParams;
     }
 }
@@ -42,7 +43,8 @@ void R3BSofSciRawTofPar::clear()
 void R3BSofSciRawTofPar::putParams(FairParamList* list)
 {
     LOG(info) << "R3BSofSciRawTofPar::putParams() called";
-    if (!list) {
+    if (!list)
+    {
         return;
     }
 
@@ -65,28 +67,36 @@ void R3BSofSciRawTofPar::putParams(FairParamList* list)
 Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
 {
     LOG(info) << "R3BSofSciRawTofPar::getParams() called";
-    if (!list) {
+    if (!list)
+    {
         return kFALSE;
     }
-    if (!list->fill("nDetsRawTofPar", &fNumDets)) {
+    if (!list->fill("nDetsRawTofPar", &fNumDets))
+    {
         return kFALSE;
     }
-    if (!list->fill("nChannelsRawTofPar", &fNumChannels)) {
+    if (!list->fill("nChannelsRawTofPar", &fNumChannels))
+    {
         return kFALSE;
     }
-    if (!list->fill("idDetCaveC", &fDetIdCaveC)) {
+    if (!list->fill("idDetCaveC", &fDetIdCaveC))
+    {
         return kFALSE;
     }
-    if (!list->fill("idDetS2", &fDetIdS2)) {
+    if (!list->fill("idDetS2", &fDetIdS2))
+    {
         return kFALSE;
     }
-    if (!list->fill("idDetS8", &fDetIdS8)) {
+    if (!list->fill("idDetS8", &fDetIdS8))
+    {
         return kFALSE;
     }
-    if (!list->fill("nSignalsRawTofPar", &fNumSignals)) {
+    if (!list->fill("nSignalsRawTofPar", &fNumSignals))
+    {
         return kFALSE;
     }
-    if (!list->fill("nRawTofParsPerSignal", &fNumParsPerSignal)) {
+    if (!list->fill("nRawTofParsPerSignal", &fNumParsPerSignal))
+    {
         return kFALSE;
     }
 
@@ -94,7 +104,8 @@ Bool_t R3BSofSciRawTofPar::getParams(FairParamList* list)
     LOG(info) << "Array Size: " << array_size;
     fAllSignalsRawTofParams->Set(array_size);
 
-    if (!(list->fill("RawTofPar", fAllSignalsRawTofParams))) {
+    if (!(list->fill("RawTofPar", fAllSignalsRawTofParams)))
+    {
         LOG(info) << "---Could not initialize fAllSignalsRawTofParams";
         return kFALSE;
     }
@@ -111,7 +122,8 @@ void R3BSofSciRawTofPar::printParams()
     LOG(info) << "--- --------------------------------------------";
     LOG(info) << "--- Single Tcal RawTof Parameters :  ";
     LOG(info) << "--- --------------------------------------------";
-    for (Int_t param = 0; param < array_size; param++) {
+    for (Int_t param = 0; param < array_size; param++)
+    {
         LOG(info) << "LIMIT " << param << " = " << fAllSignalsRawTofParams->GetAt(param);
     }
 }

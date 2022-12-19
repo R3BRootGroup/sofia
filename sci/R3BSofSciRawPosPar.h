@@ -1,7 +1,7 @@
 #ifndef __R3BSOFSCIRAWPOSPAR_H__
 #define __R3BSOFSCIRAWPOSPAR_H__
 
-#include "FairParGenericSet.h"   // for FairParGenericSet
+#include "FairParGenericSet.h" // for FairParGenericSet
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
@@ -51,16 +51,16 @@ class R3BSofSciRawPosPar : public FairParGenericSet
     /** Create more Methods if you need them! **/
 
   private:
-    TArrayF* fAllRawPosParams;   // Calibration Parameters for all signals of one detector
-    Int_t fNumDets;              // number of detectors
-    Int_t fNumPmts;              // number of channels of SofSciTcal data = 3 (need for Tcal2SingleTcal)
-    Int_t fNumSignals;           // =fNumDets if RawPos
+    TArrayF* fAllRawPosParams; // Calibration Parameters for all signals of one detector
+    Int_t fNumDets;            // number of detectors
+    Int_t fNumPmts;            // number of channels of SofSciTcal data = 3 (need for Tcal2SingleTcal)
+    Int_t fNumSignals;         // =fNumDets if RawPos
     Int_t fNumParsPerSignal;
     const R3BSofSciRawPosPar& operator=(const R3BSofSciRawPosPar&); /*< an assignment operator>*/
 
-    R3BSofSciRawPosPar(const R3BSofSciRawPosPar&);   // a copy constructor
+    R3BSofSciRawPosPar(const R3BSofSciRawPosPar&); // a copy constructor
 
     ClassDef(R3BSofSciRawPosPar, 1);
 };
 
-#endif   //__R3BSOFSCIRAWPOSPAR_H__
+#endif //__R3BSOFSCIRAWPOSPAR_H__

@@ -21,4 +21,4 @@ class R3BSofSciContFact : public FairContFact
     ClassDef(R3BSofSciContFact, 1)
 };
 
-#endif   // R3BSCICONTFACT_H
+#endif // R3BSCICONTFACT_H

@@ -53,4 +53,4 @@ class R3BSofWhiterabbitReader : public R3BReader
   public:
     ClassDefOverride(R3BSofWhiterabbitReader, 0);
 };
-#endif   // R3BSofWhiterabbitReader_H
+#endif // R3BSofWhiterabbitReader_H

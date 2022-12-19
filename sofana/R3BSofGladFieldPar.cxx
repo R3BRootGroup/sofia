@@ -11,7 +11,8 @@ R3BSofGladFieldPar::R3BSofGladFieldPar(const TString& name, const TString& title
     , fBz(0.)
     , fEffLength(0.)
     , fFieldCentre(0.)
-{}
+{
+}
 
 // ----  Destructor ------------------------------------------------------------
 R3BSofGladFieldPar::~R3BSofGladFieldPar() { clear(); }
@@ -27,7 +28,8 @@ void R3BSofGladFieldPar::clear()
 void R3BSofGladFieldPar::putParams(FairParamList* list)
 {
     LOG(info) << "R3BSofGladFieldPar::putParams() called";
-    if (!list) {
+    if (!list)
+    {
         return;
     }
     list->add("Bz", fBz);
@@ -39,7 +41,8 @@ void R3BSofGladFieldPar::putParams(FairParamList* list)
 Bool_t R3BSofGladFieldPar::getParams(FairParamList* list)
 {
     LOG(info) << "R3BSofGladFieldPar::getParams() called";
-    if (!list) {
+    if (!list)
+    {
         return kFALSE;
     }
 

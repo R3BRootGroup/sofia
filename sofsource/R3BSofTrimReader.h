@@ -60,4 +60,4 @@ class R3BSofTrimReader : public R3BReader
     ClassDefOverride(R3BSofTrimReader, 0);
 };
 
-#endif   // R3BSOFTRIMREADER_H
+#endif // R3BSOFTRIMREADER_H

@@ -10,7 +10,8 @@ R3BSofTofWHitData::R3BSofTofWHitData()
     , fX(0.)
     , fY(0.)
     , fTof(0.)
-{}
+{
+}
 
 // -----   Standard constructor   ------------------------------------------
 R3BSofTofWHitData::R3BSofTofWHitData(Int_t paddle, Double_t x, Double_t y, Double_t tof)
@@ -18,7 +19,8 @@ R3BSofTofWHitData::R3BSofTofWHitData(Int_t paddle, Double_t x, Double_t y, Doubl
     , fX(x)
     , fY(y)
     , fTof(tof)
-{}
+{
+}
 // -------------------------------------------------------------------------
 
 ClassImp(R3BSofTofWHitData)

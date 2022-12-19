@@ -1,7 +1,7 @@
 #ifndef __R3BSOFSCICALPOSPAR_H__
 #define __R3BSOFSCICALPOSPAR_H__
 
-#include "FairParGenericSet.h"   // for FairParGenericSet
+#include "FairParGenericSet.h" // for FairParGenericSet
 #include "TArrayF.h"
 #include "TObjArray.h"
 #include "TObject.h"
@@ -49,16 +49,16 @@ class R3BSofSciCalPosPar : public FairParGenericSet
     /** Create more Methods if you need them! **/
 
   private:
-    Int_t fNumDets;           // number of detectors
-    Int_t fNumParamsPerDet;   // if pol1: 2 parameters for each detector
-    Int_t fNumParams;         // = fNumDets * fNumParsPerDet
+    Int_t fNumDets;         // number of detectors
+    Int_t fNumParamsPerDet; // if pol1: 2 parameters for each detector
+    Int_t fNumParams;       // = fNumDets * fNumParsPerDet
     TArrayF* fAllParams;
 
     const R3BSofSciCalPosPar& operator=(const R3BSofSciCalPosPar&); /*< an assignment operator>*/
 
-    R3BSofSciCalPosPar(const R3BSofSciCalPosPar&);   // a copy constructor
+    R3BSofSciCalPosPar(const R3BSofSciCalPosPar&); // a copy constructor
 
     ClassDef(R3BSofSciCalPosPar, 1);
 };
 
-#endif   //__R3BSOFSCICALPOSPAR_H__
+#endif //__R3BSOFSCICALPOSPAR_H__

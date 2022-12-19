@@ -17,7 +17,8 @@ R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal()
     , fNevent(0)
     , fNumPaddles(28)
     , fNumPmts(2)
-{}
+{
+}
 R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal(Int_t nPaddles, Int_t nPmts)
     : FairTask("R3BSofTofWTcal2SingleTcal", 1)
     , fSciSingleTcal(NULL)
@@ -28,17 +29,21 @@ R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal(Int_t nPaddles, Int_t nPmts
     , fNevent(0)
     , fNumPaddles(nPaddles)
     , fNumPmts(nPmts)
-{}
+{
+}
 
 R3BSofTofWTcal2SingleTcal::~R3BSofTofWTcal2SingleTcal()
 {
-    if (fSciSingleTcal) {
+    if (fSciSingleTcal)
+    {
         delete fSciSingleTcal;
     }
-    if (fTofWTcal) {
+    if (fTofWTcal)
+    {
         delete fTofWTcal;
     }
-    if (fTofWSingleTcal) {
+    if (fTofWSingleTcal)
+    {
         delete fTofWSingleTcal;
     }
 }
@@ -47,11 +52,13 @@ void R3BSofTofWTcal2SingleTcal::SetParContainers()
 {
 
     fSciRawTofPar = (R3BSofSciRawTofPar*)FairRuntimeDb::instance()->getContainer("SofSciRawTofPar");
-    if (!fSciRawTofPar) {
+    if (!fSciRawTofPar)
+    {
         LOG(error)
             << "R3BSofTofWTcal2SingleTcal::SetParContainers() : Could not get access to SofSciRawTofPar-Container.";
         return;
-    } else
+    }
+    else
         LOG(info) << "R3BSofTofWTcal2SingleTcal::SetParContainers() : SofSciRawTofPar-Container found with "
                   << fSciRawTofPar->GetNumSignals() << " signals";
     return;
@@ -62,7 +69,8 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     LOG(info) << "R3BSofTofWTcal2SingleTcal::Init()";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm) {
+    if (!rm)
+    {
         LOG(error) << "R3BSofTofWTcal2SingleTcal::Couldn't instance the FairRootManager";
         return kFATAL;
     }
@@ -72,7 +80,8 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     // --- ----------------------------- --- //
 
     fTofWTcal = (TClonesArray*)rm->GetObject("SofTofWTcalData");
-    if (!fTofWTcal) {
+    if (!fTofWTcal)
+    {
         LOG(error) << "R3BSofTofWTcal2SingleTcal::Couldn't get handle on SofTofWTcalData container";
         return kFATAL;
     }
@@ -82,7 +91,8 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     // --- --------------------------------- --- //
 
     fSciSingleTcal = (TClonesArray*)rm->GetObject("SofSciSingleTcalData");
-    if (!fSciSingleTcal) {
+    if (!fSciSingleTcal)
+    {
         LOG(error) << "R3BSofTofWTcal2SingleTcal::Couldn't get handle on SofSciSingleTcalData container";
         return kFATAL;
     }
@@ -112,8 +122,8 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
     // Reset entries in output arrays, local arrays
     Reset();
 
-    UShort_t iDet;   // 0-based
-    UShort_t iPmt;   // 0-based
+    UShort_t iDet; // 0-based
+    UShort_t iPmt; // 0-based
     Double_t iTraw[fNumPaddles * fNumPmts][16];
     UShort_t mult[fNumPaddles * fNumPmts];
     UShort_t mult_max = 0;
@@ -128,9 +138,11 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
     Double_t iRawTime_SofSci = -1000000.;
     UInt_t nHitsPerEvent_SofSci = fSciSingleTcal->GetEntriesFast();
 
-    for (UInt_t i = 0; i < nHitsPerEvent_SofSci; i++) {
+    for (UInt_t i = 0; i < nHitsPerEvent_SofSci; i++)
+    {
         R3BSofSciSingleTcalData* hitSci = (R3BSofSciSingleTcalData*)fSciSingleTcal->At(i);
-        if (hitSci->GetDetector() == fSciRawTofPar->GetDetIdCaveC()) {
+        if (hitSci->GetDetector() == fSciRawTofPar->GetDetIdCaveC())
+        {
             mult_SofSciCaveC++;
             iRawTime_SofSci = hitSci->GetRawTimeNs();
         }
@@ -139,33 +151,38 @@ void R3BSofTofWTcal2SingleTcal::Exec(Option_t* option)
     // --- ------------------------------------------------------------------------- --- //
     // --- SOFTOFW: CALCULATE THE RAW TIME, TOF AND POSITION FOR THE PLASTICS HITTED --- //
     // --- ------------------------------------------------------------------------- --- //
-    if (mult_SofSciCaveC == 1) {
+    if (mult_SofSciCaveC == 1)
+    {
         Int_t nHitsPerEvent_SofTofW = fTofWTcal->GetEntriesFast();
         // get the multiplicity per PMT
-        for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++) {
+        for (int ihit = 0; ihit < nHitsPerEvent_SofTofW; ihit++)
+        {
             R3BSofTofWTcalData* hit = (R3BSofTofWTcalData*)fTofWTcal->At(ihit);
             if (!hit)
                 continue;
             iDet = hit->GetDetector() - 1;
             iPmt = hit->GetPmt() - 1;
             if (mult_max >= 16)
-                continue;   // if multiplicity in a Pmt is higher than 16 are discarded, this code cannot handle it
+                continue; // if multiplicity in a Pmt is higher than 16 are discarded, this code cannot handle it
             iTraw[iDet * fNumPmts + iPmt][mult[iDet * fNumPmts + iPmt]] = hit->GetRawTimeNs();
             mult[iDet * fNumPmts + iPmt]++;
             if (mult[iDet * fNumPmts + iPmt] > mult_max)
                 mult_max = mult[iDet * fNumPmts + iPmt];
-        }   // end of loop over the TClonesArray of Tcal data
+        } // end of loop over the TClonesArray of Tcal data
 
-        if (nHitsPerEvent_SofTofW > 0) {
+        if (nHitsPerEvent_SofTofW > 0)
+        {
             Double_t iRawPos;
             Double_t iRawTime;
             Double_t iRawTof;
-            for (UShort_t d = 0; d < fNumPaddles; d++) {
+            for (UShort_t d = 0; d < fNumPaddles; d++)
+            {
                 iRawPos = -1000000.;
                 iRawTime = -1000000.;
                 iRawTof = -1000000.;
                 // check mult==1 for the PMTup and PMTdown
-                if ((mult[d * fNumPmts + 1] == 1) && (mult[d * fNumPmts] == 1)) {
+                if ((mult[d * fNumPmts + 1] == 1) && (mult[d * fNumPmts] == 1))
+                {
                     // Traw down is iTraw[d * fNumPmts]
                     // Traw up   is iTraw[d * fNumPmts + 1]
                     // To have a raw position which increases from down to up : RawPos = Tdown - Tup

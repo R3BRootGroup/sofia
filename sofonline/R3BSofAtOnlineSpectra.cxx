@@ -77,7 +77,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofAtOnlineSpectra::Init FairRootManager not found";
+        LOG(fatal) << "R3BSofAtOnlineSpectra::Init FairRootManager not found";
     header = (R3BEventHeader*)mgr->GetObject("R3BEventHeader");
 
     FairRunOnline* run = FairRunOnline::Instance();
@@ -85,7 +85,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     // Get access to mapped data of the active target
     fMappedItemsAt = (TClonesArray*)mgr->GetObject("AtMappedData");
-    if (!fMappedItemsAt) {
+    if (!fMappedItemsAt)
+    {
         LOG(error) << "R3BSofAtOnlineSpectra::AtMappedData not found";
         return kFATAL;
     }
@@ -177,10 +178,11 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_E->Divide(1, fNumAnodes);
     fh1_atmap_E = new TH1F*[fNumAnodes];
     fh1_atmap_E_mult1_wo_pu_ov = new TH1F*[fNumAnodes];
-    for (Int_t a = 0; a < fNumAnodes; a++) {
+    for (Int_t a = 0; a < fNumAnodes; a++)
+    {
         sprintf(Name1, "AT_E_anode%d", a + 1);
         sprintf(Name2, "AT - Energy - Anode %d", a + 1);
-        fh1_atmap_E[a] = new TH1F(Name1, Name2, 65000, 0., 65000);   // MDPP16 on 16 bits
+        fh1_atmap_E[a] = new TH1F(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
         fh1_atmap_E[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh1_atmap_E[a]->GetYaxis()->SetTitle("Counts");
         fh1_atmap_E[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -196,7 +198,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
         sprintf(Name1, "AT_E_m1_anode%d", a + 1);
         sprintf(Name2, "AT - Energy - Anode %d - mult=1, pu and ov rejection", a + 1);
-        fh1_atmap_E_mult1_wo_pu_ov[a] = new TH1F(Name1, Name2, 65000, 0., 65000);   // MDPP16 on 16 bits
+        fh1_atmap_E_mult1_wo_pu_ov[a] = new TH1F(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
         fh1_atmap_E_mult1_wo_pu_ov[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitle("Counts");
         fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -215,10 +217,11 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_EvsE = new TCanvas("At_EvsE", "at_EvsE", 10, 10, 800, 700);
     cAtMap_EvsE->Divide(2, 2);
     fh2_atmap_EvsE = new TH2F*[fNumAnodes];
-    for (Int_t a = 0; a < fNumAnodes - 1; a++) {
+    for (Int_t a = 0; a < fNumAnodes - 1; a++)
+    {
         sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", a + 2, a + 1);
         sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", a + 2, a + 1);
-        fh2_atmap_EvsE[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000);   // MDPP16 on 16 bits
+        fh2_atmap_EvsE[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
         fh2_atmap_EvsE[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -236,7 +239,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", fNumAnodes, 1);
     sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", fNumAnodes, 1);
-    fh2_atmap_EvsE[fNumAnodes - 1] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000);   // MDPP16 on 16 bits
+    fh2_atmap_EvsE[fNumAnodes - 1] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
     fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
@@ -253,10 +256,11 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_EvsE_mult1_nopu = new TCanvas("At_EvsE_mult1_nopu", "At_EvsE_mult1_nopu", 10, 10, 800, 700);
     cAtMap_EvsE_mult1_nopu->Divide(2, 2);
     fh2_atmap_EvsE_mult1_nopu = new TH2F*[fNumAnodes];
-    for (Int_t a = 0; a < fNumAnodes - 1; a++) {
+    for (Int_t a = 0; a < fNumAnodes - 1; a++)
+    {
         sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", a + 2, a + 1);
         sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", a + 2, a + 1);
-        fh2_atmap_EvsE_mult1_nopu[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000);   // MDPP16 on 16 bits
+        fh2_atmap_EvsE_mult1_nopu[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
         fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -310,7 +314,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", fNumAnodes, 1);
     sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", fNumAnodes, 1);
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1] =
-        new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000);   // MDPP16 on 16 bits
+        new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
@@ -328,7 +332,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     fh1_Twimhit_Zl = new TH1F*[fNumAnodes - 1];
     fh1_Twimhit_Zr = new TH1F*[fNumAnodes - 1];
     fh2_Twimhit_ZrZl = new TH2F*[fNumAnodes - 1];
-    for (Int_t i = 0; i < fNumAnodes - 1; i++) {
+    for (Int_t i = 0; i < fNumAnodes - 1; i++)
+    {
         sprintf(Name1, "Twim_ZL_vs_ZR_SecAt_%d", i + 1);
         cTwimZs[i] = new TCanvas(Name1, "", 10, 10, 800, 700);
         cTwimZs[i]->Divide(2, 1);
@@ -415,7 +420,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     // Mapped data folder for the Active Target
     TFolder* MapfolAt = new TFolder("Map", "At mapped info");
-    if (fMappedItemsAt) {
+    if (fMappedItemsAt)
+    {
         MapfolAt->Add(cAtMap_mult);
         MapfolAt->Add(cAtMap_E);
         MapfolAt->Add(cAtMap_EvsE);
@@ -424,7 +430,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     // Hit data folder for the twin music correlated with the AT
     TFolder* folAtvsTwim = new TFolder("At_vs_Twim", "At vs twim info");
-    for (Int_t i = 0; i < fNumAnodes - 1; i++) {
+    for (Int_t i = 0; i < fNumAnodes - 1; i++)
+    {
         folAtvsTwim->Add(cTwimZs[i]);
     }
     folAtvsTwim->Add(cTwimZsum);
@@ -448,12 +455,14 @@ void R3BSofAtOnlineSpectra::Reset_Histo()
     LOG(info) << "R3BSofAtOnlineSpectra::Reset_Histo";
 
     // Mapped Data
-    if (fMappedItemsAt) {
+    if (fMappedItemsAt)
+    {
         fh1_atmap_mult->Reset();
         fh1_atmap_mult_wo_pu->Reset();
         fh2_atmap_mult->Reset();
         fh2_atmap_mult_wo_pu->Reset();
-        for (Int_t a = 0; a < fNumAnodes; a++) {
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
             fh1_atmap_E[a]->Reset();
             fh1_atmap_E_mult1_wo_pu_ov[a]->Reset();
             fh2_atmap_EvsE[a]->Reset();
@@ -462,7 +471,8 @@ void R3BSofAtOnlineSpectra::Reset_Histo()
     }
     // Hit twim Data
     if (fHitItemsTwim)
-        for (Int_t i = 0; i < fNumAnodes - 1; i++) {
+        for (Int_t i = 0; i < fNumAnodes - 1; i++)
+        {
             fh1_Twimhit_Zl[i]->Reset();
             fh1_Twimhit_Zr[i]->Reset();
             fh2_Twimhit_ZrZl[i]->Reset();
@@ -474,10 +484,11 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
 {
     FairRootManager* mgr = FairRootManager::Instance();
     if (NULL == mgr)
-        LOG(FATAL) << "R3BSofAtOnlineSpectra::Exec FairRootManager not found";
+        LOG(fatal) << "R3BSofAtOnlineSpectra::Exec FairRootManager not found";
 
     Int_t nHits;
-    if (fMappedItemsAt && fMappedItemsAt->GetEntriesFast() > 0) {
+    if (fMappedItemsAt && fMappedItemsAt->GetEntriesFast() > 0)
+    {
 
         // local variables
         Int_t E[fNumAnodes];
@@ -487,7 +498,8 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
         Int_t iAnode;
 
         // initialization of these variables
-        for (Int_t a = 0; a < fNumAnodes; a++) {
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
             E[a] = -1;
             mult[a] = 0;
             pu[a] = kFALSE;
@@ -498,62 +510,76 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
         nHits = fMappedItemsAt->GetEntriesFast();
 
         // loop over the entries
-        for (Int_t entry = 0; entry < nHits; entry++) {
+        for (Int_t entry = 0; entry < nHits; entry++)
+        {
             // get the mapped data
             R3BSofAtMappedData* map = (R3BSofAtMappedData*)fMappedItemsAt->At(entry);
             if (!map)
                 continue;
-            iAnode = map->GetAnodeID() - 1;   // iAnode is 0-based
-            E[iAnode] = map->GetEnergy();     // outside of the loop --> last entry if mult>1
+            iAnode = map->GetAnodeID() - 1; // iAnode is 0-based
+            E[iAnode] = map->GetEnergy();   // outside of the loop --> last entry if mult>1
             if (map->GetPileupStatus() == kTRUE)
-                pu[iAnode] = kTRUE;   // at least one entry has pile up
+                pu[iAnode] = kTRUE; // at least one entry has pile up
             if (map->GetOverflowStatus() == kTRUE)
-                ov[iAnode] = kTRUE;   // at least one entry has overflow
+                ov[iAnode] = kTRUE; // at least one entry has overflow
             mult[iAnode]++;
             fh1_atmap_mult->Fill(iAnode + 1);
             fh1_atmap_E[iAnode]->Fill(E[iAnode]);
-        }   // end of loop over the Mapped data
+        } // end of loop over the Mapped data
 
-        for (Int_t a = 0; a < fNumAnodes - 1; a++) {
-            if (mult[a] == 1 && mult[a + 1] == 1) {
+        for (Int_t a = 0; a < fNumAnodes - 1; a++)
+        {
+            if (mult[a] == 1 && mult[a + 1] == 1)
+            {
                 fh2_atmap_EvsE[a]->Fill(E[a], E[a + 1]);
             }
         }
-        if (mult[0] == 1 && mult[fNumAnodes - 1] == 1) {   //      x ,  y
+        if (mult[0] == 1 && mult[fNumAnodes - 1] == 1)
+        { //      x ,  y
             fh2_atmap_EvsE[fNumAnodes - 1]->Fill(E[0], E[fNumAnodes - 1]);
         }
 
         // ajout gui
-        for (Int_t a = 0; a < fNumAnodes - 1; a++) {
-            if (mult[a] == 1 && mult[a + 1] == 1 && pu[a] == kFALSE && pu[a + 1] == kFALSE) {
+        for (Int_t a = 0; a < fNumAnodes - 1; a++)
+        {
+            if (mult[a] == 1 && mult[a + 1] == 1 && pu[a] == kFALSE && pu[a + 1] == kFALSE)
+            {
                 fh2_atmap_EvsE_mult1_nopu[a]->Fill(E[a], E[a + 1]);
             }
         }
-        if (mult[0] == 1 && mult[fNumAnodes - 1] == 1 && pu[0] == kFALSE
-            && pu[fNumAnodes - 1] == kFALSE) {   //      x ,  y
+        if (mult[0] == 1 && mult[fNumAnodes - 1] == 1 && pu[0] == kFALSE && pu[fNumAnodes - 1] == kFALSE)
+        { //      x ,  y
             fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->Fill(E[0], E[fNumAnodes - 1]);
         }
 
-        for (Int_t a = 0; a < fNumAnodes; a++) {
-            if (mult[a] > 0) {
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
+            if (mult[a] > 0)
+            {
                 fh2_atmap_mult->Fill(a + 1, mult[a]);
-                if (pu[a] == kFALSE) {   // no entry is flaged with the pile-up bit
+                if (pu[a] == kFALSE)
+                { // no entry is flaged with the pile-up bit
                     fh1_atmap_mult_wo_pu->Fill(a + 1);
                     fh2_atmap_mult_wo_pu->Fill(a + 1, mult[a]);
                 }
             }
-            if (mult[a] == 1 && pu[a] == kFALSE && ov[a] == kFALSE) {
+            if (mult[a] == 1 && pu[a] == kFALSE && ov[a] == kFALSE)
+            {
                 fh1_atmap_E_mult1_wo_pu_ov[a]->Fill(E[a]);
             }
         }
 
         // Fill twin-music data only if we have data for the active target
-        for (Int_t a = 0; a < fNumAnodes - 1; a++) {
-            if (mult[a] == 1 && mult[a + 1] == 1 && pu[a] == kFALSE && pu[a + 1] == kFALSE) {
-                if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fcutg[a]->IsInside(E[a], E[a + 1])) {
+        for (Int_t a = 0; a < fNumAnodes - 1; a++)
+        {
+            if (mult[a] == 1 && mult[a + 1] == 1 && pu[a] == kFALSE && pu[a + 1] == kFALSE)
+            {
+                if (fHitItemsTwim && fHitItemsTwim->GetEntriesFast() > 0 && fcutg[a]->IsInside(E[a], E[a + 1]))
+                {
                     nHits = fHitItemsTwim->GetEntriesFast();
                     Float_t zr = 0., zl = 0.;
-                    for (Int_t ihit = 0; ihit < nHits; ihit++) {
+                    for (Int_t ihit = 0; ihit < nHits; ihit++)
+                    {
                         R3BTwimHitData* hit = (R3BTwimHitData*)fHitItemsTwim->At(ihit);
                         if (!hit)
                             continue;
@@ -569,7 +595,8 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
                     if (zr > 0.)
                         fh1_Twimhit_Zr[a]->Fill(zr);
 
-                    if (zr > 0. && zl > 0.) {
+                    if (zr > 0. && zl > 0.)
+                    {
                         fh2_Twimhit_ZrZl[a]->Fill(zl, zr);
                         fh1_twim_ZSum[a]->Fill(zl + zr);
                     }
@@ -577,7 +604,7 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
             }
         }
 
-    }   // end of if(MappedData)
+    } // end of if(MappedData)
 
     fNEvents += 1;
 }
@@ -592,13 +619,15 @@ void R3BSofAtOnlineSpectra::FinishEvent()
 
 void R3BSofAtOnlineSpectra::FinishTask()
 {
-    if (fMappedItemsAt) {
+    if (fMappedItemsAt)
+    {
         cAtMap_mult->Write();
         cAtMap_E->Write();
         cAtMap_EvsE->Write();
         cAtMap_EvsE_mult1_nopu->Write();
     }
-    if (fHitItemsTwim) {
+    if (fHitItemsTwim)
+    {
         for (Int_t i = 0; i < fNumAnodes - 1; i++)
             cTwimZs[i]->Write();
         cTwimZsum->Write();

@@ -30,8 +30,8 @@ class R3BSofSciSingleTcalData : public TObject
 
   private:
     UShort_t fDetector;
-    Double_t fRawTimeNs;   // 0.5*(TrawRIGHT + TrawLEFT)
-    Double_t fRawPosNs;    //      TrawRIGHT - TrawLEFT
+    Double_t fRawTimeNs; // 0.5*(TrawRIGHT + TrawLEFT)
+    Double_t fRawPosNs;  //      TrawRIGHT - TrawLEFT
     Double_t fS2RawTofNs;
     Double_t fS8RawTofNs;
     // Remark for fRawPosNs:

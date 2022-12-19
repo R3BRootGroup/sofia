@@ -44,4 +44,4 @@ class R3BSofiaProvideTStart : public FairTask
     ClassDefOverride(R3BSofiaProvideTStart, 0)
 };
 
-#endif   // R3BROOT_R3BSOFIAPROVIDETSTART_H
+#endif // R3BROOT_R3BSOFIAPROVIDETSTART_H

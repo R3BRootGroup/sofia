@@ -38,7 +38,7 @@ class R3BSofTrackingData : public TObject
     inline const Int_t GetPaddle() const { return fPaddle; }
 
   protected:
-    Double_t fZ, fAq;   // ID
+    Double_t fZ, fAq; // ID
     Double_t fBeta, fBrho, fLength;
     Int_t fPaddle;
 
