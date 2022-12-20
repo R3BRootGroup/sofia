@@ -88,7 +88,7 @@ void runsim(Int_t nEvents = 0)
     run->AddModule(new R3BMwpc3("mwpc_3.geo.root"));
 
     // ToF Wall
-    run->AddModule(new R3BSofTofW("sof_tof_v21.geo.root"));
+    run->AddModule(new R3BSofTofW("sof_tof_v22.geo.root"));
 
     // -----   Create R3B  magnetic field ----------------------------------------
     // NB: <D.B>

@@ -1,9 +1,9 @@
 //
-//   ----- General Macro for R3B simulation
+//   ----- Macro for generating the SOFIA ToF-Wall root geometry
 //
 //         Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
 //
-//         Last Update: 29/09/19 (Jose Luis)
+//         Last Update: 20/12/22
 //
 //         Comments:
 //
@@ -13,7 +13,7 @@
 #include <iomanip>
 #include <iostream>
 
-void create_tofsofia_geo(const char* geoTag = "v21")
+void create_softofw_geo(const char* geoTag = "v22")
 {
     // --------------------------------------------------------------------------
     // Configurable geometry for the SOFIA ToF-Wall.
@@ -21,8 +21,8 @@ void create_tofsofia_geo(const char* geoTag = "v21")
     // and positions/angles of the detector.
     //
     // Execute macro:  root -l
-    //                 .L create_tofsofia_geo.C
-    //                 create_tofsofia_geo()
+    //                 .L create_softofw_geo.C
+    //                 create_softofw_geo()
     // --------------------------------------------------------------------------
 
     TGeoRotation* fRefRot = NULL;
@@ -246,5 +246,5 @@ void create_tofsofia_geo(const char* geoTag = "v21")
     geoFile->Close();
     std::cout << "\033[34m Creating geometry:\033[0m "
               << "\033[33m" << geoFileName << " \033[0m" << std::endl;
-    gApplication->Terminate();
+    std::cout << "Macro finished successfully." << std::endl;
 }
