@@ -104,7 +104,7 @@ void runsim(Int_t nEvents = 0)
     TString fMwpc3Geo = "mwpc_3.geo.root";
 
     Bool_t fSofTofWall = true;   // Sofia ToF-Wall
-    TString fSofTofWallGeo = "sof_tof_v21.geo.root";
+    TString fSofTofWallGeo = "sof_tof_v22.geo.root";
 
     Bool_t fNeuLand = false;   // NeuLand Detector
     TString fNeuLandGeo = "neuland_v12a_14m.geo.root";
