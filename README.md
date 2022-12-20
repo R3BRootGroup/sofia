@@ -1,18 +1,17 @@
 # SOFIA Software
 
-## The SOFIA framework
-SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed
-for the fission setup within the R3B/GLAD magnet. The R3BRoot software is based on the FairRoot framework and can be used to perform Monte Carlo simulations and experimental data analysis of the R3B (Reactions with Relativistic Radioactive Beams) nuclear physics experiments at the FAIR research center (Facility for Antiproton and Ion Research).
+## The SOFIA Framework
+SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed for the fission setup within the R3B/GLAD magnet. The R3BRoot software is based on the FairRoot framework and can be used to perform Monte Carlo simulations and experimental data analysis of the R3B (Reactions with Relativistic Radioactive Beams) nuclear physics experiments at the GSI-FAIR research center (Facility for Antiproton and Ion Research).
 
 ## Discussion Forum
 For the software-related user support you can post a new topic on our [forum](https://forum.gsi.de/index.php?t=index&cat=40&).
 
-## Release information
+## Release Information
 Please see [Releases](https://github.com/R3BRootGroup/sofia/releases)
 
-## Step by step installation
+## Step by Step Installation
 
-### Required software
+### Required Software
 
 First, you will need to install FairSoft and FairRoot. For more details:
 
@@ -20,7 +19,7 @@ First, you will need to install FairSoft and FairRoot. For more details:
 
 2. Install [FairRoot](http://fairroot.gsi.de)
 
-### Installation of R3BRoot and sofia (as part of R3BRoot)
+### Installation of R3BRoot and SOFIA (as part of R3BRoot)
 
 ~~~bash
 export SIMPATH=%PATH_TO_FAIRSOFT%
@@ -37,7 +36,7 @@ cmake ../R3BRoot/
 make -j8
 ~~~
 
-### Some details of the sofia set-up
+### Some Details of the SOFIA Setup
 
 - Active target (SofAT)
 The active target is a gaseous detector which can be seen as a stack of ionisation chambers.
@@ -95,7 +94,7 @@ The third type is located after the magnet and just before the SofToFW. In x, th
 
 Some simulations of two experimental configurations are included inside the sofia directory. You can find the subdirectories :
 
-### geometry
+### Geometry
 
 This directory contains all the detector geometries generated from the macros located at ./sofia/macros/geo. The existing geometries are :
 
