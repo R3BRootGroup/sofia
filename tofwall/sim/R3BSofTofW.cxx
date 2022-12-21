@@ -162,19 +162,19 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
                                       Int_t volid,
                                       Double_t Z,
                                       Double_t A,
-                                      TVector3 posIn,
+                                                      TVector3 posIn,
                                       TVector3 posOut,
                                       TVector3 momIn,
                                       TVector3 momOut,
                                       Double_t time,
-                                      Double_t length,
+                                                     Double_t length,
                                       Double_t eLoss)
 {
     TClonesArray& clref = *fSofTofWallCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
     {
-        R3BLOG(info,
+                 R3BLOG(info,
                "Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z() << ") cm,  detector " << detID
                                    << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV");
     }
