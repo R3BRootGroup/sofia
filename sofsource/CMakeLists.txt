@@ -28,19 +28,6 @@ include_directories( ${INCLUDE_DIRECTORIES})
 include_directories(SYSTEM ${SYSTEM_INCLUDE_DIRECTORIES})
 link_directories( ${LINK_DIRECTORIES})
 
-# set(SRCS
-# R3BSofWhiterabbitReader.cxx
-# R3BSofSciReader.cxx
-# R3BSofTofWReader.cxx
-# R3BSofTwimReader.cxx
-# R3BSofTrimReader.cxx
-# R3BSofMwpcReader.cxx
-# R3BSofScalersReader.cxx
-# R3BSofAtReader.cxx
-# R3BSofCorrmReader.cxx
-# R3BSofCorrvReader.cxx
-# )
-
 file(GLOB SRCS *.cxx)
 
 Set(STRUCT_HEADERS
@@ -59,22 +46,9 @@ ext/ext_h101_sofcorrv.h
 CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
 Set(HEADERS ${STRUCT_HEADERS} ${HEADERS})
 
-set(LINKDEF_FILE SofSourceLinkDef.h)
+set(LINKDEF SofSourceLinkDef.h)
 set(DEPENDENCIES
     R3BBase Base R3BSofData R3Bsource ${ucesb_LIBRARY_SHARED} FairTools)
 set(LIBRARY_NAME R3BSofsource)
-
-If(ROOT_FOUND_VERSION LESS 59999)
-  Set(DICTIONARY ${CMAKE_CURRENT_BINARY_DIR}/G__${LIBRARY_NAME}Dict.cxx)
-  ROOT_GENERATE_DICTIONARY_OLD_EXTRA("${HEADERS}" "${LINKDEF_FILE}" "${DICTIONARY}" "${INCLUDE_DIRECTORIES}${SYSTEM_INCLUDE_DIRECTORIES}")
-  Set(SRCS ${SRCS} ${DICTIONARY})
-  CHANGE_FILE_EXTENSION(*.cxx *.h HEADERS "${SRCS}")
-  Set(HEADERS ${STRUCT_HEADERS} ${HEADERS})
-  Set(LINKDEF ${LINKDEF_FILE})
-  ROOT_GENERATE_ROOTMAP()
-  Set(LINKDEF )
-Else(ROOT_FOUND_VERSION LESS 59999)
-  Set(LINKDEF ${LINKDEF_FILE})
-EndIf(ROOT_FOUND_VERSION LESS 59999)
 
 GENERATE_LIBRARY()
