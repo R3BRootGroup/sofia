@@ -73,4 +73,4 @@ class R3BSofTrimCalculateMatchGainPar : public FairTask
     ClassDef(R3BSofTrimCalculateMatchGainPar, 0);
 };
 
-#endif   //__R3BSOFTRIMMATCHGAINPAR_H__
+#endif //__R3BSOFTRIMMATCHGAINPAR_H__

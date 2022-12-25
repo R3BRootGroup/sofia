@@ -1,5 +1,5 @@
 #ifndef R3BSofTrim_H
-#define R3BSofTrim_H
+#define R3BSofTrim_H 1
 
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
@@ -7,9 +7,6 @@
 class TClonesArray;
 class R3BSofTrimPoint;
 class FairVolume;
-class TGeoRotation;
-class TGeoTranslation;
-class TGeoCombiTrans;
 
 class R3BSofTrim : public R3BDetector
 {
@@ -29,85 +26,67 @@ class R3BSofTrim : public R3BDetector
     R3BSofTrim(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
 
     /** Destructor **/
-    ~R3BSofTrim();
+    ~R3BSofTrim() override;
 
-    /** Virtual method ProcessHits
+    /**  method ProcessHits
      **
      ** Defines the action to be taken when a step is inside the
      ** active volume. Creates a R3BSofTrimPoint and adds it
      ** to the collection.
      *@param vol  Pointer to the active volume
      **/
-    virtual Bool_t ProcessHits(FairVolume* vol = 0);
+    Bool_t ProcessHits(FairVolume* vol = 0) override;
 
-    /** Virtual method BeginEvent
-     **
-     ** Actions at the begin of the event
-     **/
-    virtual void BeginEvent();
-
-    /** Virtual method EndOfEvent
+    /**  method EndOfEvent
      **
      ** If verbosity level is set, print hit collection at the
      ** end of the event and resets it afterwards.
      **/
-    virtual void EndOfEvent();
+    void EndOfEvent() override;
 
-    /** Virtual method Register
+    /**  method Register
      **
      ** Registers the hit collection in the ROOT manager.
      **/
-    virtual void Register();
+    void Register() override;
 
     /** Accessor to the hit collection **/
-    virtual TClonesArray* GetCollection(Int_t iColl) const;
+    TClonesArray* GetCollection(Int_t iColl) const override;
 
-    /** Virtual method Print
+    /**  method Print
      **
      ** Screen output of hit collection.
      **/
-    virtual void Print(Option_t* option = "") const;
+    void Print(Option_t* option = "") const override;
 
-    /** Virtual method Reset
+    /**  method Reset
      **
      ** Clears the hit collection
      **/
-    virtual void Reset();
+    void Reset() override;
 
-    /** Virtual method CopyClones
-     **
-     ** Copies the hit collection with a given track index offset
-     *@param cl1     Origin
-     *@param cl2     Target
-     *@param offset  Index offset
-     **/
-    virtual void CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset);
+    Bool_t CheckIfSensitive(std::string name) override;
 
-    virtual Bool_t CheckIfSensitive(std::string name);
-
-    virtual void Initialize();
+    void Initialize() override;
 
   private:
     /** Track information to be stored until the track leaves the
         active volume. **/
-    Int_t fTrackID;    //!  track index
-    Int_t fTrackPID;   //!  particle identification
-    Int_t fVolumeID;   //!  volume id
+    Int_t fTrackID;  //!  track index
+    Int_t fTrackPID; //!  particle identification
+    Int_t fVolumeID; //!  volume id
     Int_t fDetCopyID;
     Double_t fZ;
     Double_t fA;
-    Int_t fUniqueID;                  //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
-    TLorentzVector fPosIn, fPosOut;   //!  position
-    TLorentzVector fMomIn, fMomOut;   //!  momentum
-    Double32_t fTime;                 //!  time
-    Double32_t fLength;               //!  length
-    Double32_t fELoss;                //!  energy loss
-    Int_t fPosIndex;                  //!
-    Int_t fNSteps;                    //!  Number of steps in the active volume
-    Bool_t kGeoSaved;                 //!
-    TList* flGeoPar;                  //!
+    Int_t fUniqueID;                //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
+    TLorentzVector fPosIn, fPosOut; //!  position
+    TLorentzVector fMomIn, fMomOut; //!  momentum
+    Double32_t fTime;               //!  time
+    Double32_t fLength;             //!  length
+    Double32_t fELoss;              //!  energy loss
+    Int_t fNSteps;                  //!  Number of steps in the active volume
 
-    TClonesArray* fSofTRIMCollection;   //!  The point collection
+    TClonesArray* fSofTRIMCollection; //!  The point collection
 
     /** Private method AddHit
      **
@@ -132,7 +111,8 @@ class R3BSofTrim : public R3BDetector
      **/
     void ResetParameters();
 
-    ClassDef(R3BSofTrim, 2);
+  public:
+    ClassDefOverride(R3BSofTrim, 2);
 };
 
 inline void R3BSofTrim::ResetParameters()
@@ -143,7 +123,6 @@ inline void R3BSofTrim::ResetParameters()
     fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fTime = fLength = fZ = fA = fELoss = 0.;
-    fPosIndex = 0;
     fNSteps = 0;
 };
 

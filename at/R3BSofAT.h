@@ -1,10 +1,9 @@
 #ifndef R3BSOFAT_H
-#define R3BSOFAT_H
+#define R3BSOFAT_H 1
 
 #include "R3BDetector.h"
+#include "Rtypes.h"
 #include "TLorentzVector.h"
-
-#include <map>
 
 class TClonesArray;
 class R3BSofATPoint;
@@ -31,7 +30,7 @@ class R3BSofAT : public R3BDetector
     R3BSofAT(const TString& geoFile, const TGeoCombiTrans& combi = TGeoCombiTrans());
 
     /** Destructor **/
-    ~R3BSofAT();
+    ~R3BSofAT() override;
 
     /** Virtual method ProcessHits
      **
@@ -40,63 +39,39 @@ class R3BSofAT : public R3BDetector
      ** to the collection.
      *@param vol  Pointer to the active volume
      **/
-    virtual Bool_t ProcessHits(FairVolume* vol = 0);
-
-    /** Virtual method BeginEvent
-     **
-     ** Actions at the begin of the event.
-     **/
-    virtual void BeginEvent();
+    Bool_t ProcessHits(FairVolume* vol = 0) override;
 
     /** Virtual method EndOfEvent
      **
      ** If verbosity level is set, print hit collection at the
      ** end of the event and resets it afterwards.
      **/
-    virtual void EndOfEvent();
+    void EndOfEvent() override;
 
     /** Virtual method Register
      **
      ** Registers the hit collection in the ROOT manager.
      **/
-    virtual void Register();
+    void Register() override;
 
     /** Accessor to the hit collection **/
-    virtual TClonesArray* GetCollection(Int_t iColl) const;
+    TClonesArray* GetCollection(Int_t iColl) const override;
 
     /** Virtual method Print
      **
      ** Screen output of hit collection.
      **/
-    virtual void Print(Option_t* option = "") const;
+    void Print(Option_t* option = "") const override;
 
     /** Virtual method Reset
      **
      ** Clears the hit collection
      **/
-    virtual void Reset();
+    void Reset() override;
 
-    /** Virtual method CopyClones
-     **
-     ** Copies the hit collection with a given track index offset
-     *@param cl1     Origin
-     *@param cl2     Target
-     *@param offset  Index offset
-     **/
-    virtual void CopyClones(TClonesArray* cl1, TClonesArray* cl2, Int_t offset);
+    Bool_t CheckIfSensitive(std::string name) override;
 
-    virtual Bool_t CheckIfSensitive(std::string name);
-
-    /** Public method SetNonUniformity
-     **
-     ** Defines the fNonUniformity parameter in % deviation from the central value
-     *@param nonU  Double parameter setting the maximum non-uniformity allowed
-     **/
-
-    virtual void Initialize();
-    virtual void SetSpecialPhysicsCuts() {}
-
-    //  void SaveGeoParams();
+    void Initialize() override;
 
   private:
     /** Track information to be stored until the track leaves the
@@ -146,7 +121,8 @@ class R3BSofAT : public R3BDetector
 
     TGeoRotation* createMatrix(Double_t phi, Double_t theta, Double_t psi);
 
-    ClassDef(R3BSofAT, 2);
+  public:
+    ClassDefOverride(R3BSofAT, 2);
 };
 
 inline void R3BSofAT::ResetParameters()

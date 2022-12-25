@@ -32,11 +32,12 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar()
     , fMwpc0GeoPar(NULL)
     , fMwpc1GeoPar(NULL)
     , fTrimGeoPar(NULL)
-    , fWidthAnode(25)         // mm
-    , fDistInterSection(50)   // mm 2*edge anodes of 20 mm + 1*10 mm gap
-    , fDriftVelocity(60)      // mm/micros, distance from anode to FG: 80 mm with a difference of V = 2700V
+    , fWidthAnode(25)       // mm
+    , fDistInterSection(50) // mm 2*edge anodes of 20 mm + 1*10 mm gap
+    , fDriftVelocity(60)    // mm/micros, distance from anode to FG: 80 mm with a difference of V = 2700V
     , fOutputFile(NULL)
-{}
+{
+}
 
 // R3BSofTrimCalculateDriftTimeOffsetPar: Standard Constructor --------------------------
 R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar(const char* name, Int_t iVerbose)
@@ -51,11 +52,12 @@ R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar(con
     , fMwpc0GeoPar(NULL)
     , fMwpc1GeoPar(NULL)
     , fTrimGeoPar(NULL)
-    , fWidthAnode(25)         // mm
-    , fDistInterSection(50)   // mm
-    , fDriftVelocity(60)      // mm/micros
+    , fWidthAnode(25)       // mm
+    , fDistInterSection(50) // mm
+    , fDriftVelocity(60)    // mm/micros
     , fOutputFile(NULL)
-{}
+{
+}
 
 // R3BSofTrimCalculateDriftTimeOffsetPar: Destructor ----------------------------------------
 R3BSofTrimCalculateDriftTimeOffsetPar::~R3BSofTrimCalculateDriftTimeOffsetPar()
@@ -80,7 +82,8 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     LOG(info) << "R3BSofTrimCalculateDriftTimeOffsetPar: Init";
 
     FairRootManager* rm = FairRootManager::Instance();
-    if (!rm) {
+    if (!rm)
+    {
         return kFATAL;
     }
 
@@ -89,7 +92,8 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ------------------- --- //
 
     fTrimCalData = (TClonesArray*)rm->GetObject("TrimCalData");
-    if (!fTrimCalData) {
+    if (!fTrimCalData)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on TrimCalData";
         return kFATAL;
     }
@@ -99,7 +103,8 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- -------------------- --- //
 
     fMwpc0HitData = (TClonesArray*)rm->GetObject("Mwpc0HitData");
-    if (!fMwpc0HitData) {
+    if (!fMwpc0HitData)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on Mwpc0HitData";
         return kFATAL;
     }
@@ -109,7 +114,8 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- -------------------- --- //
 
     fMwpc1HitData = (TClonesArray*)rm->GetObject("Mwpc1HitData");
-    if (!fMwpc1HitData) {
+    if (!fMwpc1HitData)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on Mwpc1HitData";
         return kFATAL;
     }
@@ -119,7 +125,8 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ------------------ --- //
 
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         return kFATAL;
     }
 
@@ -128,10 +135,13 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ------------------------------------------ --- //
 
     fCalPar = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
-    if (!fCalPar) {
+    if (!fCalPar)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on trimCalPar container";
         return kFATAL;
-    } else {
+    }
+    else
+    {
         fNumSections = fCalPar->GetNumSections();
         fNumAnodes = fCalPar->GetNumAnodes();
         LOG(info) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() trimCalPar container found with fNumSections = "
@@ -142,33 +152,39 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // ---  GEOMETRY OF THE MWPC0 --- //
     // --- ---------------------- --- //
     fMwpc0GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
-    if (!fMwpc0GeoPar) {
+    if (!fMwpc0GeoPar)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc0GeoPar "
                       "container.";
         return kFATAL;
-    } else
+    }
+    else
         LOG(info) << "R3BSofSciCalculateDriftTimeOffsetPar::SetParContainers() : Container mwpc0GeoPar found.";
 
     // --- ---------------------- --- //
     // ---  GEOMETRY OF THE MWPC1 --- //
     // --- ---------------------- --- //
     fMwpc1GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
-    if (!fMwpc1GeoPar) {
+    if (!fMwpc1GeoPar)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc1GeoPar "
                       "container.";
         return kFATAL;
-    } else
+    }
+    else
         LOG(info) << "R3BSofSciCalculateDriftTimeOffsetPar::SetParContainers() : Container mwpc1GeoPar found.";
 
     // --- ----------------------------- --- //
     // ---  GEOMETRY OF THE TRIPLE-MUSIC --- //
     // --- ----------------------------- --- //
     fTrimGeoPar = (R3BTGeoPar*)rtdb->getContainer("TrimGeoPar");
-    if (!fTrimGeoPar) {
+    if (!fTrimGeoPar)
+    {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to trimGeoPar "
                       "container.";
         return kFATAL;
-    } else
+    }
+    else
         LOG(info) << "R3BSofSciCalculateDriftTimeOffsetPar::SetParContainers() : Container trimGeoPar found.";
 
     // --- ---------------------- --- //
@@ -177,8 +193,10 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
 
     char name[100];
     fh1_DeltaDT = new TH1D*[fNumSections * fNumAnodes];
-    for (Int_t section = 0; section < fNumSections; section++) {
-        for (Int_t anode = 0; anode < fNumAnodes; anode++) {
+    for (Int_t section = 0; section < fNumSections; section++)
+    {
+        for (Int_t anode = 0; anode < fNumAnodes; anode++)
+        {
             sprintf(name, "DeltaDT_S%iA%i", section + 1, anode + 1);
             fh1_DeltaDT[anode + section * fNumAnodes] = new TH1D(name, name, 4000, -20000, 20000);
             fh1_DeltaDT[anode + section * fNumAnodes]->GetXaxis()->SetTitle(
@@ -203,12 +221,12 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     UInt_t nHitsMw0, nHitsMw1, nHits;
 
     // FIX ME:
-    geoX0 = 3;        // mm
-    geoX1 = 0.;       // mm
-    geoZ0 = -2620.;   // mm
-    geoZ1 = 300.;     // mm
+    geoX0 = 3;      // mm
+    geoX1 = 0.;     // mm
+    geoZ0 = -2620.; // mm
+    geoZ1 = 300.;   // mm
     geoDZ = geoZ1 - geoZ0;
-    geoZtrim = -2175;   // mm
+    geoZtrim = -2175; // mm
     // geoX0 = 10. * (Double_t)fMwpc0GeoPar->GetPosX();
     // geoX1 = 10. * (Double_t)fMwpc1GeoPar->GetPosX();
     // geoZ0 = 10. * (Double_t)fMwpc0GeoPar->GetPosZ();
@@ -230,7 +248,8 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     //    std::cout << std::endl;
     //    std::cout << "nHitsMw0=" << nHitsMw0 << ", nHitsMw1=" << nHitsMw1 << std::endl;
     //}
-    if (nHitsMw0 == 1 && nHitsMw1 == 1) {
+    if (nHitsMw0 == 1 && nHitsMw1 == 1)
+    {
         R3BMwpcHitData* hitMwpc0 = (R3BMwpcHitData*)fMwpc0HitData->At(0);
         R3BMwpcHitData* hitMwpc1 = (R3BMwpcHitData*)fMwpc1HitData->At(0);
         X0 = hitMwpc0->GetX() + geoX0;
@@ -243,20 +262,21 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
         nHits = fTrimCalData->GetEntries();
         if (!nHits)
             return;
-        for (Int_t ihit = 0; ihit < nHits; ihit++) {
+        for (Int_t ihit = 0; ihit < nHits; ihit++)
+        {
             R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fTrimCalData->At(ihit);
             iSec = hit->GetSecID() - 1;
             iAnode = hit->GetAnodeID() - 1;
             DTraw = hit->GetDriftTimeRaw();
             // std::cout << "Section:" << iSec + 1 << ", Anode:" << iAnode + 1 << ", DTraw=" << DTraw << std::endl;
-            ZposAnode = geoZfirstanode + (Double_t)(iAnode + iSec * fNumAnodes) * fWidthAnode
-                        + (Double_t)iSec * fDistInterSection;
+            ZposAnode = geoZfirstanode + (Double_t)(iAnode + iSec * fNumAnodes) * fWidthAnode +
+                        (Double_t)iSec * fDistInterSection;
             Xanode = (ZposAnode * DX) / geoDZ;
             // std::cout << "ZposAnode=" << ZposAnode << " mm, Xanode=" << Xanode << " mm or "
             //          << 1000. * Xanode / fDriftVelocity << " [100 ps]" << std::endl;
-            fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity
-                                                          - DTraw);   // 10000 : mm/micros -> mm/100ps
-        }                                                             // end of loop over the mapped data
+            fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity -
+                                                          DTraw); // 10000 : mm/micros -> mm/100ps
+        }                                                         // end of loop over the mapped data
     }
 }
 
@@ -280,10 +300,13 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::CalculateOffsets()
     Double_t BinMax, X_BinMax;
     TF1** fit_max = new TF1*[fNumSections * fNumAnodes];
 
-    for (Int_t section = 0; section < fNumSections; section++) {
-        for (Int_t anode = 0; anode < fNumAnodes; anode++) {
+    for (Int_t section = 0; section < fNumSections; section++)
+    {
+        for (Int_t anode = 0; anode < fNumAnodes; anode++)
+        {
             fh1_DeltaDT[anode + section * fNumAnodes]->Write();
-            if (fh1_DeltaDT[anode + section * fNumAnodes]->Integral() > fMinStatistics) {
+            if (fh1_DeltaDT[anode + section * fNumAnodes]->Integral() > fMinStatistics)
+            {
                 BinMax = fh1_DeltaDT[anode + section * fNumAnodes]->GetMaximumBin();
                 X_BinMax = fh1_DeltaDT[anode + section * fNumAnodes]->GetBinCenter(BinMax);
                 fit_max[anode + section * fNumAnodes] = new TF1("fit_gaus", "gaus", X_BinMax - 500, X_BinMax + 500);
@@ -296,8 +319,10 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::CalculateOffsets()
 
     fCalPar->setChanged();
     fCalPar->printParams();
-    for (Int_t section = 0; section < fNumSections; section++) {
-        for (Int_t anode = 0; anode < fNumAnodes; anode++) {
+    for (Int_t section = 0; section < fNumSections; section++)
+    {
+        for (Int_t anode = 0; anode < fNumAnodes; anode++)
+        {
             std::cout << fit_max[anode + section * fNumAnodes]->GetParameter(1) << std::endl;
         }
     }

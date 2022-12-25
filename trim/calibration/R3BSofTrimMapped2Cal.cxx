@@ -30,7 +30,7 @@ R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal()
     , fNumSections(3)
     , fNumAnodes(6)
 {
-    fNumChannels = fNumAnodes + 2;   // anodes + Tref + Ttrig
+    fNumChannels = fNumAnodes + 2; // anodes + Tref + Ttrig
 }
 
 // R3BSofTrimMapped2CalPar: Standard Constructor --------------------------
@@ -43,7 +43,7 @@ R3BSofTrimMapped2Cal::R3BSofTrimMapped2Cal(const char* name, Int_t iVerbose)
     , fNumSections(3)
     , fNumAnodes(6)
 {
-    fNumChannels = fNumAnodes + 2;   // anodes + Tref + Ttrig
+    fNumChannels = fNumAnodes + 2; // anodes + Tref + Ttrig
 }
 
 // Virtual R3BSofTrimMapped2Cal: Destructor
@@ -59,15 +59,19 @@ R3BSofTrimMapped2Cal::~R3BSofTrimMapped2Cal()
 void R3BSofTrimMapped2Cal::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         LOG(error) << "FairRuntimeDb not opened!";
     }
 
     fCal_Par = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
-    if (!fCal_Par) {
+    if (!fCal_Par)
+    {
         LOG(error) << "R3BSofTrimMapped2CalPar::Init() Couldn't get handle on trimCalPar container";
         return;
-    } else {
+    }
+    else
+    {
         if (fNumSections != fCal_Par->GetNumSections())
             LOG(info) << "R3BSofTrimMapped2CalPar::Init() fNumSections=" << fNumSections << " different from parameter "
                       << fCal_Par->GetNumSections();
@@ -85,7 +89,8 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     LOG(info) << "R3BSofTrimMapped2Cal::Init()";
 
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager) {
+    if (!rootManager)
+    {
         return kFATAL;
     }
 
@@ -93,7 +98,8 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     // --- INPUT MAPPED DATA --- //
     // --- ----------------- --- //
     fTrimMappedData = (TClonesArray*)rootManager->GetObject("TrimMappedData");
-    if (!fTrimMappedData) {
+    if (!fTrimMappedData)
+    {
         return kFATAL;
     }
 
@@ -120,7 +126,8 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
     Reset();
 
     // get the parameters
-    if (!fCal_Par) {
+    if (!fCal_Par)
+    {
         LOG(error) << "R3BSofTrimMapped2Cal: NOT Container Parameter!!";
     }
 
@@ -137,17 +144,21 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
     UShort_t iEraw[fNumSections * fNumChannels][MAX_MULT_TRIM_CAL];
     Int_t iSec;
     Int_t iCh;
-    for (UInt_t sec = 0; sec < fNumSections; sec++) {
-        for (UInt_t a = 0; a < fNumChannels; a++) {
+    for (UInt_t sec = 0; sec < fNumSections; sec++)
+    {
+        for (UInt_t a = 0; a < fNumChannels; a++)
+        {
             mult[a + fNumChannels * sec] = 0;
-            for (UShort_t m = 0; m < MAX_MULT_TRIM_CAL; m++) {
+            for (UShort_t m = 0; m < MAX_MULT_TRIM_CAL; m++)
+            {
                 iTraw[a + fNumChannels * sec][m] = 0;
                 iEraw[a + fNumChannels * sec][m] = 0;
             }
         }
     }
 
-    for (Int_t ihit = 0; ihit < nHits; ihit++) {
+    for (Int_t ihit = 0; ihit < nHits; ihit++)
+    {
         R3BSofTrimMappedData* hit = (R3BSofTrimMappedData*)fTrimMappedData->At(ihit);
         if (hit->GetPileupStatus() || hit->GetOverflowStatus())
             continue;
@@ -158,28 +169,33 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
         iTraw[iCh + fNumChannels * iSec][mult[iCh + fNumChannels * iSec]] = hit->GetTime();
         iEraw[iCh + fNumChannels * iSec][mult[iCh + fNumChannels * iSec]] = hit->GetEnergy();
         mult[iCh + fNumChannels * iSec]++;
-    }   // end of loop over the mapped data
+    } // end of loop over the mapped data
 
     // Fill data only if there is a unique TREF signal
     Double_t dtraw, dtal;
     Float_t esub, ematch, eal;
-    for (Int_t s = 0; s < fNumSections; s++) {
-        if (mult[fNumAnodes + fNumChannels * s] == 1) {
-            for (Int_t a = 0; a < fNumAnodes; a++) {
-                if (mult[a + fNumChannels * s] > 0) {
-                    for (Int_t i = 0; i < mult[a + fNumChannels * s]; i++) {
-                        dtraw = (Double_t)iTraw[a + fNumChannels * s][i]
-                                - (Double_t)iTraw[fNumAnodes + fNumChannels * s][0];
+    for (Int_t s = 0; s < fNumSections; s++)
+    {
+        if (mult[fNumAnodes + fNumChannels * s] == 1)
+        {
+            for (Int_t a = 0; a < fNumAnodes; a++)
+            {
+                if (mult[a + fNumChannels * s] > 0)
+                {
+                    for (Int_t i = 0; i < mult[a + fNumChannels * s]; i++)
+                    {
+                        dtraw = (Double_t)iTraw[a + fNumChannels * s][i] -
+                                (Double_t)iTraw[fNumAnodes + fNumChannels * s][0];
                         dtal = dtraw + fCal_Par->GetDriftTimeOffset(s + 1, a + 1);
                         esub = (Float_t)iEraw[a + fNumChannels * s][i] - fCal_Par->GetEnergyPedestal(s + 1, a + 1);
                         ematch = esub * fCal_Par->GetEnergyMatchGain(s + 1, a + 1);
                         AddCalData(s + 1, a + 1, dtraw, dtal, esub, ematch);
                         // std::cout << "Add Cal Data: s=" << s+1 << ", a=" << a+1<< ", ematch=" << ematch << std::endl;
                     }
-                }   // end of check that anode has data
-            }       // end of loop over the anodes
-        }           // end of one Tref per Section
-    }               // end of loop over section
+                } // end of check that anode has data
+            }     // end of loop over the anodes
+        }         // end of one Tref per Section
+    }             // end of loop over section
 
     return;
 }

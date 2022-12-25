@@ -37,7 +37,8 @@ R3BSofTrimCal2Hit::R3BSofTrimCal2Hit()
     , fTrimCalData(NULL)
     , fSciCalData(NULL)
     , fTrimHitData(NULL)
-{}
+{
+}
 
 // R3BSofTrimCal2HitPar: Standard Constructor --------------------------
 R3BSofTrimCal2Hit::R3BSofTrimCal2Hit(const char* name, Int_t iVerbose)
@@ -53,7 +54,8 @@ R3BSofTrimCal2Hit::R3BSofTrimCal2Hit(const char* name, Int_t iVerbose)
     , fTrimCalData(NULL)
     , fSciCalData(NULL)
     , fTrimHitData(NULL)
-{}
+{
+}
 
 // Virtual R3BSofTrimCal2Hit: Destructor
 R3BSofTrimCal2Hit::~R3BSofTrimCal2Hit()
@@ -70,19 +72,26 @@ R3BSofTrimCal2Hit::~R3BSofTrimCal2Hit()
 void R3BSofTrimCal2Hit::SetParContainers()
 {
     FairRuntimeDb* rtdb = FairRuntimeDb::instance();
-    if (!rtdb) {
+    if (!rtdb)
+    {
         LOG(error) << "FairRuntimeDb not opened!";
     }
 
     fTrimHitPar = (R3BSofTrimHitPar*)rtdb->getContainer("trimHitPar");
-    if (!fTrimHitPar) {
+    if (!fTrimHitPar)
+    {
         LOG(error) << "R3BSofTrimCal2HitPar::Init() Couldn't get handle on trimHitPar container";
         return;
-    } else {
-        if (fTriShape == kTRUE) {
+    }
+    else
+    {
+        if (fTriShape == kTRUE)
+        {
             LOG(info) << "Triple-MUSIC has triangular shape anodes";
             fTrimHitPar->SetNumSignalsPerSection(3);
-        } else {
+        }
+        else
+        {
             LOG(info) << "Triple-MUSIC has rectangular shape anodes";
             fTrimHitPar->SetNumSignalsPerSection(6);
         }
@@ -97,7 +106,8 @@ InitStatus R3BSofTrimCal2Hit::Init()
     LOG(info) << "R3BSofTrimCal2Hit::Init()";
 
     FairRootManager* rootManager = FairRootManager::Instance();
-    if (!rootManager) {
+    if (!rootManager)
+    {
         return kFATAL;
     }
     header = (R3BEventHeader*)rootManager->GetObject("EventHeader.");
@@ -108,7 +118,8 @@ InitStatus R3BSofTrimCal2Hit::Init()
     // --- INPUT CAL DATA FOR TRIPLE-MUSIC --- //
     // --- ------------------------------- --- //
     fTrimCalData = (TClonesArray*)rootManager->GetObject("TrimCalData");
-    if (!fTrimCalData) {
+    if (!fTrimCalData)
+    {
         LOG(warn) << "R3BSofTrimCal2Hit::Init() TrimCalData not found";
     }
 
@@ -116,7 +127,8 @@ InitStatus R3BSofTrimCal2Hit::Init()
     // --- INPUT CAL DATA FOR SCI --- //
     // --- ---------------------- --- //
     fSciCalData = (TClonesArray*)rootManager->GetObject("SofSciCalData");
-    if (!fSciCalData) {
+    if (!fSciCalData)
+    {
         LOG(warn) << "R3BSofTrimCal2Hit::Init() SofSciCalData not found";
     }
 
@@ -155,7 +167,8 @@ void R3BSofTrimCal2Hit::S455_Coulex()
     Reset();
 
     // Get the parameters
-    if (!fTrimHitPar) {
+    if (!fTrimHitPar)
+    {
         LOG(error) << "R3BSofTrimCal2Hit::Exec() TrimHitPar Container not found";
     }
 
@@ -178,39 +191,49 @@ void R3BSofTrimCal2Hit::S455_Coulex()
     Double_t correction;
 
     // Initialization of the local variables
-    for (Int_t s = 0; s < fNumSections; s++) {
-        for (Int_t a = 0; a < fNumAnodes; a++) {
+    for (Int_t s = 0; s < fNumSections; s++)
+    {
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
             mult[a + s * fNumAnodes] = 0.;
             e[a + s * fNumAnodes] = 0.;
             dt[a + s * fNumAnodes] = -1000000.;
         }
-        for (Int_t ch = 0; ch < nAligned; ch++) {
+        for (Int_t ch = 0; ch < nAligned; ch++)
+        {
             eal[ch + s * nAligned] = 0;
             dtal[ch + s * nAligned] = 0;
         }
     }
 
     // Get the number of entries of the SciCalData TClonesArray and extract the beam velocity
-    if (fSciCalData) {
+    if (fSciCalData)
+    {
         Int_t nHitsCalSci = fSciCalData->GetEntries();
-        if (!nHitsCalSci) {
+        if (!nHitsCalSci)
+        {
             return;
         }
-        for (Int_t entry = 0; entry < nHitsCalSci; entry++) {
+        for (Int_t entry = 0; entry < nHitsCalSci; entry++)
+        {
             R3BSofSciCalData* iSciCalData = (R3BSofSciCalData*)fSciCalData->At(entry);
-            if (iSciCalData->GetDetector() == fIdCaveC) {
+            if (iSciCalData->GetDetector() == fIdCaveC)
+            {
                 betaFromS2 = iSciCalData->GetBeta_S2();
             }
         }
     }
 
     // Get the number of entries of the TrimCalData TClonesArray and loop over it
-    if (fTrimCalData) {
+    if (fTrimCalData)
+    {
         Int_t nHitsCalTrim = fTrimCalData->GetEntries();
-        if (!nHitsCalTrim) {
+        if (!nHitsCalTrim)
+        {
             return;
         }
-        for (Int_t entry = 0; entry < nHitsCalTrim; entry++) {
+        for (Int_t entry = 0; entry < nHitsCalTrim; entry++)
+        {
             R3BSofTrimCalData* iCalData = (R3BSofTrimCalData*)fTrimCalData->At(entry);
             iSec = iCalData->GetSecID() - 1;
             iAnode = iCalData->GetAnodeID() - 1;
@@ -221,47 +244,56 @@ void R3BSofTrimCal2Hit::S455_Coulex()
 
         // --- Fill the HIT level --- //
         Ddt = 0.5 * (dt[14] + dt[15]) - 0.5 * (dt[2] + dt[3]);
-        for (Int_t s = 0; s < fNumSections; s++) {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
             dtSection = 0.5 * (dt[2 + s * fNumAnodes] + dt[3 + s * fNumAnodes]);
 
             // === fEnergyRaw: sum of CorrDeltaDT Energy === //
             sumRaw = 0.;
             nRaw = 0;
             // if Rectangular shape:
-            if (fTriShape == kFALSE) {
-                for (Int_t a = 0; a < fNumAnodes; a++) {
-                    if (mult[a + s * fNumAnodes] == 1) {
+            if (fTriShape == kFALSE)
+            {
+                for (Int_t a = 0; a < fNumAnodes; a++)
+                {
+                    if (mult[a + s * fNumAnodes] == 1)
+                    {
                         eal[a + s * fNumAnodes] = e[a + s * fNumAnodes];
                         sumRaw += eal[a + s * fNumAnodes];
                         nRaw++;
                     }
-                }   // end of loop over the anodes
-            }       // end calculation of fEnergyRaw for rectangular shape anodes
-            else {
-                for (Int_t ch = 0; ch < nAligned; ch++) {
-                    if (mult[2 * ch + s * fNumAnodes] == 1 && mult[2 * ch + 1 + s * fNumAnodes] == 1) {
+                } // end of loop over the anodes
+            }     // end calculation of fEnergyRaw for rectangular shape anodes
+            else
+            {
+                for (Int_t ch = 0; ch < nAligned; ch++)
+                {
+                    if (mult[2 * ch + s * fNumAnodes] == 1 && mult[2 * ch + 1 + s * fNumAnodes] == 1)
+                    {
                         // raw energy per pair: mean value of the match gain anodes
                         eal[ch + s * nAligned] = 0.5 * (e[2 * ch + s * fNumAnodes] + e[2 * ch + 1 + s * fNumAnodes]);
                         // correction of the DeltaDT dependency per pair
                         correction = 0;
-                        for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrDeltaDTParsPerSignal(); deg++) {
+                        for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrDeltaDTParsPerSignal(); deg++)
+                        {
                             correction +=
                                 TMath::Power(Ddt, deg) * fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, deg);
                         }
-                        if (correction != 0 && fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0) != 0) {
-                            eal[ch + s * nAligned] = fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0)
-                                                     * eal[ch + s * nAligned] / correction;
+                        if (correction != 0 && fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0) != 0)
+                        {
+                            eal[ch + s * nAligned] = fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0) *
+                                                     eal[ch + s * nAligned] / correction;
                         }
                         dtal[ch + s * nAligned] = 0.5 * (dt[2 * ch + s * fNumAnodes] + dt[2 * ch + 1 + s * fNumAnodes]);
                         // sum Raw per section
                         sumRaw += eal[ch + s * nAligned];
                         nRaw++;
                     }
-                }   // end of loop over the pairs
-            }       // end of calculation of fEnergyRaw for triangular shape anodes
+                } // end of loop over the pairs
+            }     // end of calculation of fEnergyRaw for triangular shape anodes
             if (nRaw > 0)
-                sumRaw = fTrimHitPar->GetEnergyAlignOffset(s + 1)
-                         + fTrimHitPar->GetEnergyAlignGain(s + 1) * (sumRaw / (Float_t)nRaw);
+                sumRaw = fTrimHitPar->GetEnergyAlignOffset(s + 1) +
+                         fTrimHitPar->GetEnergyAlignGain(s + 1) * (sumRaw / (Float_t)nRaw);
 
             // === fEnergyBeta: fEnergyRaw corrected from the beam velocity === //
             correction = 0;
@@ -291,12 +323,16 @@ void R3BSofTrimCal2Hit::S455_Coulex()
             p1[1] = 0.47543;
             p1[2] = 0.4622;
 
-            for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrBetaParsPerSection(); deg++) {
+            for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrBetaParsPerSection(); deg++)
+            {
                 correction += TMath::Power(betaFromS2, deg) * fTrimHitPar->GetEnergyCorrBetaPar(s + 1, deg);
             }
-            if (correction != 0 && fTrimHitPar->GetEnergyCorrBetaPar(s + 1, 0) != 0) {
+            if (correction != 0 && fTrimHitPar->GetEnergyCorrBetaPar(s + 1, 0) != 0)
+            {
                 sumBeta = 30000. * sumRaw / correction;
-            } else {
+            }
+            else
+            {
                 sumBeta = sumRaw;
             }
 
@@ -311,7 +347,7 @@ void R3BSofTrimCal2Hit::S455_Coulex()
 
             // FILL HIT DATA
             AddHitData(s + 1, eal[0], eal[1], eal[2], sumRaw, sumBeta, sumTheta, sumDT, zval);
-        }   // end of loop over the sections
+        } // end of loop over the sections
     }
     return;
 }
@@ -323,7 +359,8 @@ void R3BSofTrimCal2Hit::S455_P2p()
     Reset();
 
     // Get the parameters
-    if (!fTrimHitPar) {
+    if (!fTrimHitPar)
+    {
         LOG(error) << "R3BSofTrimCal2Hit::Exec() TrimHitPar Container not found";
     }
 
@@ -346,25 +383,31 @@ void R3BSofTrimCal2Hit::S455_P2p()
     Double_t correction;
 
     // Initialization of the local variables
-    for (Int_t s = 0; s < fNumSections; s++) {
-        for (Int_t a = 0; a < fNumAnodes; a++) {
+    for (Int_t s = 0; s < fNumSections; s++)
+    {
+        for (Int_t a = 0; a < fNumAnodes; a++)
+        {
             mult[a + s * fNumAnodes] = 0.;
             e[a + s * fNumAnodes] = 0.;
             dt[a + s * fNumAnodes] = -1000000.;
         }
-        for (Int_t ch = 0; ch < nAligned; ch++) {
+        for (Int_t ch = 0; ch < nAligned; ch++)
+        {
             eal[ch + s * nAligned] = 0;
             dtal[ch + s * nAligned] = 0;
         }
     }
 
     // Get the number of entries of the TrimCalData TClonesArray and loop over it
-    if (fTrimCalData) {
+    if (fTrimCalData)
+    {
         Int_t nHitsCalTrim = fTrimCalData->GetEntries();
-        if (!nHitsCalTrim) {
+        if (!nHitsCalTrim)
+        {
             return;
         }
-        for (Int_t entry = 0; entry < nHitsCalTrim; entry++) {
+        for (Int_t entry = 0; entry < nHitsCalTrim; entry++)
+        {
             R3BSofTrimCalData* iCalData = (R3BSofTrimCalData*)fTrimCalData->At(entry);
             iSec = iCalData->GetSecID() - 1;
             iAnode = iCalData->GetAnodeID() - 1;
@@ -375,47 +418,56 @@ void R3BSofTrimCal2Hit::S455_P2p()
 
         // --- Fill the HIT level --- //
         Ddt = 0.5 * (dt[14] + dt[15]) - 0.5 * (dt[2] + dt[3]);
-        for (Int_t s = 0; s < fNumSections; s++) {
+        for (Int_t s = 0; s < fNumSections; s++)
+        {
             dtSection = 0.5 * (dt[2 + s * fNumAnodes] + dt[3 + s * fNumAnodes]);
 
             // === fEnergyRaw: sum of CorrDeltaDT Energy === //
             sumRaw = 0.;
             nRaw = 0;
             // if Rectangular shape:
-            if (fTriShape == kFALSE) {
-                for (Int_t a = 0; a < fNumAnodes; a++) {
-                    if (mult[a + s * fNumAnodes] == 1) {
+            if (fTriShape == kFALSE)
+            {
+                for (Int_t a = 0; a < fNumAnodes; a++)
+                {
+                    if (mult[a + s * fNumAnodes] == 1)
+                    {
                         eal[a + s * fNumAnodes] = e[a + s * fNumAnodes];
                         sumRaw += eal[a + s * fNumAnodes];
                         nRaw++;
                     }
-                }   // end of loop over the anodes
-            }       // end calculation of fEnergyRaw for rectangular shape anodes
-            else {
-                for (Int_t ch = 0; ch < nAligned; ch++) {
-                    if (mult[2 * ch + s * fNumAnodes] == 1 && mult[2 * ch + 1 + s * fNumAnodes] == 1) {
+                } // end of loop over the anodes
+            }     // end calculation of fEnergyRaw for rectangular shape anodes
+            else
+            {
+                for (Int_t ch = 0; ch < nAligned; ch++)
+                {
+                    if (mult[2 * ch + s * fNumAnodes] == 1 && mult[2 * ch + 1 + s * fNumAnodes] == 1)
+                    {
                         // raw energy per pair: mean value of the match gain anodes
                         eal[ch + s * nAligned] = 0.5 * (e[2 * ch + s * fNumAnodes] + e[2 * ch + 1 + s * fNumAnodes]);
                         // correction of the DeltaDT dependency per pair
                         correction = 0;
-                        for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrDeltaDTParsPerSignal(); deg++) {
+                        for (Int_t deg = 0; deg < fTrimHitPar->GetNumCorrDeltaDTParsPerSignal(); deg++)
+                        {
                             correction +=
                                 TMath::Power(Ddt, deg) * fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, deg);
                         }
-                        if (correction != 0 && fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0) != 0) {
-                            eal[ch + s * nAligned] = fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0)
-                                                     * eal[ch + s * nAligned] / correction;
+                        if (correction != 0 && fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0) != 0)
+                        {
+                            eal[ch + s * nAligned] = fTrimHitPar->GetEnergyCorrDeltaDTPar(s + 1, ch + 1, 0) *
+                                                     eal[ch + s * nAligned] / correction;
                         }
                         dtal[ch + s * nAligned] = 0.5 * (dt[2 * ch + s * fNumAnodes] + dt[2 * ch + 1 + s * fNumAnodes]);
                         // sum Raw per section
                         sumRaw += eal[ch + s * nAligned];
                         nRaw++;
                     }
-                }   // end of loop over the pairs
-            }       // end of calculation of fEnergyRaw for triangular shape anodes
+                } // end of loop over the pairs
+            }     // end of calculation of fEnergyRaw for triangular shape anodes
             if (nRaw > 0)
-                sumRaw = fTrimHitPar->GetEnergyAlignOffset(s + 1)
-                         + fTrimHitPar->GetEnergyAlignGain(s + 1) * (sumRaw / (Float_t)nRaw);
+                sumRaw = fTrimHitPar->GetEnergyAlignOffset(s + 1) +
+                         fTrimHitPar->GetEnergyAlignGain(s + 1) * (sumRaw / (Float_t)nRaw);
 
             double p0[3];
             double p1[3];
@@ -439,7 +491,7 @@ void R3BSofTrimCal2Hit::S455_P2p()
 
             // FILL HIT DATA
             AddHitData(s + 1, eal[0], eal[1], eal[2], sumRaw, sumRaw, sumTheta, sumDT, zval);
-        }   // end of loop over the sections
+        } // end of loop over the sections
     }
 
     return;

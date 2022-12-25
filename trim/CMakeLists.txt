@@ -14,6 +14,9 @@ ${R3BSOF_SOURCE_DIR}/sofdata/trimData
 ${R3BSOF_SOURCE_DIR}/sofdata/sciData
 ${R3BSOF_SOURCE_DIR}/tcal
 ${R3BSOF_SOURCE_DIR}/trim
+${R3BSOF_SOURCE_DIR}/trim/sim
+${R3BSOF_SOURCE_DIR}/trim/pars
+${R3BSOF_SOURCE_DIR}/trim/calibration
 )
 
 include_directories( ${INCLUDE_DIRECTORIES})
@@ -23,19 +26,11 @@ set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR} )
 
 link_directories( ${LINK_DIRECTORIES})
 
-#set(SRCS
-#Put here your sourcefiles
-#R3BSofTrim.cxx
-#R3BSofTrimContFact.cxx
-#R3BSofTrimCalPar.cxx
-#R3BSofTrimHitPar.cxx
-#R3BSofTrimMapped2Cal.cxx
-#R3BSofTrimCalculateMatchGainPar.cxx
-#R3BSofTrimCalculateDriftTimeOffsetPar.cxx
-#R3BSofTrimCal2Hit.cxx
-#)
-
-file(GLOB SRCS *.cxx)
+file(GLOB SRCS 
+./sim/*.cxx
+./pars/*.cxx
+./calibration/*.cxx
+)
 
 # fill list of header files from list of source files
 # by exchanging the file extension

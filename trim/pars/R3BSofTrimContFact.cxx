@@ -49,11 +49,16 @@ FairParSet* R3BSofTrimContFact::createContainer(FairContainer* c)
     const char* name = c->GetName();
     LOG(info) << "R3BSofTrimContFact: Create container name: " << name;
     FairParSet* p = 0;
-    if (strcmp(name, "trimCalPar") == 0) {
+    if (strcmp(name, "trimCalPar") == 0)
+    {
         p = new R3BSofTrimCalPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    } else if (strcmp(name, "trimHitPar") == 0) {
+    }
+    else if (strcmp(name, "trimHitPar") == 0)
+    {
         p = new R3BSofTrimHitPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
-    } else if (strcmp(name, "TrimGeoPar") == 0) {
+    }
+    else if (strcmp(name, "TrimGeoPar") == 0)
+    {
         p = new R3BTGeoPar(c->getConcatName().Data(), c->GetTitle(), c->getContext());
     }
     return p;

@@ -65,13 +65,13 @@ class R3BSofTrimCal2Hit : public FairTask
     Int_t fExpId;
     Bool_t fCoulex;
     Bool_t fTriShape;
-    Bool_t fOnline;   // Don't store data for online
+    Bool_t fOnline; // Don't store data for online
 
-    R3BEventHeader* header;          /**< Event header. */
-    R3BSofTrimHitPar* fTrimHitPar;   // Parameter container
-    TClonesArray* fTrimCalData;      // Array with Cal input data for Triple-MUSIC
-    TClonesArray* fSciCalData;       // Array with Cal input data for incoming beam velocity
-    TClonesArray* fTrimHitData;      // Array with Hit output data for Triple-MUSIC
+    R3BEventHeader* header;        /**< Event header. */
+    R3BSofTrimHitPar* fTrimHitPar; // Parameter container
+    TClonesArray* fTrimCalData;    // Array with Cal input data for Triple-MUSIC
+    TClonesArray* fSciCalData;     // Array with Cal input data for incoming beam velocity
+    TClonesArray* fTrimHitData;    // Array with Hit output data for Triple-MUSIC
 
     void S455_Coulex();
     void S455_P2p();

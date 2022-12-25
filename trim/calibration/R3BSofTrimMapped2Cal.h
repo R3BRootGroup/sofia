@@ -51,7 +51,7 @@ class R3BSofTrimMapped2Cal : public FairTask
     void SetOnline(Bool_t option) { fOnline = option; }
 
   private:
-    Bool_t fOnline;   // Don't store data for online
+    Bool_t fOnline; // Don't store data for online
 
     R3BSofTrimCalPar* fCal_Par;    /**< Parameter container. >*/
     TClonesArray* fTrimMappedData; /**< Array with Mapped-input data. >*/
