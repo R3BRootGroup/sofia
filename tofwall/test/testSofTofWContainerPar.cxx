@@ -16,28 +16,29 @@
 #include "gtest/gtest.h"
 #include <map>
 
-namespace {
-TEST(testSofTofWHitPar, GetNumSci)
+namespace
 {
-    R3BSofTofWHitPar par;
-    par.SetNumSci(28);
+    TEST(testSofTofWHitPar, GetNumSci)
+    {
+        R3BSofTofWHitPar par;
+        par.SetNumSci(28);
 
-    EXPECT_EQ(par.GetNumSci(), 28);
-}
+        EXPECT_EQ(par.GetNumSci(), 28);
+    }
 
-TEST(testSofTofWHitPar, GetInUse)
-{
-    R3BSofTofWHitPar par;
-    par.SetInUse(1, 14);
+    TEST(testSofTofWHitPar, GetInUse)
+    {
+        R3BSofTofWHitPar par;
+        par.SetInUse(1, 14);
 
-    EXPECT_EQ(par.GetInUse(14), 1);
-}
+        EXPECT_EQ(par.GetInUse(14), 1);
+    }
 
-TEST(testSofTofWHitPar, GetTofPar)
-{
-    R3BSofTofWHitPar par;
-    par.SetTofPar(33., 15);
+    TEST(testSofTofWHitPar, GetTofPar)
+    {
+        R3BSofTofWHitPar par;
+        par.SetTofPar(33., 15);
 
-    EXPECT_EQ(par.GetTofPar(15), 33.);
-}
-}   // namespace
+        EXPECT_EQ(par.GetTofPar(15), 33.);
+    }
+} // namespace

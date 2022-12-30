@@ -12,7 +12,8 @@ R3BSofTrimMappedData::R3BSofTrimMappedData()
     , fEnergy(0)
     , fPileup(kFALSE)
     , fOverflow(kFALSE)
-{}
+{
+}
 // -------------------------------------------------------------------------
 
 // -----   Standard constructor   ------------------------------------------
@@ -28,7 +29,8 @@ R3BSofTrimMappedData::R3BSofTrimMappedData(UShort_t secID,
     , fEnergy(energy)
     , fPileup(pu)
     , fOverflow(ov)
-{}
+{
+}
 // -------------------------------------------------------------------------
 
 ClassImp(R3BSofTrimMappedData)

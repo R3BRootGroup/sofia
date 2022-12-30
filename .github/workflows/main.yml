@@ -4,7 +4,7 @@ name: CI C17++
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the master and dev branches
   push:
     branches: [ master, dev ]
   pull_request:
@@ -13,7 +13,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# A workflow run is made up of one or more jobs that can run sequentially
 jobs:
   clang-format:
     runs-on: self-hosted
@@ -24,4 +24,4 @@ jobs:
       - name: Code formatting
         run: |
           cd $GITHUB_WORKSPACE
-          singularity exec /data.local2/kresan/debian10-apr22-v18.6.8-ucesb.sif $PWD/clang-format-check.sh clang-format-8
+          singularity exec /data.local2/kresan/debian10-apr22-v18.6.8-ucesb.sif $PWD/.clang-format-check.sh clang-format-8
