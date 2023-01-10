@@ -31,7 +31,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fUserPList = false;        // Use of R3B special physics list
     Bool_t fR3BMagnet = false;        // Magnetic field definition
     Bool_t fCalifaDigitizer = true;   // Apply hit digitizer task
-    Bool_t fCalifaHitFinder = true;   // Apply hit finder task
+    Bool_t fCalifaClusterFinder = true;   // Apply hit finder task
     Bool_t fSofiaDigitizer = true;    // Apply hit digitizer task
 
     // MonteCarlo engine: TGeant4, TFluka           --------------------
@@ -85,7 +85,7 @@ void runsim(Int_t nEvents = 0)
     TString fCalifaGeo = "califa_2020.geo.root";
     Int_t fCalifaGeoVer = 2020;
     Double_t fCalifaCryTh = 0.000080;    // In GeV: 0.000080 means 80 keV per crystal
-    Double_t fCalifaHitEnergyTh = 0.0;   // Threshold in GeV per cluster hit
+    Double_t fCalifaClusterEnergyTh = 0.0;   // Threshold in GeV per cluster hit
     Double_t fCalifaNonU = 1.0;          // Non-uniformity: 1 means +-1% max deviation
 
     Bool_t fMwpc1 = true;   // MWPC1 Detector
@@ -289,12 +289,12 @@ void runsim(Int_t nEvents = 0)
             califaDig->SetNonUniformity(fCalifaNonU);
             califaDig->SetExpEnergyRes(5.0);   // 5. means 5% at 1 MeV
             califaDig->SetComponentRes(5.0);
-            califaDig->SetDetectionThreshold(fCalifaHitEnergyTh);
+            califaDig->SetDetectionThreshold(fCalifaClusterEnergyTh);
             run->AddTask(califaDig);
 
             // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
-            if (fCalifaHitFinder) {
-                R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
+            if (fCalifaClusterFinder) {
+                R3BCalifaCrystalCal2Cluster* califaHF = new R3BCalifaCrystalCal2Cluster();
                 califaHF->SetCrystalThreshold(fCalifaCryTh);
                 califaHF->SetSquareWindowAlg(0.25,
                                              0.25);   //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]

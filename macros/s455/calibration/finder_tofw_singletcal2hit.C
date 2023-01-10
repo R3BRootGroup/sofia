@@ -432,8 +432,8 @@ void finder_tofw_singletcal2hit()
         R3BCalifaMapped2CrystalCal* CalifaMap2Cal = new R3BCalifaMapped2CrystalCal();
         CalifaMap2Cal->SetOnline(NOTstorecaldata);
         run->AddTask(CalifaMap2Cal);
-        // R3BCalifaCrystalCal2Hit ---
-        R3BCalifaCrystalCal2Hit* CalifaCal2Hit = new R3BCalifaCrystalCal2Hit();
+        // R3BCalifaCrystalCal2Cluster ---
+        R3BCalifaCrystalCal2Cluster* CalifaCal2Hit = new R3BCalifaCrystalCal2Cluster();
         CalifaCal2Hit->SetCrystalThreshold(100.); // 100keV
         CalifaCal2Hit->SetDRThreshold(10000.);    // 10MeV
         CalifaCal2Hit->SetOnline(NOTstorehitdata);

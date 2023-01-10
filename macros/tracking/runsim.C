@@ -20,7 +20,7 @@ void runsim(Int_t nEvents = 0)
     Bool_t fVis = true;              // Store tracks for visualization
     Bool_t fUserPList = false;       // Use of R3B special physics list
     Bool_t fR3BMagnet = true;        // Magnetic field definition
-    Bool_t fCalifaHitFinder = false; // Apply hit finder task
+    Bool_t fCalifaClusterFinder = false; // Apply hit finder task
 
     TString fMC = "TGeant4"; // MonteCarlo engine: TGeant3, TGeant4, TFluka
 
@@ -473,9 +473,9 @@ void runsim(Int_t nEvents = 0)
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
 
     // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
-    if (fCalifaHitFinder)
+    if (fCalifaClusterFinder)
     {
-        R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
+        R3BCalifaCrystalCal2Cluster* califaHF = new R3BCalifaCrystalCal2Cluster();
         // califaHF->SetDetectionThreshold(0.000050);//50 KeV
         // califaHF->SetExperimentalResolution(5.);  //5% at 1 MeV
         // califaHF->SetAngularWindow(3.2,3.2);      //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]

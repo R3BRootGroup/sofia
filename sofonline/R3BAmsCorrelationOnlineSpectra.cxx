@@ -16,7 +16,7 @@
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
 #include "R3BAmsHitData.h"
-#include "R3BCalifaHitData.h"
+#include "R3BCalifaClusterData.h"
 #include "R3BEventHeader.h"
 #include "R3BMusicHitData.h"
 #include "R3BSofTrimHitData.h"
@@ -132,9 +132,9 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
         LOG(error) << "R3BAmsCorrelationOnlineSpectra: MusicHitData and/or TrimHitData not found";
 
     // get access to Hit data
-    fHitItemsCalifa = (TClonesArray*)mgr->GetObject("CalifaHitData");
+    fHitItemsCalifa = (TClonesArray*)mgr->GetObject("CalifaClusterData");
     if (!fHitItemsCalifa)
-        LOG(error) << "R3BAmsCorrelationOnlineSpectra::CalifaHitData not found";
+        LOG(error) << "R3BAmsCorrelationOnlineSpectra::CalifaClusterData not found";
 
     // create histograms of all detectors
 
@@ -542,7 +542,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
 
            for (Int_t ihit = 0; ihit < nHits; ihit++)
            {
-               R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
+               R3BCalifaClusterData* hit = (R3BCalifaClusterData*)fHitItemsCalifa->At(ihit);
                if (!hit)
                    continue;
                theta = hit->GetTheta() / TMath::Pi() * 180.;
@@ -611,7 +611,7 @@ void R3BAmsCorrelationOnlineSpectra::Exec(Option_t* option)
             Double_t califa_e[nHits];
             for (Int_t ihit = 0; ihit < nHits; ihit++)
             {
-                R3BCalifaHitData* hit = (R3BCalifaHitData*)fHitItemsCalifa->At(ihit);
+                R3BCalifaClusterData* hit = (R3BCalifaClusterData*)fHitItemsCalifa->At(ihit);
                 if (!hit)
                     continue;
                 theta = hit->GetTheta() * TMath::RadToDeg();
