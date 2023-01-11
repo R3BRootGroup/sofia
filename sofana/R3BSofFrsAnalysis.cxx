@@ -347,7 +347,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
         }
         Double_t gamma = 1. / (TMath::Sqrt(1. - beta.at(i) * beta.at(i)));
         Double_t correction = 1.;
-        if (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0)
+        if (ii == 0 || (fUseS2x[i] != 0 && fNumBrhoCorrPar > 0))
         {
             for (Int_t j = 0; j < fNumBrhoCorrPar; j++)
                 correction -= pow(xpos[fIdS2 - 1], j) * fBrhoCorrPar[j];
