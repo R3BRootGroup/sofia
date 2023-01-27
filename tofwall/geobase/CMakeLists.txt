@@ -11,6 +11,7 @@
 # or submit itself to any jurisdiction.                                      #
 ##############################################################################
 
+
 if(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v22.geo.root")
 message(STATUS "Starting to generate the standard root geometry for the SOFIA ToF-Wall")
 execute_process(COMMAND root -l -q -x ${R3BSOF_SOURCE_DIR}/tofwall/geobase/create_softofw_geo.C)
@@ -19,33 +20,6 @@ else(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v22.geo.root")
 message(STATUS "${BYellow}SOFIA ToF-Wall standard root geometry already created${CR} ")
 endif(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v22.geo.root")
 
-enable_testing()
-
-set(GTEST_ROOT ${SIMPATH})
-find_package(GTest)
-
-if(GTEST_FOUND)
-
-include_directories(
-    ${GTEST_INCLUDE_DIRS}
-    ${SYSTEM_INCLUDE_DIRECTORIES}
-    ${BASE_INCLUDE_DIRECTORIES}
-    ${R3BROOT_SOURCE_DIR}/r3bbase
-    ${R3BSOF_SOURCE_DIR}/tofwall/geobase
-    )
-
-link_directories(${GTEST_LIBS_DIR} ${ROOT_LIBRARY_DIR} ${FAIRROOT_LIBRARY_DIR}
-                 ${Boost_LIBRARY_DIRS})
-
-set(TEST_DEPENDENCIES
-    ${GTEST_BOTH_LIBRARIES}
-    ${ROOT_LIBRARIES}
-    FairTools
-    R3BSofTofW
-    ParBase
-    GeoBase)
-
-endif(GTEST_FOUND)
 
 generate_root_test_script(${R3BSOF_SOURCE_DIR}/tofwall/geobase/create_softofw_geo.C)
 add_test(SofTofWRootGeometry ${R3BROOT_BINARY_DIR}/sofia/tofwall/geobase/create_softofw_geo.sh)
