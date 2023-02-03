@@ -15,7 +15,7 @@
 #include "TRandom.h"
 
 class TRandom3;
-class R3BTimeStitch;
+class R3BCoarseTimeStitch;
 
 class R3BSofTofWTcal2SingleTcal : public FairTask
 {
@@ -47,7 +47,7 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
     void SetNumPmts(Int_t n) { fNumPmts = n; }
 
   private:
-    R3BTimeStitch* fTimeStitch;
+    R3BCoarseTimeStitch* fTimeStitch;
     TClonesArray* fSciSingleTcal;      // input data
     TClonesArray* fTofWTcal;           // input data
     TClonesArray* fTofWSingleTcal;     // output data

@@ -5,7 +5,7 @@
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
-#include "R3BTimeStitch.h"
+#include "R3BCoarseTimeStitch.h"
 
 R3BSofTofWTcal2SingleTcal::R3BSofTofWTcal2SingleTcal()
     : FairTask("R3BSofTofWTcal2SingleTcal", 1)
@@ -106,7 +106,7 @@ InitStatus R3BSofTofWTcal2SingleTcal::Init()
     rm->Register("SofTofWSingleTcalData", "SofTofW", fTofWSingleTcal, !fOnline);
 
     // Definition of a time stich object to correlate VFTX times
-    fTimeStitch = new R3BTimeStitch();
+    fTimeStitch = new R3BCoarseTimeStitch();
 
     return kSUCCESS;
 }
