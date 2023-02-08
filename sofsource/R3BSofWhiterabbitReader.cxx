@@ -67,7 +67,7 @@ Bool_t R3BSofWhiterabbitReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofWhiterabbitReader::Read()
+Bool_t R3BSofWhiterabbitReader::R3BRead()
 {
     if (!fData->TIMESTAMP_SOFIA1ID)
     {

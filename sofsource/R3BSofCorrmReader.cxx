@@ -57,7 +57,7 @@ Bool_t R3BSofCorrmReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofCorrmReader::Read()
+Bool_t R3BSofCorrmReader::R3BRead()
 {
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFCORRM_onion* data = (EXT_STR_h101_SOFCORRM_onion*)fData;
@@ -71,7 +71,7 @@ Bool_t R3BSofCorrmReader::Read()
     // only one TR=correlation signal and TT=trig signal
     if (data->SOFCORRM_TRM > 1 || data->SOFCORRM_TTM > 1)
     {
-        LOG(fatal) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
+        LOG(fatal) << "R3BSofCorrmReader::R3BRead(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
                    << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
         return kFALSE;
     }
@@ -79,9 +79,9 @@ Bool_t R3BSofCorrmReader::Read()
     // signal ids are 1-based
     if (data->SOFCORRM_TRMI[0] != 1 || data->SOFCORRM_TTMI[0] != 1)
     {
-        LOG(info) << "R3BSofCorrmReader::Read(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
+        LOG(info) << "R3BSofCorrmReader::R3BRead(), SOFCORRM_TRM=" << data->SOFCORRM_TRM
                   << ", SOFCORRM_TTM=" << data->SOFCORRM_TTM;
-        LOG(fatal) << "R3BSofCorrmReader::Read(), SOFCORRM_TRMI=" << data->SOFCORRM_TRMI[0]
+        LOG(fatal) << "R3BSofCorrmReader::R3BRead(), SOFCORRM_TRMI=" << data->SOFCORRM_TRMI[0]
                    << ", SOFCORRM_TTMI=" << data->SOFCORRM_TTMI[0];
         return kFALSE;
     }
@@ -89,7 +89,7 @@ Bool_t R3BSofCorrmReader::Read()
     // MDPP16 is multi-hit capability, but we should only have one trigger hit per event
     if (data->SOFCORRM_TT != 1)
     {
-        LOG(fatal) << "R3BSofCorrmReader::Read(), SOFCORRN_TT=" << data->SOFCORRM_TT;
+        LOG(fatal) << "R3BSofCorrmReader::R3BRead(), SOFCORRN_TT=" << data->SOFCORRM_TT;
         return kFALSE;
     }
 

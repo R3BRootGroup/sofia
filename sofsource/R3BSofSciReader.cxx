@@ -63,7 +63,7 @@ Bool_t R3BSofSciReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofSciReader::Read()
+Bool_t R3BSofSciReader::R3BRead()
 {
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFSCI_onion* data = (EXT_STR_h101_SOFSCI_onion*)fData;
@@ -95,7 +95,7 @@ Bool_t R3BSofSciReader::Read()
         uint32_t numberOfPMTsWithHits_TC = data->SOFSCI[d].TCM;
         if (numberOfPMTsWithHits_TF != numberOfPMTsWithHits_TC)
         {
-            LOG(error) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between TF and TC for SofSci !";
+            LOG(error) << "R3BSofSciReader::R3BRead() Error in unpacking, unconsistency between TF and TC for SofSci !";
         }
         else
         {
@@ -107,7 +107,7 @@ Bool_t R3BSofSciReader::Read()
                 uint32_t pmtid_TC = data->SOFSCI[d].TCMI[pmmult];
                 if (pmtid_TF != pmtid_TC)
                 {
-                    LOG(error) << "R3BSofSciReader::Read() Error in unpacking, unconsistency between the PMT id for TF "
+                    LOG(error) << "R3BSofSciReader::R3BRead() Error in unpacking, unconsistency between the PMT id for TF "
                                   "and TC for SofSci !";
                 }
                 uint32_t nextChannelStart = data->SOFSCI[d].TFME[pmmult];
