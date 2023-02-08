@@ -66,7 +66,7 @@ Bool_t R3BSofTrimReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofTrimReader::Read()
+Bool_t R3BSofTrimReader::R3BRead()
 {
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFTRIM_onion* data = (EXT_STR_h101_SOFTRIM_onion*)fData;

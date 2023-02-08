@@ -57,7 +57,7 @@ Bool_t R3BSofCorrvReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofCorrvReader::Read()
+Bool_t R3BSofCorrvReader::R3BRead()
 {
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFCORRV_onion* data = (EXT_STR_h101_SOFCORRV_onion*)fData;
@@ -71,7 +71,7 @@ Bool_t R3BSofCorrvReader::Read()
     // There is only one correlation signal
     if (data->SOFCORRV_TRCM > 1 || data->SOFCORRV_TRFM > 1)
     {
-        LOG(fatal) << "R3BSofCorrvReader::Read(), SOFCORRV_TRCM=" << data->SOFCORRV_TRCM
+        LOG(fatal) << "R3BSofCorrvReader::R3BRead(), SOFCORRV_TRCM=" << data->SOFCORRV_TRCM
                    << ", SOFCORRV_TRFM=" << data->SOFCORRV_TRFM;
         return kFALSE;
     }
@@ -79,7 +79,7 @@ Bool_t R3BSofCorrvReader::Read()
     // Signal is 1-based
     if (data->SOFCORRV_TRFMI[0] != 1 || data->SOFCORRV_TRCMI[0] != 1)
     {
-        LOG(fatal) << "R3BSofCorrvReader::Read(), SOFCORRV_TRFMI=" << data->SOFCORRV_TRFMI[0]
+        LOG(fatal) << "R3BSofCorrvReader::R3BRead(), SOFCORRV_TRFMI=" << data->SOFCORRV_TRFMI[0]
                    << ", SOFCORRV_TRCMI=" << data->SOFCORRV_TRCMI[0];
         return kFALSE;
     }
@@ -87,7 +87,7 @@ Bool_t R3BSofCorrvReader::Read()
     // There are as many fine times than clock counts data words:
     if (data->SOFCORRV_TRF != data->SOFCORRV_TRC)
     {
-        LOG(fatal) << "R3BSofCorrvReader::Read(), SOFCORRV_TRF=" << data->SOFCORRV_TRF
+        LOG(fatal) << "R3BSofCorrvReader::R3BRead(), SOFCORRV_TRF=" << data->SOFCORRV_TRF
                    << ", SOFCORRV_TCF=" << data->SOFCORRV_TRC;
         return kFALSE;
     }

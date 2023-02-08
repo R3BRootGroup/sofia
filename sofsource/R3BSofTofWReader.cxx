@@ -67,7 +67,7 @@ Bool_t R3BSofTofWReader::Init(ext_data_struct_info* a_struct_info)
     return kTRUE;
 }
 
-Bool_t R3BSofTofWReader::Read()
+Bool_t R3BSofTofWReader::R3BRead()
 {
     // Convert plain raw data to multi-dimensional array
     EXT_STR_h101_SOFTOFW_onion* data = (EXT_STR_h101_SOFTOFW_onion*)fData;
