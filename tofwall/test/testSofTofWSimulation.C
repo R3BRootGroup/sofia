@@ -1,6 +1,6 @@
 /******************************************************************************
- *   Copyright (C) 2019 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
- *   Copyright (C) 2019-2023 Members of R3B Collaboration                     *
+ *   Copyright (C) 2021 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2021-2023 Members of R3B Collaboration                     *
  *                                                                            *
  *             This software is distributed under the terms of the            *
  *                 GNU General Public Licence (GPL) version 3,                *
@@ -56,7 +56,7 @@ void testSofTofWSimulation(int nbevents = 100)
     run->AddModule(cave);
 
     // Geometry: SofTofW
-    run->AddModule(new R3BSofTofW("sof_tof_v22.geo.root", {0., 0., 60.}));
+    run->AddModule(new R3BSofTofW("sof_tof_v2021.3.geo.root", {0., 0., 60.}));
 
     // Init
     run->Init();

@@ -1,6 +1,6 @@
 ##############################################################################
-#   Copyright (C) 2019 GSI Helmholtzzentrum für Schwerionenforschung GmbH    #
-#   Copyright (C) 2019-2023 Members of R3B Collaboration                     #
+#   Copyright (C) 2021 GSI Helmholtzzentrum für Schwerionenforschung GmbH    #
+#   Copyright (C) 2021-2023 Members of R3B Collaboration                     #
 #                                                                            #
 #             This software is distributed under the terms of the            #
 #                 GNU General Public Licence (GPL) version 3,                #
@@ -11,13 +11,13 @@
 # or submit itself to any jurisdiction.                                      #
 ##############################################################################
 
-if(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v22.geo.root")
+if(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v2021.3.geo.root")
 message(STATUS "Starting to generate the standard root geometry for the SOFIA ToF-Wall")
 execute_process(COMMAND root -l -q -x ${R3BSOF_SOURCE_DIR}/tofwall/geobase/create_softofw_geo.C)
 message(STATUS "${BYellow}SOFIA ToF-Wall standard root geometry has been created${CR} ")
-else(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v22.geo.root")
+else(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v2021.3.geo.root")
 message(STATUS "${BYellow}SOFIA ToF-Wall standard root geometry already created${CR} ")
-endif(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v22.geo.root")
+endif(NOT EXISTS "${R3BROOT_SOURCE_DIR}/geometry/sof_tof_v2021.3.geo.root")
 
 generate_root_test_script(${R3BSOF_SOURCE_DIR}/tofwall/geobase/create_softofw_geo.C)
 add_test(NAME SofTofWRootGeometry COMMAND ${R3BROOT_BINARY_DIR}/sofia/tofwall/geobase/create_softofw_geo.sh)

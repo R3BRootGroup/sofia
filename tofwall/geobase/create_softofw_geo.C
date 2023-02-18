@@ -1,9 +1,9 @@
 //
 //   ----- Macro for generating the SOFIA ToF-Wall root geometry
 //
-//         Author: Jose Luis <joseluis.rodriguez.sanchez@usc.es>
+//         Author: Jose Luis <j.l.rodriguez.sanchez@udc.es>
 //
-//         Last Update: 20/12/22
+//         Last Update: 18/02/23
 //
 //         Comments:
 //
@@ -13,7 +13,7 @@
 #include <iomanip>
 #include <iostream>
 
-void create_softofw_geo(const char* geoTag = "v22")
+void create_softofw_geo(const TString geoTag = "v2021.3")
 {
     // --------------------------------------------------------------------------
     // Configurable geometry for the SOFIA ToF-Wall.
@@ -86,7 +86,7 @@ void create_softofw_geo(const char* geoTag = "v22")
 
     // --------------   Create geometry and top volume  -------------------------
     gGeoMan = (TGeoManager*)gROOT->FindObject("FAIRGeom");
-    gGeoMan->SetName("TOFgeom");
+    gGeoMan->SetName("TOFWgeom");
     TGeoVolume* top = new TGeoVolumeAssembly("TOP");
     gGeoMan->SetTopVolume(top);
     // --------------------------------------------------------------------------
