@@ -453,7 +453,7 @@ void main_online()
         R3BSci2Mapped2Tcal* s2Mapped2Tcal = new R3BSci2Mapped2Tcal();
         s2Mapped2Tcal->SetOnline(NOTstorecaldata);
         run->AddTask(s2Mapped2Tcal);
-        
+
         R3BSci2Tcal2Hit* sci2Tcal2Hit = new R3BSci2Tcal2Hit();
         sci2Tcal2Hit->SetOnline(NOTstorehitdata);
         run->AddTask(sci2Tcal2Hit);

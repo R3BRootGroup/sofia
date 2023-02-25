@@ -28,7 +28,7 @@ void rundigi()
 
     // ----- Runtime DataBase info -----------------------------------------------
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
-    
+
     // -----   Load detector parameters    ------------------------------------
     FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();
     parIo1->open("s455_setup.par", "in");
@@ -48,19 +48,19 @@ void rundigi()
 
     // ----- Connect the Digitization Task ---------------------------------------
     // MWPC1
-    R3BSofMwpcDigitizer* mw1_digitizer = new R3BSofMwpcDigitizer("Mwpc1",1);
+    R3BSofMwpcDigitizer* mw1_digitizer = new R3BSofMwpcDigitizer("Mwpc1", 1);
     run->AddTask(mw1_digitizer);
 
     // TWIM
-    R3BSofTwimDigitizer* twim_digitizer = new R3BSofTwimDigitizer("TWIM",1);
-    //run->AddTask(twim_digitizer);
+    R3BSofTwimDigitizer* twim_digitizer = new R3BSofTwimDigitizer("TWIM", 1);
+    // run->AddTask(twim_digitizer);
 
     // MWPC2
-    R3BSofMwpcDigitizer* mw2_digitizer = new R3BSofMwpcDigitizer("Mwpc2",1);
-    //run->AddTask(mw2_digitizer);
+    R3BSofMwpcDigitizer* mw2_digitizer = new R3BSofMwpcDigitizer("Mwpc2", 1);
+    // run->AddTask(mw2_digitizer);
 
     // MWPC3
-    R3BSofMwpcDigitizer* mw3_digitizer = new R3BSofMwpcDigitizer("Mwpc3",1);
+    R3BSofMwpcDigitizer* mw3_digitizer = new R3BSofMwpcDigitizer("Mwpc3", 1);
     run->AddTask(mw3_digitizer);
 
     // TOF-Wall
@@ -85,5 +85,4 @@ void rundigi()
     cout << " Test passed" << endl;
     cout << " All ok " << endl;
     cout << " Digitization successful." << endl;
-
 }

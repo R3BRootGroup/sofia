@@ -36,6 +36,16 @@ cmake ../R3BRoot/
 make -j8
 ~~~
 
+## Contributing
+Please ask your questions, request features, and report issues by [creating a github issue](https://github.com/R3BRootGroup/sofia/issues/new).
+
+## Code Formatting
+
+The SOFIA project uses clang-format-15 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
+~~~bash
+source apply-format.sh
+~~~
+
 ### Some Details of the SOFIA Setup
 
 - Active target (SofAT)

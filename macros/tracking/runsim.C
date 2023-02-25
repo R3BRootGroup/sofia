@@ -17,9 +17,9 @@ void runsim(Int_t nEvents = 0)
     TString OutFile = "sim.root"; // Output file for data
     TString ParFile = "par.root"; // Output file for params
 
-    Bool_t fVis = true;              // Store tracks for visualization
-    Bool_t fUserPList = false;       // Use of R3B special physics list
-    Bool_t fR3BMagnet = true;        // Magnetic field definition
+    Bool_t fVis = true;                  // Store tracks for visualization
+    Bool_t fUserPList = false;           // Use of R3B special physics list
+    Bool_t fR3BMagnet = true;            // Magnetic field definition
     Bool_t fCalifaClusterFinder = false; // Apply hit finder task
 
     TString fMC = "TGeant4"; // MonteCarlo engine: TGeant3, TGeant4, TFluka
@@ -106,7 +106,7 @@ void runsim(Int_t nEvents = 0)
     run->SetName(fMC);                           // Transport engine
     run->SetSink(new FairRootFileSink(OutFile)); // Output file
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
-    
+
     // -----   Load detector parameters    ------------------------------------
     FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo();
     parIo1->open("s455_setup.par", "in");
@@ -382,18 +382,18 @@ void runsim(Int_t nEvents = 0)
         primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        //R3BIonGenerator* ionGen = new R3BIonGenerator(50, 132, 50, 1, 0.0, 0., 0.951);
-        //ionGen->SetSpotRadius(0.0, -65.5, 0.);
-        //primGen->AddGenerator(ionGen);
+        // R3BIonGenerator* ionGen = new R3BIonGenerator(50, 132, 50, 1, 0.0, 0., 0.951);
+        // ionGen->SetSpotRadius(0.0, -65.5, 0.);
+        // primGen->AddGenerator(ionGen);
 
         // 128-Sn fragment
-        //R3BIonGenerator* ionGen1 = new R3BIonGenerator(18, 39, 18, 1, 0., 0., 0.951);
-        //ionGen1->SetSpotRadius(0.0, -65.5, 0.);
-        //primGen->AddGenerator(ionGen1);
+        // R3BIonGenerator* ionGen1 = new R3BIonGenerator(18, 39, 18, 1, 0., 0., 0.951);
+        // ionGen1->SetSpotRadius(0.0, -65.5, 0.);
+        // primGen->AddGenerator(ionGen1);
 
-        //R3BIonGenerator* ionGen2 = new R3BIonGenerator(17, 39, 17, 1, -0.05, 0., 0.951);
-        //ionGen2->SetSpotRadius(0.0, -65.5, 0.);
-        //primGen->AddGenerator(ionGen2);
+        // R3BIonGenerator* ionGen2 = new R3BIonGenerator(17, 39, 17, 1, -0.05, 0., 0.951);
+        // ionGen2->SetSpotRadius(0.0, -65.5, 0.);
+        // primGen->AddGenerator(ionGen2);
 
         // neutrons
         FairBoxGenerator* boxGen_n = new FairBoxGenerator(2112, 3);

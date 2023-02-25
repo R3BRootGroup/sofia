@@ -56,7 +56,7 @@ void testSofTofWSimulation(int nbevents = 100)
     run->AddModule(cave);
 
     // Geometry: SofTofW
-    run->AddModule(new R3BSofTofW("sof_tof_v2021.3.geo.root", {0., 0., 60.}));
+    run->AddModule(new R3BSofTofW("sof_tof_v2021.3.geo.root", { 0., 0., 60. }));
 
     // Init
     run->Init();
