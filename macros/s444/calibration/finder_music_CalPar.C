@@ -33,7 +33,7 @@ void finder_music_CalPar()
 
     // Create input -----------------------------------------
     // TString filename = "--stream=lxir123:7803";
-    //TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
+    // TString filename = "~/lmd/sofia2019/main0079_0001.lmd";
     TString filename = "~/lmd/sofia2020/main0014_0001.lmd";
 
     // Output file ------------------------------------------
@@ -46,15 +46,15 @@ void finder_music_CalPar()
     TString ntuple_options = "RAW";
     TString ucesb_dir = getenv("UCESB_DIR");
     TString upexps_dir = ucesb_dir + "/../upexps/";
-    //TString upexps_dir = "/u/land/fake_cvmfs/upexps";
+    // TString upexps_dir = "/u/land/fake_cvmfs/upexps";
     TString ucesb_path;
     if (expId == 444)
     {
-         ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
+        ucesb_path = upexps_dir + "/202002_s444/202002_s444 --allow-errors --input-buffer=100Mi";
     }
     else if (expId == 467)
     {
-         ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
+        ucesb_path = upexps_dir + "/202002_s467/202002_s467 --allow-errors --input-buffer=100Mi";
     }
     else
     {

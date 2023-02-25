@@ -1,7 +1,6 @@
 
 {
-  gSystem->Load("libGenVector");
+    gSystem->Load("libGenVector");
 
-  cout << "[info] geometry macros for SofiaRoot" << endl;
+    cout << "[info] geometry macros for SofiaRoot" << endl;
 }
-

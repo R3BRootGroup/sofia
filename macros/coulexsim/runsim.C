@@ -25,7 +25,7 @@ void runsim(Int_t nEvents = 0)
     TString targetType = target4;
 
     Int_t fCalifaGeoVer = 2020;
-    
+
     FairLogger* logger = FairLogger::GetLogger();
     // logger->SetLogFileName("MyLog.log");
     logger->SetLogToScreen(kTRUE);
@@ -41,7 +41,7 @@ void runsim(Int_t nEvents = 0)
     // -----   Timer   --------------------------------------------------------
     TStopwatch timer;
     timer.Start();
-    
+
     // Stable part ------------------------------------------------------------
     TString dir = getenv("VMCWORKDIR");
 
@@ -125,8 +125,8 @@ void runsim(Int_t nEvents = 0)
         primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        //R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
-        //ionGen->SetSpotRadius(0.1, -300., 0.);
+        // R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
+        // ionGen->SetSpotRadius(0.1, -300., 0.);
         // primGen->AddGenerator(ionGen);
 
         // neutrons
@@ -199,7 +199,7 @@ void runsim(Int_t nEvents = 0)
 
     run->SetStoreTraj(storeTrajectories);
 
-    //FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
+    // FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
     FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // -----   Initialize simulation run   ------------------------------------

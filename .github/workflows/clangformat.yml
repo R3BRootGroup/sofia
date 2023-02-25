@@ -1,0 +1,22 @@
+name: clang-format check
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+# A workflow run is made up of one or more jobs that can run sequentially
+jobs:
+  # This workflow contains a single job called "clang-format"
+  clang-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Code formatting
+        run: |
+          cd $GITHUB_WORKSPACE
+          ./.clang-format-check.sh clang-format-15
+        shell: bash

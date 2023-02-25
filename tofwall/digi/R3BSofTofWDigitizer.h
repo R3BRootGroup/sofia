@@ -58,7 +58,9 @@ class R3BSofTofWDigitizer : public FairTask
     R3BTGeoPar* fTofWGeoPar;
     TRandom3* rand;
     Float_t fsigma_y;
+
     Float_t fsigma_t;
+
     Float_t fsigma_ELoss;
     TVector3 fTrans;
     TRotation fRot;

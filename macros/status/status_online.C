@@ -119,7 +119,7 @@ void status_online()
         // outputFilename = "s455_data_status_online_" + oss.str() + ".root";
 
         // upexps_dir = ucesb_dir + "/../upexps/"; // for local computers
-        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps";                 // for lxlandana computers
+        upexps_dir = "/u/land/fake_cvmfs/9.13/upexps"; // for lxlandana computers
         // upexps_dir = "/u/land/lynx.landexp/202002_s467/upexps/";  // for lxg computers
         ucesb_path = upexps_dir + "/202103_s455/202103_s455 --allow-errors --input-buffer=100Mi";
 
@@ -361,10 +361,10 @@ void status_online()
     FairLogger::GetLogger()->SetLogScreenLevel("info");
 
     // Informations about portnumber and main data stream.
-    cout<<"\n\n"<<endl;
-    cout<<"Data stream is: "<<filename<<endl;
-    cout<<"Portnumber for status online is: "<<port<<endl;
-    cout<<"\n\n"<<endl;
+    cout << "\n\n" << endl;
+    cout << "Data stream is: " << filename << endl;
+    cout << "Portnumber for status online is: " << port << endl;
+    cout << "\n\n" << endl;
 
     // Run --------------------------------------------------
     run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);
