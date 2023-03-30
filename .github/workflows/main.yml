@@ -15,3 +15,65 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially
 jobs:
+  # This workflow contains a single job called "clang-format"
+  clang-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Code formatting
+        run: |
+          cd $GITHUB_WORKSPACE
+          sudo apt-get install clang-format-15
+          ./.clang-format-check.sh clang-format-15
+        shell: bash
+
+# Single job called "build-r3broot-sofia"
+  build-r3broot-sofia:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+    needs: clang-format
+    if: always()
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a set of commands using the runners shell
+      - name: Configuration and build
+        run: |
+          sudo apt-get install lsb-release
+          wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb
+          sudo dpkg -i cvmfs-release-latest_all.deb
+          rm -f cvmfs-release-latest_all.deb
+          sudo apt-get update
+          sudo apt-get install -y cvmfs
+          wget https://cernbox.cern.ch/remote.php/dav/public-files/RmnTeeOZpYjCJQb/masterkey.gsi.de.pub
+          sudo mv masterkey.gsi.de.pub /etc/cvmfs/keys
+          cd $GITHUB_WORKSPACE
+          sudo cp .githubfiles/fairsoft.gsi.de.conf /etc/cvmfs/config.d
+          sudo mkdir -p /cvmfs/fairsoft.gsi.de
+          sudo mount -t cvmfs fairsoft.gsi.de /cvmfs/fairsoft.gsi.de
+          export SIMPATH=/cvmfs/fairsoft.gsi.de/ubuntu1804/fairsoft/nov20
+          export FAIRROOTPATH=/cvmfs/fairsoft.gsi.de/ubuntu1804/fairroot/v18.4.2_fs_nov20
+          cd ..
+          git clone https://github.com/R3BRootGroup/R3BRoot.git
+          mv sofia R3BRoot
+          mv R3BRoot sofia
+          cd sofia
+          git clone https://git.chalmers.se/expsubphys/ucesb.git
+          cd ucesb
+          export ROOTSYS=$SIMPATH
+          make -j32 empty/empty
+          export UCESB_DIR=$PWD
+          cd ..
+          git clone https://github.com/R3BRootGroup/macros.git
+          mkdir build 
+          cd build
+          cmake ..
+          source config.sh
+          make -j 35
+        shell: bash
+          
+          
