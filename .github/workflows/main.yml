@@ -78,5 +78,3 @@ jobs:
           cd ..
           ./Dart.sh Experimental ./sofia/.githubfiles/dart_experimental_nov22p1.cfg
         shell: bash
-          
-          
