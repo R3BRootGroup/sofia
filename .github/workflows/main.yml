@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI C17++
+name: CI-CD
 
 # Controls when the action will run. 
 on:
@@ -24,6 +24,7 @@ jobs:
       - name: Code formatting
         run: |
           cd $GITHUB_WORKSPACE
+          sudo apt-get update
           sudo apt-get install clang-format-15
           ./.clang-format-check.sh clang-format-15
         shell: bash
@@ -31,7 +32,7 @@ jobs:
 # Single job called "build-r3broot-sofia"
   build-r3broot-sofia:
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     needs: clang-format
     if: always()
 
@@ -55,8 +56,8 @@ jobs:
           sudo cp .githubfiles/fairsoft.gsi.de.conf /etc/cvmfs/config.d
           sudo mkdir -p /cvmfs/fairsoft.gsi.de
           sudo mount -t cvmfs fairsoft.gsi.de /cvmfs/fairsoft.gsi.de
-          export SIMPATH=/cvmfs/fairsoft.gsi.de/ubuntu1804/fairsoft/nov20
-          export FAIRROOTPATH=/cvmfs/fairsoft.gsi.de/ubuntu1804/fairroot/v18.4.2_fs_nov20
+          export SIMPATH=/cvmfs/fairsoft.gsi.de/ubuntu2204/fairsoft/nov22p1
+          export FAIRROOTPATH=/cvmfs/fairsoft.gsi.de/ubuntu2204/fairroot/v18.8.1_nov22p1
           cd ..
           git clone https://github.com/R3BRootGroup/R3BRoot.git
           mv sofia R3BRoot
@@ -74,6 +75,8 @@ jobs:
           cmake ..
           source config.sh
           make -j 35
+          cd ..
+          ./Dart.sh Experimental ./sofia/.githubfiles/dart_experimental_nov22p1.cfg
         shell: bash
           
           
