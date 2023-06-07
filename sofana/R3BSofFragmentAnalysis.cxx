@@ -4,6 +4,8 @@
 // -----             Created 09/02/20  by J.L. Rodriguez-Sanchez    -----
 // ----------------------------------------------------------------------
 
+#include <boost/multi_array.hpp>
+
 #include "R3BSofFragmentAnalysis.h"
 
 #include "R3BMwpcHitData.h"
@@ -250,7 +252,13 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     Double_t fZ = NAN, fE = NAN, fAq = NAN;
     Double_t Beta = NAN, Brho_Cave = NAN, Length = NAN;
     Double_t ToF_Cave = NAN, MusicTheta = NAN, TwimTheta = NAN;
-    Double_t mw[4][4] = { { NAN } }; // mwpc[ID:0-4][x,y,a,b]
+    // Double_t mw[4][4] = { { NAN } }; // mwpc[ID:0-4][x,y,a,b]
+    typedef boost::multi_array<Double_t, 2> mwpc_t;
+    mwpc_t mw(boost::extents[4][4]);
+    for (int i = 0; i < 16; i++)
+    {
+        mw[i % 4][i / 4] = NAN;
+    }
     Int_t Paddle = 0;
 
     Int_t nHitMwpc0 = fMwpc0HitDataCA->GetEntries();
@@ -267,17 +275,40 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
     HitMwpc1 = new R3BMwpcHitData*[nHitMwpc1];
     HitMwpc2 = new R3BMwpcHitData*[nHitMwpc2];
     HitMwpc3 = new R3BMwpcHitData*[nHitMwpc3];
-
-    if (nHitMwpc0 < 1 || nHitMwpc1 < 1 || nHitMwpc2 < 1 || nHitMwpc3 < 1 || nHitTofW < 1 || nHitMusic < 1 ||
-        nHitTwim < 1)
+    //
+    if (nHitMwpc0 < 1 || nHitMusic < 1)
         return;
-
+    // Get Music angle
+    for (Int_t ihit = 0; ihit < nHitMusic; ihit++)
+    {
+        HitMusic[ihit] = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
+        if (!HitMusic[ihit])
+            continue;
+        // In case the MusicHitData container has several "realistic" values,
+        // it's not possible to distinguish which is the "correct" event. Thus skipping events having several hits.
+        if (TMath::Abs(MusicTheta) < 0.1)
+            return;
+        MusicTheta = HitMusic[ihit]->GetTheta();
+    }
+    //
     for (Int_t i = 0; i < nHitMwpc0; i++)
     {
         HitMwpc0[i] = (R3BMwpcHitData*)(fMwpc0HitDataCA->At(i));
         mw[0][0] = HitMwpc0[i]->GetX() + fMw0GeoPar->GetPosX() * 10.; // mm
         mw[0][1] = HitMwpc0[i]->GetY() + fMw0GeoPar->GetPosY() * 10.; // mm
     }
+    if (fExpId == 444 || fExpId == 467)
+    {
+        // Calculate estimated ROLU position
+        Double_t rolux = mw[0][0] + MusicTheta * (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) * 10.; // mm
+        Double_t roluy = mw[0][1] + (mw[1][1] - mw[0][1]) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) *
+                                        (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ());
+        AddRoluPos(rolux, roluy);
+    }
+    //
+    if (nHitMwpc1 < 1 || nHitMwpc2 < 1 || nHitMwpc3 < 1 || nHitTofW < 1 || nHitTwim < 1)
+        return;
+    //
     for (Int_t i = 0; i < nHitMwpc1; i++)
     {
         HitMwpc1[i] = (R3BMwpcHitData*)(fMwpc1HitDataCA->At(i));
@@ -290,10 +321,6 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
         mw[2][0] = HitMwpc2[i]->GetX() + fMw2GeoPar->GetPosX() * 10.; // mm
         mw[2][1] = HitMwpc2[i]->GetY() + fMw2GeoPar->GetPosY() * 10.; // mm
     }
-    // Calculate raw angle /mm
-    // mw[1][2] = mw[2][0] - mw[1][0];
-    // mw[1][3] = mw[2][1] - mw[1][1];
-    //
     for (Int_t i = 0; i < nHitMwpc3; i++)
     {
         HitMwpc3[i] = (R3BMwpcHitData*)(fMwpc3HitDataCA->At(i));
@@ -319,27 +346,6 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
 
     double gamma = 1. / sqrt(1. - Beta * Beta);
 
-    // Getting Music angle
-    for (Int_t ihit = 0; ihit < nHitMusic; ihit++)
-    {
-        HitMusic[ihit] = (R3BMusicHitData*)fMusicHitDataCA->At(ihit);
-        if (!HitMusic[ihit])
-            continue;
-        // In case the MusicHitData container has several "realistic" values,
-        // it's not possible to distinguish which is the "correct" event. Thus skipping events having several hits.
-        if (TMath::Abs(MusicTheta) < 0.1)
-            return;
-        MusicTheta = HitMusic[ihit]->GetTheta();
-    }
-    //
-    if (fExpId == 444 || fExpId == 467)
-    {
-        // Calculate estimated ROLU position
-        Double_t rolux = mw[0][0] + MusicTheta * (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) * 10.; // mm
-        Double_t roluy = mw[0][1] + (mw[1][1] - mw[0][1]) / (fMw1GeoPar->GetPosZ() - fMw0GeoPar->GetPosZ()) *
-                                        (fRoluGeoPar->GetPosZ() - fMw0GeoPar->GetPosZ());
-        AddRoluPos(rolux, roluy);
-    }
     //
     // Z from twim-music ------------------------------------
     Double_t countz = 0;
@@ -352,7 +358,7 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
             TwimTheta = HitTwim[i]->GetTheta();
             countz++;
             fZ = fTwimZ0 + fTwimZ1 * TMath::Sqrt(fE) * Beta + fTwimZ2 * fE * Beta * Beta;
-            HitTwim[i]->SetZcharge(fZ); // Upate Z
+            // HitTwim[i]->SetZcharge(fZ); // Upate Z
         }
     }
     //
