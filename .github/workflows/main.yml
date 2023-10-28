@@ -32,7 +32,7 @@ jobs:
 # Single job called "build-r3broot-sofia"
   build-r3broot-sofia:
     # The type of runner that the job will run on
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: clang-format
     if: always()
 
@@ -56,8 +56,8 @@ jobs:
           sudo cp .githubfiles/fairsoft.gsi.de.conf /etc/cvmfs/config.d
           sudo mkdir -p /cvmfs/fairsoft.gsi.de
           sudo mount -t cvmfs fairsoft.gsi.de /cvmfs/fairsoft.gsi.de
-          export SIMPATH=/cvmfs/fairsoft.gsi.de/ubuntu2204/fairsoft/nov22p1
-          export FAIRROOTPATH=/cvmfs/fairsoft.gsi.de/ubuntu2204/fairroot/v18.8.1_nov22p1
+          export SIMPATH=/cvmfs/fairsoft.gsi.de/debian10/fairsoft/nov22p1
+          export FAIRROOTPATH=/cvmfs/fairsoft.gsi.de/debian10/fairroot/v18.8.0_fs_nov22p1
           cd ..
           git clone https://github.com/R3BRootGroup/R3BRoot.git
           mv sofia R3BRoot
