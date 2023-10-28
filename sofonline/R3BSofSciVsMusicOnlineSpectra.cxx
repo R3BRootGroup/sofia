@@ -148,7 +148,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     char Name2[255];
 
     cMusicZvsCalPos = new TCanvas*[fNbDetectors];
-    fh2_MusZvsCalPos = new TH2F*[fNbDetectors];
+    fh2_MusZvsCalPos = R3B::root_owned<TH2F>* [fNbDetectors];
 
     // === R3B MUSIC CHARGE VERSUS RAW POSITION === //
     for (Int_t i = 0; i < fNbDetectors; i++)
@@ -157,7 +157,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         cMusicZvsCalPos[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
         cMusicZvsCalPos[i]->cd();
         sprintf(Name1, "MusZ_vs_CalPos_Sci%02d", i + 1);
-        fh2_MusZvsCalPos[i] = new TH2F(Name1, Name1, 2000, -100, 100, 1200, 1, 41);
+        fh2_MusZvsCalPos[i] = R3B::root_owned<TH2F>(Name1, Name1, 2000, -100, 100, 1200, 1, 41);
         fh2_MusZvsCalPos[i]->GetXaxis()->SetTitle("(RIGHT,Wix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
         fh2_MusZvsCalPos[i]->GetYaxis()->SetTitle("Charge (Z)");
         fh2_MusZvsCalPos[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -173,7 +173,8 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     // === R3B-MUSIC Hit data vs Sci CalPos === //
     cMusicDTvsCalPos = new TCanvas("R3BMusDT_vs_SciPos", "Music DT vs SciCalPos", 10, 10, 800, 700);
     cMusicDTvsCalPos->cd();
-    fh2_MusDTvsCalPos = new TH2F("fh2_MusDT_vs_SciPos", "R3B-MUSIC DT vs SciCalPos", 1400, -70, 70, 800, -20, 20);
+    fh2_MusDTvsCalPos =
+        R3B::root_owned<TH2F>("fh2_MusDT_vs_SciPos", "R3B-MUSIC DT vs SciCalPos", 1400, -70, 70, 800, -20, 20);
     fh2_MusDTvsCalPos->GetXaxis()->SetTitle("(RIGHT,Wix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
     fh2_MusDTvsCalPos->GetYaxis()->SetTitle("Drift Time (mm)");
     fh2_MusDTvsCalPos->GetYaxis()->SetTitleOffset(1.1);
@@ -189,7 +190,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     if (fIdS2 > 0)
     {
         cMusicZvsCalTofS2 = new TCanvas*[fNbDetectors - fIdS2];
-        fh2_MusZvsCalTofS2 = new TH2F*[fNbDetectors - fIdS2];
+        fh2_MusZvsCalTofS2 = R3B::root_owned<TH2F> * [fNbDetectors - fIdS2];
         Float_t minS2 = 0, maxS2 = 1;
 
         for (Int_t dstop = fIdS2; dstop < fNbDetectors; dstop++)
@@ -202,7 +203,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
             maxS2 = GetTofS2max(dstop - fIdS2);
             sprintf(Name1, "MusZ_vs_CalTof_S2_to_Sci%02d", dstop + 1);
             fh2_MusZvsCalTofS2[dstop - fIdS2] =
-                new TH2F(Name1, Name1, 100. * (maxS2 - minS2), minS2, maxS2, 1200, 1, 41);
+                R3B::root_owned<TH2F>(Name1, Name1, 100. * (maxS2 - minS2), minS2, maxS2, 1200, 1, 41);
             fh2_MusZvsCalTofS2[dstop - fIdS2]->GetXaxis()->SetTitle("ToFS2 [ns]");
             fh2_MusZvsCalTofS2[dstop - fIdS2]->GetYaxis()->SetTitle("Charge (Z)");
             fh2_MusZvsCalTofS2[dstop - fIdS2]->GetYaxis()->SetTitleOffset(1.1);
@@ -220,7 +221,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
     if (fIdS8 > 0)
     {
         cMusicZvsCalTofS8 = new TCanvas*[fNbDetectors - fIdS8];
-        fh2_MusZvsCalTofS8 = new TH2F*[fNbDetectors - fIdS8];
+        fh2_MusZvsCalTofS8 = R3B::root_owned<TH2F> * [fNbDetectors - fIdS8];
         Float_t minS8 = 0, maxS8 = 1;
         for (Int_t dstop = fIdS8; dstop < fNbDetectors; dstop++)
         {
@@ -232,7 +233,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
             maxS8 = GetTofS8max(dstop - fIdS8);
             sprintf(Name1, "MusZ_vs_CalTof_S8_to_Sci%02d", dstop + 1);
             fh2_MusZvsCalTofS8[dstop - fIdS8] =
-                new TH2F(Name1, Name1, 100 * (maxS8 - minS8), minS8, maxS8, 1200, 1, 41);
+                R3B::root_owned<TH2F>(Name1, Name1, 100 * (maxS8 - minS8), minS8, maxS8, 1200, 1, 41);
             fh2_MusZvsCalTofS8[dstop - fIdS8]->GetXaxis()->SetTitle("ToFS8 [ns]");
             fh2_MusZvsCalTofS8[dstop - fIdS8]->GetYaxis()->SetTitle("Charge (Z)");
             fh2_MusZvsCalTofS8[dstop - fIdS8]->GetYaxis()->SetTitleOffset(1.1);
@@ -252,7 +253,7 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 
         cAqvsq = new TCanvas("FRSv_AoverQ_vs_Q", "A/q versus q 2D", 10, 10, 800, 700);
         cAqvsq->cd();
-        fh2_Aqvsq = new TH2F("fh2v_Aq_vs_q_frs", "FRS: A/q vs q", 3000, 1., 3, 1300, 8, 39.5);
+        fh2_Aqvsq = R3B::root_owned<TH2F>("fh2v_Aq_vs_q_frs", "FRS: A/q vs q", 3000, 1., 3, 1300, 8, 39.5);
         fh2_Aqvsq->GetXaxis()->SetTitle("A/q");
         fh2_Aqvsq->GetYaxis()->SetTitle("Z [Charge units]");
         fh2_Aqvsq->GetYaxis()->SetTitleOffset(1.1);
@@ -266,7 +267,8 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
 
         cAqvsq_mult1Tref = new TCanvas("Z_vs_AoverQ", "Z versus A/q versus if multTref==1", 10, 10, 800, 700);
         cAqvsq_mult1Tref->cd();
-        fh2_Aqvsq_mult1Tref = new TH2F("fh2_AoQ_vs_q_mult1Tref", "q vs A/q if mult Tref==1", 2000, 2., 3, 1200, 10, 40);
+        fh2_Aqvsq_mult1Tref =
+            R3B::root_owned<TH2F>("fh2_AoQ_vs_q_mult1Tref", "q vs A/q if mult Tref==1", 2000, 2., 3, 1200, 10, 40);
         fh2_Aqvsq_mult1Tref->GetXaxis()->SetTitle("A/q");
         fh2_Aqvsq_mult1Tref->GetYaxis()->SetTitle("Z [Charge units]");
         fh2_Aqvsq_mult1Tref->GetYaxis()->SetTitleOffset(1.1);
@@ -283,26 +285,32 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         cEvsAoQ->Divide(3, 2);
         cEcorrvsAoQ = new TCanvas("R3BMusEcorr_vs_AoQ", "Music Esum corr from beta vs Aoq", 10, 10, 800, 700);
         cEcorrvsAoQ->Divide(3, 2);
-        fh2_EvsAoQ = new TH2F*[6];
-        fh2_EcorrvsAoQ = new TH2F*[6];
+        fh2_EvsAoQ = R3B::root_owned<TH2F>* [6];
+        fh2_EcorrvsAoQ = R3B::root_owned<TH2F>* [6];
 
-        fh2_EvsAoQ[0] = new TH2F("E_vs_AoQ_mult1", "E_vs_AoQ_mult1", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EvsAoQ[1] = new TH2F("E_vs_AoQ_mult2-5", "E_vs_AoQ_mult2-5", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EvsAoQ[2] = new TH2F("E_vs_AoQ_mult6-10", "E_vs_AoQ_mult6-10", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EvsAoQ[3] = new TH2F("E_vs_AoQ_mult11-15", "E_vs_AoQ_mult11-16", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EvsAoQ[4] = new TH2F("E_vs_AoQ_mult16-20", "E_vs_AoQ_mult16-20", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EvsAoQ[5] = new TH2F("E_vs_AoQ_multup20", "E_vs_AoQ_multup20", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EcorrvsAoQ[0] = new TH2F("Ecorr_vs_AoQ_mult1", "Ecorr_vs_AoQ_mult1", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EvsAoQ[0] = R3B::root_owned<TH2F>("E_vs_AoQ_mult1", "E_vs_AoQ_mult1", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EvsAoQ[1] =
+            R3B::root_owned<TH2F>("E_vs_AoQ_mult2-5", "E_vs_AoQ_mult2-5", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EvsAoQ[2] =
+            R3B::root_owned<TH2F>("E_vs_AoQ_mult6-10", "E_vs_AoQ_mult6-10", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EvsAoQ[3] =
+            R3B::root_owned<TH2F>("E_vs_AoQ_mult11-15", "E_vs_AoQ_mult11-16", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EvsAoQ[4] =
+            R3B::root_owned<TH2F>("E_vs_AoQ_mult16-20", "E_vs_AoQ_mult16-20", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EvsAoQ[5] =
+            R3B::root_owned<TH2F>("E_vs_AoQ_multup20", "E_vs_AoQ_multup20", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[0] =
+            R3B::root_owned<TH2F>("Ecorr_vs_AoQ_mult1", "Ecorr_vs_AoQ_mult1", 800, 2.25, 2.650, 1100, 1000, 6500);
         fh2_EcorrvsAoQ[1] =
-            new TH2F("Ecorr_vs_AoQ_mult2-5", "Ecorr_vs_AoQ_mult2-5", 800, 2.25, 2.650, 1100, 1000, 6500);
+            R3B::root_owned<TH2F>("Ecorr_vs_AoQ_mult2-5", "Ecorr_vs_AoQ_mult2-5", 800, 2.25, 2.650, 1100, 1000, 6500);
         fh2_EcorrvsAoQ[2] =
-            new TH2F("Ecorr_vs_AoQ_mult6-10", "Ecorr_vs_AoQ_mult6-10", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EcorrvsAoQ[3] =
-            new TH2F("Ecorr_vs_AoQ_mult11-15", "Ecorr_vs_AoQ_mult11-15", 800, 2.25, 2.650, 1100, 1000, 6500);
-        fh2_EcorrvsAoQ[4] =
-            new TH2F("Ecorr_vs_AoQ_mult16-20", "Ecorr_vs_AoQ_mult16-20", 800, 2.25, 2.650, 1100, 1000, 6500);
+            R3B::root_owned<TH2F>("Ecorr_vs_AoQ_mult6-10", "Ecorr_vs_AoQ_mult6-10", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[3] = R3B::root_owned<TH2F>(
+            "Ecorr_vs_AoQ_mult11-15", "Ecorr_vs_AoQ_mult11-15", 800, 2.25, 2.650, 1100, 1000, 6500);
+        fh2_EcorrvsAoQ[4] = R3B::root_owned<TH2F>(
+            "Ecorr_vs_AoQ_mult16-20", "Ecorr_vs_AoQ_mult16-20", 800, 2.25, 2.650, 1100, 1000, 6500);
         fh2_EcorrvsAoQ[5] =
-            new TH2F("Ecorr_vs_AoQ_multup20", "Ecorr_vs_AoQ_multup20", 800, 2.25, 2.650, 1100, 1000, 6500);
+            R3B::root_owned<TH2F>("Ecorr_vs_AoQ_multup20", "Ecorr_vs_AoQ_multup20", 800, 2.25, 2.650, 1100, 1000, 6500);
 
         for (Int_t i = 0; i < 6; i++)
         {
@@ -335,13 +343,14 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         cEvsBeta = new TCanvas("MusE_vs_Beta", "MusE_vs_Beta", 10, 10, 800, 700);
         cEvsBeta->Divide(2, 1);
 
-        fh2_ErawVsBeta = new TH2F("ErawVsBeta", "ErawVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
+        fh2_ErawVsBeta = R3B::root_owned<TH2F>("ErawVsBeta", "ErawVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
         cEvsBeta->cd(1);
         fh2_ErawVsBeta->GetYaxis()->SetTitle("Esum - R3B MUSIC");
         fh2_ErawVsBeta->GetXaxis()->SetTitle("Beta");
         fh2_ErawVsBeta->Draw("col");
 
-        fh2_EcorrBetaVsBeta = new TH2F("EcorrBetaVsBeta", "EcorrBetaVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
+        fh2_EcorrBetaVsBeta =
+            R3B::root_owned<TH2F>("EcorrBetaVsBeta", "EcorrBetaVsBeta", 1200, 0.74, 0.80, 1100, 1000, 6500);
         cEvsBeta->cd(2);
         fh2_EcorrBetaVsBeta->GetYaxis()->SetTitle("E corrected from beta - R3B MUSIC");
         fh2_EcorrBetaVsBeta->GetXaxis()->SetTitle("Beta");
@@ -351,9 +360,9 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         cEcorr = new TCanvas("MusEcorr", "MusEcorr", 10, 10, 800, 700);
         cEcorr->Divide(3, 1);
 
-        fh1_Esum = new TH1F("Esum", "Esum", 1075, 2200, 6500);
-        fh1_EcorrBeta = new TH1F("EcorrBeta", "EcorrBeta", 1075, 2200, 6500);
-        fh1_EcorrBetaDT = new TH1F("EcorrBetaDT", "EcorrBetaDT", 1075, 2200, 6500);
+        fh1_Esum = R3B::root_owned<TH1F>("Esum", "Esum", 1075, 2200, 6500);
+        fh1_EcorrBeta = R3B::root_owned<TH1F>("EcorrBeta", "EcorrBeta", 1075, 2200, 6500);
+        fh1_EcorrBetaDT = R3B::root_owned<TH1F>("EcorrBetaDT", "EcorrBetaDT", 1075, 2200, 6500);
         cEcorr->cd(1);
         fh1_Esum->SetLineColor(kBlue);
         fh1_EcorrBeta->SetLineColor(kRed);
@@ -363,13 +372,14 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         fh1_Esum->Draw("same");
         fh1_EcorrBeta->Draw("same");
 
-        fh2_EcorrBetaVsDT = new TH2F("EcorrBetaVsDT", "EcorrBetaVsDT", 800, -20, 20, 860, 2200, 6500);
+        fh2_EcorrBetaVsDT = R3B::root_owned<TH2F>("EcorrBetaVsDT", "EcorrBetaVsDT", 800, -20, 20, 860, 2200, 6500);
         fh2_EcorrBetaVsDT->GetXaxis()->SetTitle("Drift Time [mm]");
         fh2_EcorrBetaVsDT->GetYaxis()->SetTitle("E corrected from beta");
         cEcorr->cd(2);
         fh2_EcorrBetaVsDT->Draw("COL");
 
-        fh2_EcorrBetaDTVsDT = new TH2F("EcorrBetaDTVsDT", "EcorrBetaDTVsDT", 800, -20, 20, 860, 2200, 6500);
+        fh2_EcorrBetaDTVsDT =
+            R3B::root_owned<TH2F>("EcorrBetaDTVsDT", "EcorrBetaDTVsDT", 800, -20, 20, 860, 2200, 6500);
         fh2_EcorrBetaDTVsDT->GetXaxis()->SetTitle("Drift Time [mm]");
         fh2_EcorrBetaDTVsDT->GetYaxis()->SetTitle("E corrected from beta and DT");
         cEcorr->cd(3);
@@ -378,7 +388,8 @@ InitStatus R3BSofSciVsMusicOnlineSpectra::Init()
         // === Music E corrected versus A/Q === //
         cEcorrvsAoQall = new TCanvas(
             "R3BMusEcorrVsAoQall", "Music Esum corr from beta and DT vs Aoq all multiplicities", 10, 10, 800, 700);
-        fh2_EcorrVsAoQ_all = new TH2F("EcorrVsAoQ_allMult", "Ecorr_vs_AoQ_allMult", 800, 2.25, 2.650, 900, 2000, 6500);
+        fh2_EcorrVsAoQ_all =
+            R3B::root_owned<TH2F>("EcorrVsAoQ_allMult", "Ecorr_vs_AoQ_allMult", 800, 2.25, 2.650, 900, 2000, 6500);
         fh2_EcorrVsAoQ_all->GetXaxis()->SetTitle("mass-over-charge ratio A/Q");
         fh2_EcorrVsAoQ_all->GetYaxis()->SetTitle("E corrected from beta and DT [arb. unit]");
         cEcorrvsAoQall->cd();

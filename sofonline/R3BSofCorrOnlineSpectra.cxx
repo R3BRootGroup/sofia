@@ -238,9 +238,10 @@ InitStatus R3BSofCorrOnlineSpectra::Init()
     if (fCorrvMapped && fSciTcal && fCorrmMapped)
     {
         cMap_Corr = new TCanvas("Corr_sofia_daqs", "Corr_sofia_daqs", 10, 10, 800, 700);
-        fh2_Correlation = new TH2F*[3];
+        fh2_Correlation = R3B::root_owned<TH2F>* [3];
 
-        fh2_Correlation[0] = new TH2F("Corrm_vs_Corrv", "Corrm_vs_Corrv", 1000, 250, 1000, 1000, 20000, 30000);
+        fh2_Correlation[0] =
+            R3B::root_owned<TH2F>("Corrm_vs_Corrv", "Corrm_vs_Corrv", 1000, 250, 1000, 1000, 20000, 30000);
         fh2_Correlation[0]->GetXaxis()->SetTitle("DeltaT CorrV [ns]");
         fh2_Correlation[0]->GetYaxis()->SetTitle("T CorrM [100 ps]");
         cMap_Corr->cd();

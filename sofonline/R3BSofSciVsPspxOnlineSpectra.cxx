@@ -144,7 +144,7 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
         if (fSciCal)
         {
             c_PspxE_vs_SciPosCal = new TCanvas*[fNbDetectors];
-            fh2_PspxE_vs_SciPosCal = new TH2F*[fNbDetectors];
+            fh2_PspxE_vs_SciPosCal = R3B::root_owned<TH2F>* [fNbDetectors];
 
             for (Int_t i = 0; i < fNbDetectors; i++)
             {
@@ -152,7 +152,7 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
                 c_PspxE_vs_SciPosCal[i] = new TCanvas(Name1, Name1, 10, 10, 800, 700);
 
                 sprintf(Name1, "EPspx1_vs_PosCalSci%02d", i + 1);
-                fh2_PspxE_vs_SciPosCal[i] = new TH2F(Name1, Name1, 1000, -20, 20, 900, 15000, 35000);
+                fh2_PspxE_vs_SciPosCal[i] = R3B::root_owned<TH2F>(Name1, Name1, 1000, -20, 20, 900, 15000, 35000);
                 fh2_PspxE_vs_SciPosCal[i]->GetXaxis()->SetTitle(
                     "(RIGWix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
                 fh2_PspxE_vs_SciPosCal[i]->GetYaxis()->SetTitle("E [channels]");
@@ -169,24 +169,24 @@ InitStatus R3BSofSciVsPspxOnlineSpectra::Init()
 
             c_PspxE_vs_BetaS2 = new TCanvas("PspxE_vs_BetaS2", "PspxE_vs_BetaS2", 10, 10, 800, 700);
             // c_PspxE_vs_BetaS2->Divide(2, 2);
-            fh2_PspxE_vs_BetaS2 = new TH2F*[1];
+            fh2_PspxE_vs_BetaS2 = R3B::root_owned<TH2F>* [1];
 
             c_PspxE_vs_AoQraw = new TCanvas("PspxE_vs_AoQraw", "PspxE_vs_AoQraw", 10, 10, 800, 700);
             // c_PspxE_vs_AoQraw->Divide(2, 2);
-            fh2_PspxE_vs_AoQraw = new TH2F*[1];
+            fh2_PspxE_vs_AoQraw = R3B::root_owned<TH2F>* [1];
 
             for (Int_t section = 0; section < 1; section++)
             {
                 c_PspxE_vs_BetaS2->cd(section + 1);
                 sprintf(Name1, "PspxES%02d_vs_BetaS2", section + 1);
-                fh2_PspxE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
+                fh2_PspxE_vs_BetaS2[section] = R3B::root_owned<TH2F>(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
                 fh2_PspxE_vs_BetaS2[section]->GetXaxis()->SetTitle("Beta from S2");
                 fh2_PspxE_vs_BetaS2[section]->GetYaxis()->SetTitle(Form("E Pspx %i", section + 1));
                 fh2_PspxE_vs_BetaS2[section]->Draw("COL");
 
                 c_PspxE_vs_AoQraw->cd(section + 1);
                 sprintf(Name1, "PspxES%02d_vs_AoQraw", section + 1);
-                fh2_PspxE_vs_AoQraw[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
+                fh2_PspxE_vs_AoQraw[section] = R3B::root_owned<TH2F>(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
                 fh2_PspxE_vs_AoQraw[section]->GetXaxis()->SetTitle("A/Q");
                 fh2_PspxE_vs_AoQraw[section]->GetYaxis()->SetTitle(Form("E Pspx %i", section + 1));
                 fh2_PspxE_vs_AoQraw[section]->Draw("COL");

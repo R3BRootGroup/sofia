@@ -7,6 +7,7 @@
 #define R3BSofSciVsPspxOnlineSpectra_H
 
 #include "FairTask.h"
+#include "R3BShared.h"
 #include "TCanvas.h"
 #include "TH2F.h"
 #include "TMath.h"

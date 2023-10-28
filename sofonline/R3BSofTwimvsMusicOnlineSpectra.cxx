@@ -97,7 +97,8 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
 
     // Hit data
     TCanvas* c_E = new TCanvas("Charge_e_correlation", "Music #sqrt{E} correlation", 10, 10, 800, 700);
-    fh2_hit_e = new TH2F("fh2_Twim_vs_Music_charge_e", "Twim vs Music: #sqrt{E}", 1000, 0, 100, 1000, 0, 100);
+    fh2_hit_e =
+        R3B::root_owned<TH2F>("fh2_Twim_vs_Music_charge_e", "Twim vs Music: #sqrt{E}", 1000, 0, 100, 1000, 0, 100);
     fh2_hit_e->GetXaxis()->SetTitle("Music #sqrt{E}");
     fh2_hit_e->GetYaxis()->SetTitle("Twim #sqrt{E}");
     fh2_hit_e->GetYaxis()->SetTitleOffset(1.1);
@@ -111,7 +112,8 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
     fh2_hit_e->Draw("col");
 
     TCanvas* c_Z = new TCanvas("Charge_z_correlation", "Charge Z correlation", 10, 10, 800, 700);
-    fh2_hit_z = new TH2F("fh2_Twim_vs_Music_charge_z", "Twim vs Music: Charge Z", 1000, 6, 38, 1000, 6, 38);
+    fh2_hit_z =
+        R3B::root_owned<TH2F>("fh2_Twim_vs_Music_charge_z", "Twim vs Music: Charge Z", 1000, 6, 38, 1000, 6, 38);
     fh2_hit_z->GetXaxis()->SetTitle("Music charge (Z)");
     fh2_hit_z->GetYaxis()->SetTitle("Twim charge (Z)");
     fh2_hit_z->GetYaxis()->SetTitleOffset(1.1);
@@ -125,7 +127,8 @@ InitStatus R3BSofTwimvsMusicOnlineSpectra::Init()
     fh2_hit_z->Draw("col");
 
     TCanvas* c_theta = new TCanvas("Theta_correlation", "#theta_{XZ} correlation", 10, 10, 800, 700);
-    fh2_hit_theta = new TH2F("fh2_Twim_vs_Music_theta", "Twim vs Music: #theta_{XZ}", 900, -30, 30, 900, -30, 30);
+    fh2_hit_theta =
+        R3B::root_owned<TH2F>("fh2_Twim_vs_Music_theta", "Twim vs Music: #theta_{XZ}", 900, -30, 30, 900, -30, 30);
     fh2_hit_theta->GetXaxis()->SetTitle("Music #theta_{XZ} [mrad]");
     fh2_hit_theta->GetYaxis()->SetTitle("Twim #theta_{XZ} [mrad]");
     fh2_hit_theta->GetXaxis()->SetTitleOffset(1.1);

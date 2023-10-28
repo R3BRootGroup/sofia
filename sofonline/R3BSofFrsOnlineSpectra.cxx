@@ -92,7 +92,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
     // Hit data, beta
     Name1 = "fh1_beta_frs";
     Name2 = "FRS: Beta";
-    fh1_beta = new TH1F(Name1, Name2, 800, 0.45, 0.9);
+    fh1_beta = R3B::root_owned<TH1F>(Name1, Name2, 800, 0.45, 0.9);
     fh1_beta->GetXaxis()->SetTitle("Beta");
     fh1_beta->GetYaxis()->SetTitle("Counts");
     fh1_beta->GetYaxis()->SetTitleOffset(1.15);
@@ -111,7 +111,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
     Name1 = "fh1_brho_frs";
     Name2 = "FRS: Brho S2-Cave";
-    fh1_brho = new TH1F(Name1, Name2, 1000, 7., 11.);
+    fh1_brho = R3B::root_owned<TH1F>(Name1, Name2, 1000, 7., 11.);
     fh1_brho->GetXaxis()->SetTitle("Brho [Tm]");
     fh1_brho->GetYaxis()->SetTitle("Counts");
     fh1_brho->GetYaxis()->SetTitleOffset(1.15);
@@ -130,7 +130,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
     Name1 = "fh2_Xs2_vs_beta_frs";
     Name2 = "FRS: Xs2 vs #beta";
-    fh2_Xs2vsbeta = new TH2F(Name1, Name2, 800, -100., 100., 400, 0.45, 0.9);
+    fh2_Xs2vsbeta = R3B::root_owned<TH2F>(Name1, Name2, 800, -100., 100., 400, 0.45, 0.9);
     fh2_Xs2vsbeta->GetXaxis()->SetTitle("X at S2 [mm]");
     fh2_Xs2vsbeta->GetYaxis()->SetTitle("FRS-#beta");
     fh2_Xs2vsbeta->GetYaxis()->SetTitleOffset(1.1);
@@ -147,7 +147,7 @@ InitStatus R3BSofFrsOnlineSpectra::Init()
 
     Name1 = "fh2_Aq_vs_q_frs";
     Name2 = "FRS: A/q vs q";
-    fh2_Aqvsq = new TH2F(Name1, Name2, 900, 1.6, 2.7, 900, 10, 30.5);
+    fh2_Aqvsq = R3B::root_owned<TH2F>(Name1, Name2, 900, 1.6, 2.7, 900, 10, 30.5);
     fh2_Aqvsq->GetXaxis()->SetTitle("A/q");
     fh2_Aqvsq->GetYaxis()->SetTitle("Z [Charge units]");
     fh2_Aqvsq->GetYaxis()->SetTitleOffset(1.1);

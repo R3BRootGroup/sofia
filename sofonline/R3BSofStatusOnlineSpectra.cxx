@@ -260,7 +260,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
 
     // Triggers
     cTrigger = new TCanvas("Triggers", "Trigger information", 10, 10, 800, 700);
-    fh1_trigger = new TH1F("fh1_trigger", "Trigger information: Tpat", 17, -0.5, 16.5);
+    fh1_trigger = R3B::root_owned<TH1F>("fh1_trigger", "Trigger information: Tpat", 17, -0.5, 16.5);
     fh1_trigger->GetXaxis()->SetTitle("Trigger number (tpat)");
     fh1_trigger->GetYaxis()->SetTitle("Counts");
     fh1_trigger->GetXaxis()->CenterTitle(true);
@@ -277,7 +277,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
 
     // Difference between master and sofia WRs
     cWr = new TCanvas("WR_Master_Sofia", "WR_Master_Sofia", 10, 10, 500, 500);
-    fh1_wr[0] = new TH1F(
+    fh1_wr[0] = R3B::root_owned<TH1F>(
         "fh1_WRSE_Master_Sofia", "WR-Master - WRSE-Sofia(back) , WR-Master - WRME-Sofia(red) ", 1200, -4100, 4100);
     fh1_wr[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wr[0]->GetYaxis()->SetTitle("Counts");
@@ -288,7 +288,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     fh1_wr[0]->SetLineColor(1);
     fh1_wr[0]->SetLineWidth(2);
     fh1_wr[0]->Draw("");
-    fh1_wr[1] = new TH1F("fh1_WRME_Master_Sofia", "WR-Master - WRME-Sofia", 1200, -4100, 4100);
+    fh1_wr[1] = R3B::root_owned<TH1F>("fh1_WRME_Master_Sofia", "WR-Master - WRME-Sofia", 1200, -4100, 4100);
     fh1_wr[1]->SetLineColor(2);
     fh1_wr[1]->SetLineWidth(2);
     fh1_wr[1]->Draw("same");
@@ -299,7 +299,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     sprintf(Name2, "fh1_WR_Sofia_Wixhausen");
     sprintf(Name3, "WR-Sofia - WR-Other"); // Messel (blue), Wixhausen (red)
-    fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
+    fh1_wrs[0] = R3B::root_owned<TH1F>(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wrs[0]->GetYaxis()->SetTitle("Counts");
     fh1_wrs[0]->GetYaxis()->SetTitleOffset(1.3);
@@ -309,27 +309,27 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     fh1_wrs[0]->SetLineWidth(3);
     gPad->SetLogy(1);
     stack_wrs->Add(fh1_wrs[0]); //->Draw("");
-    fh1_wrs[1] = new TH1F("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
+    fh1_wrs[1] = R3B::root_owned<TH1F>("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
     fh1_wrs[1]->SetLineColor(4);
     fh1_wrs[1]->SetLineWidth(3);
     if (fWRItemsCalifa)
         stack_wrs->Add(fh1_wrs[1]); //->Draw("same");
-    fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
+    fh1_wrs[2] = R3B::root_owned<TH1F>("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
     fh1_wrs[2]->SetLineColor(3);
     fh1_wrs[2]->SetLineWidth(3);
     if (fWRItemsNeuland)
         stack_wrs->Add(fh1_wrs[2]); //->Draw("same");
-    fh1_wrs[3] = new TH1F("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
+    fh1_wrs[3] = R3B::root_owned<TH1F>("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
     fh1_wrs[3]->SetLineColor(1);
     fh1_wrs[3]->SetLineWidth(3);
     if (fWRItemsS2)
         stack_wrs->Add(fh1_wrs[3]); //->Draw("same");
-    fh1_wrs[4] = new TH1F("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
+    fh1_wrs[4] = R3B::root_owned<TH1F>("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
     fh1_wrs[4]->SetLineColor(5);
     fh1_wrs[4]->SetLineWidth(3);
     if (fWRItemsS8)
         stack_wrs->Add(fh1_wrs[4]); //->Draw("same");
-    fh1_wrs[5] = new TH1F("fh1_WR_Sofia_Ams", "", 1200, -4100, 4100);
+    fh1_wrs[5] = R3B::root_owned<TH1F>("fh1_WR_Sofia_Ams", "", 1200, -4100, 4100);
     fh1_wrs[5]->SetLineColor(7);
     fh1_wrs[5]->SetLineWidth(3);
     if (fWRItemsAms)
@@ -399,7 +399,8 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
     gh->SetMarkerSize(2);
     gh->SetMarkerColor(2);
 
-    fh1_GeneralView = new TH1F("Detector_eff", "Detector efficiency with respect TPats 1-8", 10, 0.5, 10.5);
+    fh1_GeneralView =
+        R3B::root_owned<TH1F>("Detector_eff", "Detector efficiency with respect TPats 1-8", 10, 0.5, 10.5);
     fh1_GeneralView->SetMinimum(0.);
     fh1_GeneralView->SetMaximum(1.2);
     fh1_GeneralView->GetXaxis()->CenterTitle(true);
@@ -428,7 +429,7 @@ InitStatus R3BSofStatusOnlineSpectra::Init()
 
     cTotNbTrig = new TCanvas("Display_triggers", "Trigger display", 10, 10, 800, 700);
     cTotNbTrig->cd();
-    fh1_display = new TH1F("Display", "Display trigger info (Total events)", 10, 0., 10.);
+    fh1_display = R3B::root_owned<TH1F>("Display", "Display trigger info (Total events)", 10, 0., 10.);
     fh1_display->GetXaxis()->SetLabelSize(0.0);
     fh1_display->GetYaxis()->SetLabelSize(0.0);
     fh1_display->GetXaxis()->SetAxisColor(0);

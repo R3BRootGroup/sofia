@@ -209,7 +209,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     for (Int_t i = 0; i < NbDets; i++)
     {
         sprintf(Name1, "SofTofW%i_RawPosAtTcal_Mult1", i + 1);
-        fh1_RawPos_AtTcalMult1[i] = new TH1F(Name1, Name1, 40000, -20, 20);
+        fh1_RawPos_AtTcalMult1[i] = R3B::root_owned<TH1F>(Name1, Name1, 40000, -20, 20);
         fh1_RawPos_AtTcalMult1[i]->GetXaxis()->SetTitle("Raw position [ns with one bin/ps]");
         fh1_RawPos_AtTcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_RawPos_AtTcalMult1[i]->GetXaxis()->CenterTitle(true);
@@ -222,7 +222,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         fh1_RawPos_AtTcalMult1[i]->Draw("");
 
         sprintf(Name1, "SofTofW%i_RawPosAtSingleTcal", i + 1);
-        fh1_RawPos_AtSingleTcal[i] = new TH1F(Name1, Name1, 40000, -20, 20);
+        fh1_RawPos_AtSingleTcal[i] = R3B::root_owned<TH1F>(Name1, Name1, 40000, -20, 20);
         fh1_RawPos_AtSingleTcal[i]->GetXaxis()->SetTitle("Raw position [ns with one bin/ps]");
         fh1_RawPos_AtSingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_RawPos_AtSingleTcal[i]->GetXaxis()->CenterTitle(true);
@@ -298,7 +298,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         cTwimvsTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
         sprintf(Name1, "fh2_Twim_vs_ToF_Plastic_%i", i + 1);
         sprintf(Name2, "Twim vs ToF for plastic %i", i + 1);
-        fh2_Twim_Tof[i] = new TH2F(Name1, Name2, 7000, fTwimTofRangeMin, fTwimTofRangeMax, 1000, 5, 95);
+        fh2_Twim_Tof[i] = R3B::root_owned<TH2F>(Name1, Name2, 7000, fTwimTofRangeMin, fTwimTofRangeMax, 1000, 5, 95);
         fh2_Twim_Tof[i]->GetXaxis()->SetTitle("Raw time-of-flight [ns with one bin/ps]");
         fh2_Twim_Tof[i]->GetYaxis()->SetTitle("Charge Z");
         fh2_Twim_Tof[i]->GetXaxis()->CenterTitle(true);
@@ -316,7 +316,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     cMwpc3XvsTof = new TCanvas(Name1, Name2, 10, 10, 1000, 900);
     sprintf(Name1, "fh2_Mwpc3X_vs_ToF_Plastic");
     sprintf(Name2, "Mwpc3X vs ToF for plastic number");
-    fh2_Mwpc3X_Tof = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 288 * 8, 0.5, 288.5);
+    fh2_Mwpc3X_Tof = R3B::root_owned<TH2F>(Name1, Name2, 28 * 8, 0.5, 28.5, 288 * 8, 0.5, 288.5);
     fh2_Mwpc3X_Tof->GetXaxis()->SetTitle("TofW-Plastic number [1-28]");
     fh2_Mwpc3X_Tof->GetYaxis()->SetTitle("MWPC3-X [pads]");
     fh2_Mwpc3X_Tof->GetXaxis()->CenterTitle(true);
@@ -333,7 +333,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
         sprintf(Name1, "Mwpc3Y_vs_PosToF_Plastic%i", i + 1);
         cMwpc3YvsPosTof[i] = new TCanvas(Name1, Name1, 10, 10, 1000, 900);
         sprintf(Name1, "fh2_Mwpc3Y_vs_PosToF_Plastic%i", i + 1);
-        fh2_Mwpc3Y_PosTof[i] = new TH2F(Name1, Name1, 1000, -20, 20, 240, 0, 120);
+        fh2_Mwpc3Y_PosTof[i] = R3B::root_owned<TH2F>(Name1, Name1, 1000, -20, 20, 240, 0, 120);
         fh2_Mwpc3Y_PosTof[i]->GetXaxis()->SetTitle("Pos TofW-Plastic [ps]");
         fh2_Mwpc3Y_PosTof[i]->GetYaxis()->SetTitle("MWPC3-Y [pads]");
         fh2_Mwpc3Y_PosTof[i]->GetXaxis()->CenterTitle(true);
@@ -352,7 +352,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     cTofvsplas = new TCanvas(Name1, Name2, 10, 10, 1000, 900);
     sprintf(Name1, "fh2_ToF-hit_vs_Plastic");
     sprintf(Name2, "ToF-hit vs plastic number");
-    fh2_Tof_hit = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 5000, 0., 50.);
+    fh2_Tof_hit = R3B::root_owned<TH2F>(Name1, Name2, 28 * 8, 0.5, 28.5, 5000, 0., 50.);
     fh2_Tof_hit->GetXaxis()->SetTitle("TofW-Plastic number [1-28]");
     fh2_Tof_hit->GetYaxis()->SetTitle("ToF-hit [ns]");
     fh2_Tof_hit->GetXaxis()->CenterTitle(true);
@@ -369,7 +369,7 @@ InitStatus R3BSofTofWOnlineSpectra::Init()
     cPosvsplas = new TCanvas(Name1, Name2, 10, 10, 1000, 900);
     sprintf(Name1, "fh2_Pos-hit_vs_Plastic");
     sprintf(Name2, "Pos-hit vs plastic number");
-    fh2_Pos_hit = new TH2F(Name1, Name2, 28 * 8, 0.5, 28.5, 6000, -300., 300.);
+    fh2_Pos_hit = R3B::root_owned<TH2F>(Name1, Name2, 28 * 8, 0.5, 28.5, 6000, -300., 300.);
     fh2_Pos_hit->GetXaxis()->SetTitle("TofW-Plastic number [1-28]");
     fh2_Pos_hit->GetYaxis()->SetTitle("Pos-hit [mm]");
     fh2_Pos_hit->GetXaxis()->CenterTitle(true);

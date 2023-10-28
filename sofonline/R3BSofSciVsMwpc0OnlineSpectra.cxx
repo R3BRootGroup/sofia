@@ -121,7 +121,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
 
     cMwpc0vsRawPos->cd(1);
     fh2_Mwpc0XvsRawPos =
-        new TH2F("fh2_Mwpc0X_vs_RawPosSciCaveC", "Mwpc0-X vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
+        R3B::root_owned<TH2F>("fh2_Mwpc0X_vs_RawPosSciCaveC", "Mwpc0-X vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0XvsRawPos->GetXaxis()->SetTitle(
         "(RIGHT,Wix. side) -->  SofSci-RawPos Cave C [ns] --> (LEFT,Mes. side) -->");
     fh2_Mwpc0XvsRawPos->GetYaxis()->SetTitle("Mwpc0-X in the det frame [mm]");
@@ -136,7 +136,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
 
     cMwpc0vsRawPos->cd(2);
     fh2_Mwpc0YvsRawPos =
-        new TH2F("fh2_Mwpc0Y_vs_RawPosSciCaveC", "Mwpc0-Y vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
+        R3B::root_owned<TH2F>("fh2_Mwpc0Y_vs_RawPosSciCaveC", "Mwpc0-Y vs SciCaveC-RawPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0YvsRawPos->GetXaxis()->SetTitle(
         "(RIGHT,Wix. side) -->  SofSci-RawPos Cave C [ns] --> (LEFT,Mes. side) -->");
     fh2_Mwpc0YvsRawPos->GetYaxis()->SetTitle("Mwpc0-Y in the det frame [mm]");
@@ -155,7 +155,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
 
     cMwpc0vsCalPos->cd(1);
     fh2_Mwpc0XvsCalPos =
-        new TH2F("fh2_Mwpc0X_vs_CalPosSciCaveC", "Mwpc0-X vs SciCaveC-CalPos", 1400, -7, 7, 2000, -50, 50);
+        R3B::root_owned<TH2F>("fh2_Mwpc0X_vs_CalPosSciCaveC", "Mwpc0-X vs SciCaveC-CalPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0XvsCalPos->GetXaxis()->SetTitle("(RIGHT,Wix. side) -->  SofSci-X Cave C [mm] --> (LEFT,Mes. side) -->");
     fh2_Mwpc0XvsCalPos->GetYaxis()->SetTitle("Mwpc0-X [mm]");
     fh2_Mwpc0XvsCalPos->GetYaxis()->SetTitleOffset(1.1);
@@ -169,7 +169,7 @@ InitStatus R3BSofSciVsMwpc0OnlineSpectra::Init()
 
     cMwpc0vsCalPos->cd(2);
     fh2_Mwpc0YvsCalPos =
-        new TH2F("fh2_Mwpc0Y_vs_CalPosSciCaveC", "Mwpc0-Y vs SciCaveC-CalPos", 1400, -7, 7, 2000, -50, 50);
+        R3B::root_owned<TH2F>("fh2_Mwpc0Y_vs_CalPosSciCaveC", "Mwpc0-Y vs SciCaveC-CalPos", 1400, -7, 7, 2000, -50, 50);
     fh2_Mwpc0YvsCalPos->GetXaxis()->SetTitle("(RIGHT,Wix. side) -->  SofSci-X Cave C [mm] --> (LEFT,Mes. side) -->");
     fh2_Mwpc0YvsCalPos->GetYaxis()->SetTitle("Mwpc0-Y [mm]");
     fh2_Mwpc0YvsCalPos->GetYaxis()->SetTitleOffset(1.1);

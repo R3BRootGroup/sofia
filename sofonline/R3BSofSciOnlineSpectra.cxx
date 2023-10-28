@@ -175,10 +175,10 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // === POSITION AT TCAL, SINGLE TCAL AND CAL LEVELS === //
     cPos = new TCanvas*[fNbDetectors];
     cRawPosVsCalPos = new TCanvas*[fNbDetectors];
-    fh1_RawPos_TcalMult1 = new TH1F*[fNbDetectors];
-    fh1_RawPos_SingleTcal = new TH1F*[fNbDetectors];
-    fh1_CalPos = new TH1F*[fNbDetectors];
-    fh2_RawPosVsCalPos = new TH2F*[fNbDetectors];
+    fh1_RawPos_TcalMult1 = R3B::root_owned<TH1F>* [fNbDetectors];
+    fh1_RawPos_SingleTcal = R3B::root_owned<TH1F>* [fNbDetectors];
+    fh1_CalPos = R3B::root_owned<TH1F>* [fNbDetectors];
+    fh2_RawPosVsCalPos = R3B::root_owned<TH2F>* [fNbDetectors];
 
     if (fIdS2 > 0)
     {
@@ -256,14 +256,14 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     sprintf(Name1, "DeltaClockPerSci");
     cDeltaClockPerSci = new TCanvas(Name1, Name1, 10, 10, 800, 700);
     cDeltaClockPerSci->Divide(2, fNbDetectors);
-    fh1_deltaClockPerSci = new TH1F*[fNbDetectors * 2];
-    fh1_deltaClockPerSci_condTpat = new TH1F*[fNbDetectors * 2];
+    fh1_deltaClockPerSci = R3B::root_owned<TH1F> * [fNbDetectors * 2];
+    fh1_deltaClockPerSci_condTpat = R3B::root_owned<TH1F> * [fNbDetectors * 2];
     for (int d = 0; d < fNbDetectors; d++)
     {
         // with condition on TPAT
         sprintf(Name1, "DeltaClock_Sci%i_TrefRight", d + 1);
         sprintf(Name2, "DeltaClock_Sci%i_TrefRight (blue no condition on TPAT and red TPAT = 1 or 2)", d + 1);
-        fh1_deltaClockPerSci[2 * d] = new TH1F(Name1, Name2, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci[2 * d] = R3B::root_owned<TH1F>(Name1, Name2, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci[2 * d]->SetLineColor(kBlue);
         fh1_deltaClockPerSci[2 * d]->SetLineWidth(2);
         cDeltaClockPerSci->cd(2 * d + 1);
@@ -271,7 +271,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         sprintf(Name1, "DeltaClock_Sci%i_TrefLeft", d + 1);
         sprintf(Name2, "DeltaClock_Sci%i_TrefLeft (blue no condition on Tpat and ref TPAT = 1 or 2)", d + 1);
-        fh1_deltaClockPerSci[2 * d + 1] = new TH1F(Name1, Name2, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci[2 * d + 1] = R3B::root_owned<TH1F>(Name1, Name2, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci[2 * d + 1]->SetLineColor(kBlue);
         fh1_deltaClockPerSci[2 * d + 1]->SetLineWidth(2);
         cDeltaClockPerSci->cd(2 * d + 2);
@@ -279,14 +279,14 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // with condition on TPAT
         sprintf(Name1, "DeltaClock_Sci%i_TrefRight_wCondTpat", d + 1);
-        fh1_deltaClockPerSci_condTpat[2 * d] = new TH1F(Name1, Name1, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci_condTpat[2 * d] = R3B::root_owned<TH1F>(Name1, Name1, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci_condTpat[2 * d]->SetLineColor(kRed);
         fh1_deltaClockPerSci_condTpat[2 * d]->SetLineWidth(1);
         cDeltaClockPerSci->cd(2 * d + 1);
         fh1_deltaClockPerSci_condTpat[2 * d]->Draw("sames");
 
         sprintf(Name1, "DeltaClock_Sci%i_TrefLeft_wCondTpat", d + 1);
-        fh1_deltaClockPerSci_condTpat[2 * d + 1] = new TH1F(Name1, Name1, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci_condTpat[2 * d + 1] = R3B::root_owned<TH1F>(Name1, Name1, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci_condTpat[2 * d + 1]->SetLineColor(kRed);
         fh1_deltaClockPerSci_condTpat[2 * d + 1]->SetLineWidth(1);
         cDeltaClockPerSci->cd(2 * d + 2);
@@ -541,7 +541,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: raw position at tcal level if mult=1 === //
         sprintf(Name1, "SofSci%i_RawPos_Tcal_Mult1", i + 1);
-        fh1_RawPos_TcalMult1[i] = new TH1F(Name1, Name1, 200000, -100, 100);
+        fh1_RawPos_TcalMult1[i] = R3B::root_owned<TH1F>(Name1, Name1, 200000, -100, 100);
         fh1_RawPos_TcalMult1[i]->GetXaxis()->SetTitle(
             "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
         fh1_RawPos_TcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
@@ -556,7 +556,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: raw position at single tcal level === //
         sprintf(Name1, "SofSci%i_RawPos_SingleTcal", i + 1);
-        fh1_RawPos_SingleTcal[i] = new TH1F(Name1, Name1, 100000, -50, 50);
+        fh1_RawPos_SingleTcal[i] = R3B::root_owned<TH1F>(Name1, Name1, 100000, -50, 50);
         fh1_RawPos_SingleTcal[i]->GetXaxis()->SetTitle(
             "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
         fh1_RawPos_SingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
@@ -572,9 +572,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // === TH1F: calibrated position in mm at cal level === //
         sprintf(Name1, "SofSci%i_CalPos_mm", i + 1);
         if (i == (fNbDetectors - 1))
-            fh1_CalPos[i] = new TH1F(Name1, Name1, 5000, -25, 25);
+            fh1_CalPos[i] = R3B::root_owned<TH1F>(Name1, Name1, 5000, -25, 25);
         else
-            fh1_CalPos[i] = new TH1F(Name1, Name1, 30000, -150, 150);
+            fh1_CalPos[i] = R3B::root_owned<TH1F>(Name1, Name1, 30000, -150, 150);
         fh1_CalPos[i]->GetXaxis()->SetTitle("(RIGHT, Wix. side) -->  x position [mm] --> (LEFT,Mes. side) -->");
         fh1_CalPos[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_CalPos[i]->GetXaxis()->CenterTitle(true);
@@ -589,9 +589,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // +++ TH2F: raw position versus calibrated position === //
         sprintf(Name1, "SofSci%i_RawPosVsCalPos", i + 1);
         if (i == (fNbDetectors - 1))
-            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -25, 25, 500, -25, 25);
+            fh2_RawPosVsCalPos[i] = R3B::root_owned<TH2F>(Name1, Name1, 500, -25, 25, 500, -25, 25);
         else
-            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -100, 100, 500, -10, 10);
+            fh2_RawPosVsCalPos[i] = R3B::root_owned<TH2F>(Name1, Name1, 500, -100, 100, 500, -10, 10);
         fh2_RawPosVsCalPos[i]->GetXaxis()->SetTitle("Calculated X position [mm]");
         fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitle(
             "(RIGHT, Wixhausen side) --->  Raw X position [ns]  ---> (LEFT, Messel side)");

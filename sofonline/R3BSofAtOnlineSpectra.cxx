@@ -104,7 +104,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_mult = new TCanvas("At_mult", "Active Target - multiplicity", 10, 10, 800, 700);
     cAtMap_mult->Divide(2, 2);
 
-    fh1_atmap_mult = new TH1F("At_SumMult", "AT - MULTIPLICITY", fNumAnodes + 1, -0.5, fNumAnodes + 0.5);
+    fh1_atmap_mult = R3B::root_owned<TH1F>("At_SumMult", "AT - MULTIPLICITY", fNumAnodes + 1, -0.5, fNumAnodes + 0.5);
     fh1_atmap_mult->GetXaxis()->SetTitle("Anode (1-based)");
     fh1_atmap_mult->GetYaxis()->SetTitle("Total Multiplicity");
     fh1_atmap_mult->GetYaxis()->SetTitleOffset(1.1);
@@ -118,8 +118,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_mult->cd(1);
     fh1_atmap_mult->Draw("");
 
-    fh1_atmap_mult_wo_pu =
-        new TH1F("At_SumMult_wo_pu", "AT - MULTIPLICITY - pile up rejection", fNumAnodes + 1, -0.5, fNumAnodes + 0.5);
+    fh1_atmap_mult_wo_pu = R3B::root_owned<TH1F>(
+        "At_SumMult_wo_pu", "AT - MULTIPLICITY - pile up rejection", fNumAnodes + 1, -0.5, fNumAnodes + 0.5);
     fh1_atmap_mult_wo_pu->GetXaxis()->SetTitle("Anode (1-based)");
     fh1_atmap_mult_wo_pu->GetYaxis()->SetTitle("Total Multiplicity");
     fh1_atmap_mult_wo_pu->GetYaxis()->SetTitleOffset(1.1);
@@ -133,14 +133,14 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_mult->cd(2);
     fh1_atmap_mult_wo_pu->Draw("");
 
-    fh2_atmap_mult = new TH2F("At_MultVsAnode",
-                              "Active Target - MultPerEvent vs Anodes",
-                              fNumAnodes + 1,
-                              -0.5,
-                              fNumAnodes + 0.5,
-                              10,
-                              -0.5,
-                              9.5);
+    fh2_atmap_mult = R3B::root_owned<TH2F>("At_MultVsAnode",
+                                           "Active Target - MultPerEvent vs Anodes",
+                                           fNumAnodes + 1,
+                                           -0.5,
+                                           fNumAnodes + 0.5,
+                                           10,
+                                           -0.5,
+                                           9.5);
     fh2_atmap_mult->GetXaxis()->SetTitle("Anode (1-based)");
     fh2_atmap_mult->GetYaxis()->SetTitle("Multiplicity Per Event");
     fh2_atmap_mult->GetYaxis()->SetTitleOffset(1.1);
@@ -153,14 +153,14 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     cAtMap_mult->cd(3);
     fh2_atmap_mult->Draw("colz");
 
-    fh2_atmap_mult_wo_pu = new TH2F("At_MultVsAnode_wo_pu",
-                                    "Active Target - MultPerEvent vs Anodes - pile up rejection",
-                                    fNumAnodes + 1,
-                                    -0.5,
-                                    fNumAnodes + 0.5,
-                                    10,
-                                    -0.5,
-                                    9.5);
+    fh2_atmap_mult_wo_pu = R3B::root_owned<TH2F>("At_MultVsAnode_wo_pu",
+                                                 "Active Target - MultPerEvent vs Anodes - pile up rejection",
+                                                 fNumAnodes + 1,
+                                                 -0.5,
+                                                 fNumAnodes + 0.5,
+                                                 10,
+                                                 -0.5,
+                                                 9.5);
     fh2_atmap_mult_wo_pu->GetXaxis()->SetTitle("Anode (1-based)");
     fh2_atmap_mult_wo_pu->GetYaxis()->SetTitle("Multiplicity Per Event");
     fh2_atmap_mult_wo_pu->GetYaxis()->SetTitleOffset(1.1);
@@ -176,13 +176,13 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     // MAPPED 1D DATA - ENERGY
     cAtMap_E = new TCanvas("At_E", "at_E", 10, 10, 800, 700);
     cAtMap_E->Divide(1, fNumAnodes);
-    fh1_atmap_E = new TH1F*[fNumAnodes];
-    fh1_atmap_E_mult1_wo_pu_ov = new TH1F*[fNumAnodes];
+    fh1_atmap_E = R3B::root_owned<TH1F>* [fNumAnodes];
+    fh1_atmap_E_mult1_wo_pu_ov = R3B::root_owned<TH1F>* [fNumAnodes];
     for (Int_t a = 0; a < fNumAnodes; a++)
     {
         sprintf(Name1, "AT_E_anode%d", a + 1);
         sprintf(Name2, "AT - Energy - Anode %d", a + 1);
-        fh1_atmap_E[a] = new TH1F(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
+        fh1_atmap_E[a] = R3B::root_owned<TH1F>(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
         fh1_atmap_E[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh1_atmap_E[a]->GetYaxis()->SetTitle("Counts");
         fh1_atmap_E[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -198,7 +198,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
         sprintf(Name1, "AT_E_m1_anode%d", a + 1);
         sprintf(Name2, "AT - Energy - Anode %d - mult=1, pu and ov rejection", a + 1);
-        fh1_atmap_E_mult1_wo_pu_ov[a] = new TH1F(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
+        fh1_atmap_E_mult1_wo_pu_ov[a] = R3B::root_owned<TH1F>(Name1, Name2, 65000, 0., 65000); // MDPP16 on 16 bits
         fh1_atmap_E_mult1_wo_pu_ov[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitle("Counts");
         fh1_atmap_E_mult1_wo_pu_ov[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -216,12 +216,12 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     // MAPPED 2D DATA - ENERGY
     cAtMap_EvsE = new TCanvas("At_EvsE", "at_EvsE", 10, 10, 800, 700);
     cAtMap_EvsE->Divide(2, 2);
-    fh2_atmap_EvsE = new TH2F*[fNumAnodes];
+    fh2_atmap_EvsE = R3B::root_owned<TH2F>* [fNumAnodes];
     for (Int_t a = 0; a < fNumAnodes - 1; a++)
     {
         sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", a + 2, a + 1);
         sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", a + 2, a + 1);
-        fh2_atmap_EvsE[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
+        fh2_atmap_EvsE[a] = R3B::root_owned<TH2F>(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
         fh2_atmap_EvsE[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -239,7 +239,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", fNumAnodes, 1);
     sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", fNumAnodes, 1);
-    fh2_atmap_EvsE[fNumAnodes - 1] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
+    fh2_atmap_EvsE[fNumAnodes - 1] =
+        R3B::root_owned<TH2F>(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
     fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
@@ -255,12 +256,13 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     // MAPPED 2D DATA - ENERGY  MULT == 1 && PU KFALSE
     cAtMap_EvsE_mult1_nopu = new TCanvas("At_EvsE_mult1_nopu", "At_EvsE_mult1_nopu", 10, 10, 800, 700);
     cAtMap_EvsE_mult1_nopu->Divide(2, 2);
-    fh2_atmap_EvsE_mult1_nopu = new TH2F*[fNumAnodes];
+    fh2_atmap_EvsE_mult1_nopu = R3B::root_owned<TH2F>* [fNumAnodes];
     for (Int_t a = 0; a < fNumAnodes - 1; a++)
     {
         sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", a + 2, a + 1);
         sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", a + 2, a + 1);
-        fh2_atmap_EvsE_mult1_nopu[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
+        fh2_atmap_EvsE_mult1_nopu[a] =
+            R3B::root_owned<TH2F>(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
         fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleOffset(1.1);
@@ -276,8 +278,8 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     /*
         sprintf(Name1, "AT_E_anode%d_vs_E_anode%d", fNumAnodes, 1);
         sprintf(Name2, "AT - Energy - Anode %d vs Anode %d", fNumAnodes, 1);
-        fh2_atmap_EvsE[fNumAnodes - 1] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
-        fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
+        fh2_atmap_EvsE[fNumAnodes - 1] = R3B::root_owned<TH2F>(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16
+       on 16 bits fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
         fh2_atmap_EvsE[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
         fh2_atmap_EvsE[fNumAnodes - 1]->GetXaxis()->CenterTitle(true);
@@ -292,13 +294,13 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     // MAPPED 2D DATA - ENERGY  MULT == 1 && PU KFALSE
     /*    cAtMap_EvsE_mult1_nopu = new TCanvas("at_EvsE_mult1_nopu", "at_EvsE_mult1_nopu", 10, 10, 800, 700);
         cAtMap_EvsE_mult1_nopu->Divide(2, 2);
-        fh2_atmap_EvsE_mult1_nopu = new TH2F*[fNumAnodes];
+        fh2_atmap_EvsE_mult1_nopu = R3B::root_owned<TH2F>*[fNumAnodes];
         for (Int_t a = 0; a < fNumAnodes - 1; a++)
         {
             sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", a + 2, a + 1);
             sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", a + 2, a + 1);
-            fh2_atmap_EvsE_mult1_nopu[a] = new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
-            fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
+            fh2_atmap_EvsE_mult1_nopu[a] = R3B::root_owned<TH2F>(Name1, Name2, 650, 0., 65000, 650, 0., 65000); //
+       MDPP16 on 16 bits fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->SetTitle("Raw Energy [channels]");
             fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitle("Raw Energy [channels]");
             fh2_atmap_EvsE_mult1_nopu[a]->GetYaxis()->SetTitleOffset(1.1);
             fh2_atmap_EvsE_mult1_nopu[a]->GetXaxis()->CenterTitle(true);
@@ -314,7 +316,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     sprintf(Name1, "AT_E_anode%d_vs_E_anode%d_mult1_nopu", fNumAnodes, 1);
     sprintf(Name2, "AT - Energy - Anode %d vs Anode %d_mult1_nopu", fNumAnodes, 1);
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1] =
-        new TH2F(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
+        R3B::root_owned<TH2F>(Name1, Name2, 650, 0., 65000, 650, 0., 65000); // MDPP16 on 16 bits
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->GetXaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->GetYaxis()->SetTitle("Raw Energy [channels]");
     fh2_atmap_EvsE_mult1_nopu[fNumAnodes - 1]->GetYaxis()->SetTitleOffset(1.1);
@@ -329,9 +331,9 @@ InitStatus R3BSofAtOnlineSpectra::Init()
 
     // Correlations with the twin music charge
     cTwimZs = new TCanvas*[fNumAnodes - 1];
-    fh1_Twimhit_Zl = new TH1F*[fNumAnodes - 1];
-    fh1_Twimhit_Zr = new TH1F*[fNumAnodes - 1];
-    fh2_Twimhit_ZrZl = new TH2F*[fNumAnodes - 1];
+    fh1_Twimhit_Zl = R3B::root_owned<TH1F> * [fNumAnodes - 1];
+    fh1_Twimhit_Zr = R3B::root_owned<TH1F> * [fNumAnodes - 1];
+    fh2_Twimhit_ZrZl = R3B::root_owned<TH2F> * [fNumAnodes - 1];
     for (Int_t i = 0; i < fNumAnodes - 1; i++)
     {
         sprintf(Name1, "Twim_ZL_vs_ZR_SecAt_%d", i + 1);
@@ -340,7 +342,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
         cTwimZs[i]->cd(1);
         sprintf(Name1, "fh1_Twim_zl_SecAt_%d", i + 1);
         sprintf(Name2, "Twim: ZL(blue) vs ZR(red) for section %d in AT", i + 1);
-        fh1_Twimhit_Zl[i] = new TH1F(Name1, Name2, 1500, 1, 98);
+        fh1_Twimhit_Zl[i] = R3B::root_owned<TH1F>(Name1, Name2, 1500, 1, 98);
         fh1_Twimhit_Zl[i]->GetXaxis()->SetTitle("Z [atomic number]");
         fh1_Twimhit_Zl[i]->GetYaxis()->SetTitle("Counts");
         fh1_Twimhit_Zl[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -353,13 +355,13 @@ InitStatus R3BSofAtOnlineSpectra::Init()
         fh1_Twimhit_Zl[i]->SetLineColor(4);
         fh1_Twimhit_Zl[i]->Draw("");
         sprintf(Name1, "fh1_Twim_zr_SecAt_%d", i + 1);
-        fh1_Twimhit_Zr[i] = new TH1F(Name1, "Twim: ZR", 1500, 1, 98);
+        fh1_Twimhit_Zr[i] = R3B::root_owned<TH1F>(Name1, "Twim: ZR", 1500, 1, 98);
         fh1_Twimhit_Zr[i]->SetLineColor(2);
         fh1_Twimhit_Zr[i]->Draw("same");
         cTwimZs[i]->cd(2);
         sprintf(Name1, "fh2_Twim_zlzr_SecAt_%d", i + 1);
         sprintf(Name2, "Twim: ZL vs ZR for section %d in AT", i + 1);
-        fh2_Twimhit_ZrZl[i] = new TH2F(Name1, Name2, 1500, 1, 98, 1500, 1, 98);
+        fh2_Twimhit_ZrZl[i] = R3B::root_owned<TH2F>(Name1, Name2, 1500, 1, 98, 1500, 1, 98);
         fh2_Twimhit_ZrZl[i]->GetXaxis()->SetTitle("Charge ZL");
         fh2_Twimhit_ZrZl[i]->GetYaxis()->SetTitle("Charge ZR");
         fh2_Twimhit_ZrZl[i]->GetYaxis()->SetTitleOffset(1.1);
@@ -373,7 +375,7 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     }
 
     cTwimZsum = new TCanvas("At_Twim_Zsum", "ZSum correlated to At sections", 10, 10, 800, 700);
-    fh1_twim_ZSum[0] = new TH1F("fh1_Twim_ZSum_Atsec1", "Twim: ZL+ZR with AT conditions", 800, 60, 100);
+    fh1_twim_ZSum[0] = R3B::root_owned<TH1F>("fh1_Twim_ZSum_Atsec1", "Twim: ZL+ZR with AT conditions", 800, 60, 100);
     fh1_twim_ZSum[0]->GetXaxis()->SetTitle("Fissioning system --> Z [atomic number]");
     fh1_twim_ZSum[0]->GetYaxis()->SetTitle("Counts");
     fh1_twim_ZSum[0]->GetYaxis()->SetTitleOffset(1.1);
@@ -385,10 +387,10 @@ InitStatus R3BSofAtOnlineSpectra::Init()
     fh1_twim_ZSum[0]->GetYaxis()->SetTitleSize(0.045);
     fh1_twim_ZSum[0]->SetLineColor(4);
     fh1_twim_ZSum[0]->Draw("");
-    fh1_twim_ZSum[1] = new TH1F("fh1_Twim_ZSum_Atsec2", "", 800, 60, 100);
+    fh1_twim_ZSum[1] = R3B::root_owned<TH1F>("fh1_Twim_ZSum_Atsec2", "", 800, 60, 100);
     fh1_twim_ZSum[1]->SetLineColor(2);
     fh1_twim_ZSum[1]->Draw("same");
-    fh1_twim_ZSum[2] = new TH1F("fh1_Twim_ZSum_Atsec3", "", 800, 60, 100);
+    fh1_twim_ZSum[2] = R3B::root_owned<TH1F>("fh1_Twim_ZSum_Atsec3", "", 800, 60, 100);
     fh1_twim_ZSum[2]->SetLineColor(3);
     fh1_twim_ZSum[2]->Draw("same");
 

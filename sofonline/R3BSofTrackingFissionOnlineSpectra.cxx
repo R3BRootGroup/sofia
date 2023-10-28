@@ -269,7 +269,8 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
     Name1 = "fh2_tracking_planeXZ";
     Name2 = "Tracking (Lab.) planeXZ before GLAD";
     Int_t histoYlim = 150;
-    fh2_tracking_planeXZ = new TH2F(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
+    fh2_tracking_planeXZ =
+        R3B::root_owned<TH2F>(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
     fh2_tracking_planeXZ->GetXaxis()->SetTitle("Beam direction-Z [mm]");
     fh2_tracking_planeXZ->GetYaxis()->SetTitle("(Wixhausen)<---  X [mm]  ---> (Messel)");
     fh2_tracking_planeXZ->GetYaxis()->SetTitleOffset(1.1);
@@ -313,7 +314,8 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
     cTrackingYZ = new TCanvas("Tracking_before_GLAD_YZ", "Tracking (Lab.) plane YZ info", 10, 10, 800, 700);
     Name1 = "fh2_tracking_planeYZ";
     Name2 = "Tracking (Lab.) planeYZ before GLAD";
-    fh2_tracking_planeYZ = new TH2F(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
+    fh2_tracking_planeYZ =
+        R3B::root_owned<TH2F>(Name1, Name2, 400, 0., fDist_acelerator_glad, 400, -1. * histoYlim, histoYlim);
     fh2_tracking_planeYZ->GetXaxis()->SetTitle("Beam direction-Z [mm]");
     fh2_tracking_planeYZ->GetYaxis()->SetTitle("Y [mm]");
     fh2_tracking_planeYZ->GetYaxis()->SetTitleOffset(1.1);
@@ -343,7 +345,7 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
     cBeamProfileTarget = new TCanvas("Beam_profile_XY_at_target", "Beam profile XY info", 10, 10, 800, 700);
     Name1 = "fh2_beam_profile_XY";
     Name2 = "Beam profile-XY (Lab.) at target position";
-    fh2_target_PosXY = new TH2F(Name1, Name2, 200, -100., 100., 200, -100., 100.);
+    fh2_target_PosXY = R3B::root_owned<TH2F>(Name1, Name2, 200, -100., 100., 200, -100., 100.);
     fh2_target_PosXY->GetXaxis()->SetTitle("(Wixhausen)<---  X [mm]  ---> (Messel)");
     fh2_target_PosXY->GetYaxis()->SetTitle("Y [mm]");
     fh2_target_PosXY->GetYaxis()->SetTitleOffset(1.1);
@@ -360,7 +362,7 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
     // Hit data, beta
     Name1 = "fh1_beta_tofw";
     Name2 = "#beta, velocity in units of c";
-    fh1_beta = new TH1F(Name1, Name2, 1200, 0.2, 1.0);
+    fh1_beta = R3B::root_owned<TH1F>(Name1, Name2, 1200, 0.2, 1.0);
     fh1_beta->GetXaxis()->SetTitle("#beta");
     fh1_beta->GetYaxis()->SetTitle("Counts");
     fh1_beta->GetYaxis()->SetTitleOffset(1.15);
@@ -379,7 +381,7 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
 
     Name1 = "fh1_brho_glad";
     Name2 = "GLAD: Brho";
-    fh1_brho = new TH1F(Name1, Name2, 600, 4., 15.);
+    fh1_brho = R3B::root_owned<TH1F>(Name1, Name2, 600, 4., 15.);
     fh1_brho->GetXaxis()->SetTitle("Brho [Tm]");
     fh1_brho->GetYaxis()->SetTitle("Counts");
     fh1_brho->GetYaxis()->SetTitleOffset(1.15);
@@ -398,7 +400,7 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
 
     Name1 = "fh2_Aq_vs_q";
     Name2 = "Tracking GLAD: A/q vs q";
-    fh2_Aqvsq = new TH2F(Name1, Name2, 900, 0.8, 3., (fZ_max - fZ_min) * 10., fZ_min, fZ_max);
+    fh2_Aqvsq = R3B::root_owned<TH2F>(Name1, Name2, 900, 0.8, 3., (fZ_max - fZ_min) * 10., fZ_min, fZ_max);
     fh2_Aqvsq->GetXaxis()->SetTitle("A/q");
     fh2_Aqvsq->GetYaxis()->SetTitle("Charge (Z)");
     fh2_Aqvsq->GetYaxis()->SetTitleOffset(1.1);
@@ -415,7 +417,7 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
 
     Name1 = "fh2_Mwpc3X_vs_beta";
     Name2 = "GLAD: Mwpc3-X vs #beta";
-    fh2_Mwpc3vsbeta = new TH2F(Name1, Name2, 1800, -450., 450., 500, 0.2, 1.0);
+    fh2_Mwpc3vsbeta = R3B::root_owned<TH2F>(Name1, Name2, 1800, -450., 450., 500, 0.2, 1.0);
     fh2_Mwpc3vsbeta->GetXaxis()->SetTitle("(Wixhausen)<---    Mwpc3-X [mm]    ---> (Messel)");
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitle("#beta");
     fh2_Mwpc3vsbeta->GetYaxis()->SetTitleOffset(1.1);
@@ -429,8 +431,8 @@ InitStatus R3BSofTrackingFissionOnlineSpectra::Init()
 
     // Hit data, Z versus beta
     cZvsBeta = new TCanvas("TwimZ_vs_Beta", "Z versus Beta", 10, 10, 800, 700);
-    fh2_ZvsBeta =
-        new TH2F("VvsBeta", "Z from Twim vs Beta from TofW", 1200, 0.5, 0.9, (fZ_max - fZ_min) * 20., fZ_min, fZ_max);
+    fh2_ZvsBeta = R3B::root_owned<TH2F>(
+        "VvsBeta", "Z from Twim vs Beta from TofW", 1200, 0.5, 0.9, (fZ_max - fZ_min) * 20., fZ_min, fZ_max);
     fh2_ZvsBeta->GetXaxis()->SetTitle("#beta");
     fh2_ZvsBeta->GetYaxis()->SetTitle("Charge-Z");
     fh2_ZvsBeta->GetYaxis()->SetTitleOffset(1.1);

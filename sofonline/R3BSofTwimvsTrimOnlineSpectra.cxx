@@ -97,7 +97,7 @@ InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
 
     // Hit data
     TCanvas* c_Z = new TCanvas("Charge_z_correlation", "Charge Z correlation", 10, 10, 800, 700);
-    fh2_hit_z = new TH2F("fh2_Twim_vs_Trim_charge_z", "Twim vs Trim: Charge Z", 1000, 6, 98, 1000, 6, 98);
+    fh2_hit_z = R3B::root_owned<TH2F>("fh2_Twim_vs_Trim_charge_z", "Twim vs Trim: Charge Z", 1000, 6, 98, 1000, 6, 98);
     fh2_hit_z->GetXaxis()->SetTitle("Trim charge (Z)");
     fh2_hit_z->GetYaxis()->SetTitle("Twim charge (Z)");
     fh2_hit_z->GetYaxis()->SetTitleOffset(1.1);
@@ -111,7 +111,8 @@ InitStatus R3BSofTwimvsTrimOnlineSpectra::Init()
     fh2_hit_z->Draw("col");
 
     TCanvas* c_theta = new TCanvas("Theta_correlation", "#theta_{XZ} correlation", 10, 10, 800, 700);
-    fh2_hit_theta = new TH2F("fh2_Twim_vs_Trim_theta", "Twim vs Trim: #theta_{XZ}", 900, -30, 30, 900, -30, 30);
+    fh2_hit_theta =
+        R3B::root_owned<TH2F>("fh2_Twim_vs_Trim_theta", "Twim vs Trim: #theta_{XZ}", 900, -30, 30, 900, -30, 30);
     fh2_hit_theta->GetXaxis()->SetTitle("Trim #theta_{XZ} [mrad]");
     fh2_hit_theta->GetYaxis()->SetTitle("Twim #theta_{XZ} [mrad]");
     fh2_hit_theta->GetXaxis()->SetTitleOffset(1.1);

@@ -153,7 +153,7 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     if (fSciSTcal && fTrimCal)
     {
         c_TrimDT_vs_SciPosRaw = new TCanvas*[fNbDetectors];
-        fh2_TrimDT_vs_SciPosRaw = new TH2F*[fNbDetectors * 3];
+        fh2_TrimDT_vs_SciPosRaw = R3B::root_owned<TH2F> * [fNbDetectors * 3];
         for (Int_t i = 0; i < fNbDetectors; i++)
         {
             sprintf(Name1, "TrimDT_vs_Sci%02dPosRaw", i + 1);
@@ -162,7 +162,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             for (Int_t j = 0; j < 3; j++)
             {
                 sprintf(Name1, "DTalignedS%02d_vs_PosRawSci%02d", j + 1, i + 1);
-                fh2_TrimDT_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 600, -10000, 30000);
+                fh2_TrimDT_vs_SciPosRaw[i * 3 + j] =
+                    R3B::root_owned<TH2F>(Name1, Name1, 200, -10, 10, 600, -10000, 30000);
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
                     "(RIGHT,Wix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
                 fh2_TrimDT_vs_SciPosRaw[i * 3 + j]->GetYaxis()->SetTitle("DTaligned [ns, 100ps resolution]");
@@ -183,82 +184,83 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
     if (fSciSTcal && fTrimHit)
     {
         c_TrimEraw_vs_SciPosRaw = new TCanvas*[fNbDetectors];
-        fh2_TrimEraw_vs_SciPosRaw = new TH2F*[fNbDetectors * 3];
+        fh2_TrimEraw_vs_SciPosRaw = R3B::root_owned<TH2F> * [fNbDetectors * 3];
         if (fSciCal)
         {
             c_TrimE_vs_SciPosCal = new TCanvas*[fNbDetectors];
-            fh2_TrimE_vs_SciPosCal = new TH2F*[fNbDetectors * 3];
+            fh2_TrimE_vs_SciPosCal = R3B::root_owned<TH2F> * [fNbDetectors * 3];
 
             c_TrimE_vs_BetaS2 = new TCanvas("TrimE_vs_BetaS2", "TrimE_vs_BetaS2", 10, 10, 800, 700);
             c_TrimE_vs_BetaS2->Divide(2, 2);
-            fh2_TrimE_vs_BetaS2 = new TH2F*[4];
+            fh2_TrimE_vs_BetaS2 = R3B::root_owned<TH2F>* [4];
 
             c_TrimE_vs_AoQraw = new TCanvas("TrimE_vs_AoQraw", "TrimE_vs_AoQraw", 10, 10, 800, 700);
             c_TrimE_vs_AoQraw->Divide(2, 2);
-            fh2_TrimE_vs_AoQraw = new TH2F*[4];
+            fh2_TrimE_vs_AoQraw = R3B::root_owned<TH2F>* [4];
 
             c_TrimZ_vs_AoQ = new TCanvas("TrimZvs_AoQ", "TrimZ_vs_AoQ", 10, 10, 800, 700);
             c_TrimZ_vs_AoQ->Divide(2, 2);
-            fh2_TrimZ_vs_AoQ = new TH2F*[4];
+            fh2_TrimZ_vs_AoQ = R3B::root_owned<TH2F>* [4];
 
             c_AoQ_vs_PosS2_condTrim = new TCanvas("AoQ_vs_PosS2_ifTrim", "AoQ_vs_PosS2_ifTrim", 10, 10, 800, 700);
             c_AoQ_vs_PosS2_condTrim->Divide(2, 2);
-            fh2_AoQ_vs_PosS2_condTrim = new TH2F*[4];
+            fh2_AoQ_vs_PosS2_condTrim = R3B::root_owned<TH2F>* [4];
 
             for (Int_t section = 0; section < 3; section++)
             {
                 c_TrimE_vs_BetaS2->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_BetaS2", section + 1);
-                fh2_TrimE_vs_BetaS2[section] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
+                fh2_TrimE_vs_BetaS2[section] = R3B::root_owned<TH2F>(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
                 fh2_TrimE_vs_BetaS2[section]->GetXaxis()->SetTitle("Beta from S2");
                 fh2_TrimE_vs_BetaS2[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
                 fh2_TrimE_vs_BetaS2[section]->Draw("COL");
 
                 c_TrimE_vs_AoQraw->cd(section + 1);
                 sprintf(Name1, "TrimES%02d_vs_AoQraw", section + 1);
-                fh2_TrimE_vs_AoQraw[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
+                fh2_TrimE_vs_AoQraw[section] = R3B::root_owned<TH2F>(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
                 fh2_TrimE_vs_AoQraw[section]->GetXaxis()->SetTitle("A/Q");
                 fh2_TrimE_vs_AoQraw[section]->GetYaxis()->SetTitle(Form("E section %i", section + 1));
                 fh2_TrimE_vs_AoQraw[section]->Draw("COL");
 
                 c_TrimZ_vs_AoQ->cd(section + 1);
                 sprintf(Name1, "TrimZ_S%02d_vs_AoQ", section + 1);
-                fh2_TrimZ_vs_AoQ[section] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 55, 95);
+                fh2_TrimZ_vs_AoQ[section] = R3B::root_owned<TH2F>(Name1, Name1, 800, 2.20, 2.60, 1000, 55, 95);
                 fh2_TrimZ_vs_AoQ[section]->GetXaxis()->SetTitle("A/Q");
                 fh2_TrimZ_vs_AoQ[section]->GetYaxis()->SetTitle(Form("Z section %i", section + 1));
                 fh2_TrimZ_vs_AoQ[section]->Draw("COL");
 
                 c_AoQ_vs_PosS2_condTrim->cd(section + 1);
                 sprintf(Name1, "AoQ_vs_PosS2_condTrimiES%02d", section + 1);
-                fh2_AoQ_vs_PosS2_condTrim[section] = new TH2F(Name1, Name1, 1000, -100, 100, 500, 2.20, 2.40);
+                fh2_AoQ_vs_PosS2_condTrim[section] =
+                    R3B::root_owned<TH2F>(Name1, Name1, 1000, -100, 100, 500, 2.20, 2.40);
                 fh2_AoQ_vs_PosS2_condTrim[section]->GetYaxis()->SetTitle("A/Q");
                 fh2_AoQ_vs_PosS2_condTrim[section]->GetXaxis()->SetTitle("Pos At S2 [mm]");
                 fh2_AoQ_vs_PosS2_condTrim[section]->Draw("COL");
             }
             c_TrimE_vs_BetaS2->cd(4);
             sprintf(Name1, "TrimEmax_vs_BetaS2");
-            fh2_TrimE_vs_BetaS2[3] = new TH2F(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
+            fh2_TrimE_vs_BetaS2[3] = R3B::root_owned<TH2F>(Name1, Name1, 1300, 0.76, 0.89, 900, 15000, 35000);
             fh2_TrimE_vs_BetaS2[3]->GetXaxis()->SetTitle("Beta from S2");
             fh2_TrimE_vs_BetaS2[3]->GetYaxis()->SetTitle("Emax");
             fh2_TrimE_vs_BetaS2[3]->Draw("COL");
 
             c_TrimE_vs_AoQraw->cd(4);
             sprintf(Name1, "TrimEmax_vs_AoQraw");
-            fh2_TrimE_vs_AoQraw[3] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
+            fh2_TrimE_vs_AoQraw[3] = R3B::root_owned<TH2F>(Name1, Name1, 800, 2.20, 2.60, 900, 15000, 35000);
             fh2_TrimE_vs_AoQraw[3]->GetXaxis()->SetTitle("A/Q");
             fh2_TrimE_vs_AoQraw[3]->GetYaxis()->SetTitle("Emax");
             fh2_TrimE_vs_AoQraw[3]->Draw("COL");
 
             c_TrimZ_vs_AoQ->cd(4);
             sprintf(Name1, "TrimZmax_vs_AoQ");
-            fh2_TrimZ_vs_AoQ[3] = new TH2F(Name1, Name1, 800, 2.20, 2.60, 1000, 55, 95);
+            fh2_TrimZ_vs_AoQ[3] = R3B::root_owned<TH2F>(Name1, Name1, 800, 2.20, 2.60, 1000, 55, 95);
             fh2_TrimZ_vs_AoQ[3]->GetXaxis()->SetTitle("A/Q");
             fh2_TrimZ_vs_AoQ[3]->GetYaxis()->SetTitle("Zmax");
             fh2_TrimZ_vs_AoQ[3]->Draw("COL");
 
             c_AoQ_vs_PosS2_condTrim->cd(4);
             sprintf(Name1, "AoQ_vs_PosS2_condTrimESum");
-            fh2_AoQ_vs_PosS2_condTrim[3] = new TH2F(Name1, Name1, 800, -60, 10, 500, 2.20, 2.40);
+            fh2_AoQ_vs_PosS2_condTrim[3] = R3B::root_owned<TH2F>(Name1, Name1, 800, -60, 10, 500, 2.20, 2.40);
             fh2_AoQ_vs_PosS2_condTrim[3]->GetXaxis()->SetTitle("Pos At S2 [mm]");
             fh2_AoQ_vs_PosS2_condTrim[3]->GetYaxis()->SetTitle("A/Q");
             fh2_AoQ_vs_PosS2_condTrim[3]->Draw("COL");
@@ -277,7 +279,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
             for (Int_t j = 0; j < 3; j++)
             {
                 sprintf(Name1, "ErawS%02d_vs_PosRawSci%02d", j + 1, i + 1);
-                fh2_TrimEraw_vs_SciPosRaw[i * 3 + j] = new TH2F(Name1, Name1, 200, -10, 10, 900, 15000, 35000);
+                fh2_TrimEraw_vs_SciPosRaw[i * 3 + j] =
+                    R3B::root_owned<TH2F>(Name1, Name1, 200, -10, 10, 900, 15000, 35000);
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j]->GetXaxis()->SetTitle(
                     "(RIGHT,Wix. side) -->  SofSci X [ns] --> (LEFT,Mes. side) -->");
                 fh2_TrimEraw_vs_SciPosRaw[i * 3 + j]->GetYaxis()->SetTitle("Eraw [channels]");
@@ -294,7 +297,8 @@ InitStatus R3BSofSciVsTrimOnlineSpectra::Init()
                 if (fSciCal)
                 {
                     sprintf(Name1, "ES%02d_vs_PosCalSci%02d", j + 1, i + 1);
-                    fh2_TrimE_vs_SciPosCal[i * 3 + j] = new TH2F(Name1, Name1, 1000, -20, 20, 900, 15000, 35000);
+                    fh2_TrimE_vs_SciPosCal[i * 3 + j] =
+                        R3B::root_owned<TH2F>(Name1, Name1, 1000, -20, 20, 900, 15000, 35000);
                     fh2_TrimE_vs_SciPosCal[i * 3 + j]->GetXaxis()->SetTitle(
                         "(RIGWix. side) -->  SofSci X [mm] --> (LEFT,Mes. side) -->");
                     fh2_TrimE_vs_SciPosCal[i * 3 + j]->GetYaxis()->SetTitle("E [channels]");

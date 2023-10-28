@@ -8,6 +8,7 @@
 #define R3BSofStatusOnlineSpectra_H
 
 #include "FairTask.h"
+#include "R3BShared.h"
 #include "TCanvas.h"
 #include "TGraph.h"
 #include "TH1F.h"

@@ -178,7 +178,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     { // one histo per detector
         sprintf(Name1, "fh_Ams_hit_Mul_%d", i + 1);
         sprintf(Name2, "Multiplicity Det %d", i + 1);
-        fh_Ams_hit_Mul[i] = new TH1F(Name1, Name2, 30, -0.5, 29.5);
+        fh_Ams_hit_Mul[i] = R3B::root_owned<TH1F>(Name1, Name2, 30, -0.5, 29.5);
         fh_Ams_hit_Mul[i]->GetXaxis()->SetTitle("Multiplicity");
         fh_Ams_hit_Mul[i]->GetYaxis()->SetTitle("Counts");
         fh_Ams_hit_Mul[i]->GetXaxis()->CenterTitle(true);
@@ -190,7 +190,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
         sprintf(Name1, "fh_Ams_hit_Pos_%d", i + 1);
         sprintf(Name2, "S-side vs K-side for AMS Det %d", i + 1);
-        fh_Ams_hit_Pos[i] = new TH2F(Name1, Name2, 350, 0, 70., 200, 0, 40.);
+        fh_Ams_hit_Pos[i] = R3B::root_owned<TH2F>(Name1, Name2, 350, 0, 70., 200, 0, 40.);
         fh_Ams_hit_Pos[i]->GetXaxis()->SetTitle("S-side [mm]");
         fh_Ams_hit_Pos[i]->GetYaxis()->SetTitle("K-side [mm]");
         fh_Ams_hit_Pos[i]->GetXaxis()->CenterTitle(true);
@@ -202,7 +202,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
         sprintf(Name1, "fh_Ams_hit_Energies_%d", i + 1);
         sprintf(Name2, "Energy_S vs Energy_K for AMS Det %d", i + 1);
-        fh_Ams_hit_E[i] = new TH2F(Name1, Name2, 2000, 0, 1000., 2000, 0, 1000.);
+        fh_Ams_hit_E[i] = R3B::root_owned<TH2F>(Name1, Name2, 2000, 0, 1000., 2000, 0, 1000.);
         fh_Ams_hit_E[i]->GetXaxis()->SetTitle("Energy_S [ADC units]");
         fh_Ams_hit_E[i]->GetYaxis()->SetTitle("Energy_K [ADC units]");
         fh_Ams_hit_E[i]->GetXaxis()->CenterTitle(true);
@@ -214,7 +214,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
         sprintf(Name1, "fh_Ams_hit_Energy_vs_theta_%d", i + 1);
         sprintf(Name2, "Energy_S vs Theta for AMS Det %d", i + 1);
-        fh_Ams_hit_E_theta[i] = new TH2F(Name1, Name2, 300, 0., 90., 500, 0., 1000.);
+        fh_Ams_hit_E_theta[i] = R3B::root_owned<TH2F>(Name1, Name2, 300, 0., 90., 500, 0., 1000.);
         fh_Ams_hit_E_theta[i]->GetXaxis()->SetTitle("Theta [degrees]");
         fh_Ams_hit_E_theta[i]->GetYaxis()->SetTitle("Energy_S [ADC units]");
         fh_Ams_hit_E_theta[i]->GetXaxis()->CenterTitle(true);
@@ -237,7 +237,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
             sprintf(Name1, "fh2_Ams_theta_vs_phi_layer_%d", i + 1);
             sprintf(Name2, "AMS: theta vs phi for layer %d (outer)", i + 1);
         }
-        fh2_ams_theta_phi[i] = new TH2F(Name1, Name2, 90, 0., 90., 180, -180., 180.);
+        fh2_ams_theta_phi[i] = R3B::root_owned<TH2F>(Name1, Name2, 90, 0., 90., 180, -180., 180.);
         fh2_ams_theta_phi[i]->GetXaxis()->SetTitle("Theta [degrees]");
         fh2_ams_theta_phi[i]->GetYaxis()->SetTitle("Phi [degrees]");
         fh2_ams_theta_phi[i]->GetXaxis()->SetTitleOffset(1.1);
@@ -261,7 +261,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
             sprintf(Name1, "fh2_Ams_Einner_vs_Eouter_left");
             sprintf(Name2, "AMS: E-inner vs E-outer for left side");
         }
-        fh2_ams_e1_e2[i] = new TH2F(Name1, Name2, 500, 0., 1000., 500, 0., 1000.);
+        fh2_ams_e1_e2[i] = R3B::root_owned<TH2F>(Name1, Name2, 500, 0., 1000., 500, 0., 1000.);
         fh2_ams_e1_e2[i]->GetXaxis()->SetTitle("E-inner [ADC units]");
         fh2_ams_e1_e2[i]->GetYaxis()->SetTitle("E-outer [ADC units]");
         fh2_ams_e1_e2[i]->GetXaxis()->SetTitleOffset(1.1);
@@ -282,7 +282,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
             sprintf(Name1, "fh2_Ams_#thetainner_vs_#thetaouter_left");
             sprintf(Name2, "AMS: #theta-inner vs #theta-outer for left side");
         }
-        fh2_ams_theta1_theta2[i] = new TH2F(Name1, Name2, 90, 0., 90., 90, 0., 90.);
+        fh2_ams_theta1_theta2[i] = R3B::root_owned<TH2F>(Name1, Name2, 90, 0., 90., 90, 0., 90.);
         fh2_ams_theta1_theta2[i]->GetXaxis()->SetTitle("#theta-inner [degrees]");
         fh2_ams_theta1_theta2[i]->GetYaxis()->SetTitle("#theta-outer [degrees]");
         fh2_ams_theta1_theta2[i]->GetXaxis()->SetTitleOffset(1.);
@@ -297,13 +297,13 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
         {
             sprintf(Name1, "fh2_Ams_#phiinner_vs_#phiouter_right");
             sprintf(Name2, "AMS: #phi-inner vs #phi-outer for right side");
-            fh2_ams_phi1_phi2[i] = new TH2F(Name1, Name2, 180, 90., 270., 180, 90., 270.);
+            fh2_ams_phi1_phi2[i] = R3B::root_owned<TH2F>(Name1, Name2, 180, 90., 270., 180, 90., 270.);
         }
         else
         {
             sprintf(Name1, "fh2_Ams_#phiinner_vs_#phiouter_left");
             sprintf(Name2, "AMS: #phi-inner vs #phi-outer for left side");
-            fh2_ams_phi1_phi2[i] = new TH2F(Name1, Name2, 180, -180., 180., 180, -180., 180.);
+            fh2_ams_phi1_phi2[i] = R3B::root_owned<TH2F>(Name1, Name2, 180, -180., 180., 180, -180., 180.);
         }
         fh2_ams_phi1_phi2[i]->GetXaxis()->SetTitle("#phi-inner [degrees]");
         fh2_ams_phi1_phi2[i]->GetYaxis()->SetTitle("#phi-outer [degrees]");
@@ -322,7 +322,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
     // CANVAS Multiplicity
     cCalifaMult = new TCanvas("Califa_correlated_multiplicity", "Califa_Multiplicity", 10, 10, 500, 500);
-    fh1_Califa_MultHit = new TH1F("fh1sof_Califa_MultHit", "Califa multiplicity", 21, -0.5, 20.5);
+    fh1_Califa_MultHit = R3B::root_owned<TH1F>("fh1sof_Califa_MultHit", "Califa multiplicity", 21, -0.5, 20.5);
     fh1_Califa_MultHit->GetXaxis()->SetTitle("Multiplicity");
     fh1_Califa_MultHit->GetXaxis()->CenterTitle(true);
     fh1_Califa_MultHit->GetYaxis()->CenterTitle(true);
@@ -334,8 +334,8 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     // CANVAS Energy correlations between hits
     cCalifaCoinE = new TCanvas("Califa_Energy_correlation_hits", "Energy correlations, hit level", 10, 10, 500, 500);
 
-    fh2_Califa_coinE =
-        new TH2F("fh2sof_Califa_energy_correlations", "Califa energy correlations", bins, minE, maxE, bins, minE, maxE);
+    fh2_Califa_coinE = R3B::root_owned<TH2F>(
+        "fh2sof_Califa_energy_correlations", "Califa energy correlations", bins, minE, maxE, bins, minE, maxE);
     fh2_Califa_coinE->GetXaxis()->SetTitle("Energy (keV)");
     fh2_Califa_coinE->GetYaxis()->SetTitle("Energy (keV)");
     fh2_Califa_coinE->GetYaxis()->SetTitleOffset(1.2);
@@ -347,7 +347,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     cCalifaCoinTheta = new TCanvas("Califa_Theta_correlation_hits", "Theta correlations, hit level", 10, 10, 500, 500);
 
     fh2_Califa_coinTheta =
-        new TH2F("fh2sof_Califa_theta_correlations", "Califa theta correlations", 50, 0, 100, 50, 0, 100);
+        R3B::root_owned<TH2F>("fh2sof_Califa_theta_correlations", "Califa theta correlations", 50, 0, 100, 50, 0, 100);
     fh2_Califa_coinTheta->GetXaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_coinTheta->GetYaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_coinTheta->GetYaxis()->SetTitleOffset(1.2);
@@ -358,8 +358,8 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     // CANVAS Phi correlations between hits
     cCalifaCoinPhi = new TCanvas("Califa_Phi_correlation_hits", "Phi correlations, hit level", 10, 10, 500, 500);
 
-    fh2_Califa_coinPhi =
-        new TH2F("fh2sof_Califa_phi_correlations", "Califa phi correlations", 90, -180, 180, 90, -180, 180);
+    fh2_Califa_coinPhi = R3B::root_owned<TH2F>(
+        "fh2sof_Califa_phi_correlations", "Califa phi correlations", 90, -180, 180, 90, -180, 180);
     fh2_Califa_coinPhi->GetXaxis()->SetTitle("Phi [degrees]");
     fh2_Califa_coinPhi->GetYaxis()->SetTitle("Phi [degrees]");
     fh2_Califa_coinPhi->GetYaxis()->SetTitleOffset(1.2);
@@ -369,7 +369,8 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
 
     // CANVAS Theta vs Phi
     cCalifa_angles = new TCanvas("Califa_theta_vs_phi", "Theta vs Phi", 10, 10, 500, 500);
-    fh2_Califa_theta_phi = new TH2F("fh2sof_Califa_theta_vs_phi", "Califa theta vs phi", 50, 0, 90, 180, -180, 180);
+    fh2_Califa_theta_phi =
+        R3B::root_owned<TH2F>("fh2sof_Califa_theta_vs_phi", "Califa theta vs phi", 50, 0, 90, 180, -180, 180);
     fh2_Califa_theta_phi->GetXaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_theta_phi->GetYaxis()->SetTitle("Phi [degrees]");
     fh2_Califa_theta_phi->GetYaxis()->SetTitleOffset(1.2);
@@ -382,7 +383,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     sprintf(Name2, "fh2sof_Califa_theta_vs_total_energy");
     sprintf(Name3, "Califa theta vs energy for full calorimeter");
     cCalifa_theta_energy = new TCanvas(Name1, Name1, 10, 10, 500, 500);
-    fh2_Califa_theta_energy = new TH2F(Name2, Name3, 360, 0, 90, bins, minE, maxE);
+    fh2_Califa_theta_energy = R3B::root_owned<TH2F>(Name2, Name3, 360, 0, 90, bins, minE, maxE);
     fh2_Califa_theta_energy->GetXaxis()->SetTitle("Theta [degrees]");
     fh2_Califa_theta_energy->GetYaxis()->SetTitle("Energy [keV]");
     fh2_Califa_theta_energy->GetYaxis()->SetTitleOffset(1.4);
@@ -395,7 +396,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     sprintf(Name2, "fh1sof_Califa_total_energy");
     sprintf(Name3, "Califa total energy per hit for the full calorimeter");
     cCalifa_hitenergy = new TCanvas(Name1, Name1, 10, 10, 500, 500);
-    fh1_Califa_total_energy = new TH1F(Name2, Name3, bins, minE, maxE);
+    fh1_Califa_total_energy = R3B::root_owned<TH1F>(Name2, Name3, bins, minE, maxE);
     fh1_Califa_total_energy->GetXaxis()->SetTitle("Energy [keV]");
     fh1_Califa_total_energy->GetYaxis()->SetTitle("Counts");
     fh1_Califa_total_energy->GetYaxis()->SetTitleOffset(1.4);
@@ -412,7 +413,7 @@ InitStatus R3BAmsCorrelationOnlineSpectra::Init()
     sprintf(Name2, "fh1_Califa_Opening");
     sprintf(Name3, "Califa Opening angle (cond. Z-1)");
     cCalifa_opening = new TCanvas(Name1, Name1, 10, 10, 500, 500);
-    fh1_openangle = new TH1F(Name2, Name3, 160, 10, 170);
+    fh1_openangle = R3B::root_owned<TH1F>(Name2, Name3, 160, 10, 170);
     fh1_openangle->GetXaxis()->SetTitle("Opening angle [degrees]");
     fh1_openangle->GetYaxis()->SetTitle("Counts");
     fh1_openangle->GetXaxis()->CenterTitle(true);

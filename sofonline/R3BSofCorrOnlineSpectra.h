@@ -6,6 +6,7 @@
 #define R3BSofCorrOnlineSpectra_H
 
 #include "FairTask.h"
+#include "R3BShared.h"
 #include "TCanvas.h"
 #include "TH1.h"
 #include "TH2F.h"

@@ -8,6 +8,7 @@
 #define R3BSofAtOnlineSpectra_H
 
 #include "FairTask.h"
+#include "R3BShared.h"
 #include "TCanvas.h"
 #include "TCutG.h"
 #include "TH1.h"
