@@ -15,6 +15,7 @@
 #include "THStack.h"
 #include "TLatex.h"
 #include "TMath.h"
+#include <R3BShared.h>
 
 #include <array>
 #include <cstdlib>

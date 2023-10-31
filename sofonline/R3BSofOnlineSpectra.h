@@ -4,14 +4,14 @@
 // -----           Fill SOFIA online histograms           -----
 // ------------------------------------------------------------
 
-#ifndef R3BSofOnlineSpectra_H
-#define R3BSofOnlineSpectra_H
+#pragma once
 
-#include "FairTask.h"
-#include "TCanvas.h"
-#include "TH1.h"
-#include "TH2F.h"
-#include "TMath.h"
+#include <FairTask.h>
+#include <R3BShared.h>
+#include <TCanvas.h>
+#include <TH1.h>
+#include <TH2F.h>
+#include <TMath.h>
 
 #include <array>
 #include <cstdlib>
@@ -48,7 +48,6 @@ class R3BSofCorrOnlineSpectra;
  */
 class R3BSofOnlineSpectra : public FairTask
 {
-
   public:
     /**
      * Default constructor.
@@ -62,13 +61,7 @@ class R3BSofOnlineSpectra : public FairTask
      * @param name a name of the task.
      * @param iVerbose a verbosity level.
      */
-    R3BSofOnlineSpectra(const TString& name, Int_t iVerbose = 1);
-
-    /**
-     * Destructor.
-     * Frees the memory used by the object.
-     */
-    virtual ~R3BSofOnlineSpectra();
+    explicit R3BSofOnlineSpectra(const TString& name, Int_t iVerbose = 1);
 
     /**
      * Method for task initialization.
@@ -76,27 +69,27 @@ class R3BSofOnlineSpectra : public FairTask
      * the event loop.
      * @return Initialization status. kSUCCESS, kERROR or kFATAL.
      */
-    virtual InitStatus Init();
+    InitStatus Init() override;
 
     /**
      * Method for event loop implementation.
      * Is called by the framework every time a new event is read.
      * @param option an execution option.
      */
-    virtual void Exec(Option_t* option);
+    void Exec(Option_t* option) override;
 
     /**
      * A method for finish of processing of an event.
      * Is called by the framework for each event after executing
      * the tasks.
      */
-    virtual void FinishEvent();
+    void FinishEvent() override;
 
     /**
      * Method for finish of the task execution.
      * Is called by the framework after processing the event loop.
      */
-    virtual void FinishTask();
+    void FinishTask() override;
 
     /**
      * Methods to clean histograms.
@@ -152,7 +145,5 @@ class R3BSofOnlineSpectra : public FairTask
     TH1F* fh1_wrs[5];
 
   public:
-    ClassDef(R3BSofOnlineSpectra, 0)
+    ClassDefOverride(R3BSofOnlineSpectra, 0)
 };
-
-#endif
