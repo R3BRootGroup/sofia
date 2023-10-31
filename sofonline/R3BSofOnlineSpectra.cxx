@@ -15,9 +15,11 @@
 #include "FairRunAna.h"
 #include "FairRunOnline.h"
 #include "FairRuntimeDb.h"
+
 #include "R3BAmsOnlineSpectra.h"
 #include "R3BCalifaOnlineSpectra.h"
 #include "R3BEventHeader.h"
+#include "R3BLogger.h"
 #include "R3BMusicOnlineSpectra.h"
 #include "R3BMwpcCorrelationOnlineSpectra.h"
 #include "R3BMwpcOnlineSpectra.h"
@@ -38,18 +40,18 @@
 #include "R3BSofTwimvsTrimOnlineSpectra.h"
 #include "R3BTwimOnlineSpectra.h"
 #include "R3BWRData.h"
-#include "TCanvas.h"
-#include "TClonesArray.h"
-#include "TFolder.h"
-#include "TH1F.h"
-#include "TH2F.h"
-#include "THttpServer.h"
-#include "TLegend.h"
-#include "TLegendEntry.h"
-#include "TMath.h"
-#include "TRandom.h"
-#include "TVector3.h"
 
+#include <TCanvas.h>
+#include <TClonesArray.h>
+#include <TFolder.h>
+#include <TH1F.h>
+#include <TH2F.h>
+#include <THttpServer.h>
+#include <TLegend.h>
+#include <TLegendEntry.h>
+#include <TMath.h>
+#include <TRandom.h>
+#include <TVector3.h>
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -60,42 +62,7 @@
 using namespace std;
 
 R3BSofOnlineSpectra::R3BSofOnlineSpectra()
-    : FairTask("SofiaOnlineSpectra", 1)
-    , fEventHeader(nullptr)
-    , fAtOnline(NULL)
-    , fMwpc0Online(NULL)
-    , fMwpc01Online(NULL)
-    , fMwpc02Online(NULL)
-    , fMwpc12Online(NULL)
-    , fMwpc23Online(NULL)
-    , fMwpc1Online(NULL)
-    , fMwpc2Online(NULL)
-    , fMwpc3Online(NULL)
-    , fTrimOnline(NULL)
-    , fTwimOnline(NULL)
-    , fTwimVsMusicOnline(NULL)
-    , fTwimVsTrimOnline(NULL)
-    , fSciOnline(NULL)
-    , fSciVsMusOnline(NULL)
-    , fSciVsTrimOnline(NULL)
-    , fSciVsMw0Online(NULL)
-    , fTofWOnline(NULL)
-    , fTrimVsTofwOnline(NULL)
-    , fScalersOnline(NULL)
-    , fMusicOnline(NULL)
-    , fAmsOnline(NULL)
-    , fCalifaOnline(NULL)
-    , fFrsOnline(NULL)
-    , fTrackOnline(NULL)
-    , fTrackFFOnline(NULL)
-    , fCorrOnline(NULL)
-    , fWRItemsMaster(NULL)
-    , fWRItemsSofia(NULL)
-    , fWRItemsCalifa(NULL)
-    , fWRItemsNeuland(NULL)
-    , fWRItemsS2(NULL)
-    , fWRItemsS8(NULL)
-    , fNEvents(0)
+    : R3BSofOnlineSpectra("SofiaOnlineSpectra", 1)
 {
 }
 
@@ -139,32 +106,15 @@ R3BSofOnlineSpectra::R3BSofOnlineSpectra(const TString& name, Int_t iVerbose)
 {
 }
 
-R3BSofOnlineSpectra::~R3BSofOnlineSpectra()
-{
-    LOG(info) << "R3BSofOnlineSpectra::Delete instance";
-    if (fWRItemsMaster)
-        delete fWRItemsMaster;
-    if (fWRItemsSofia)
-        delete fWRItemsSofia;
-    if (fWRItemsCalifa)
-        delete fWRItemsCalifa;
-    if (fWRItemsNeuland)
-        delete fWRItemsNeuland;
-    if (fWRItemsS2)
-        delete fWRItemsS2;
-    if (fWRItemsS8)
-        delete fWRItemsS8;
-}
-
 InitStatus R3BSofOnlineSpectra::Init()
 {
-    LOG(info) << "R3BSofOnlineSpectra::Init()";
+    R3BLOG(info, "");
 
     // try to get a handle on the EventHeader. EventHeader may not be
     // present though and hence may be null. Take care when using.
 
     FairRootManager* mgr = FairRootManager::Instance();
-    if (NULL == mgr)
+    if (mgr == nullptr)
         LOG(fatal) << "R3BSofOnlineSpectra::Init FairRootManager not found";
     fEventHeader = (R3BEventHeader*)mgr->GetObject("EventHeader.");
 
@@ -364,7 +314,7 @@ InitStatus R3BSofOnlineSpectra::Init()
 
     // Triggers
     cTrigger = new TCanvas("Triggers", "Trigger information", 10, 10, 800, 700);
-    fh1_trigger = new TH1F("fh1_trigger", "Trigger information: Tpat", 17, -0.5, 16.5);
+    fh1_trigger = R3B::root_owned<TH1F>("fh1_trigger", "Trigger information: Tpat", 17, -0.5, 16.5);
     fh1_trigger->GetXaxis()->SetTitle("Trigger number (tpat)");
     fh1_trigger->GetYaxis()->SetTitle("Counts");
     fh1_trigger->GetXaxis()->CenterTitle(true);
@@ -380,7 +330,7 @@ InitStatus R3BSofOnlineSpectra::Init()
 
     // Difference between master and sofia WRs
     cWr = new TCanvas("WR_Master_Sofia", "WR_Master_Sofia", 10, 10, 500, 500);
-    fh1_wr[0] = new TH1F(
+    fh1_wr[0] = R3B::root_owned<TH1F>(
         "fh1_WRSE_Master_Sofia", "WR-Master - WRSE-Sofia(back) , WR-Master - WRME-Sofia(red) ", 1200, -4100, 4100);
     fh1_wr[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wr[0]->GetYaxis()->SetTitle("Counts");
@@ -401,7 +351,7 @@ InitStatus R3BSofOnlineSpectra::Init()
     cWrs = new TCanvas(Name1, Name1, 10, 10, 500, 500);
     sprintf(Name2, "fh1_WR_Sofia_Wixhausen");
     sprintf(Name3, "WR-Sofia - WR-Other"); // Messel (blue), Wixhausen (red)
-    fh1_wrs[0] = new TH1F(Name2, Name3, 1200, -4100, 4100);
+    fh1_wrs[0] = R3B::root_owned<TH1F>(Name2, Name3, 1200, -4100, 4100);
     fh1_wrs[0]->GetXaxis()->SetTitle("WRs difference");
     fh1_wrs[0]->GetYaxis()->SetTitle("Counts");
     fh1_wrs[0]->GetYaxis()->SetTitleOffset(1.3);
@@ -411,22 +361,22 @@ InitStatus R3BSofOnlineSpectra::Init()
     fh1_wrs[0]->SetLineWidth(3);
     gPad->SetLogy(1);
     fh1_wrs[0]->Draw("");
-    fh1_wrs[1] = new TH1F("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
+    fh1_wrs[1] = R3B::root_owned<TH1F>("fh1_WR_Sofia_Califa_Messel", "", 1200, -4100, 4100);
     fh1_wrs[1]->SetLineColor(4);
     fh1_wrs[1]->SetLineWidth(3);
     if (fWRItemsCalifa)
         fh1_wrs[1]->Draw("same");
-    fh1_wrs[2] = new TH1F("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
+    fh1_wrs[2] = R3B::root_owned<TH1F>("fh1_WR_Sofia_Neuland", "", 1200, -4100, 4100);
     fh1_wrs[2]->SetLineColor(3);
     fh1_wrs[2]->SetLineWidth(3);
     if (fWRItemsNeuland)
         fh1_wrs[2]->Draw("same");
-    fh1_wrs[3] = new TH1F("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
+    fh1_wrs[3] = R3B::root_owned<TH1F>("fh1_WR_Sofia_S2", "", 1200, -4100, 4100);
     fh1_wrs[3]->SetLineColor(1);
     fh1_wrs[3]->SetLineWidth(3);
     if (fWRItemsS2)
         fh1_wrs[3]->Draw("same");
-    fh1_wrs[4] = new TH1F("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
+    fh1_wrs[4] = R3B::root_owned<TH1F>("fh1_WR_Sofia_S8", "", 1200, -4100, 4100);
     fh1_wrs[4]->SetLineColor(5);
     fh1_wrs[4]->SetLineWidth(3);
     if (fWRItemsS8)
@@ -494,7 +444,7 @@ InitStatus R3BSofOnlineSpectra::Init()
 
 void R3BSofOnlineSpectra::Reset_GENERAL_Histo()
 {
-    LOG(info) << "R3BSofOnlineSpectra::Reset_General_Histo";
+    R3BLOG(info, "");
     fh1_trigger->Reset();
     if (fWRItemsMaster && fWRItemsSofia)
     {

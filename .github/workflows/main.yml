@@ -1,10 +1,12 @@
-# This is a basic workflow to help you get started with Actions
+# This is the main CI workflow for pull requests to the sofia dev branch
+# See the CI workflow developed for R3BRoot for more details
 
 name: CI-CD
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master and dev branches
+  # Triggers the workflow in case of a push or pull request events (but only for
+  # the dev branch)
   push:
     branches: [ dev ]
   pull_request:
@@ -13,70 +15,134 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially
+# A workflow run is made up of one or more jobs that can run sequentially or
+# parallelly. As has been specified above, all the jobs below will be
+# triggered either by a pull request or a merge of a pull request.
 jobs:
-  # This workflow contains a single job called "clang-format"
-  clang-format:
+  build-test:
     runs-on: ubuntu-latest
+    # A strategy matrix gives different settings separately to different jobs
+    # which are run parallelly.
+    strategy:
+      # If fail-fast is true, all jobs running parallelly will be stopped if
+      # any of them fail. By setting it to false, all jobs will be run
+      # undisruptively.
+      fail-fast: false
+      # Definition of the strategy matrix
+      matrix:
+        # Here are the groups of repositories that need to be downloaded inside
+        # r3broot. Each group is used by only one job.
+        repos: [ sofia ]
+        # The list under "include" defines some properties for each group:
+        #
+        # repos: the name of the group. It must exist in matrix.repos as
+        # defined above.
+        #
+        # cache: the name of the cache file that will be created/used for the
+        # job. Each group can have their own cache file. But the total size of
+        # the cache files are limited to 10 GB per project. Therefore, the
+        # number of caches should be kept to a minimum. If there isn't too
+        # much difference between glad-tpc and the base r3broot, the cache file
+        # generated from r3broot build can be used.
+        #
+        # skip-save: whether to save the cache or not. Cache saving is disabled
+        # when true. This is neccessary when two parellel jobs share one cache
+        # name.
+        #
+        # url: the github repository urls that need to be downloaded during the
+        # run
+        include:
+          # This job is only for testing R3BRoot without downloading any
+          # dependencies.
+          - repos: sofia
+            cache: sofia
 
+    # Jobs are run inside a Docker container, which provides different compiled
+    # tool-kits for the building, such as clang-tidy and cvmfs. For more
+    # information, please visit the Docker repository at Dockerhub.
+    container: 
+      image: yanzhaowang/cvmfs_clang:v15
+      volumes:
+        - /tmp:/cvmfs
+      env:
+        CVMDIR: /cvmfs/fairsoft.gsi.de
+        # Specifying the number of threads available for the building and
+        # testing. Github hosted runners can have at most 2 cores. The number
+        # of the cores can be increased with a larger runner, thus increasing
+        # the speed of the run.
+        NUM_THREADS: 2
+      # Options for the Docker container to be run with cvmfs.
+      options: --user root --privileged  --ulimit nofile=10000:10000 --cap-add SYS_ADMIN --device /dev/fuse
+
+    # Each job contains different steps that are executed sequentially. Each
+    # step could be multiple shell commands or a composite action either from
+    # another github repo or a self-defined one in .github/actions.
     steps:
+      # Fetch updates from pull request branches using a public github action.
       - uses: actions/checkout@v3
-      - name: Code formatting
+        with:
+          # This allows all commits of all branches to be fetched.
+          fetch-depth: 0
+
+      # A self-defined composite action. It sets multiple necessary environment
+      # variables and mounts the cmvfs folder of fairroot and fairsoft.
+      - name: pre-build
+        uses: './.github/actions/pre-build'
+
+      # A self-defined composite action, which restores the caches of
+      # dependencies and builds and install them if the cache doesn't exist.
+      # The two inputs for this action, r3b-dev-key and cache-name, determine
+      # the name (key) of the R3BRoot build cache being used in the the run.
+      # Its name is defined as
+      # "r3b-build-${cache-name}-${r3b-dev-key}". Apart from r3b build cache,
+      # there is another cache called "r3b-build-deps", which contains all
+      # dependencies for the R3BRoot build, such as googletest and ucesb. The
+      # cache restoring step is only used for the run triggered with
+      # "pull_request" and disabled for the merge event.
+      - name: install dependencies
+        id: restore-cache
+        uses: './.github/actions/install-deps'
+        with: 
+          cache-name: ${{ matrix.cache }}
+          r3b-dev-key: ${{ env.cacheSHA }}
+
+      # A self-defined composite action for the cmake configuration and build
+      # of r3broot (along with necessary dep repos).
+      - name: configure-build-sofia
         run: |
-          cd $GITHUB_WORKSPACE
-          sudo apt-get update
-          sudo apt-get install clang-format-15
-          ./.clang-format-check.sh clang-format-15
-        shell: bash
-
-# Single job called "build-r3broot-sofia"
-  build-r3broot-sofia:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-22.04
-    needs: clang-format
-    if: always()
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a set of commands using the runners shell
-      - name: Configuration and build
-        run: |
-          sudo apt-get install lsb-release
-          wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb
-          sudo dpkg -i cvmfs-release-latest_all.deb
-          rm -f cvmfs-release-latest_all.deb
-          sudo apt-get update
-          sudo apt-get install -y cvmfs
-          wget https://cernbox.cern.ch/remote.php/dav/public-files/RmnTeeOZpYjCJQb/masterkey.gsi.de.pub
-          sudo mv masterkey.gsi.de.pub /etc/cvmfs/keys
-          cd $GITHUB_WORKSPACE
-          sudo cp .githubfiles/fairsoft.gsi.de.conf /etc/cvmfs/config.d
-          sudo mkdir -p /cvmfs/fairsoft.gsi.de
-          sudo mount -t cvmfs fairsoft.gsi.de /cvmfs/fairsoft.gsi.de
-          export SIMPATH=/cvmfs/fairsoft.gsi.de/ubuntu2204/fairsoft/nov22p1
-          export FAIRROOTPATH=/cvmfs/fairsoft.gsi.de/ubuntu2204/fairroot/v18.8.1_nov22p1
-          cd ..
           git clone https://github.com/R3BRootGroup/R3BRoot.git
+          cd ..
+          mv sofia/R3BRoot .
           mv sofia R3BRoot
           mv R3BRoot sofia
           cd sofia
-          git clone https://git.chalmers.se/expsubphys/ucesb.git
-          cd ucesb
-          export ROOTSYS=$SIMPATH
-          make -j32 empty/empty
-          export UCESB_DIR=$PWD
-          cd ..
           git clone https://github.com/R3BRootGroup/macros.git
-          mkdir build 
-          cd build
-          cmake ..
-          source config.sh
-          make -j 35
-          cd ..
-          ./Dart.sh Experimental ./sofia/.githubfiles/dart_experimental_nov22p1.cfg
-        shell: bash
-          
-          
+          mv sofia/ucesb .
+          cmake . -B build -C cmake/CI_CD/configure_options.cmake
+          cmake --build ./build -- -j ${NUM_THREADS}
+
+      # A self-defined composite action to perform the ctest and push the
+      # results to the cdash (cmake-dashborad). To fully show the errors and
+      # warnings during the configure and build processes, the two processes
+      # are rerun after 'make clean'.
+      - name: ctest-cdash
+        if: always()
+        uses: './.github/actions/ctest-cdash'
+        with:
+          repo: ${{ matrix.repos }}
+
+      # A composite action to save the ccaahe created from the merge events.
+      # Cache names (key) should be consistent with the names used in the
+      # cache restoring step.
+      - name: save-cache
+        if: github.event_name == 'push' && matrix.skip-save != true
+        id: save-cache
+        uses: './.github/actions/cache-save'
+        with: 
+          cache-name: ${{ matrix.cache }}
+          r3b-dev-key: ${{ env.cacheSHA }}
+
+      # Show the cache hit rate from ccache.
+      - name: ccache stats
+        if: github.event_name == 'pull_request' && always()
+        run: ccache --show-stats

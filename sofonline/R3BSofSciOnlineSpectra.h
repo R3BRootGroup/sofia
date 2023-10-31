@@ -12,6 +12,7 @@
 #include "TH2D.h"
 #include "TH2F.h"
 #include "TMath.h"
+#include <R3BShared.h>
 
 #include <array>
 #include <cstdlib>
