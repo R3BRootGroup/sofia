@@ -263,7 +263,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // with condition on TPAT
         sprintf(Name1, "DeltaClock_Sci%i_TrefRight", d + 1);
         sprintf(Name2, "DeltaClock_Sci%i_TrefRight (blue no condition on TPAT and red TPAT = 1 or 2)", d + 1);
-        fh1_deltaClockPerSci[2 * d] = new TH1F(Name1, Name2, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci[2 * d] = R3B::root_owned<TH1F>(Name1, Name2, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci[2 * d]->SetLineColor(kBlue);
         fh1_deltaClockPerSci[2 * d]->SetLineWidth(2);
         cDeltaClockPerSci->cd(2 * d + 1);
@@ -271,7 +271,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         sprintf(Name1, "DeltaClock_Sci%i_TrefLeft", d + 1);
         sprintf(Name2, "DeltaClock_Sci%i_TrefLeft (blue no condition on Tpat and ref TPAT = 1 or 2)", d + 1);
-        fh1_deltaClockPerSci[2 * d + 1] = new TH1F(Name1, Name2, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci[2 * d + 1] = R3B::root_owned<TH1F>(Name1, Name2, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci[2 * d + 1]->SetLineColor(kBlue);
         fh1_deltaClockPerSci[2 * d + 1]->SetLineWidth(2);
         cDeltaClockPerSci->cd(2 * d + 2);
@@ -279,14 +279,14 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // with condition on TPAT
         sprintf(Name1, "DeltaClock_Sci%i_TrefRight_wCondTpat", d + 1);
-        fh1_deltaClockPerSci_condTpat[2 * d] = new TH1F(Name1, Name1, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci_condTpat[2 * d] = R3B::root_owned<TH1F>(Name1, Name1, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci_condTpat[2 * d]->SetLineColor(kRed);
         fh1_deltaClockPerSci_condTpat[2 * d]->SetLineWidth(1);
         cDeltaClockPerSci->cd(2 * d + 1);
         fh1_deltaClockPerSci_condTpat[2 * d]->Draw("sames");
 
         sprintf(Name1, "DeltaClock_Sci%i_TrefLeft_wCondTpat", d + 1);
-        fh1_deltaClockPerSci_condTpat[2 * d + 1] = new TH1F(Name1, Name1, 3000, -1500.5, 1499.5);
+        fh1_deltaClockPerSci_condTpat[2 * d + 1] = R3B::root_owned<TH1F>(Name1, Name1, 3000, -1500.5, 1499.5);
         fh1_deltaClockPerSci_condTpat[2 * d + 1]->SetLineColor(kRed);
         fh1_deltaClockPerSci_condTpat[2 * d + 1]->SetLineWidth(1);
         cDeltaClockPerSci->cd(2 * d + 2);
@@ -302,7 +302,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         for (int d = 0; d < fNbDetectors - 1; d++)
         {
             sprintf(Name1, "DeltaTref_Sci%02d_to_SciCaveC", d + 1);
-            fh1_DeltaTref[d] = new TH1D(Name1, Name1, 45000, -20000, 25000);
+            fh1_DeltaTref[d] = R3B::root_owned<TH1D>(Name1, Name1, 45000, -20000, 25000);
             cDeltaTref->cd(d + 1);
             fh1_DeltaTref[d]->Draw();
         }
@@ -313,7 +313,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // === TH1I: 1D-mult at SingleTcal level === //
         sprintf(Name1, "Sci%i_MultPerEvent_SingleTcal", i + 1);
         sprintf(Name2, "Sci%i_MultPerEvent_SingleTcal (blue no Tpat condition, red: Tpat=1 or 2)", i + 1);
-        fh1_multSingleTcal[i] = new TH1I(Name1, Name2, 20, -0.5, 19.5);
+        fh1_multSingleTcal[i] = R3B::root_owned<TH1I>(Name1, Name2, 20, -0.5, 19.5);
         fh1_multSingleTcal[i]->GetXaxis()->SetTitle("Multiplicity per event");
         fh1_multSingleTcal[i]->GetYaxis()->SetTitle("Counts");
         fh1_multSingleTcal[i]->GetXaxis()->CenterTitle(true);
@@ -331,7 +331,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         sprintf(Name1, "Sci%i_MultPerEvent_SingleTcal_condTpat", i + 1);
         sprintf(
             Name2, "Sci%i_MultPerEvent_SingleTcal_condTpat (blue no condition on Tpat, red for Tpat=1 or 2)", i + 1);
-        fh1_multSingleTcal_condTpat[i] = new TH1I(Name1, Name2, 20, -0.5, 19.5);
+        fh1_multSingleTcal_condTpat[i] = R3B::root_owned<TH1I>(Name1, Name2, 20, -0.5, 19.5);
         fh1_multSingleTcal_condTpat[i]->GetXaxis()->SetTitle("Multiplicity per event");
         fh1_multSingleTcal_condTpat[i]->GetYaxis()->SetTitle("Counts");
         fh1_multSingleTcal_condTpat[i]->GetXaxis()->CenterTitle(true);
@@ -348,7 +348,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1I: 1D-mult at cal level === //
         sprintf(Name1, "Sci%i_MultPerEvent_Cal", i + 1);
-        fh1_multCal[i] = new TH1I(Name1, Name1, 20, -0.5, 19.5);
+        fh1_multCal[i] = R3B::root_owned<TH1I>(Name1, Name1, 20, -0.5, 19.5);
         fh1_multCal[i]->GetXaxis()->SetTitle("Multiplicity per event");
         fh1_multCal[i]->GetYaxis()->SetTitle("Counts");
         fh1_multCal[i]->GetXaxis()->CenterTitle(true);
@@ -383,7 +383,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
                     "Sci%i_Pmt%i_MultPerEvent_Mapped (blue no condition on TPAT, red condition on TPAT = 1 or 2)",
                     i + 1,
                     j + 1);
-            fh1_multMap[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
+            fh1_multMap[i * fNbChannels + j] = R3B::root_owned<TH1I>(Name1, Name1, 70, -0.5, 69.5);
             fh1_multMap[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
             fh1_multMap[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
             fh1_multMap[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -399,7 +399,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_multMap[i * fNbChannels + j]->Draw("");
 
             sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Mapped_condTpat", i + 1, j + 1);
-            fh1_multMap_condTpat[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
+            fh1_multMap_condTpat[i * fNbChannels + j] = R3B::root_owned<TH1I>(Name1, Name1, 70, -0.5, 69.5);
             fh1_multMap_condTpat[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
             fh1_multMap_condTpat[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
             fh1_multMap_condTpat[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -420,7 +420,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
                     "Sci%i_Pmt%i_MultPerEvent_Tcal (blue no condition on Tpat, red condition on TPAT = 1 or 2)",
                     i + 1,
                     j + 1);
-            fh1_multTcal[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
+            fh1_multTcal[i * fNbChannels + j] = R3B::root_owned<TH1I>(Name1, Name1, 70, -0.5, 69.5);
             fh1_multTcal[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
             fh1_multTcal[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
             fh1_multTcal[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -436,7 +436,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             fh1_multTcal[i * fNbChannels + j]->Draw("");
 
             sprintf(Name1, "Sci%i_Pmt%i_MultPerEvent_Tcal_condTpat", i + 1, j + 1);
-            fh1_multTcal_condTpat[i * fNbChannels + j] = new TH1I(Name1, Name1, 70, -0.5, 69.5);
+            fh1_multTcal_condTpat[i * fNbChannels + j] = R3B::root_owned<TH1I>(Name1, Name1, 70, -0.5, 69.5);
             fh1_multTcal_condTpat[i * fNbChannels + j]->GetXaxis()->SetTitle("Multiplicity per event");
             fh1_multTcal_condTpat[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts");
             fh1_multTcal_condTpat[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -453,7 +453,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1F: fine time === //
             sprintf(Name1, "Sci%i_FineTimeCh%i", i + 1, j + 1);
-            fh1_finetime[i * fNbChannels + j] = new TH1I(Name1, Name1, 1000, 0, 1000);
+            fh1_finetime[i * fNbChannels + j] = R3B::root_owned<TH1I>(Name1, Name1, 1000, 0, 1000);
             fh1_finetime[i * fNbChannels + j]->GetXaxis()->SetTitle("Fine time");
             fh1_finetime[i * fNbChannels + j]->GetYaxis()->SetTitle("Counts per bin");
             fh1_finetime[i * fNbChannels + j]->GetXaxis()->CenterTitle(true);
@@ -469,7 +469,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         for (Int_t pmt = 0; pmt < fNbChannels - 1; pmt++)
         {
             sprintf(Name1, "SofSci%i_MultMap_TrefVsPmt%i", i + 1, pmt + 1);
-            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] = new TH2I(Name1, Name1, 70, -0.5, 69.5, 5, -0.5, 4.5);
+            fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt] =
+                R3B::root_owned<TH2I>(Name1, Name1, 70, -0.5, 69.5, 5, -0.5, 4.5);
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->SetTitle("Mult Pmt");
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetYaxis()->SetTitle("Mult Tref");
             fh2_mult_TrefVsPmt[i * (fNbChannels - 1) + pmt]->GetXaxis()->CenterTitle(true);
@@ -499,7 +500,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: multiplicity per event and channel at mapped level === //
         sprintf(Name1, "Sci%i_MultPerEvent", i + 1);
-        fh2_mult[i] = new TH2I(Name1, Name1, fNbChannels, 0.5, fNbChannels + 0.5, 20, -0.5, 19.5);
+        fh2_mult[i] = R3B::root_owned<TH2I>(Name1, Name1, fNbChannels, 0.5, fNbChannels + 0.5, 20, -0.5, 19.5);
         fh2_mult[i]->GetXaxis()->SetTitle("channel: 1=PMT R,    2=PMT L,    3=COMMON REF");
         fh2_mult[i]->GetYaxis()->SetTitle("multiplicity per event");
         fh2_mult[i]->GetXaxis()->CenterTitle(true);
@@ -513,7 +514,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: multiplicity per event and channel at mapped level === //
         sprintf(Name1, "Sci%i_MultPerEvent_RvsL", i + 1);
-        fh2_mult_RvsL[i] = new TH2I(Name1, Name1, 40, -1.5, 38.5, 40, -1.5, 38.5);
+        fh2_mult_RvsL[i] = R3B::root_owned<TH2I>(Name1, Name1, 40, -1.5, 38.5, 40, -1.5, 38.5);
         fh2_mult_RvsL[i]->GetXaxis()->SetTitle("Multiplicity per event on the Left Pmt");
         fh2_mult_RvsL[i]->GetYaxis()->SetTitle("Multiplicity per event on the Right Pmt");
         fh2_mult_RvsL[i]->GetXaxis()->CenterTitle(true);
@@ -527,7 +528,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: multiplicity per event and channel at mapped level === //
         sprintf(Name1, "Sci%i_MultPerEvent_RvsL_condTpat", i + 1);
-        fh2_mult_RvsL_condTpat[i] = new TH2I(Name1, Name1, 40, -1.5, 38.5, 40, -1.5, 38.5);
+        fh2_mult_RvsL_condTpat[i] = R3B::root_owned<TH2I>(Name1, Name1, 40, -1.5, 38.5, 40, -1.5, 38.5);
         fh2_mult_RvsL_condTpat[i]->GetXaxis()->SetTitle("Multiplicity per event on the Left Pmt");
         fh2_mult_RvsL_condTpat[i]->GetYaxis()->SetTitle("Multiplicity per event on the Right Pmt");
         fh2_mult_RvsL_condTpat[i]->GetXaxis()->CenterTitle(true);
@@ -541,7 +542,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: raw position at tcal level if mult=1 === //
         sprintf(Name1, "SofSci%i_RawPos_Tcal_Mult1", i + 1);
-        fh1_RawPos_TcalMult1[i] = new TH1F(Name1, Name1, 200000, -100, 100);
+        fh1_RawPos_TcalMult1[i] = R3B::root_owned<TH1F>(Name1, Name1, 200000, -100, 100);
         fh1_RawPos_TcalMult1[i]->GetXaxis()->SetTitle(
             "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
         fh1_RawPos_TcalMult1[i]->GetYaxis()->SetTitle("Counts per bin");
@@ -556,7 +557,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
         // === TH1F: raw position at single tcal level === //
         sprintf(Name1, "SofSci%i_RawPos_SingleTcal", i + 1);
-        fh1_RawPos_SingleTcal[i] = new TH1F(Name1, Name1, 100000, -50, 50);
+        fh1_RawPos_SingleTcal[i] = R3B::root_owned<TH1F>(Name1, Name1, 100000, -50, 50);
         fh1_RawPos_SingleTcal[i]->GetXaxis()->SetTitle(
             "(RIGHT,Wix. side) -->  raw position [ns, 1ps/bin] --> (LEFT,Mes. side) -->");
         fh1_RawPos_SingleTcal[i]->GetYaxis()->SetTitle("Counts per bin");
@@ -572,9 +573,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // === TH1F: calibrated position in mm at cal level === //
         sprintf(Name1, "SofSci%i_CalPos_mm", i + 1);
         if (i == (fNbDetectors - 1))
-            fh1_CalPos[i] = new TH1F(Name1, Name1, 5000, -25, 25);
+            fh1_CalPos[i] = R3B::root_owned<TH1F>(Name1, Name1, 5000, -25, 25);
         else
-            fh1_CalPos[i] = new TH1F(Name1, Name1, 30000, -150, 150);
+            fh1_CalPos[i] = R3B::root_owned<TH1F>(Name1, Name1, 30000, -150, 150);
         fh1_CalPos[i]->GetXaxis()->SetTitle("(RIGHT, Wix. side) -->  x position [mm] --> (LEFT,Mes. side) -->");
         fh1_CalPos[i]->GetYaxis()->SetTitle("Counts per bin");
         fh1_CalPos[i]->GetXaxis()->CenterTitle(true);
@@ -589,9 +590,9 @@ InitStatus R3BSofSciOnlineSpectra::Init()
         // +++ TH2F: raw position versus calibrated position === //
         sprintf(Name1, "SofSci%i_RawPosVsCalPos", i + 1);
         if (i == (fNbDetectors - 1))
-            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -25, 25, 500, -25, 25);
+            fh2_RawPosVsCalPos[i] = R3B::root_owned<TH2F>(Name1, Name1, 500, -25, 25, 500, -25, 25);
         else
-            fh2_RawPosVsCalPos[i] = new TH2F(Name1, Name1, 500, -100, 100, 500, -10, 10);
+            fh2_RawPosVsCalPos[i] = R3B::root_owned<TH2F>(Name1, Name1, 500, -100, 100, 500, -10, 10);
         fh2_RawPosVsCalPos[i]->GetXaxis()->SetTitle("Calculated X position [mm]");
         fh2_RawPosVsCalPos[i]->GetYaxis()->SetTitle(
             "(RIGHT, Wixhausen side) --->  Raw X position [ns]  ---> (LEFT, Messel side)");
@@ -625,7 +626,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: raw ToF from S2 at tcal level if mult==1 for the 4 PMTs + 2 Tref signals === //
             sprintf(Name1, "RawTofNs_Tcal_m1_wTref_S2_to_Sci%02d", i + 1);
-            fh1_RawTofFromS2_TcalMult1[i - fIdS2] = new TH1D(Name1, Name1, 1000000, -50000, 50000);
+            fh1_RawTofFromS2_TcalMult1[i - fIdS2] = R3B::root_owned<TH1D>(Name1, Name1, 1000000, -50000, 50000);
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->SetTitle("Raw Tof [ns]");
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
             fh1_RawTofFromS2_TcalMult1[i - fIdS2]->GetXaxis()->CenterTitle(true);
@@ -639,7 +640,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: raw ToF from S2 at single tcal level === //
             sprintf(Name1, "RawTofNs_SingleTcal_wTref_S2_to_Sci%02d", i + 1);
-            fh1_RawTofFromS2_SingleTcal[i - fIdS2] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS2_SingleTcal[i - fIdS2] = R3B::root_owned<TH1D>(Name1, Name1, 800000, -4000, 4000);
             fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetXaxis()->SetTitle("Raw Tof [ns]");
             fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
             fh1_RawTofFromS2_SingleTcal[i - fIdS2]->GetXaxis()->CenterTitle(true);
@@ -653,7 +654,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: calibrated ToF from S2 at cal level === //
             sprintf(Name1, "CalTofNs_S2_to_Sci%02d", i + 1);
-            fh1_CalTofFromS2[i - fIdS2] = new TH1D(Name1, Name1, 100000, 0, 1000);
+            fh1_CalTofFromS2[i - fIdS2] = R3B::root_owned<TH1D>(Name1, Name1, 100000, 0, 1000);
             fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->SetTitle("Calibrated Tof [ns]");
             fh1_CalTofFromS2[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
             fh1_CalTofFromS2[i - fIdS2]->GetXaxis()->CenterTitle(true);
@@ -667,7 +668,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: beta at cal level calculated from ToF from S2 === //
             sprintf(Name1, "CalBeta_S2_to_Sci%02d", i + 1);
-            fh1_BetaFromS2[i - fIdS2] = new TH1D(Name1, Name1, 30000, 0.6, 0.9);
+            fh1_BetaFromS2[i - fIdS2] = R3B::root_owned<TH1D>(Name1, Name1, 30000, 0.6, 0.9);
             fh1_BetaFromS2[i - fIdS2]->GetXaxis()->SetTitle("beta = v/c");
             fh1_BetaFromS2[i - fIdS2]->GetYaxis()->SetTitle("Counts per bin");
             fh1_BetaFromS2[i - fIdS2]->GetXaxis()->CenterTitle(true);
@@ -684,7 +685,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             minS2 = GetTofS2min(i - fIdS2);
             maxS2 = GetTofS2max(i - fIdS2);
             fh2_PosVsTofS2[(i - fIdS2) * 2] =
-                new TH2D(Name1, Name1, 50. * (maxS2 - minS2), minS2, maxS2, 1000, -100, 100);
+                R3B::root_owned<TH2D>(Name1, Name1, 50. * (maxS2 - minS2), minS2, maxS2, 1000, -100, 100);
             sprintf(Name1, "Tof S2 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS2[(i - fIdS2) * 2]->GetXaxis()->SetTitle(Name1);
             fh2_PosVsTofS2[(i - fIdS2) * 2]->GetYaxis()->SetTitle("Pos at S2 [mm]");
@@ -700,7 +701,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             // === TH2D: pos SofSci stop vs tof from S2  === //
             sprintf(Name1, "PosSci%02d_vs_Tof_S2_Sci%02d", i + 1, i + 1);
             fh2_PosVsTofS2[(i - fIdS2) * 2 + 1] =
-                new TH2D(Name1, Name1, 50 * (maxS2 - minS2), minS2, maxS2, 1000, -25, 25);
+                R3B::root_owned<TH2D>(Name1, Name1, 50 * (maxS2 - minS2), minS2, maxS2, 1000, -25, 25);
             sprintf(Name1, "Tof S2 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS2[(i - fIdS2) * 2 + 1]->GetXaxis()->SetTitle(Name1);
             sprintf(Name1, "Pos at Sci%02d [mm]", i + 1);
@@ -738,7 +739,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: raw ToF from S8 at tcal level if mult==1 for the 4 PMTs + 2 Tref signals === //
             sprintf(Name1, "RawTofNs_Tcal_m1_wTref_S8_to_Sci%02d", i + 1);
-            fh1_RawTofFromS8_TcalMult1[i - fIdS8] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS8_TcalMult1[i - fIdS8] = R3B::root_owned<TH1D>(Name1, Name1, 800000, -4000, 4000);
             fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetXaxis()->SetTitle("Raw Tof [ns]");
             fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
             fh1_RawTofFromS8_TcalMult1[i - fIdS8]->GetXaxis()->CenterTitle(true);
@@ -752,7 +753,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: raw ToF from S8 at single tcal level === //
             sprintf(Name1, "RawTofNs_SingleTcal_wTref_S8_to_Sci%02d", i + 1);
-            fh1_RawTofFromS8_SingleTcal[i - fIdS8] = new TH1D(Name1, Name1, 800000, -4000, 4000);
+            fh1_RawTofFromS8_SingleTcal[i - fIdS8] = R3B::root_owned<TH1D>(Name1, Name1, 800000, -4000, 4000);
             fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetXaxis()->SetTitle("Raw Tof [ns]");
             fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
             fh1_RawTofFromS8_SingleTcal[i - fIdS8]->GetXaxis()->CenterTitle(true);
@@ -766,7 +767,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: calibrated ToF from S8 at cal level === //
             sprintf(Name1, "CalTofNs_S8_to_Sci%02d", i + 1);
-            fh1_CalTofFromS8[i - fIdS8] = new TH1D(Name1, Name1, 100000, 0, 1000);
+            fh1_CalTofFromS8[i - fIdS8] = R3B::root_owned<TH1D>(Name1, Name1, 100000, 0, 1000);
             fh1_CalTofFromS8[i - fIdS8]->GetXaxis()->SetTitle("Calibrated Tof [ns]");
             fh1_CalTofFromS8[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
             fh1_CalTofFromS8[i - fIdS8]->GetXaxis()->CenterTitle(true);
@@ -780,7 +781,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH1D: beta at cal level calculated from ToF from S8 === //
             sprintf(Name1, "CalBeta_S8_to_Sci%02d", i + 1);
-            fh1_BetaFromS8[i - fIdS8] = new TH1D(Name1, Name1, 30000, 0.6, 0.9);
+            fh1_BetaFromS8[i - fIdS8] = R3B::root_owned<TH1D>(Name1, Name1, 30000, 0.6, 0.9);
             fh1_BetaFromS8[i - fIdS8]->GetXaxis()->SetTitle("beta = v/c");
             fh1_BetaFromS8[i - fIdS8]->GetYaxis()->SetTitle("Counts per bin");
             fh1_BetaFromS8[i - fIdS8]->GetXaxis()->CenterTitle(true);
@@ -794,7 +795,8 @@ InitStatus R3BSofSciOnlineSpectra::Init()
 
             // === TH2D: posS8 vs tof from S8  === //
             sprintf(Name1, "PosS8_vs_Tof_S8-Sci%02d", i + 1);
-            fh2_PosVsTofS8[(i - fIdS8) * 2] = new TH2D(Name1, Name1, 50 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
+            fh2_PosVsTofS8[(i - fIdS8) * 2] =
+                R3B::root_owned<TH2D>(Name1, Name1, 50 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
             sprintf(Name1, "Tof S8 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS8[(i - fIdS8) * 2]->GetXaxis()->SetTitle(Name1);
             fh2_PosVsTofS8[(i - fIdS8) * 2]->GetYaxis()->SetTitle("Pos at S8 [mm]");
@@ -810,7 +812,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
             // === TH2D: pos SofSci stop vs tof from S8  === //
             sprintf(Name1, "PosSci%02d_vs_Tof_S8-Sci%02d", i + 1, i + 1);
             fh2_PosVsTofS8[(i - fIdS8) * 2 + 1] =
-                new TH2D(Name1, Name1, 50 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
+                R3B::root_owned<TH2D>(Name1, Name1, 50 * (maxS8 - minS8), minS8, maxS8, 400, -10, 10);
             sprintf(Name1, "Tof S8 - Sci%02d [ns]", i + 1);
             fh2_PosVsTofS8[(i - fIdS8) * 2 + 1]->GetXaxis()->SetTitle(Name1);
             sprintf(Name1, "Pos at Sci%02d [mm]", i + 1);
@@ -829,7 +831,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     // --- --------------- --- //
     // --- MAIN FOLDER-Sci --- //
     // --- --------------- --- //
-    TFolder* mainfolSciMult = new TFolder("SofSciMult", "SofSci Mult info");
+    auto* mainfolSciMult = new TFolder("SofSciMult", "SofSci Mult info");
     mainfolSciMult->Add(cMultMap);
     mainfolSciMult->Add(cMultTcal);
     mainfolSciMult->Add(cMultSingleTcal);
@@ -837,7 +839,7 @@ InitStatus R3BSofSciOnlineSpectra::Init()
     mainfolSciMult->Add(cMultMap2D);
     mainfolSciMult->Add(cMultMap2D_RvsL);
 
-    TFolder* mainfolSci = new TFolder("SofSci", "SofSci info");
+    auto* mainfolSci = new TFolder("SofSci", "SofSci info");
     mainfolSci->Add(cDeltaClockPerSci);
     for (Int_t i = 0; i < fNbDetectors; i++)
     {
