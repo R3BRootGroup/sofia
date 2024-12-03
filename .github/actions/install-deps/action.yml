@@ -17,7 +17,7 @@ runs:
     - name: cache ucesb
       if: github.event_name == 'pull_request'
       id: cache-ucesb
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: |
           ${{ env.UCESB_DIR }}
