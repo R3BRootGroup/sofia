@@ -70,10 +70,10 @@ jobs:
       env:
         CVMDIR: /cvmfs/fairsoft.gsi.de
         # Specifying the number of threads available for the building and
-        # testing. Github hosted runners can have at most 2 cores. The number
+        # testing. Github hosted runners can have at most 4 cores. The number
         # of the cores can be increased with a larger runner, thus increasing
         # the speed of the run.
-        NUM_THREADS: 2
+        NUM_THREADS: 4
       # Options for the Docker container to be run with cvmfs.
       options: --user root --privileged  --ulimit nofile=10000:10000 --cap-add SYS_ADMIN --device /dev/fuse
 
