@@ -1,0 +1,51 @@
+{
+    "creators": [
+        {
+            "name": "Alvarez Pol, Hector",
+            "orcid": "0000-0001-9643-6252"
+        },
+        {
+            "name": "Chatillon, Audrey"
+        },
+        {
+            "name": "Rodriguez Sanchez, Jose Luis",
+            "orcid": "0000-0002-4702-5294"
+        }
+    ],
+    "contributors": [
+        {
+            "type": "Other",
+            "name": "Garcia Jimenez, Gabriel"
+        },
+        {
+            "type": "Other",
+            "name": "Gra\u00f1a Gonzalez, Antia"
+        },
+        {
+            "type": "Other",
+            "name": "Mayer, Jan"
+        },
+        {
+            "type": "Other",
+            "name": "Morfouace, Pierre"
+        },
+        {
+            "type": "Other",
+            "name": "Taniuchi, Ryo"
+        },
+        {
+            "type": "Other",
+            "name": "Wang, Yanzhao"
+        }
+    ],
+    "description": "SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed for the fission setup within the R3B/GLAD magnet. The R3BRoot software is based on the FairRoot framework and can be used to perform Monte Carlo simulations and experimental data analysis of the R3B (Reactions with Relativistic Radioactive Beams) nuclear physics experiments at the GSI-FAIR research center (Facility for Antiproton and Ion Research).",
+    "related_identifiers": [
+        {
+            "identifier": "https://github.com/R3BRootGroup/sofia/",
+            "relation": "isSupplementTo",
+            "resource_type": "software",
+            "scheme": "url"
+        }
+    ],
+    "title": "sofia"
+}
