@@ -1,4 +1,5 @@
 # SOFIA Software
+[![static analysis](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml) [![CI-CD](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml)
 
 ## The SOFIA Framework
 SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed for the fission setup within the R3B/GLAD magnet. The R3BRoot software is based on the FairRoot framework and can be used to perform Monte Carlo simulations and experimental data analysis of the R3B (Reactions with Relativistic Radioactive Beams) nuclear physics experiments at the GSI-FAIR research center (Facility for Antiproton and Ion Research).
