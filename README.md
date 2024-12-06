@@ -1,8 +1,9 @@
-# SOFIA Software
+# SOFIA Software [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3896282.svg)](https://doi.org/10.5281/zenodo.14290959)
+
 [![static analysis](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml) [![CI-CD](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml)
 
 ## The SOFIA Framework
-SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed for the fission setup within the R3B/GLAD magnet. The R3BRoot software is based on the FairRoot framework and can be used to perform Monte Carlo simulations and experimental data analysis of the R3B (Reactions with Relativistic Radioactive Beams) nuclear physics experiments at the GSI-FAIR research center (Facility for Antiproton and Ion Research).
+The SOFIA module within the R3BRoot framework encapsulates the configuration and functionality of the SOFIA detectors, specifically designed for fission experiments conducted with the GLAD spectrometer. R3BRoot, built on the FairRoot framework, serves as a software environment for performing detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. These capabilities include precise modeling of detector geometry, particle tracking, event reconstruction, and physics analysis, supporting the investigation of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility.
 
 ## Discussion Forum
 For the software-related user support you can post a new topic on our [forum](https://forum.gsi.de/index.php?t=index&cat=40&).
@@ -12,23 +13,25 @@ Please see [Releases](https://github.com/R3BRootGroup/sofia/releases)
 
 ## Step by Step Installation
 
-### Required Software
+### Required Softwares
 
-First, you will need to install FairSoft and FairRoot. For more details:
+First, you will need to install FairSoft, FairRoot and R3BRoot. For more details:
 
 1. Install [FairSoft](https://github.com/FairRootGroup/FairSoft)
 
 2. Install [FairRoot](http://fairroot.gsi.de)
 
-### Installation of R3BRoot and SOFIA (as part of R3BRoot)
+3. Install [R3BRoot](https://github.com/R3BRootGroup/R3BRoot)
+
+### Installation of SOFIA as part of R3BRoot
 
 ~~~bash
 export SIMPATH=%PATH_TO_FAIRSOFT%
 export FAIRROOTPATH=%PATH_TO_FAIRROOT%
-git clone -b dev https://github.com/R3BRootGroup/R3BRoot.git
+git clone dev https://github.com/R3BRootGroup/R3BRoot.git
 cd R3BRoot
-git clone -b dev https://github.com/R3BRootGroup/macros.git
-git clone -b dev https://github.com/R3BRootGroup/sofia.git
+git clone dev https://github.com/R3BRootGroup/macros.git
+git clone dev https://github.com/R3BRootGroup/sofia.git
 cd ..
 mkdir build
 cd build
@@ -301,3 +304,9 @@ or
 3) If one wants to select a RunId and max number of events, for instance 'RunId = 273' and 'nev = 200'
    root -l 'cal_offline.C(273,200)'
 ~~~
+   
+## More Information
+
+* [Static analyzer using Clang-tidy](config/clang_tidy/README.md)
+* [CMake build system for R3BRoot/sofia](doc/cmake_usage.md)
+* [How to use an unmerged pull request](doc/git_usage.md#fetch-the-update-from-an-unmerged-pull-request-pr)
