@@ -62,22 +62,35 @@
     },
     {
       "@type": "Person",
-      "givenName": "Jose Luis",
-      "familyName": "Rodriguez Sanchez",
-      "@id": "https://orcid.org/0000-0002-4702-5294"
-    }
-  ],
-  "contributor": [
-    {
-      "@type": "Person",
       "givenName": "Gabriel",
       "familyName": "Garcia Jimenez"
     },
     {
       "@type": "Person",
+      "@id": "https://orcid.org/0000-0002-0842-4110",
       "givenName": "Antia",
       "familyName": "Gra\u00f1a Gonzalez"
     },
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0000-0002-2131-2199",
+      "givenName": "Pierre",
+      "familyName": "Morfouace"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Jose Luis",
+      "familyName": "Rodriguez Sanchez",
+      "@id": "https://orcid.org/0000-0002-4702-5294"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0000-0002-8057-7074",
+      "givenName": "Ryo",
+      "familyName": "Taniuchi"
+    }
+  ],
+  "contributor": [
     {
       "@type": "Person",
       "givenName": "Jan",
@@ -85,18 +98,9 @@
     },
     {
       "@type": "Person",
-      "givenName": "Pierre",
-      "familyName": "Morfouace"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Ryo",
-      "familyName": "Taniuchi"
-    },
-    {
-      "@type": "Person",
       "givenName": "Yanzhao",
-      "familyName": "Wang"
+      "familyName": "Wang",
+      "@id": "https://orcid.org/0000-0002-7006-7986"
     }
   ]
 }
