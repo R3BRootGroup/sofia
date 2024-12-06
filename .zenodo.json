@@ -8,37 +8,37 @@
             "name": "Chatillon, Audrey"
         },
         {
-            "name": "Rodriguez Sanchez, Jose Luis",
-            "orcid": "0000-0002-4702-5294"
-        }
-    ],
-    "contributors": [
-        {
-            "type": "Other",
             "name": "Garcia Jimenez, Gabriel"
         },
         {
-            "type": "Other",
-            "name": "Gra\u00f1a Gonzalez, Antia"
+            "name": "Gra\u00f1a Gonzalez, Antia",
+            "orcid": "0000-0002-0842-4110"
         },
+        {
+            "name": "Morfouace, Pierre",
+            "orcid": "0000-0002-2131-2199"
+        },
+        {
+            "name": "Rodriguez Sanchez, Jose Luis",
+            "orcid": "0000-0002-4702-5294"
+        },
+        {
+            "name": "Taniuchi, Ryo",
+            "orcid": "0000-0002-8057-7074"
+        }
+    ],
+    "contributors": [
         {
             "type": "Other",
             "name": "Mayer, Jan"
         },
         {
             "type": "Other",
-            "name": "Morfouace, Pierre"
-        },
-        {
-            "type": "Other",
-            "name": "Taniuchi, Ryo"
-        },
-        {
-            "type": "Other",
-            "name": "Wang, Yanzhao"
+            "name": "Wang, Yanzhao",
+            "orcid": "0000-0002-7006-7986"
         }
     ],
-    "description": "SOFIA folder inside R3BRoot describes the SOFIA detectors which are going to be employed for the fission setup within the R3B/GLAD magnet. The R3BRoot software is based on the FairRoot framework and can be used to perform Monte Carlo simulations and experimental data analysis of the R3B (Reactions with Relativistic Radioactive Beams) nuclear physics experiments at the GSI-FAIR research center (Facility for Antiproton and Ion Research).",
+    "description": "The SOFIA module within the R3BRoot framework encapsulates the configuration and functionality of the SOFIA detectors, specifically designed for fission experiments conducted with the GLAD spectrometer. R3BRoot, built on the FairRoot framework, serves as a software environment for performing detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. These capabilities include precise modeling of detector geometry, particle tracking, event reconstruction, and physics analysis, supporting the investigation of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility.",
     "related_identifiers": [
         {
             "identifier": "https://github.com/R3BRootGroup/sofia/",
@@ -47,5 +47,19 @@
             "scheme": "url"
         }
     ],
-    "title": "sofia"
+    "title": "SOFIA software",
+    "upload_type": "software",
+    "keywords": [
+        "Geant4",
+        "c-plus-plus",
+        "cmake",
+        "vmc",
+        "modular",
+        "Event reconstruction",
+        "Simulation",
+        "Data analysis",
+        "Structure and dynamics of nuclei",
+        "Nuclear reactions",
+        "Nuclear fission"
+    ]
 }
