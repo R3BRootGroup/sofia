@@ -1,4 +1,4 @@
-# SOFIA Software [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3896282.svg)](https://doi.org/10.5281/zenodo.14290959)
+# SOFIA Software [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14290959.svg)](https://doi.org/10.5281/zenodo.14290959)
 
 [![static analysis](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml) [![CI-CD](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml)
 

@@ -1,5 +1,6 @@
 # This is the main CI workflow for pull requests to the sofia dev branch
 # See the CI workflow developed for R3BRoot for more details
+# SPDX-License-Identifier: LGPL-3.0-or-later
 
 name: CI-CD
 
