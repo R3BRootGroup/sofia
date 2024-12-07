@@ -1,43 +1,4 @@
 {
-    "creators": [
-        {
-            "name": "Alvarez Pol, Hector",
-            "orcid": "0000-0001-9643-6252"
-        },
-        {
-            "name": "Chatillon, Audrey"
-        },
-        {
-            "name": "Garcia Jimenez, Gabriel"
-        },
-        {
-            "name": "Gra\u00f1a Gonzalez, Antia",
-            "orcid": "0000-0002-0842-4110"
-        },
-        {
-            "name": "Morfouace, Pierre",
-            "orcid": "0000-0002-2131-2199"
-        },
-        {
-            "name": "Rodriguez Sanchez, Jose Luis",
-            "orcid": "0000-0002-4702-5294"
-        },
-        {
-            "name": "Taniuchi, Ryo",
-            "orcid": "0000-0002-8057-7074"
-        }
-    ],
-    "contributors": [
-        {
-            "type": "Other",
-            "name": "Mayer, Jan"
-        },
-        {
-            "type": "Other",
-            "name": "Wang, Yanzhao",
-            "orcid": "0000-0002-7006-7986"
-        }
-    ],
     "description": "The SOFIA module within the R3BRoot framework encapsulates the configuration and functionality of the SOFIA detectors, specifically designed for fission experiments conducted with the GLAD spectrometer. R3BRoot, built on the FairRoot framework, serves as a software environment for performing detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. These capabilities include precise modeling of detector geometry, particle tracking, event reconstruction, and physics analysis, supporting the investigation of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility.",
     "related_identifiers": [
         {
@@ -47,19 +8,92 @@
             "scheme": "url"
         }
     ],
-    "title": "SOFIA software",
+    "maintainers": [
+        {
+            "name": "Rodriguez-Sánchez, Jose Luis",
+            "orcid": "0000-0002-4702-5294",
+            "email": "j.l.rodriguez.sanchez@udc.es",
+            "affiliation": "CITENI, Industrial Campus of Ferrol, University of Coruña, 15403 Ferrol, Spain"
+        }
+    ],
+    "title": "SOFIA Software",
     "upload_type": "software",
+    "softwareRequirements": [
+        "FairSoft, FairRoot, R3BRoot"
+    ],
+    "programmingLanguage": [
+        "C",
+        "C++"
+    ],
+    "runtimePlatform": [
+        "ROOT"
+    ],
+    "operatingSystem": [
+        "Linux",
+        "macOS"
+    ],
     "keywords": [
         "Geant4",
         "c-plus-plus",
         "cmake",
         "vmc",
         "modular",
-        "Event reconstruction",
+        "Track reconstruction",
         "Simulation",
         "Data analysis",
         "Structure and dynamics of nuclei",
         "Nuclear reactions",
-        "Nuclear fission"
+        "Nuclear fission",
+        "SOFIA/R3B experiments",
+        "GSI/FAIR facility"
+    ],
+    "creators": [
+        {
+            "name": "Rodríguez-Sánchez, Jose Luis",
+            "orcid": "0000-0002-4702-5294",
+            "email": "j.l.rodriguez.sanchez@udc.es",
+            "affiliation": "CITENI, Industrial Campus of Ferrol, University of Coruña, 15403 Ferrol, Spain"
+        },
+        {
+            "name": "Alvarez Pol, Hector",
+            "orcid": "0000-0001-9643-6252",
+            "affiliation": "IGFAE, University of Santiago de Compostela, 15782 Santiago de Compostela, Spain"
+        },
+        {
+            "name": "Chatillon, Audrey",
+            "affiliation": "CEA, DAM, DIF, 91297 Arpajon, France"
+        },
+        {
+            "name": "García-Jiménez, Gabriel",
+            "affiliation": "IGFAE, University of Santiago de Compostela, 15782 Santiago de Compostela, Spain"
+        },
+        {
+            "name": "Graña-González, Antia",
+            "orcid": "0000-0002-0842-4110",
+            "affiliation": "CITENI, Industrial Campus of Ferrol, University of Coruña, 15403 Ferrol, Spain"
+        },
+        {
+            "name": "Morfouace, Pierre",
+            "orcid": "0000-0002-2131-2199",
+            "affiliation": "CEA, DAM, DIF, 91297 Arpajon, France"
+        },
+        {
+            "name": "Taniuchi, Ryo",
+            "orcid": "0000-0002-8057-7074",
+            "affiliation": "School of Physics, Engineering and Technology, University of York, YO10 5DD York, UK"
+        }
+    ],
+    "contributors": [
+        {
+            "type": "Other",
+            "name": "Mayer, Jan",
+            "affiliation": "Technical University of Berlin, 10587 Berlin, Germany"
+        },
+        {
+            "type": "Other",
+            "name": "Wang, Yanzhao",
+            "orcid": "0000-0002-7006-7986",
+            "affiliation": "Universität zu Köln, 50923 Köln, Germany"
+        }
     ]
 }

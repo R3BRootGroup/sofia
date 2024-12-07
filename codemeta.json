@@ -21,12 +21,14 @@
     "cmake",
     "vmc",
     "modular",
-    "Event reconstruction",
+    "Track reconstruction",
     "Simulation",
     "Data analysis",
     "Structure and dynamics of nuclei",
     "Nuclear reactions",
-    "Nuclear fission"
+    "Nuclear fission",
+    "SOFIA/R3B experiments",
+    "GSI/FAIR facility"
   ],
   "programmingLanguage": [
     "C",

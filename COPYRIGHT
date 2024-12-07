@@ -1,0 +1,9 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: sofia
+Upstream-Contact: Jose Luis Rodríguez-Sánchez <j.l.rodriguez.sanchez@udc.es>
+Source: https://github.com/R3BRootGroup/sofia
+
+Files: *
+Copyright: 2017-2024, GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
+Copyright: 2017-2024, [see AUTHORS file]
+Copyright: 2017-2024, [see CONTRIBUTORS file]
