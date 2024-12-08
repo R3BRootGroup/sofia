@@ -2,9 +2,21 @@
     "description": "The SOFIA module within the R3BRoot framework encapsulates the configuration and functionality of the SOFIA detectors, specifically designed for fission experiments conducted with the GLAD spectrometer. R3BRoot, built on the FairRoot framework, serves as a software environment for performing detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. These capabilities include precise modeling of detector geometry, particle tracking, event reconstruction, and physics analysis, supporting the investigation of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility.",
     "related_identifiers": [
         {
-            "identifier": "https://github.com/R3BRootGroup/sofia/",
+            "identifier": "https://github.com/FairRootGroup/FairRoot/",
+            "relation": "isDerivedFrom",
+            "resource_type": "software",
+            "scheme": "url"
+        },
+        {
+            "identifier": "https://github.com/R3BRootGroup/R3BRoot/",
             "relation": "isSupplementTo",
             "resource_type": "software",
+            "scheme": "url"
+        },
+        {
+            "identifier": "https://github.com/R3BRootGroup/sofia/blob/dev/README.md",
+            "relation": "isDocumentedBy",
+            "resource_type": "publication-softwaredocumentation",
             "scheme": "url"
         }
     ],
@@ -57,14 +69,18 @@
         {
             "name": "Alvarez Pol, Hector",
             "orcid": "0000-0001-9643-6252",
+            "email": "hector.alvarez@usc.es",
             "affiliation": "IGFAE, University of Santiago de Compostela, 15782 Santiago de Compostela, Spain"
         },
         {
             "name": "Chatillon, Audrey",
+            "orcid": "0000-0001-9488-5484",
+            "email": "audrey.chatillon@cea.fr",
             "affiliation": "CEA, DAM, DIF, 91297 Arpajon, France"
         },
         {
             "name": "García-Jiménez, Gabriel",
+            "orcid": "0000-0002-4435-0163",
             "affiliation": "IGFAE, University of Santiago de Compostela, 15782 Santiago de Compostela, Spain"
         },
         {
