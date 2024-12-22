@@ -1,11 +1,17 @@
-// -------------------------------------------------------------------
-//								   -----
-//  Factory for the parameter containers in libR3BSofTcal        -----
-//								   -----
-// -------------------------------------------------------------------
+/******************************************************************************
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2025 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU Lesser General Public Licence (LGPL) version 3,        *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
 
-#ifndef R3BSOFTCALCONTFACT_H
-#define R3BSOFTCALCONTFACT_H
+#pragma once
 
 #include "FairContFact.h"
 
@@ -24,5 +30,3 @@ class R3BSofTcalContFact : public FairContFact
 
     ClassDef(R3BSofTcalContFact, 1);
 };
-
-#endif // R3BTCALCONTFACT_H

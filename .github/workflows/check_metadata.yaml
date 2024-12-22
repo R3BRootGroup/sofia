@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Try updating metadata
-        run: python meta_update.py
+        run: python update_zenodo.py
       - name: Check for Updates
-        run: git diff --exit-code
+        run: |
+          git diff --exit-code || (echo "Metadata files require updates. Please commit the changes." && exit 1)

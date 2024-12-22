@@ -10,7 +10,7 @@
   "issueTracker": "https://github.com/R3BRootGroup/sofia/issues",
   "name": "sofia",
   "softwareVersion": "dec24",
-  "description": "Software for the SOFIA/R3B fission experiments at FAIR",
+  "description": "Software for the SOFIA/R3B fission experiments at GSI/FAIR",
   "readme": "https://github.com/R3BRootGroup/sofia/blob/dev/README.md",
   "releaseNotes": "",
   "applicationCategory": "Nuclear physics",
@@ -47,20 +47,26 @@
   "maintainer": {
     "@type": "Person",
     "givenName": "Jose Luis",
-    "familyName": "Rodriguez Sanchez",
+    "familyName": "Rodriguez-Sanchez",
     "@id": "https://orcid.org/0000-0002-4702-5294"
   },
   "author": [
     {
-      "@type": "Person",
-      "givenName": "Hector",
-      "familyName": "Alvarez Pol",
-      "@id": "https://orcid.org/0000-0001-9643-6252"
+    "@type": "Person",
+    "givenName": "Jose Luis",
+    "familyName": "Rodriguez-Sanchez",
+    "@id": "https://orcid.org/0000-0002-4702-5294"
     },
     {
       "@type": "Person",
       "givenName": "Audrey",
       "familyName": "Chatillon"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Hector",
+      "familyName": "Alvarez-Pol",
+      "@id": "https://orcid.org/0000-0001-9643-6252"
     },
     {
       "@type": "Person",
@@ -78,12 +84,6 @@
       "@id": "https://orcid.org/0000-0002-2131-2199",
       "givenName": "Pierre",
       "familyName": "Morfouace"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Jose Luis",
-      "familyName": "Rodriguez Sanchez",
-      "@id": "https://orcid.org/0000-0002-4702-5294"
     },
     {
       "@type": "Person",
