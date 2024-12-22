@@ -1,3 +1,16 @@
+/******************************************************************************
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2025 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU Lesser General Public Licence (LGPL) version 3,        *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
+
 // ----------------------------------------------------------------
 // -----        R3BSofTcalContFact source file                -----
 // -----    Created 22/09/18  by J.L. Rodriguez-Sanchez       -----
@@ -92,5 +105,4 @@ FairParSet* R3BSofTcalContFact::createContainer(FairContainer* c)
 
     return p;
 }
-
-ClassImp(R3BSofTcalContFact);
+ClassImp(R3BSofTcalContFact)

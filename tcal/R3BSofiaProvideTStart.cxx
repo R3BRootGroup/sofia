@@ -1,9 +1,9 @@
 /******************************************************************************
- *   Copyright (C) 2019 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
- *   Copyright (C) 2019-2023 Members of R3B Collaboration                     *
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2025 Members of R3B Collaboration                     *
  *                                                                            *
  *             This software is distributed under the terms of the            *
- *                 GNU General Public Licence (GPL) version 3,                *
+ *                 GNU Lesser General Public Licence (LGPL) version 3,        *
  *                    copied verbatim in the file "LICENSE".                  *
  *                                                                            *
  * In applying this license GSI does not waive the privileges and immunities  *
@@ -110,4 +110,4 @@ Double_t R3BSofiaProvideTStart::GetTStart() const
 
 bool R3BSofiaProvideTStart::IsBeam() const { return !std::isnan(GetTStart()); }
 
-ClassImp(R3BSofiaProvideTStart);
+ClassImp(R3BSofiaProvideTStart)
