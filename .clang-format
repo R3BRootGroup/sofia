@@ -1,6 +1,6 @@
 ---
 Language:        Cpp
-AccessModifierOffset: -2
+#AccessModifierOffset: -4
 ConstructorInitializerIndentWidth: 4
 AlignEscapedNewlinesLeft: true
 AlignTrailingComments: true
@@ -9,6 +9,10 @@ AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: true
 AlwaysBreakTemplateDeclarations: true
+
+# It is broken on windows. Breaks all #include "header.h"
+#AlwaysBreakBeforeMultilineStrings: true
+
 BreakBeforeBinaryOperators: false
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
@@ -16,7 +20,6 @@ BinPackArguments: false
 BinPackParameters: false
 ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
-ConstructorInitializerIndentWidth: 4
 DerivePointerBinding: false
 ExperimentalAutoDetectBinPacking: false
 IndentCaseLabels: true
@@ -48,7 +51,4 @@ SpaceBeforeAssignmentOperators: true
 ContinuationIndentWidth: 4
 CommentPragmas:  '^ IWYU pragma:'
 SpaceBeforeParens: ControlStatements
-StatementMacros:
-  - Q_UNUSED
-  - QT_REQUIRE_VERSION
 ...
