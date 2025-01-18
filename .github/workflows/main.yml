@@ -24,7 +24,7 @@ on:
 # triggered either by a pull request or a merge of a pull request.
 jobs:
   build-test:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     # A strategy matrix gives different settings separately to different jobs
     # which are run parallelly.
     strategy:
