@@ -49,40 +49,32 @@ R3BSofTofWSingleTCal2HitPar::R3BSofTofWSingleTCal2HitPar(const TString& name, In
 {
 }
 
-// Virtual R3BSofTofWSingleTCal2HitPar: Destructor
-R3BSofTofWSingleTCal2HitPar::~R3BSofTofWSingleTCal2HitPar()
-{
-    LOG(debug) << "R3BSofTofWSingleTCal2HitPar::Delete instance";
-    if (fTofCalDataCA)
-        delete fTofCalDataCA;
-}
-
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTofWSingleTCal2HitPar::Init()
 {
     LOG(info) << "R3BSofTofWSingleTCal2HitPar::Init()";
 
     // INPUT DATA
-    FairRootManager* rootManager = FairRootManager::Instance();
+    auto* rootManager = FairRootManager::Instance();
     if (!rootManager)
     {
         return kFATAL;
     }
 
-    fTofCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
+    fTofCalDataCA = dynamic_cast<TClonesArray*>(rootManager->GetObject("SofTofWSingleTcalData"));
     if (!fTofCalDataCA)
     {
         LOG(error) << "R3BSofTofWSingleTCal2HitPar::SofTofWSingleTcalData not found";
         return kFATAL;
     }
 
-    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    auto* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
         return kFATAL;
     }
 
-    fHit_Par = (R3BSofTofWHitPar*)rtdb->getContainer("tofwHitPar");
+    fHit_Par = dynamic_cast<R3BSofTofWHitPar*>(rtdb->getContainer("tofwHitPar"));
     if (!fHit_Par)
     {
         LOG(error) << "R3BSofTofWSingleTCal2HitPar:: Couldn't get handle on tofwHitPar container";
@@ -113,31 +105,22 @@ InitStatus R3BSofTofWSingleTCal2HitPar::ReInit() { return kSUCCESS; }
 void R3BSofTofWSingleTCal2HitPar::Exec(Option_t* option)
 {
     // Reading the Input -- Cal Data --
-    Int_t nHits = fTofCalDataCA->GetEntries();
+    Int_t nHits = fTofCalDataCA->GetEntriesFast();
 
     if (nHits == 0)
         return;
 
-    R3BSofTofWSingleTcalData** calData = new R3BSofTofWSingleTcalData*[nHits];
     Int_t sciId = 0;
     for (Int_t i = 0; i < nHits; i++)
     {
-        calData[i] = (R3BSofTofWSingleTcalData*)(fTofCalDataCA->At(i));
-        sciId = calData[i]->GetDetector() - 1;
-        htof[sciId]->Fill(calData[i]->GetRawTofNs());
-        hpos[sciId]->Fill(calData[i]->GetRawPosNs());
+        auto calData = dynamic_cast<R3BSofTofWSingleTcalData*>(fTofCalDataCA->At(i));
+        sciId = calData->GetDetector() - 1;
+        htof[sciId]->Fill(calData->GetRawTofNs());
+        hpos[sciId]->Fill(calData->GetRawPosNs());
     }
-    if (calData)
-        delete calData;
 
     return;
 }
-
-// -----   Protected method Finish   --------------------------------------------
-void R3BSofTofWSingleTCal2HitPar::FinishEvent() {}
-
-// -----   Public method Reset   ------------------------------------------------
-void R3BSofTofWSingleTCal2HitPar::Reset() {}
 
 void R3BSofTofWSingleTCal2HitPar::FinishTask()
 {
@@ -194,4 +177,4 @@ void R3BSofTofWSingleTCal2HitPar::FinishTask()
     }
 }
 
-ClassImp(R3BSofTofWSingleTCal2HitPar);
+ClassImp(R3BSofTofWSingleTCal2HitPar)

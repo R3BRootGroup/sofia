@@ -639,21 +639,18 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc0MappedDataCA && fMwpc0MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc0MappedDataCA->GetEntries();
-            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BMwpcMappedData*)(fMwpc0MappedDataCA->At(i));
-                planeId = mappedData[i]->GetPlane();
+                auto mappedData = (R3BMwpcMappedData*)(fMwpc0MappedDataCA->At(i));
+                planeId = mappedData->GetPlane();
                 if (planeId == 1)
                     nbpadx++;
                 else if (planeId == 3)
                     nbpady++;
             }
-            if (mappedData)
-                delete mappedData;
 
             if (nbpadx > 0 && nbpady > 0)
                 fCounterDet[0]++;
@@ -662,36 +659,29 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fTrimMappedData && fTrimMappedData->GetEntries() > 0)
         {
             Int_t nHits = fTrimMappedData->GetEntries();
-            R3BSofTrimMappedData** mappedData = new R3BSofTrimMappedData*[nHits];
             Int_t sumanodes = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofTrimMappedData*)(fTrimMappedData->At(i));
-                if (mappedData[i]->GetAnodeID() < 7)
+                auto mappedData = (R3BSofTrimMappedData*)(fTrimMappedData->At(i));
+                if (mappedData->GetAnodeID() < 7)
                     sumanodes++;
             }
             if (sumanodes > 12)
             {
                 fCounterDet[1]++;
             }
-
-            if (mappedData)
-                delete mappedData;
         }
 
         if (fMappedItemsCalifa && fMappedItemsCalifa->GetEntries() > 0)
         {
             Int_t nHits = fMappedItemsCalifa->GetEntries();
             Int_t nCry = 0;
-            R3BCalifaMappedData** mappedData = new R3BCalifaMappedData*[nHits];
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BCalifaMappedData*)(fMappedItemsCalifa->At(i));
-                if (mappedData[i]->GetCrystalId() > 2432 && mappedData[i]->GetEnergy() > 2.)
+                auto mappedData = (R3BCalifaMappedData*)(fMappedItemsCalifa->At(i));
+                if (mappedData->GetCrystalId() > 2432 && mappedData->GetEnergy() > 2.)
                     nCry++;
             }
-            if (mappedData)
-                delete mappedData;
             if (nCry > 0)
                 fCounterDet[2]++;
         }
@@ -700,17 +690,14 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         {
             Int_t nHits = fMappedItemsAms->GetEntries();
             Int_t ndetr = 0, ndetl = 0;
-            R3BAmsMappedData** mappedData = new R3BAmsMappedData*[nHits];
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BAmsMappedData*)(fMappedItemsAms->At(i));
-                if (mappedData[i]->GetDetectorId() < 3)
+                auto mappedData = (R3BAmsMappedData*)(fMappedItemsAms->At(i));
+                if (mappedData->GetDetectorId() < 3)
                     ndetr++;
                 else
                     ndetl++;
             }
-            if (mappedData)
-                delete mappedData;
             if (ndetr > 1 && ndetl > 1)
                 fCounterDet[3]++;
         }
@@ -718,21 +705,18 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc1MappedDataCA && fMwpc1MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc1MappedDataCA->GetEntries();
-            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BMwpcMappedData*)(fMwpc1MappedDataCA->At(i));
-                planeId = mappedData[i]->GetPlane();
+                auto mappedData = (R3BMwpcMappedData*)(fMwpc1MappedDataCA->At(i));
+                planeId = mappedData->GetPlane();
                 if (planeId == 1 || planeId == 2)
                     nbpadx++;
                 else if (planeId == 3)
                     nbpady++;
             }
-            if (mappedData)
-                delete mappedData;
 
             if (nbpadx > 0 && nbpady > 0)
                 fCounterDet[4]++;
@@ -741,20 +725,17 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fTwimMappedDataCA && fTwimMappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fTwimMappedDataCA->GetEntries();
-            R3BTwimMappedData** mappedData = new R3BTwimMappedData*[nHits];
             Int_t secId = 0;
             Int_t anodeId = 0;
             Int_t sumanodes = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BTwimMappedData*)(fTwimMappedDataCA->At(i));
-                secId = mappedData[i]->GetSecID();
-                anodeId = mappedData[i]->GetAnodeID();
+                auto mappedData = (R3BTwimMappedData*)(fTwimMappedDataCA->At(i));
+                secId = mappedData->GetSecID();
+                anodeId = mappedData->GetAnodeID();
                 if (anodeId < 16)
                     sumanodes++;
             }
-            if (mappedData)
-                delete mappedData;
             if (sumanodes > 12)
                 fCounterDet[5]++;
         }
@@ -762,22 +743,18 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc2MappedDataCA && fMwpc2MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc2MappedDataCA->GetEntries();
-            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BMwpcMappedData*)(fMwpc2MappedDataCA->At(i));
-                planeId = mappedData[i]->GetPlane();
+                auto mappedData = (R3BMwpcMappedData*)(fMwpc2MappedDataCA->At(i));
+                planeId = mappedData->GetPlane();
                 if (planeId == 1 || planeId == 2)
                     nbpadx++;
                 else if (planeId == 3)
                     nbpady++;
             }
-            if (mappedData)
-                delete mappedData;
-
             if (nbpadx > 0 && nbpady > 0)
                 fCounterDet[6]++;
         }
@@ -785,39 +762,31 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
         if (fMwpc3MappedDataCA && fMwpc3MappedDataCA->GetEntries() > 0)
         {
             Int_t nHits = fMwpc3MappedDataCA->GetEntries();
-            R3BMwpcMappedData** mappedData = new R3BMwpcMappedData*[nHits];
             Int_t planeId;
             Int_t nbpadx = 0;
             Int_t nbpady = 0;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BMwpcMappedData*)(fMwpc3MappedDataCA->At(i));
-                planeId = mappedData[i]->GetPlane();
+                auto mappedData = (R3BMwpcMappedData*)(fMwpc3MappedDataCA->At(i));
+                planeId = mappedData->GetPlane();
                 if (planeId == 1)
                     nbpadx++;
                 else if (planeId == 3)
                     nbpady++;
             }
-            if (mappedData)
-                delete mappedData;
-
             if (nbpadx > 0 && nbpady > 0)
                 fCounterDet[7]++;
         }
 
         if (fTofWMappedDataCA && fTofWMappedDataCA->GetEntries() > 0)
         {
-
             Int_t nHits = fTofWMappedDataCA->GetEntries();
-            R3BSofTofWMappedData** mappedData = new R3BSofTofWMappedData*[nHits];
             UShort_t iDet = -1;
             for (Int_t i = 0; i < nHits; i++)
             {
-                mappedData[i] = (R3BSofTofWMappedData*)fTofWMappedDataCA->At(i);
-                iDet = mappedData[i]->GetDetector();
+                auto mappedData = (R3BSofTofWMappedData*)fTofWMappedDataCA->At(i);
+                iDet = mappedData->GetDetector();
             }
-            if (mappedData)
-                delete mappedData;
             if (iDet > -1)
                 fCounterDet[8]++;
         }
@@ -826,7 +795,6 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
     // Update histograms
     if (fNEvents > 9999)
     {
-
         for (int i = 0; i < 10; i++)
         {
             gh->SetPoint(i, i + 1., fCounterDet[i] / fNEvents);
@@ -867,7 +835,6 @@ void R3BSofStatusOnlineSpectra::Exec(Option_t* option)
 
 void R3BSofStatusOnlineSpectra::FinishEvent()
 {
-
     LOG(debug) << "Clearing Structure";
 
     if (fWRItemsMaster)

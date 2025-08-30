@@ -6,7 +6,9 @@
 // -----------------------------------------------------------------
 
 #include "R3BSofFrsAnalysis.h"
-Double_t const c = 29.9792458; // Light velocity
+#include <cmath>
+
+constexpr double c = 29.9792458; // Light velocity
 
 // R3BSofFrsAnalysis: Default Constructor --------------------------
 R3BSofFrsAnalysis::R3BSofFrsAnalysis()
@@ -301,7 +303,7 @@ void R3BSofFrsAnalysis::Exec(Option_t* option)
             tof = Tof_wTref_S8_Cave;
             i_s8cave = i;
         }
-        if (isnan(tof) || tof < 0)
+        if (std::isnan(tof) || tof < 0)
         {
             beta.push_back(NAN);
         }
@@ -411,4 +413,4 @@ R3BFrsData* R3BSofFrsAnalysis::AddData(Int_t StaId,
     return new (clref[size]) R3BFrsData(StaId, StoId, z, aq, beta, brho, xs2, xc);
 }
 
-ClassImp(R3BSofFrsAnalysis);
+ClassImp(R3BSofFrsAnalysis)
