@@ -4,11 +4,10 @@
 // -----        Created 29/01/20  by J.L. Rodriguez-Sanchez    -----
 // -----------------------------------------------------------------
 
-#ifndef R3BSofTofWSingleTCal2HitPar_H
-#define R3BSofTofWSingleTCal2HitPar_H
+#pragma once
 
-#include "FairTask.h"
-#include "TH1F.h"
+#include <FairTask.h>
+#include <TH1F.h>
 
 class TClonesArray;
 class R3BSofTofWHitPar;
@@ -23,19 +22,12 @@ class R3BSofTofWSingleTCal2HitPar : public FairTask
     R3BSofTofWSingleTCal2HitPar(const TString& name, Int_t iVerbose = 1);
 
     /** Destructor **/
-    virtual ~R3BSofTofWSingleTCal2HitPar();
+    ~R3BSofTofWSingleTCal2HitPar() = default;
 
     /** Virtual method Exec **/
     virtual void Exec(Option_t* option);
-
-    /** Virtual method FinishEvent **/
-    virtual void FinishEvent();
-
     /** Virtual method FinishTask **/
     virtual void FinishTask();
-
-    /** Virtual method Reset **/
-    virtual void Reset();
 
     /** Virtual method Init **/
     virtual InitStatus Init();
@@ -82,5 +74,3 @@ class R3BSofTofWSingleTCal2HitPar : public FairTask
     // Class definition
     ClassDef(R3BSofTofWSingleTCal2HitPar, 1)
 };
-
-#endif

@@ -3,15 +3,14 @@
 // -----    Created 15/02/20  by J.L. Rodriguez-Sanchez        -----
 // -----------------------------------------------------------------
 
-#ifndef R3BSofTofWSingleTCal2Hit_H
-#define R3BSofTofWSingleTCal2Hit_H
+#pragma once
 
 // ROOT headers
-#include "TClonesArray.h"
-#include "TH1F.h"
-#include "TMath.h"
-
+#include <TClonesArray.h>
+#include <TH1F.h>
+#include <TMath.h>
 #include <TRandom.h>
+#include <iomanip>
 
 // Fair headers
 #include "FairLogger.h"
@@ -19,8 +18,6 @@
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
 #include "FairTask.h"
-
-#include <iomanip>
 
 // TofW headers
 #include "R3BEventHeader.h"
@@ -34,7 +31,6 @@ class R3BTGeoPar;
 
 class R3BSofTofWSingleTCal2Hit : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTofWSingleTCal2Hit();
@@ -93,5 +89,3 @@ class R3BSofTofWSingleTCal2Hit : public FairTask
     // Class definition
     ClassDef(R3BSofTofWSingleTCal2Hit, 1)
 };
-
-#endif

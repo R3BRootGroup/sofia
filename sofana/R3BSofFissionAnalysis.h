@@ -4,8 +4,7 @@
 // -----             Created 14/02/21  by J.L. Rodriguez-Sanchez    -----
 // ----------------------------------------------------------------------
 
-#ifndef R3BSofFissionAnalysis_H
-#define R3BSofFissionAnalysis_H
+#pragma once
 
 // ROOT headers
 #include "TArrayF.h"
@@ -118,5 +117,3 @@ class R3BSofFissionAnalysis : public FairTask
     // Class definition
     ClassDef(R3BSofFissionAnalysis, 1)
 };
-
-#endif /* R3BSofFissionAnalysis_H */

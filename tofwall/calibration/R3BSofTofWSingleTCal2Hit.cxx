@@ -29,17 +29,15 @@ R3BSofTofWSingleTCal2Hit::R3BSofTofWSingleTCal2Hit(const char* name, Int_t iVerb
 R3BSofTofWSingleTCal2Hit::~R3BSofTofWSingleTCal2Hit()
 {
     LOG(debug) << "R3BSofTofWSingleTCal2Hit::Delete instance";
-    if (fTCalDataCA)
-        delete fTCalDataCA;
     if (fHitDataCA)
         delete fHitDataCA;
 }
 
 void R3BSofTofWSingleTCal2Hit::SetParContainers()
 {
-    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    auto* rtdb = FairRuntimeDb::instance();
 
-    fTofWHitPar = (R3BSofTofWHitPar*)rtdb->getContainer("tofwHitPar");
+    fTofWHitPar = dynamic_cast<R3BSofTofWHitPar*>(rtdb->getContainer("tofwHitPar"));
     if (!fTofWHitPar)
     {
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Could not get access to tofwHitPar-Container.";
@@ -49,7 +47,7 @@ void R3BSofTofWSingleTCal2Hit::SetParContainers()
         LOG(info) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Container tofwHitPar found with "
                   << fTofWHitPar->GetNumSci() << " paddles.";
 
-    fTofWGeoPar = (R3BTGeoPar*)rtdb->getContainer("TofwGeoPar");
+    fTofWGeoPar = dynamic_cast<R3BTGeoPar*>(rtdb->getContainer("TofwGeoPar"));
     if (!fTofWGeoPar)
     {
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SetParContainers() : Could not get access to TofwGeoPar container.";
@@ -80,17 +78,15 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
     LOG(info) << "R3BSofTofWSingleTCal2Hit::Init()";
 
     // INPUT DATA
-    FairRootManager* rootManager = FairRootManager::Instance();
+    auto* rootManager = FairRootManager::Instance();
     if (!rootManager)
     {
         return kFATAL;
     }
 
-    header = (R3BEventHeader*)rootManager->GetObject("EventHeader.");
-    if (!header)
-        header = (R3BEventHeader*)rootManager->GetObject("R3BEventHeader");
+    header = dynamic_cast<R3BEventHeader*>(rootManager->GetObject("EventHeader."));
 
-    fTCalDataCA = (TClonesArray*)rootManager->GetObject("SofTofWSingleTcalData");
+    fTCalDataCA = dynamic_cast<TClonesArray*>(rootManager->GetObject("SofTofWSingleTcalData"));
     if (!fTCalDataCA)
     {
         LOG(error) << "R3BSofTofWSingleTCal2Hit::SofTofWSingleTcalData not found";
@@ -99,7 +95,7 @@ InitStatus R3BSofTofWSingleTCal2Hit::Init()
 
     // OUTPUT DATA
     // Hit data
-    fHitDataCA = new TClonesArray("R3BSofTofWHitData", 10);
+    fHitDataCA = new TClonesArray("R3BSofTofWHitData");
     rootManager->Register("TofWHitData", "TofW-Hit", fHitDataCA, !fOnline);
 
     SetParameter();
@@ -115,15 +111,19 @@ InitStatus R3BSofTofWSingleTCal2Hit::ReInit()
 }
 
 // -----   Public method Execution   --------------------------------------------
-void R3BSofTofWSingleTCal2Hit::Exec(Option_t* option)
+void R3BSofTofWSingleTCal2Hit::Exec(Option_t*)
 {
     // At the moment we will use the expid to select the reconstruction
     // this should be changed in the future because expid is not necessary
     int expid = fExpId != 0 ? fExpId : header->GetExpId();
     if (expid == 467 || expid == 444)
+    {
         S467();
+    }
     else if (expid == 455)
+    {
         S455();
+    }
 
     return;
 }
@@ -135,21 +135,20 @@ void R3BSofTofWSingleTCal2Hit::S455()
     Reset();
 
     // Reading the Input -- SingleTCal Data
-    Int_t nHits = fTCalDataCA->GetEntries();
-    if (nHits < 1)
+    Int_t nHits = fTCalDataCA->GetEntriesFast();
+    if (nHits == 0)
         return;
 
     // Data from cal level
-    R3BSofTofWSingleTcalData** calDat = new R3BSofTofWSingleTcalData*[nHits];
     Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0., posx = 0., posy = 0.;
 
     for (Int_t i = 0; i < nHits; i++)
     {
-        calDat[i] = (R3BSofTofWSingleTcalData*)(fTCalDataCA->At(i));
-        fPaddleId = calDat[i]->GetDetector();
-        tofw = calDat[i]->GetRawTofNs();
-        posy = calDat[i]->GetRawPosNs();
+        auto calDat = dynamic_cast<R3BSofTofWSingleTcalData*>(fTCalDataCA->At(i));
+        fPaddleId = calDat->GetDetector();
+        tofw = calDat->GetRawTofNs();
+        posy = calDat->GetRawPosNs();
 
         posx = fTofWGeoPar->GetDimX() / 2.0 - 15. - (Double_t)(fPaddleId - 1) * 30.;
         posy = posy - fTofWHitPar->GetPosOffsetPar(fPaddleId);
@@ -157,8 +156,6 @@ void R3BSofTofWSingleTCal2Hit::S455()
 
         AddHitData(fPaddleId, posx, posy * fTofWHitPar->GetPosSlopePar(fPaddleId), tofw);
     }
-    if (calDat)
-        delete calDat;
     return;
 }
 
@@ -169,25 +166,24 @@ void R3BSofTofWSingleTCal2Hit::S467()
     Reset();
 
     // Reading the Input -- Cal Data --
-    Int_t nHits = fTCalDataCA->GetEntries();
-    if (nHits < 1)
+    Int_t nHits = fTCalDataCA->GetEntriesFast();
+    if (nHits == 0)
         return;
 
     // Data from cal level
-    R3BSofTofWSingleTcalData** calDat = new R3BSofTofWSingleTcalData*[nHits];
     Int_t fPaddleId = 0; // from 1 to 28
     Double_t tofw = 0., posx = 0., posy = 0.;
     Int_t mult = 0;
 
     for (Int_t i = 0; i < nHits; i++)
     {
-        calDat[i] = (R3BSofTofWSingleTcalData*)(fTCalDataCA->At(i));
-        fPaddleId = calDat[i]->GetDetector();
+        auto calDat = dynamic_cast<R3BSofTofWSingleTcalData*>(fTCalDataCA->At(i));
+        fPaddleId = calDat->GetDetector();
         if (fTofWHitPar->GetInUse(fPaddleId) != 1)
             continue;
         mult++;
-        tofw = calDat[i]->GetRawTofNs();
-        posy = calDat[i]->GetRawPosNs();
+        tofw = calDat->GetRawTofNs();
+        posy = calDat->GetRawPosNs();
     }
 
     if (mult == 1)
@@ -199,8 +195,6 @@ void R3BSofTofWSingleTCal2Hit::S467()
         // And the Tof_lise is to adjust the difference of the flight path from sofsci to target setting-by-setting.
         AddHitData(fPaddleId, posx, posy, tofw);
     }
-    if (calDat)
-        delete calDat;
     return;
 }
 
@@ -221,4 +215,4 @@ R3BSofTofWHitData* R3BSofTofWSingleTCal2Hit::AddHitData(Int_t paddle, Double_t x
     return new (clref[size]) R3BSofTofWHitData(paddle, x, y, tof);
 }
 
-ClassImp(R3BSofTofWSingleTCal2Hit);
+ClassImp(R3BSofTofWSingleTCal2Hit)
