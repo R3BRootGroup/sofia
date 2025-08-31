@@ -38,8 +38,7 @@ runs:
     - name: build ucesb
       if: steps.cache-ucesb.outputs.cache-hit != 'true'
       run: |
-        echo "ucesb directory is set as ${UCESB_DIR}"
         export LD_LIBRARY_PATH="${SIMPATH}/lib/:${LD_LIBRARY_PATH}"
-        git clone https://git.chalmers.se/expsubphys/ucesb.git ${UCESB_DIR}
-        cd ${UCESB_DIR} && make -j${NUM_THREADS} empty/empty
+        git clone https://git.chalmers.se/expsubphys/ucesb.git
+        cd ucesb && make -j${NUM_THREADS} empty/empty
       shell: bash

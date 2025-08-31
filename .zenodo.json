@@ -1,6 +1,6 @@
 {
     "access_right": "open",
-    "description": "The SOFIA software module, integrated into the R3BRoot framework, provides comprehensive tools for configuring and managing the SOFIA detector analysis, specifically designed for nuclear fission experiments performed with the GLAD superconducting spectrometer. Sofia-R3BRoot, built on the FairRoot framework, offers a robust software environment for conducting detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. Key features include precise detector geometry modeling, particle tracking, event reconstruction, and physics analysis, all of which support the study of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility. The SOFIA software package is distributed as a source release, with regular updates available for macOS and Linux.",
+    "description": "The SOFIA software module, integrated into the R3BRoot framework, provides comprehensive tools for configuring and managing the SOFIA detector analysis, specifically designed for nuclear fission experiments performed with the GLAD superconducting spectrometer. Sofia-R3BRoot, built on the FairRoot framework, offers a robust software environment for conducting detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. Key features include precise detector geometry modeling, particle tracking, event reconstruction, and physics analysis, all of which support the study of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility. The SOFIA software package is distributed as a source release, with regular updates available for MacOS and Linux.",
     "related_identifiers": [
         {
             "identifier": "https://github.com/FairRootGroup/FairSoft/",
@@ -55,7 +55,7 @@
     ],
     "operatingSystem": [
         "Linux",
-        "macOS"
+        "MacOS"
     ],
     "keywords": [
         "Geant4",

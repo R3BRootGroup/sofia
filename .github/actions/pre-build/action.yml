@@ -1,5 +1,5 @@
 name: pre build
-description: 'steps before building R3BRoot'
+description: 'steps before building R3BRoot with Sofia'
 
 runs:
   using: composite
@@ -7,11 +7,17 @@ runs:
     - name: set env variables
       run: |
         git config --global --add safe.directory $GITHUB_WORKSPACE
-        echo "UCESB_DIR=$GITHUB_WORKSPACE/ucesb/" >> $GITHUB_ENV
-        export SIMPATH=${CVMDIR}/${{ matrix.os }}/fairsoft/jan24p1
-        echo "SIMPATH=${SIMPATH}" >> $GITHUB_ENV
-        echo "FAIRROOTPATH=${CVMDIR}/${{ matrix.os }}/fairroot/v18.8.2_jan24p1" >> $GITHUB_ENV
-        echo "${SIMPATH}/bin" >> $GITHUB_PATH
+        if [ "${{ matrix.cpp }}" == "20" ]; then
+          export SIMPATH=${CVMDIR}/${{ matrix.os }}/fairsoft/cpp20/${{ matrix.fsv }}
+          echo "SIMPATH=${SIMPATH}" >> $GITHUB_ENV
+          echo "FAIRROOTPATH=${CVMDIR}/${{ matrix.os }}/fairroot/cpp20/v18.8.2_${{ matrix.fsv }}" >> $GITHUB_ENV
+          echo "${SIMPATH}/bin" >> $GITHUB_PATH
+        else
+          export SIMPATH=${CVMDIR}/${{ matrix.os }}/fairsoft/${{ matrix.fsv }}
+          echo "SIMPATH=${SIMPATH}" >> $GITHUB_ENV
+          echo "FAIRROOTPATH=${CVMDIR}/${{ matrix.os }}/fairroot/v18.8.2_${{ matrix.fsv }}" >> $GITHUB_ENV
+          echo "${SIMPATH}/bin" >> $GITHUB_PATH
+        fi
         # variables for ccache
         echo "CCACHE_BASEDIR=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         echo "CCACHE_DIR=${GITHUB_WORKSPACE}/.ccache" >> $GITHUB_ENV
@@ -23,13 +29,9 @@ runs:
       shell: bash
 
     - name: mount cvmfs
-      run: |  
-        if [ "${{ matrix.os }}" == "debian10" ]; then
-          python3 -m pip install --user --ignore-installed -U pip
-        else
-          apt-get update
-          apt-get install --fix-missing -y sudo wget gnupg lsb-release
-        fi
+      run: |    
+        apt-get update
+        apt-get install --fix-missing -y sudo wget gnupg lsb-release
         wget https://cernbox.cern.ch/remote.php/dav/public-files/RmnTeeOZpYjCJQb/masterkey.gsi.de.pub
         mkdir -p /etc/cvmfs/keys
         mv masterkey.gsi.de.pub /etc/cvmfs/keys
@@ -37,6 +39,5 @@ runs:
         echo "CVMFS_USER=$(whoami)" >> /etc/cvmfs/config.d/fairsoft.gsi.de.conf
         mkdir -p ${CVMDIR}
         mount -t cvmfs fairsoft.gsi.de ${CVMDIR}
-        mkdir -p ${UCESB_DIR}
         mkdir -p ${CCACHE_DIR}
       shell: bash
