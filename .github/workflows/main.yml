@@ -1,3 +1,19 @@
+##############################################################################
+#   Copyright (C) 2019 GSI Helmholtzzentrum für Schwerionenforschung GmbH    #
+#   Copyright (C) 2019 University of Santiago de Compostela                  #
+#   Copyright (C) 2019 CEA-DAM-DIF, Université Paris-Saclay                  #
+#   Copyright (C) 2023 University of Coruña                                  #
+#   Copyright (C) 2019-2025 Members of R3B Collaboration                     #
+#                                                                            #
+#             This software is distributed under the terms of the            #
+#                 GNU General Public Licence (GPL) version 3,                #
+#                    copied verbatim in the file "LICENSE".                  #
+#                                                                            #
+# In applying this license GSI does not waive the privileges and immunities  #
+# granted to it by virtue of its status as an Intergovernmental Organization #
+# or submit itself to any jurisdiction.                                      #
+##############################################################################
+
 # This is the main CI workflow for pull requests to the sofia dev branch
 # See the CI workflow developed for R3BRoot for more details
 # SPDX-License-Identifier: LGPL-3.0-or-later
@@ -38,29 +54,9 @@ jobs:
         # r3broot. Each group is used by only one job.
         repos: [ sofia ]
         os: [ debian11, debian12 ]
-        # The list under "include" defines some properties for each group:
-        #
-        # repos: the name of the group. It must exist in matrix.repos as
-        # defined above.
-        #
-        # cache: the name of the cache file that will be created/used for the
-        # job. Each group can have their own cache file. But the total size of
-        # the cache files are limited to 10 GB per project. Therefore, the
-        # number of caches should be kept to a minimum. If there isn't too
-        # much difference between glad-tpc and the base r3broot, the cache file
-        # generated from r3broot build can be used.
-        #
-        # skip-save: whether to save the cache or not. Cache saving is disabled
-        # when true. This is neccessary when two parellel jobs share one cache
-        # name.
-        #
-        # url: the github repository urls that need to be downloaded during the
-        # run
+        fsv: [ jan24p1 ]
+        cpp: [ 17 ]
         include:
-          # This job is only for testing R3BRoot without downloading any
-          # dependencies.
-          - url: https://github.com/R3BRootGroup/R3BFileSource.git
-          # disable conan build by default
           - preset: simple
           - repos: sofia
             cache: sofia
@@ -78,7 +74,7 @@ jobs:
         # testing. Github hosted runners can have at most 4 cores. The number
         # of the cores can be increased with a larger runner, thus increasing
         # the speed of the run.
-        NUM_THREADS: 4
+        NUM_THREADS: 10
       # Options for the Docker container to be run with cvmfs.
       options: --user root --privileged  --ulimit nofile=10000:10000 --cap-add SYS_ADMIN --device /dev/fuse
 
@@ -94,7 +90,7 @@ jobs:
 
       # A self-defined composite action. It sets multiple necessary environment
       # variables and mounts the cmvfs folder of fairroot and fairsoft.
-      - name: pre-build
+      - name: Pre-build
         uses: './.github/actions/pre-build'
 
       # A self-defined composite action, which restores the caches of
@@ -107,7 +103,7 @@ jobs:
       # dependencies for the R3BRoot build, such as googletest and ucesb. The
       # cache restoring step is only used for the run triggered with
       # "pull_request" and disabled for the merge event.
-      - name: install dependencies
+      - name: Install dependencies
         id: restore-cache
         uses: './.github/actions/install-deps'
         with: 
@@ -116,7 +112,7 @@ jobs:
 
       # A self-defined composite action for the cmake configuration and build
       # of r3broot (along with necessary dep repos).
-      - name: configure-build-sofia
+      - name: Configure-build-sofia
         run: |
           git clone https://github.com/R3BRootGroup/R3BRoot.git
           cd ..
@@ -125,33 +121,19 @@ jobs:
           mv R3BRoot sofia
           cd sofia
           git clone https://github.com/R3BRootGroup/macros.git
+          git clone https://github.com/R3BRootGroup/R3BFileSource.git
           mv sofia/ucesb .
-          cmake . -B build -C cmake/CI_CD/configure_options.cmake -DBUILD_GEOMETRY=OFF
+          echo "UCESB_DIR=$GITHUB_WORKSPACE/ucesb/" >> $GITHUB_ENV
+          cmake --preset ${{ matrix.preset }} . -B build -C cmake/CI_CD/configure_options.cmake -DCMAKE_CXX_STANDARD=${{ matrix.cpp }}
           cd build
-          make -j ${NUM_THREADS}
+          make -j${NUM_THREADS}
 
       # A self-defined composite action to perform the ctest and push the
       # results to the cdash (cmake-dashborad). To fully show the errors and
       # warnings during the configure and build processes, the two processes
       # are rerun after 'make clean'.
-      - name: ctest-cdash
+      - name: Ctest-cdash
         if: always()
         uses: './.github/actions/ctest-cdash'
         with:
           repo: ${{ matrix.repos }}
-
-      # A composite action to save the ccaahe created from the merge events.
-      # Cache names (key) should be consistent with the names used in the
-      # cache restoring step.
-      - name: save-cache
-        if: github.event_name == 'push' && matrix.skip-save != true
-        id: save-cache
-        uses: './.github/actions/cache-save'
-        with: 
-          cache-name: ${{ matrix.cache }}
-          r3b-dev-key: ${{ env.cacheSHA }}
-
-      # Show the cache hit rate from ccache.
-      - name: ccache stats
-        if: github.event_name == 'pull_request' && always()
-        run: ccache --show-stats

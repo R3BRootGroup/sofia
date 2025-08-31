@@ -1,15 +1,18 @@
-# SOFIA Software [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14290959.svg)](https://doi.org/10.5281/zenodo.14290959)
+# SOFIA Software [![license](https://img.shields.io/badge/License-GPLv3-blue.svg)](COPYRIGHT) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14290959.svg)](https://doi.org/10.5281/zenodo.14290959)
 
 [![static analysis](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/static_analysis.yml) [![CI-CD](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml/badge.svg)](https://github.com/R3BRootGroup/sofia/actions/workflows/main.yml)
 
 ## The SOFIA Framework
-The SOFIA software module within the [R3BRoot](https://github.com/R3BRootGroup/R3BRoot) framework encapsulates the configuration and functionality of the SOFIA detectors, specifically designed for fission experiments conducted with the GLAD spectrometer. Sofia-R3BRoot, built on the FairRoot framework, serves as a software environment for performing detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. These capabilities include precise modeling of detector geometry, particle tracking, event reconstruction, and physics analysis, supporting the investigation of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility. The SOFIA software package is a source distribution with recurring releases for macOS and Linux.
+The SOFIA software module within the [R3BRoot](https://github.com/R3BRootGroup/R3BRoot) framework encapsulates the configuration and functionality of the SOFIA detectors, specifically designed for fission experiments conducted with the GLAD spectrometer. Sofia-R3BRoot, built on the FairRoot framework, serves as a software environment for performing detailed Monte Carlo simulations and processing experimental data from R3B (Reactions with Relativistic Radioactive Beams) experiments. These capabilities include precise modeling of detector geometry, particle tracking, event reconstruction, and physics analysis, supporting the investigation of fission dynamics and nuclear structure in high-energy heavy-ion collision scenarios at the GSI-FAIR facility. The SOFIA software package is a source distribution with recurring releases for MacOS and Linux.
 
-## Discussion Forum
-For the software-related user support you can post a new topic on our [forum](https://forum.gsi.de/index.php?t=index&cat=40&).
+## License
+SOFIA is distributed under the terms of the GNU Lesser General Public Licence version 3 ([LGPLv3](https://github.com/R3BRootGroup/sofia/blob/dev/LICENSE)).
 
 ## Release Information
 Please see [Releases](https://github.com/R3BRootGroup/sofia/releases)
+
+## Discussion Forum
+For the software-related user support you can post a new topic on our [forum](https://forum.gsi.de/index.php?t=index&cat=40&).
 
 ## Step by Step Installation
 
@@ -19,7 +22,7 @@ First, you will need to install FairSoft, FairRoot and R3BRoot. For more details
 
 1. Install [FairSoft](https://github.com/FairRootGroup/FairSoft)
 
-2. Install [FairRoot](http://fairroot.gsi.de)
+2. Install [FairRoot](https://github.com/FairRootGroup/FairRoot)
 
 3. Install [R3BRoot](https://github.com/R3BRootGroup/R3BRoot)
 
@@ -28,10 +31,9 @@ First, you will need to install FairSoft, FairRoot and R3BRoot. For more details
 ~~~bash
 export SIMPATH=%PATH_TO_FAIRSOFT%
 export FAIRROOTPATH=%PATH_TO_FAIRROOT%
-git clone dev https://github.com/R3BRootGroup/R3BRoot.git
+git clone https://github.com/R3BRootGroup/R3BRoot.git
 cd R3BRoot
-git clone dev https://github.com/R3BRootGroup/macros.git
-git clone dev https://github.com/R3BRootGroup/sofia.git
+git clone https://github.com/R3BRootGroup/sofia.git
 cd ..
 mkdir build
 cd build
@@ -47,7 +49,7 @@ Please ask your questions, request features, and report issues by [creating a gi
 
 The SOFIA project uses clang-format-15 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
 ~~~bash
-source apply-format.sh
+. apply-format.sh
 ~~~
 
 ### Some Details of the SOFIA Setup
@@ -214,7 +216,7 @@ This directory contains all the readers related to SOFIA detectors :
 - R3BSofToFWReader for the large area ToF-Wall located behind GLAD
 - R3BSofScalersReader for the scalers
 - R3BSofCorrvReader for time correlations of DAQ sub-systems
-- Readers for the TWIM and MWPC detectors can be found on [R3BRoot](https://github.com/R3BRootGroup/R3BRoot)
+- Readers for the TWIM and MWPC detectors can be found on [R3BRoot](https://github.com/R3BRootGroup/R3BRoot/tree/dev/r3bsource)
 
 and UCESB data structures are located at sofsource/ext :
 
@@ -304,9 +306,24 @@ or
 3) If one wants to select a RunId and max number of events, for instance 'RunId = 273' and 'nev = 200'
    root -l 'cal_offline.C(273,200)'
 ~~~
+
+## Tested systems
+
+The following systems are tested regularly.
+
+| **OS Name** | **Arch** | **OS Version** | **Compiler**  | **CMake**       | **C++ Version** |
+| ----------- | -------- | -------------- | ------------- | --------------- | --------------- |
+| Almalinux   | x86\_64  | 9.3            | GCC 11.4.1    | 3.27.9 / 4.0.3  | C++17 / C++20   |
+| Almalinux   | x86\_64  | 9.4            | GCC 14.2.0    | 3.30.6          | C++17           |
+| RHEL        | x86\_64  | 9.6            | GCC 14.2.0    | 3.30.6          | C++17           |
+| Debian      | x86\_64  | 10             | GCC 8.3.0     | 3.27.4 / 4.0.3  | C++17           |
+| Debian      | x86\_64  | 11             | GCC 10.2.1    | 3.27.4 / 3.30.0 | C++17           |
+| Debian      | x86\_64  | 12             | GCC 12.2.0    | 3.27.4 / 3.30.0 | C++17 / C++20   |
+| Ubuntu      | x86\_64  | 24.04          | GCC 13.3.0    | 3.28.3 / 4.0.3  | C++17 / C++20   |
+| Ubuntu      | x86\_64  | 25.04          | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17           |
    
 ## More Information
 
-* [Static analyzer using Clang-tidy](config/clang_tidy/README.md)
-* [CMake build system for R3BRoot/sofia](doc/cmake_usage.md)
-* [How to use an unmerged pull request](doc/git_usage.md#fetch-the-update-from-an-unmerged-pull-request-pr)
+* [Static analyzer using Clang-tidy](https://github.com/R3BRootGroup/R3BRoot/blob/dev/config/clang_tidy/README.md)
+* [CMake build system for R3BRoot/sofia](https://github.com/R3BRootGroup/R3BRoot/blob/dev/doc/cmake_usage.md)
+* [How to use an unmerged pull request](https://github.com/R3BRootGroup/R3BRoot/blob/dev/doc/git_usage.md#fetch-the-update-from-an-unmerged-pull-request-pr)

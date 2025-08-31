@@ -1,5 +1,22 @@
+##############################################################################
+#   Copyright (C) 2019 GSI Helmholtzzentrum für Schwerionenforschung GmbH    #
+#   Copyright (C) 2019 University of Santiago de Compostela                  #
+#   Copyright (C) 2019 CEA-DAM-DIF, Université Paris-Saclay                  #
+#   Copyright (C) 2023 University of Coruña                                  #
+#   Copyright (C) 2019-2025 Members of R3B Collaboration                     #
+#                                                                            #
+#             This software is distributed under the terms of the            #
+#                 GNU General Public Licence (GPL) version 3,                #
+#                    copied verbatim in the file "LICENSE".                  #
+#                                                                            #
+# In applying this license GSI does not waive the privileges and immunities  #
+# granted to it by virtue of its status as an Intergovernmental Organization #
+# or submit itself to any jurisdiction.                                      #
+##############################################################################
+
 #! /bin/bash
 test "$1" == "--autofix" && AUTOFIX=1 && shift
+test "$1" == "--ci" && AUTOFIX=1 && CI=1 && shift
 
 CLANG_FORMAT=${1:-clang-format}
 
@@ -12,7 +29,6 @@ if [ 0 != $? ]; then
     exit 1
 fi
 
-# Not in a pull request, so compare against parent commit
 git fetch --all
 base_commit="origin/dev"
 echo "Checking against parent commit $(git rev-parse $base_commit)"
@@ -24,7 +40,7 @@ echo "---"
 
 FMT_FILE=$(mktemp)
 
-filesToCheck="$(git diff --name-only ${base_commit} | grep -e '.(\x\|\.cxx\|\x)&&.(\x\|\.h\|\x)$&&.(\x\|\.C\|\x)$' || true)"
+filesToCheck="$(git diff --name-only ${base_commit} | grep -E '[.](cxx|h|C)$' || true)"
 for f in $filesToCheck; do
     if test -n "$AUTOFIX"
     then
@@ -40,7 +56,9 @@ for f in $filesToCheck; do
     fi
 done
 
-if test -n "$fail" ; then
+if test -n "$CI"
+then
+  if test -n "$fail" ; then
     echo -e "\033[1;31mYou must pass the clang-format checks before submitting a pull request for the files: \033[0m"
     for f in $filesToCheck; do
         d=$(diff -u "$f" <($CLANG_FORMAT -style=file "$f") || true)
@@ -49,6 +67,12 @@ if test -n "$fail" ; then
 	fi
     done
     exit 1
-else
+  else
     echo -e "\033[1;32m\xE2\x9C\x93 passed clang-format checks\033[0m $1";
+  fi
+else
+
+  if test -n "$fail"; then
+        echo "Clang-format check failed. Try --autofix to fix it in the code."
+  fi
 fi
