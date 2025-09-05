@@ -1,7 +1,7 @@
 # Triple-MUSIC
 
 Today (May 2020), due to the COVID-19 pandemia, the refurbishment of the Triple-MUSIC is still pending.
-Therefore, the analysis is developped in order to deal either with the "triangular" shape anodes or with the "rectangular" shape anodes.
+Therefore, the analysis is developed in order to deal either with the "triangular" shape anodes or with the "rectangular" shape anodes.
 Only some calibration parameters will remain to 0 or 1 default value, in case of triangular shape.
 
 # Geometry
@@ -11,8 +11,8 @@ For the rectangular shape, each section has 6 rectangular anodes.
 
 # Calibration of the drift time: from Mapped to Cal 
 
-This step is the same wether we deal with triangular or rectangular shape.
-at the begining the calibration parameters of the drift time are given with default values in CalibParams.par
+This step is the same whether we deal with triangular or rectangular shape.
+at the beginning the calibration parameters of the drift time are given with default values in CalibParams.par
 
 trimDriftTimeOffsets:  Double_t \
   0. 0. 0. 0. 0. 0.  \
@@ -32,7 +32,7 @@ We need to check if this should be changed to a more "real" drift velocity, whic
 
 # Calibration of the energy loss: from Mapped to Cal
 
-at the begining the calibration parameters of the energy loss are given with default values in CalibParams.par
+at the beginning the calibration parameters of the energy loss are given with default values in CalibParams.par
 
 trimEnergyPedestals: Float_t \
   0.0 0.0 0.0 0.0 0.0 0.0  \
@@ -66,7 +66,7 @@ For the triangular shape, the calibration parameters correspond to a gain for th
 
 # Calibration of the energy loss: from Cal to Hit
 
-### Step 1: alignement of the energy loss on primary beam : Ealign and calculation of the energy loss per section Eraw_sum
+### Step 1: alignment of the energy loss on primary beam : Ealign and calculation of the energy loss per section Eraw_sum
 * This step is slightly different for rectangular or triangular anodes.
 * For the rectangular anode, each anode is aligned to the same channel, whereas for the triangular anode, the sum of Ealign per pair is aligned to the same channel. 
 * Since the Ematch is calculated in Mapped2Cal, the calculation of the trimEnergyAlignGains take as input SofTrimCalData.

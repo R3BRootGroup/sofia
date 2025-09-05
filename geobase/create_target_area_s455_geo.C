@@ -121,7 +121,7 @@ void create_target_area_s455_geo(const char* geoTag = "s455_v21")
     gGeoMan->SetTopVolume(top);
     // --------------------------------------------------------------------------
 
-    // Defintion of the Mother Volume
+    // Definition of the Mother Volume
     TGeoShape* pVCTube = new TGeoTube("CenterPart", 0., 29.26, 140.2 / 2.0);
 
     TGeoCombiTrans* t_tube = new TGeoCombiTrans("t_tube", 0., 0., 0., fRefRot);
@@ -149,7 +149,7 @@ void create_target_area_s455_geo(const char* geoTag = "s455_v21")
     // Mylar windows for LH2 target
     Double_t thinMylar1 = 0.012 / 2.0;            // 120micra entrance window
     Double_t thinMylar2 = 0.018 / 2.0;            // 180micra exit window
-    Double_t LH2targetR = 2.1 - thinMylar2 * 2.0; // Radius of 1.5 cm - mylar cylindre
+    Double_t LH2targetR = 2.1 - thinMylar2 * 2.0; // Radius of 1.5 cm - mylar cylinder
     Double_t LH2targetL = 1.5;                    // Length 1.5cm
 
     //-------- Chamber -------------------------------------------------------------------------

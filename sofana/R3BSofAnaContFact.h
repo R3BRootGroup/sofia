@@ -1,5 +1,4 @@
-#ifndef R3BSofAnaContFact_H
-#define R3BSofAnaContFact_H
+#pragma once
 
 #include "FairContFact.h"
 #include "FairLogger.h"
@@ -19,8 +18,6 @@ class R3BSofAnaContFact : public FairContFact
     R3BSofAnaContFact();
     ~R3BSofAnaContFact() {}
     FairParSet* createContainer(FairContainer*);
-    void activateParIo(FairParIo* io);
+
     ClassDef(R3BSofAnaContFact, 0) // Factory for all Sofia Analysis parameter containers
 };
-
-#endif /* !R3BSofAnaContFact_H */

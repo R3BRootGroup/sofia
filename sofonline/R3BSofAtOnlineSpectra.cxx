@@ -558,7 +558,7 @@ void R3BSofAtOnlineSpectra::Exec(Option_t* option)
             {
                 fh2_atmap_mult->Fill(a + 1, mult[a]);
                 if (pu[a] == kFALSE)
-                { // no entry is flaged with the pile-up bit
+                { // no entry is flagged with the pile-up bit
                     fh1_atmap_mult_wo_pu->Fill(a + 1);
                     fh2_atmap_mult_wo_pu->Fill(a + 1, mult[a]);
                 }

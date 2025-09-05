@@ -155,7 +155,7 @@ void status_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
+    Bool_t fAt = false;      // Active Target for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -163,7 +163,7 @@ void status_online()
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
-    // --- Traking ----------------------------------------------------------------------
+    // --- Tracking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD and before GLAD
 
     // Create source using ucesb for input ------------------
@@ -360,7 +360,7 @@ void status_online()
     run->Init();
     FairLogger::GetLogger()->SetLogScreenLevel("info");
 
-    // Informations about portnumber and main data stream.
+    // Information about portnumber and main data stream.
     cout << "\n\n" << endl;
     cout << "Data stream is: " << filename << endl;
     cout << "Portnumber for status online is: " << port << endl;
@@ -374,7 +374,7 @@ void status_online()
     Double_t rtime = timer.RealTime();
     Double_t ctime = timer.CpuTime();
     std::cout << std::endl << std::endl;
-    std::cout << "Macro finished succesfully." << std::endl;
+    std::cout << "Macro finished successfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
     // gApplication->Terminate();

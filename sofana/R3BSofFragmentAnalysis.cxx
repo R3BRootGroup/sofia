@@ -358,7 +358,7 @@ void R3BSofFragmentAnalysis::Exec(Option_t* option)
             TwimTheta = HitTwim[i]->GetTheta();
             countz++;
             fZ = fTwimZ0 + fTwimZ1 * TMath::Sqrt(fE) * Beta + fTwimZ2 * fE * Beta * Beta;
-            // HitTwim[i]->SetZcharge(fZ); // Upate Z
+            // HitTwim[i]->SetZcharge(fZ); // Update Z
         }
     }
     //

@@ -27,7 +27,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads General SOFIA data and plots online histograms
+ * This tasks reads General SOFIA data and plots online histograms
  */
 class R3BSofStatusOnlineSpectra : public FairTask
 {
@@ -105,7 +105,7 @@ class R3BSofStatusOnlineSpectra : public FairTask
     TClonesArray* fTwimMappedDataCA;  /**< Array with Mapped-input data. >*/
     TClonesArray* fTofWMappedDataCA;
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */
     Int_t fTrigger;               /**< Trigger value.     */
     Float_t fNEvents;             /**< Event counter.     */

@@ -112,7 +112,7 @@ void create_glad_geo(const char* geoTag = "s455", Bool_t create_flange = kTRUE, 
     gGeoMan->SetTopVolume(top);
     // --------------------------------------------------------------------------
 
-    // Main Glad Enveloppe
+    // Main Glad Envelope
     TGeoVolumeAssembly* pWorld = new TGeoVolumeAssembly("Glad_box");
     TGeoRotation* rot_glob = new TGeoRotation();
     rot_glob->RotateY(90.0);
@@ -165,7 +165,7 @@ void ConstructWindows(TGeoVolume* pWorld)
 
     TGeoVolumeAssembly* wd_world = new TGeoVolumeAssembly("EntranceWindow");
 
-    // Convertion to GLAD coordinate system
+    // Conversion to GLAD coordinate system
     TGeoRotation* rot1 = new TGeoRotation();
     rot1->RotateZ(-180.0);
     rot1->RotateZ(90.0);
@@ -197,7 +197,7 @@ void ConstructWindowsExit(TGeoVolume* pWorld)
 
     TGeoVolumeAssembly* wd_world = new TGeoVolumeAssembly("ExitWindow");
 
-    // Convertion to GLAD coordinate system
+    // Conversion to GLAD coordinate system
     TGeoRotation* rot1 = new TGeoRotation();
     rot1->RotateZ(-180.0);
     rot1->RotateZ(90.0);
@@ -233,7 +233,7 @@ void ConstructFlunge(TGeoVolume* pWorld)
 
     TGeoVolumeAssembly* flange_world = new TGeoVolumeAssembly("Flunge");
 
-    // Convertion to GLAD coordinate system
+    // Conversion to GLAD coordinate system
     TGeoRotation* rot1 = new TGeoRotation();
     rot1->RotateZ(-180.0);
     rot1->RotateZ(90.0);

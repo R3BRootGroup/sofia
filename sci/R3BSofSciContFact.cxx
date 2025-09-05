@@ -53,9 +53,9 @@ void R3BSofSciContFact::setAllContainers()
 
 FairParSet* R3BSofSciContFact::createContainer(FairContainer* c)
 {
-    /** Trals the constructor of the corresponding parameter container.
+    /** Trails the constructor of the corresponding parameter container.
      * For an actual context, which is not an empty string and not the default context
-     * of this container, the name is concatinated with the context. */
+     * of this container, the name is concatenated with the context. */
 
     const char* name = c->GetName();
     LOG(info) << "R3BSofSciContFact: Create container name: " << name;

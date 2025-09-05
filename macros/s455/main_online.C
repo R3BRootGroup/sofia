@@ -132,7 +132,7 @@ void main_online()
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = true;       // Active Targer for Coulomb-induced fission
+    Bool_t fAt = true;       // Active Target for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -140,7 +140,7 @@ void main_online()
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
-    // --- Traking ----------------------------------------------------------------------
+    // --- Tracking ----------------------------------------------------------------------
     Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
     // --- Correlation signals between the different DAQ subsystems ---------------------
     Bool_t fCorrm = true; // correlation and trigger signals on sofia_mesy at cave C
@@ -851,7 +851,7 @@ void main_online()
     Double_t rtime = timer.RealTime();
     Double_t ctime = timer.CpuTime();
     std::cout << std::endl << std::endl;
-    std::cout << "Macro finished succesfully." << std::endl;
+    std::cout << "Macro finished successfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
     // gApplication->Terminate();

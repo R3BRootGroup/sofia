@@ -56,9 +56,9 @@ void R3BSofAnaContFact::setAllContainers()
 
 FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
 {
-    /** Trals the constructor of the corresponding parameter container.
+    /** Trails the constructor of the corresponding parameter container.
      * For an actual context, which is not an empty string and not the default context
-     * of this container, the name is concatinated with the context. */
+     * of this container, the name is concatenated with the context. */
 
     const char* name = c->GetName();
     LOG(info) << "R3BSofAnaContFact: Create container name: " << name;
@@ -85,11 +85,4 @@ FairParSet* R3BSofAnaContFact::createContainer(FairContainer* c)
     }
     return p;
 }
-
-void R3BSofAnaContFact::activateParIo(FairParIo* io)
-{
-    // activates the input/output class for the parameters
-    // needed by the Sts
-}
-
 ClassImp(R3BSofAnaContFact)

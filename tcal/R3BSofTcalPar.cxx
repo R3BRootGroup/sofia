@@ -70,7 +70,7 @@ void R3BSofTcalPar::putParams(FairParamList* list)
     fAllSignalsTcalParams->Set(array_size);
 
     array_size = fNumDetectors * fNumChannels;
-    LOG(info) << "Array Size for clock offset corection: " << array_size;
+    LOG(info) << "Array Size for clock offset correction: " << array_size;
     fAllClockOffsets->Set(array_size);
 
     list->add("TcalPar", *fAllSignalsTcalParams);

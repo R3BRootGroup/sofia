@@ -1,6 +1,6 @@
 // *** *************************************************************** *** //
 // ***                  R3BSofSciTcal2SingleTcal                        *** //
-// *** ---> whatever multiplicity per PMT, select the propoer hit      *** //
+// *** ---> whatever multiplicity per PMT, select the proper hit      *** //
 // *** *************************************************************** *** //
 
 #ifndef R3BSOFSCI_TCAL2SINGLETCAL

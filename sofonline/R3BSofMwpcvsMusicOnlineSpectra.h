@@ -26,7 +26,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads MWPC data and plots online histograms
+ * This tasks reads MWPC data and plots online histograms
  */
 class R3BSofMwpcvsMusicOnlineSpectra : public FairTask
 {
@@ -92,7 +92,7 @@ class R3BSofMwpcvsMusicOnlineSpectra : public FairTask
     TClonesArray* fMappedItemsMus; /**< Array with map items. */
     TClonesArray* fHitItemsMus;    /**< Array with hit items. */
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
     TString fNameDet1;

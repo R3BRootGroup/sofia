@@ -18,7 +18,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads TWIM data and plots online histograms
+ * This tasks reads TWIM data and plots online histograms
  */
 class R3BSofTrimVsTofwOnlineSpectra : public FairTask
 {
@@ -91,7 +91,7 @@ class R3BSofTrimVsTofwOnlineSpectra : public FairTask
     // Histograms
     TH2D* fh2_TrimE_vs_TofCaveC[3];
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
 

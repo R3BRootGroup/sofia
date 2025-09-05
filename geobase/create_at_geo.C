@@ -83,7 +83,7 @@ void create_at_geo(const char* geoTag = "v21")
     gGeoMan->SetTopVolume(top);
     // --------------------------------------------------------------------------
 
-    // Defintion of the Mother Volume
+    // Definition of the Mother Volume
     TGeoShape* pVCTube = new TGeoTube("atbox1", 0., 10., 20.2 / 2.0);
     TGeoCombiTrans* t_tube = new TGeoCombiTrans("t_box1", 0., 0., 0., fRefRot);
     t_tube->RegisterYourself();

@@ -16,7 +16,7 @@ For the software-related user support you can post a new topic on our [forum](ht
 
 ## Step by Step Installation
 
-### Required Softwares
+### Required Software
 
 First, you will need to install FairSoft, FairRoot and R3BRoot. For more details:
 
@@ -52,13 +52,29 @@ The SOFIA project uses clang-format-15 to ensure a common code formatting. The s
 . apply-format.sh
 ~~~
 
+## Spell Checking
+
+To avoid common typos in the codebase and documentation, we use [codespell](https://github.com/codespell-project/codespell).
+
+Check for spelling mistakes using the ignore list defined in `.codespell-ignorewords`:
+
+~~~bash
+codespell -I .codespell-ignorewords
+~~~
+
+If you want to automatically fix the detected typos:
+
+~~~bash
+codespell -w -I .codespell-ignorewords
+~~~
+
 ### Some Details of the SOFIA Setup
 
 - Active target (SofAT)
 The active target is a gaseous detector which can be seen as a stack of ionisation chambers.
 Three targets are mounted as cathode, and signal are readout on four anodes.
 Each event, there will always be four energies collected (one per anode).
-The comparison of the energy losses collected on two following anodes give the layer (anode or cathode) where the fission occures
+The comparison of the energy losses collected on two following anodes give the layer (anode or cathode) where the fission occurs
 AT configuration in the April 2021 beam time :
 ---
        ANODE 1  :   ALUMINIUM
@@ -77,7 +93,7 @@ At S2, the scintillator gives the position of the beam and make the start of the
 At cave C, the scintillator make the stop of the beam, and the start for the times of flight of the fission fragments.
 
 - Common reference signal (SofComRef)
-Deux independant DAQ are running at S2 and cave C.
+Deux independent DAQ are running at S2 and cave C.
 The clock of the VFTX-TDC are not synchronised.
 To calculate the ToF from S2 to Cave C, one common signal is sent to each cave.
 
@@ -89,7 +105,7 @@ In order to follow the coordinate system, plastic 1 is on the right and plastic 
 - Triple-MUSIC (SofTriM)
 SofTriM has 3 sections along the beam direction (z axis).
 Each section has 6 anodes (3 pairs of trapezoidal anodes) which are readout in energy and time.
-Energy losses obtained from each section are independant.
+Energy losses obtained from each section are independent.
 We need to combine them to get rid, as much as possible, of the charge states of the secondary beam.
 
 - Twin-MUSIC

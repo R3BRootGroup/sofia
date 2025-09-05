@@ -22,7 +22,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads FRS data and plots online histograms
+ * This tasks reads FRS data and plots online histograms
  */
 class R3BSofCorrOnlineSpectra : public FairTask
 {
@@ -109,7 +109,7 @@ class R3BSofCorrOnlineSpectra : public FairTask
     TCanvas* cMap_CorrV;
     TH1D** fh1_CorrM;
 
-    // Correlation between DAQ subsytems 2D histograms
+    // Correlation between DAQ subsystems 2D histograms
     TCanvas* cMap_Corr;
     TH2F** fh2_Correlation;
 
