@@ -539,7 +539,7 @@ void runsim(Int_t nEvents = 0)
     Double_t rtime = timer.RealTime() / 60.;
     Double_t ctime = timer.CpuTime() / 60.;
     cout << endl << endl;
-    cout << "Macro finished succesfully." << endl;
+    cout << "Macro finished successfully." << endl;
     cout << "Output file is " << OutFile << endl;
     cout << "Parameter file is " << ParFile << endl;
     cout << "Real time " << rtime << " min, CPU time " << ctime << " min" << endl << endl;

@@ -111,7 +111,7 @@ void softrim_gainmatch()
     Double_t rtime = timer.RealTime();
     Double_t ctime = timer.CpuTime();
     cout << endl << endl;
-    cout << "Macro finished succesfully." << endl;
+    cout << "Macro finished successfully." << endl;
     cout << "Output file is " << outputFileName << endl;
     cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << endl << endl;
 }

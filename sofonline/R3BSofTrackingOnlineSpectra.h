@@ -24,7 +24,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads FRS data and plots online histograms
+ * This tasks reads FRS data and plots online histograms
  */
 class R3BSofTrackingOnlineSpectra : public FairTask
 {
@@ -102,7 +102,7 @@ class R3BSofTrackingOnlineSpectra : public FairTask
     TClonesArray* fTofWHitDataCA;  /**< Array with TofW Hit-input data. >*/
     TClonesArray* fTrackingDataCA; /**< Array with tracking data at Cave-C. >*/
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
     Float_t fPosTarget;

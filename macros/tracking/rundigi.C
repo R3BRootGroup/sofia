@@ -67,7 +67,7 @@ void rundigi()
     R3BSofTofWDigitizer* tofw_digitizer = new R3BSofTofWDigitizer();
     run->AddTask(tofw_digitizer);
 
-    // ----- Intialise and run ---------------------------------------------------
+    // ----- Initialise and run ---------------------------------------------------
     run->Init();
     run->Run();
     // ---------------------------------------------------------------------------
@@ -77,9 +77,9 @@ void rundigi()
     Double_t rtime = timer.RealTime();
     Double_t ctime = timer.CpuTime();
     cout << endl << endl;
-    cout << "Macro finished succesfully." << endl;
-    cout << "Output file writen:  " << outFile << endl;
-    cout << "Parameter file writen " << parFile << endl;
+    cout << "Macro finished successfully." << endl;
+    cout << "Output file written:  " << outFile << endl;
+    cout << "Parameter file written " << parFile << endl;
     cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << endl;
     cout << endl;
     cout << " Test passed" << endl;

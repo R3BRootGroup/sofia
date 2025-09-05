@@ -25,7 +25,7 @@ class R3BEventHeader;
 class R3BTGeoPar;
 
 /**
- * This taks reads FRS data and plots online histograms
+ * This tasks reads FRS data and plots online histograms
  */
 class R3BSofTrackingFissionOnlineSpectra : public FairTask
 {
@@ -118,7 +118,7 @@ class R3BSofTrackingFissionOnlineSpectra : public FairTask
     R3BTGeoPar* fMw3GeoPar;
     R3BTGeoPar* fTofWGeoPar;
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* header; /**< Event header.      */
     Int_t fNEvents;         /**< Event counter.     */
     Float_t fPosTarget;

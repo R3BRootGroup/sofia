@@ -155,7 +155,7 @@ void finder_tofw_singletcal2hit()
     Bool_t fMwpc3 = false;   // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
-    // --- Traking ----------------------------------------------------------------------
+    // --- Tracking ----------------------------------------------------------------------
     Bool_t fTracking = false; // Tracking of fragments inside GLAD
 
     // Calibration files ------------------------------------
@@ -534,7 +534,7 @@ void finder_tofw_singletcal2hit()
     Double_t rtime = timer.RealTime();
     Double_t ctime = timer.CpuTime();
     std::cout << std::endl << std::endl;
-    std::cout << "Macro finished succesfully." << std::endl;
+    std::cout << "Macro finished successfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
     gApplication->Terminate();

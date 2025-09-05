@@ -22,7 +22,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads SCI data and plots online histograms
+ * This tasks reads SCI data and plots online histograms
  */
 class R3BSofSciVsPspxOnlineSpectra : public FairTask
 {
@@ -105,7 +105,7 @@ class R3BSofSciVsPspxOnlineSpectra : public FairTask
     TArrayF* fTofS2min;
     TArrayF* fTofS2max;
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* header; // Event header.
     Int_t fNEvents;         // Event counter.
 

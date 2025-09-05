@@ -504,7 +504,7 @@ void R3BSofTofWOnlineSpectra::Exec(Option_t* option)
     if (fSingleTcalItemsTofW && fSingleTcalItemsTofW->GetEntriesFast())
     {
         // --- ------------------------- --- //
-        // --- loop over singe tcal data --- //
+        // --- loop over single tcal data --- //
         // --- ------------------------- --- //
         nHits = fSingleTcalItemsTofW->GetEntriesFast();
         for (Int_t ihit = 0; ihit < nHits; ihit++)

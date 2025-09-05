@@ -81,7 +81,7 @@ class R3BSofTrimHitPar : public FairParGenericSet
     } // section is 1-based, signal is 1-based, degree is 0-based
 
     // === ==================================== === //
-    // === ALIGNEMENT OF THE ENERGY PER SECTION === //
+    // === ALIGNMENT OF THE ENERGY PER SECTION === //
     // === ==================================== === //
 
     Float_t GetEnergyAlignOffset(Int_t section) { return fEnergyAlignOffsets->GetAt(section - 1); }

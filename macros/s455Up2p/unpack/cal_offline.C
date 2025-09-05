@@ -77,7 +77,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     // --- Sofia ------------------------------------------------------------------------
     Bool_t fMwpc0 = true;    // MWPC0 for tracking at entrance of Cave-C
     Bool_t fTrim = true;     // Triple-MUSIC for the HI beam charge-Z id, with charge-q states
-    Bool_t fAt = false;      // Active Targer for Coulomb-induced fission
+    Bool_t fAt = false;      // Active Target for Coulomb-induced fission
     Bool_t fSci = true;      // Start: Plastic scintillator for ToF
     Bool_t fMwpc1 = true;    // MWPC1 for tracking of fragments in front of target
     Bool_t fMwpc2 = true;    // MWPC2 for tracking of fragments before GLAD
@@ -85,7 +85,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     Bool_t fMwpc3 = true;    // MWPC3 for tracking of fragments behind GLAD
     Bool_t fTofW = true;     // ToF-Wall for time-of-flight of fragments behind GLAD
     Bool_t fScalers = false; // SIS3820 scalers at Cave C
-    // --- Traking ----------------------------------------------------------------------
+    // --- Tracking ----------------------------------------------------------------------
     Bool_t fTracking = true; // Tracking of fragments inside GLAD and before GLAD
 
     // Calibration files for SOFIA ----------------------------------------------
@@ -304,7 +304,7 @@ void cal_offline(const Int_t fRunId = 1, const Int_t nev = -1, const Int_t fExpI
     Double_t rtime = timer.RealTime() / 60.;
     Double_t ctime = timer.CpuTime() / 60.;
     std::cout << std::endl << std::endl;
-    std::cout << "Macro finished succesfully." << std::endl;
+    std::cout << "Macro finished successfully." << std::endl;
     std::cout << "Output file is " << outputFilename << std::endl;
     std::cout << "Real time " << rtime << " min, CPU time " << ctime << " min" << std::endl << std::endl;
     gApplication->Terminate();
@@ -326,7 +326,7 @@ TString lookforfile()
     Char_t* afile;
     while ((afile = const_cast<Char_t*>(gSystem->GetDirEntry(dirp))))
     {
-        TObjArray* objArray = regexp.MatchS(afile);
+        TObjArray* objArray = regexp.matches(afile);
         if (objArray->At(0))
         { // match
             filename = directory + ((TObjString*)objArray->At(0))->GetString();

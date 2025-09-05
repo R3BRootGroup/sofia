@@ -105,7 +105,7 @@ void create_trim_geo(const char* geoTag = "v21")
     TGeoRotation* rotg = new TGeoRotation();
     TGeoCombiTrans* pMatrix0 = new TGeoCombiTrans();
 
-    // Defintion of the Mother Volume
+    // Definition of the Mother Volume
     TGeoShape* pMWorld = new TGeoBBox("trimbox", 20. / 2.0, 20. / 2.0, 60.005 / 2.0);
     TGeoVolume* pWorld = new TGeoVolume("TRIMWorld", pMWorld, pMedAr);
 

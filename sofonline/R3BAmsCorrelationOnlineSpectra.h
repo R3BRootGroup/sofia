@@ -23,7 +23,7 @@ class TClonesArray;
 class R3BEventHeader;
 
 /**
- * This taks reads AMS-CALIFA-MUSICs data and plots correlated online histograms
+ * This tasks reads AMS-CALIFA-MUSICs data and plots correlated online histograms
  */
 class R3BAmsCorrelationOnlineSpectra : public FairTask
 {
@@ -106,7 +106,7 @@ class R3BAmsCorrelationOnlineSpectra : public FairTask
     Int_t fHitCalifaHist_max;
     Int_t fHitCalifaHist_bins;
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */
     Int_t fTrigger;               /**< Trigger value. */
     Int_t fNEvents;               /**< Event counter. */

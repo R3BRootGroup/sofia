@@ -44,7 +44,7 @@ class R3BSofTrackingFissionOnlineSpectra;
 class R3BSofCorrOnlineSpectra;
 
 /**
- * This taks reads General SOFIA data and plots online histograms
+ * This tasks reads General SOFIA data and plots online histograms
  */
 class R3BSofOnlineSpectra : public FairTask
 {
@@ -104,7 +104,7 @@ class R3BSofOnlineSpectra : public FairTask
     TClonesArray* fWRItemsS2;      /**< Array with WR-S2 items. */
     TClonesArray* fWRItemsS8;      /**< Array with WR-S8 items. */
 
-    // check for trigger should be done globablly (somewhere else)
+    // check for trigger should be done globally (somewhere else)
     R3BEventHeader* fEventHeader; /**< Event header.      */
     Int_t fTrigger;               /**< Trigger value.     */
     Int_t fNEvents;               /**< Event counter.     */

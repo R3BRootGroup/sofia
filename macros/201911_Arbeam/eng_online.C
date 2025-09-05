@@ -175,7 +175,7 @@ void eng_online()
     Double_t rtime = timer.RealTime();
     Double_t ctime = timer.CpuTime();
     std::cout << std::endl << std::endl;
-    std::cout << "Macro finished succesfully." << std::endl;
+    std::cout << "Macro finished successfully." << std::endl;
     std::cout << "Output file is " << outputFileName << std::endl;
     std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << std::endl << std::endl;
     // gApplication->Terminate();

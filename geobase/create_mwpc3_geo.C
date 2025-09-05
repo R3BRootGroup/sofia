@@ -136,7 +136,7 @@ void create_mwpc3_geo(const char* geoTag = "3")
 
     TGeoRotation* rot_mwpc = new TGeoRotation("MWPCrot");
 
-    // Defintion of the Mother Volume
+    // Definition of the Mother Volume
     TGeoShape* pCBWorld = new TGeoBBox("MWPC_box", 120.0 / 2.0, 80.0 / 2.0, 9.0 / 2.0);
 
     TGeoVolume* pWorld = new TGeoVolume("MWPCWorld_3", pCBWorld, pMedAir);
