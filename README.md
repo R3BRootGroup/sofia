@@ -47,9 +47,9 @@ Please ask your questions, request features, and report issues by [creating a gi
 
 ## Code Formatting
 
-The SOFIA project uses clang-format-15 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
+The SOFIA project uses clang-format-16 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
 ~~~bash
-. apply-format.sh
+bash apply-format.sh
 ~~~
 
 ## Spell Checking
