@@ -5,11 +5,11 @@
   "contIntegration": "https://github.com/R3BRootGroup/sofia/actions",
   "dateCreated": "2017-05-15",
   "datePublished": "2017-05-15",
-  "dateModified": "2025-08-31",
-  "downloadUrl": "https://github.com/R3BRootGroup/sofia/archive/refs/tags/aug25.tar.gz",
+  "dateModified": "2025-09-15",
+  "downloadUrl": "https://github.com/R3BRootGroup/sofia/archive/refs/tags/sep25.tar.gz",
   "issueTracker": "https://github.com/R3BRootGroup/sofia/issues",
   "name": "sofia",
-  "softwareVersion": "aug25",
+  "softwareVersion": "sep25",
   "description": "Software for the SOFIA/R3B fission experiments at GSI/FAIR",
   "readme": "https://github.com/R3BRootGroup/sofia/blob/dev/README.md",
   "releaseNotes": "",
@@ -39,7 +39,7 @@
   ],
   "operatingSystem": [
     "Linux",
-    "macOS"
+    "MacOS"
   ],
   "softwareRequirements": [
     "FairRoot, FairSoft, R3BRoot"
