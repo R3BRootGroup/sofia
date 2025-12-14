@@ -27,15 +27,11 @@ runs:
     - name: running ctest
       run: |
         source $GITHUB_WORKSPACE/util/generate_geo_test.sh
-        if [[ "${{ matrix.os }}" != "debian10" ]]; then
-          echo "Running ctest on ${{ matrix.os }} "
-          ctest -S cmake/CI_CD/CDash.cmake -DBUILD_J=${NUM_THREADS}\
-                -DTEST_MODEL=${TEST_MODEL}\
-                -DTEST_NAME=${{ env.TEST_NAME }}\
-                -DSITE_NAME="Github hosted (${{ github.repository }})"\
-                --force-new-ctest-process \
-                -V -E "(run_gen_sim|run_digi|run_aladin_digi|califasim2|landreco|elsim)"
-        else
-          echo "Skipping ctest for debian10"
-        fi     
+        echo "Running ctest on ${{ matrix.os }} "
+        ctest -S cmake/CI_CD/CDash.cmake -DBUILD_J=${NUM_THREADS}\
+              -DTEST_MODEL=${TEST_MODEL}\
+              -DTEST_NAME=${{ env.TEST_NAME }}\
+              -DSITE_NAME="Github hosted (${{ github.repository }})"\
+              --force-new-ctest-process \
+              -V -E "(run_gen_sim|run_digi|run_aladin_digi|califasim2|landreco|elsim)"   
       shell: bash

@@ -35,11 +35,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Code formatting
         run: |
           cd $GITHUB_WORKSPACE
           sudo apt-get update
-          sudo apt-get install clang-format-15
-          ./.clang-format-check.sh clang-format-15
+          sudo apt-get install clang-format-16
+          ./.clang-format-check.sh clang-format-16
         shell: bash
