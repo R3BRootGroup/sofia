@@ -53,7 +53,7 @@ jobs:
         # Here are the groups of repositories that need to be downloaded inside
         # r3broot. Each group is used by only one job.
         repos: [ sofia ]
-        os: [ debian11, debian12 ]
+        os: [ debian11, debian12 , debian13]
         fsv: [ jan24p5 ]
         cpp: [ 17 ]
         include:
@@ -74,7 +74,7 @@ jobs:
         # testing. Github hosted runners can have at most 4 cores. The number
         # of the cores can be increased with a larger runner, thus increasing
         # the speed of the run.
-        NUM_THREADS: 10
+        NUM_THREADS: 4
       # Options for the Docker container to be run with cvmfs.
       options: --user root --privileged  --ulimit nofile=10000:10000 --cap-add SYS_ADMIN --device /dev/fuse
 
