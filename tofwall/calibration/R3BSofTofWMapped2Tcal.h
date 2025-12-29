@@ -4,8 +4,7 @@
 // *** ---> from the fine and coarse times, calculate a raw time in ns *** //
 // *** *************************************************************** *** //
 
-#ifndef R3BSOFTOFW_MAPPED2TCAL_H
-#define R3BSOFTOFW_MAPPED2TCAL_H
+#pragma once
 
 #include "FairTask.h"
 #include "R3BSofTofWTcalData.h"
@@ -65,7 +64,5 @@ class R3BSofTofWMapped2Tcal : public FairTask
     R3BSofTofWTcalData* AddTCalData(UShort_t detector, UShort_t pmt, Double_t t);
 
   public:
-    ClassDef(R3BSofTofWMapped2Tcal, 1)
+    ClassDef(R3BSofTofWMapped2Tcal, 1);
 };
-
-#endif // R3BSOFTOFW_MAPPED2TCAL_H

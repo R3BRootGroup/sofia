@@ -1,6 +1,6 @@
 /******************************************************************************
  *   Copyright (C) 2021 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
- *   Copyright (C) 2021-2023 Members of R3B Collaboration                     *
+ *   Copyright (C) 2021-2026 Members of R3B Collaboration                     *
  *                                                                            *
  *             This software is distributed under the terms of the            *
  *                 GNU General Public Licence (GPL) version 3,                *
@@ -16,7 +16,7 @@
 #include <TSystem.h>
 #include <memory>
 
-void testSofTofWSimulation(int nbevents = 100)
+void testSofTofWSimulation(const int nbevents = 100)
 {
     // Timer
     TStopwatch timer;
@@ -38,22 +38,22 @@ void testSofTofWSimulation(int nbevents = 100)
     // const TString parafile = "test.para.root";
 
     // Basic simulation setup
-    auto run = new FairRunSim();
+    auto run = std::make_unique<FairRunSim>();
     run->SetName("TGeant4");
     run->SetStoreTraj(false);
     run->SetMaterials("media_r3b.geo");
-    run->SetSink(new FairRootFileSink(simufile));
+    run->SetSink(std::make_unique<FairRootFileSink>(simufile));
 
     // Primary particle generator
-    auto boxGen = new FairIonGenerator(82, 208, 82, 1, 0., 0., 1.09, 0., 0., 0.);
-    auto primGen = new FairPrimaryGenerator();
-    primGen->AddGenerator(boxGen);
-    run->SetGenerator(primGen);
+    auto ionGen = std::make_unique<FairIonGenerator>(82, 208, 82, 1, 0., 0., 1.09, 0., 0., 0.);
+    auto primGen = std::make_unique<FairPrimaryGenerator>();
+    primGen->AddGenerator(ionGen.release());
+    run->SetGenerator(primGen.release());
 
     // Geometry: Cave
-    auto cave = new R3BCave("CAVE");
-    cave->SetGeometryFileName("r3b_cave.geo");
-    run->AddModule(cave);
+    auto cave = std::make_unique<R3BCave>("CAVE");
+    cave->SetGeometryFileName("r3b_cave_vacuum.geo");
+    run->AddModule(cave.release());
 
     // Geometry: SofTofW
     run->AddModule(new R3BSofTofW("sof_tof_v2021.3.geo.root", { 0., 0., 60. }));

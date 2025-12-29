@@ -3,15 +3,16 @@
 //
 //         Author: Jose Luis <j.l.rodriguez.sanchez@udc.es>
 //
-//         Last Update: 18/02/23
+//         Last Update: 29/12/25
 //
 //         Comments:
 //
 
-#include "TGeoManager.h"
-#include "TMath.h"
+#include <TGeoManager.h>
+#include <TMath.h>
 #include <iomanip>
 #include <iostream>
+#include <vector>
 
 void create_softofw_geo(const TString geoTag = "v2021.3")
 {
@@ -120,118 +121,99 @@ void create_softofw_geo(const TString geoTag = "v2021.3")
     // SHAPES, VOLUMES AND GEOMETRICAL HIERARCHY
     // Shape: Plastic scintillator type: TGeoBBox
     dx = 3.15;
-    dy = 66.0000;
-    dz = 0.500000;
-    TGeoShape* pTOFBox = new TGeoBBox("TOFBox", dx / 2., dy / 2., dz / 2.);
-    // Volume: TOFLog
-    TGeoVolume* pTOFLog = new TGeoVolume("TOF_FFs", pTOFBox, pMed34);
+    dy = 66.0;
+    dz = 0.50;
+    auto* pTOFBox = new TGeoBBox("TOFBox", dx / 2., dy / 2., dz / 2.);
+    auto* pTOFLog = new TGeoVolume("TOF_FFs", pTOFBox, pMed34);
     pTOFLog->SetVisLeaves(kTRUE);
-    pTOFLog->SetLineColor(kBlue - 8);
+    pTOFLog->SetLineColor(kAzure + 10);
 
-    // SHAPES, VOLUMES AND GEOMETRICAL HIERARCHY
-    // Shape: PMs type: TGeoTubeSeg
-    Double_t rmin = 0.0000;
-    Double_t rmax = 1.35;
-    dz = 12.00000;
-    Double_t phi1 = 0.000000;
-    Double_t phi2 = 360.0000;
-    TGeoShape* pPM = new TGeoTubeSeg("PM", rmin, rmax, dz / 2., phi1, phi2);
+    // Shape: PMTs
+    dz = 12.0;
+    auto* pPM = new TGeoTubeSeg("PMT", 0., 1.35, dz / 2., 0., 360.);
 
-    TGeoRotation* rot_PM = new TGeoRotation("PMrot");
+    auto* rot_PM = new TGeoRotation("PMrot");
     rot_PM->RotateX(90.0);
 
-    TGeoVolume* pPM_nbu[28];
-    TGeoCombiTrans* pGlobalPMsu[28];
-    TGeoCombiTrans* pMatrixPMsu[28];
+    std::vector<TGeoVolume*> pPM_nbu;
+    std::vector<TGeoCombiTrans*> pGlobalPMsu;
+    std::vector<TGeoCombiTrans*> pMatrixPMsu;
 
-    TGeoVolume* pPM_nbd[28];
-    TGeoCombiTrans* pGlobalPMsd[28];
-    TGeoCombiTrans* pMatrixPMsd[28];
+    std::vector<TGeoVolume*> pPM_nbd;
+    std::vector<TGeoCombiTrans*> pGlobalPMsd;
+    std::vector<TGeoCombiTrans*> pMatrixPMsd;
 
-    TGeoCombiTrans* pGlobalSci[28];
-    TGeoCombiTrans* pMatrixSci[28];
+    std::vector<TGeoCombiTrans*> pGlobalSci;
+    std::vector<TGeoCombiTrans*> pMatrixSci;
 
-    char buf[126];
-
-    for (int i = 0; i < 28; i++)
+    for (size_t i = 0; i < 28; i++)
     {
-
-        sprintf(buf, "PM_up_%i", i + 1);
+        TString name = Form("PM_up_%zu", i + 1);
 
         dx = -3.15 * i + 3.15 * 13. + 3.15 / 2.;
         dy = 66. / 2. + 6.001;
         dz = 0.00;
 
-        pMatrixPMsu[i] = new TGeoCombiTrans("", dx, dy, dz, rot_PM);
+        pMatrixPMsu.push_back(new TGeoCombiTrans("", dx, dy, dz, rot_PM));
 
-        pPM_nbu[i] = new TGeoVolume(buf, pPM, pMedAl);
+        pPM_nbu.push_back(new TGeoVolume(name.Data(), pPM, pMedAl));
         pPM_nbu[i]->SetVisLeaves(kTRUE);
-        pPM_nbu[i]->SetLineColor(kGray);
+        pPM_nbu[i]->SetLineColor(kGray + 3);
 
         ptof->AddNode(pPM_nbu[i], i, pMatrixPMsu[i]);
 
-        dx = -3.15 * i + 3.15 * 13. + 3.15 / 2.;
         dy = 0.00;
-        dz = 0.00;
 
-        pMatrixSci[i] = new TGeoCombiTrans("", dx, dy, dz, rotg);
+        pMatrixSci.push_back(new TGeoCombiTrans("", dx, dy, dz, rotg));
         ptof->AddNode(pTOFLog, i, pMatrixSci[i]);
 
-        sprintf(buf, "PM_down_%i", i + 1);
+        name = Form("PM_down_%zu", i + 1);
 
-        dx = -3.15 * i + 3.15 * 13. + 3.15 / 2.;
         dy = -66. / 2. - 6.001;
-        dz = 0.00;
 
-        pMatrixPMsd[i] = new TGeoCombiTrans("", dx, dy, dz, rot_PM);
+        pMatrixPMsd.push_back(new TGeoCombiTrans("", dx, dy, dz, rot_PM));
 
-        pPM_nbd[i] = new TGeoVolume(buf, pPM, pMedAl);
+        pPM_nbd.push_back(new TGeoVolume(name.Data(), pPM, pMedAl));
         pPM_nbd[i]->SetVisLeaves(kTRUE);
-        pPM_nbd[i]->SetLineColor(kGray);
+        pPM_nbd[i]->SetLineColor(kGray + 3);
 
         ptof->AddNode(pPM_nbd[i], i, pMatrixPMsd[i]);
     }
 
     // --------------- Supports --------------------------------------
     dx = 100.0;
-    dy = 4.0;
-    dz = 5.0;
-    TGeoShape* plane = new TGeoBBox("plane1", dx / 2., dy / 2., dz / 2.);
-    TGeoVolume* subplane = new TGeoVolume("", plane, pMedAl);
-    subplane->SetVisLeaves(kTRUE);
-    subplane->SetLineColor(5);
+    dy = 6.0;
+    dz = 6.0;
+    auto* profile = new TGeoBBox("Profile1", dx / 2., dy / 2., dz / 2.);
+    auto* profile1vol = new TGeoVolume("", profile, pMedAl);
+    profile1vol->SetVisLeaves(kTRUE);
+    profile1vol->SetLineColor(204);
 
     dx = 0.00;
-    dy = 66. / 2. + 12. + 2.;
+    dy = 66. / 2. + 12. + 3.;
     dz = 0.00;
-    TGeoCombiTrans* pMatrix3 = new TGeoCombiTrans("", dx, dy, dz, 0);
-    ptof->AddNode(subplane, 0, pMatrix3);
+    auto* pMatrix3 = new TGeoCombiTrans("", dx, dy, dz, 0);
+    ptof->AddNode(profile1vol, 1, pMatrix3);
 
-    dx = 0.00;
-    dy = -dy;
-    dz = 0.00;
-    TGeoCombiTrans* pMatrix4 = new TGeoCombiTrans("", dx, dy, dz, 0);
-    ptof->AddNode(subplane, 0, pMatrix4);
+    auto* pMatrix4 = new TGeoCombiTrans("", dx, -dy, dz, 0);
+    ptof->AddNode(profile1vol, 2, pMatrix4);
 
-    dx = 3.99;
-    dy = 180.0;
-    dz = 5.0;
-    TGeoShape* plane2 = new TGeoBBox("plane2", dx / 2., dy / 2., dz / 2.);
-    TGeoVolume* subplane2 = new TGeoVolume("", plane2, pMedAl);
-    subplane2->SetVisLeaves(kTRUE);
-    subplane2->SetLineColor(5);
+    dx = 6.0;
+    dy = 102.0;
+    dz = 6.0;
+    auto* profile2 = new TGeoBBox("Profile2", dx / 2., dy / 2., dz / 2.);
+    auto* profile2vol = new TGeoVolume("", profile2, pMedAl);
+    profile2vol->SetVisLeaves(kTRUE);
+    profile2vol->SetLineColor(204);
 
-    dx = 52.00;
-    dy = -45.00 + 4;
-    dz = 0.00;
-    TGeoCombiTrans* pMatrix5 = new TGeoCombiTrans("", dx, dy, dz, 0);
-    ptof->AddNode(subplane2, 0, pMatrix5);
+    dx = 53.;
+    dy = 0.;
+    dz = 0.;
+    auto* pMatrix5 = new TGeoCombiTrans("", dx, dy, dz, 0);
+    ptof->AddNode(profile2vol, 0, pMatrix5);
 
-    dx = -52.00;
-    dy = -45.00 + 4;
-    dz = 0.00;
-    TGeoCombiTrans* pMatrix6 = new TGeoCombiTrans("", dx, dy, dz, 0);
-    ptof->AddNode(subplane2, 0, pMatrix6);
+    auto* pMatrix6 = new TGeoCombiTrans("", -dx, dy, dz, 0);
+    ptof->AddNode(profile2vol, 0, pMatrix6);
 
     pWorld->AddNode(ptof, 0, pMatrix2);
 
@@ -241,10 +223,13 @@ void create_softofw_geo(const TString geoTag = "v2021.3")
     gGeoMan->PrintOverlaps();
     gGeoMan->Test();
 
-    TFile* geoFile = new TFile(geoFileName, "RECREATE");
+    TFile geoFile(geoFileName, "RECREATE");
     top->Write();
-    geoFile->Close();
+    // top->Draw("ogl");
+    geoFile.Close();
+
     std::cout << "\033[34m Creating geometry:\033[0m "
               << "\033[33m" << geoFileName << " \033[0m" << std::endl;
     std::cout << "Macro finished successfully." << std::endl;
+    gApplication->Terminate();
 }

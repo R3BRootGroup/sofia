@@ -1,17 +1,30 @@
+/******************************************************************************
+ *   Copyright (C) 2019 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2019-2026 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU General Public Licence (GPL) version 3,                *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
+
 // ----------------------------------------------------------------
 // -----          R3BSofTofWDigitizer source file             -----
 // -----         Created 03/11/19  by JL Rodriguez            -----
 // ----------------------------------------------------------------
 
-#ifndef R3BSofTofWDigitizer_H
-#define R3BSofTofWDigitizer_H 1
+#pragma once
 
-#include "FairTask.h"
 #include "R3BSofTofWHitData.h"
-#include "TRandom3.h"
-#include "TRotation.h"
-#include "TVector3.h"
 
+#include <FairTask.h>
+
+#include <TRandom3.h>
+#include <TRotation.h>
+#include <TVector3.h>
 #include <map>
 #include <string>
 
@@ -26,52 +39,51 @@ class R3BSofTofWDigitizer : public FairTask
     R3BSofTofWDigitizer();
 
     /** Standard constructor **/
-    R3BSofTofWDigitizer(const char* name, Int_t iVerbose = 1);
+    R3BSofTofWDigitizer(const TString& name, int iVerbose = 1);
 
     /** Destructor **/
     ~R3BSofTofWDigitizer();
 
-    /** Virtual method Init **/
-    virtual InitStatus Init();
+    /** Method Init **/
+    InitStatus Init() override;
 
-    /** Virtual method ReInit **/
-    virtual InitStatus ReInit();
+    /** Method ReInit **/
+    InitStatus ReInit() override;
 
-    /** Virtual method Exec **/
-    virtual void Exec(Option_t* opt);
+    /** Method Exec **/
+    void Exec(Option_t*) override;
 
     // Fair specific
-    virtual void SetParContainers();
+    void SetParContainers() override;
 
-    virtual void Reset();
+    void Reset();
 
     /** Setters for sigmas **/
-    void SetSigma_t(Float_t sigma_t) { fsigma_t = sigma_t; }
-    void SetSigma_ELoss(Float_t sigma_ELoss) { fsigma_ELoss = sigma_ELoss; }
+    void SetSigma_t(double sigma_t) { fsigma_t = sigma_t; }
+    void SetSigma_ELoss(double sigma_ELoss) { fsigma_ELoss = sigma_ELoss; }
 
   private:
     void SetParameter();
 
-    TClonesArray* fMCTrack;
-    TClonesArray* fTofPoints;
-    TClonesArray* fTofHits;
-    R3BTGeoPar* fTofWGeoPar;
+    TClonesArray* fMCTrack = nullptr;
+    TClonesArray* fTofPoints = nullptr;
+    TClonesArray* fTofHits = nullptr;
+    R3BTGeoPar* fTofWGeoPar = nullptr;
+
     TRandom3* rand;
-    Float_t fsigma_y;
 
-    Float_t fsigma_t;
+    double fsigma_y = 1.;    // mm
+    double fsigma_t = 0.017; // ns
+    double fsigma_ELoss = 0.;
 
-    Float_t fsigma_ELoss;
     TVector3 fTrans;
     TRotation fRot;
 
     /** Private method AddHitData **/
     // Adds a R3BSofTofWHitData to the TofWHitCollection
-    R3BSofTofWHitData* AddHitData(Int_t paddle, Double_t x, Double_t y, Double_t time);
+    R3BSofTofWHitData* AddHitData(int paddle, double x, double y, double time);
 
   public:
     // Class definition
-    ClassDef(R3BSofTofWDigitizer, 1);
+    ClassDefOverride(R3BSofTofWDigitizer, 2);
 };
-
-#endif
