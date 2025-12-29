@@ -1,8 +1,7 @@
-#ifndef R3BSOFTOFWMAPPED2TCALPAR_H
-#define R3BSOFTOFWMAPPED2TCALPAR_H
+#pragma once
 
-#include "FairTask.h"
-#include "TH1F.h"
+#include <FairTask.h>
+#include <TH1F.h>
 
 class TClonesArray;
 class R3BSofTcalPar;
@@ -72,5 +71,3 @@ class R3BSofTofWMapped2TcalPar : public FairTask
   public:
     ClassDef(R3BSofTofWMapped2TcalPar, 0);
 };
-
-#endif // R3BSOFTOFWMAPPED2TCALPAR_H

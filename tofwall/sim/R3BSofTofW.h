@@ -1,8 +1,21 @@
-#ifndef R3BSofTofW_H
-#define R3BSofTofW_H
+/******************************************************************************
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2026 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU General Public Licence (GPL) version 3,                *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
+
+#pragma once
 
 #include "R3BDetector.h"
-#include "TLorentzVector.h"
+
+#include <TLorentzVector.h>
 
 class TClonesArray;
 class R3BSofTofWPoint;
@@ -65,11 +78,9 @@ class R3BSofTofW : public R3BDetector
     /**      has to be called after each event to reset the containers      */
     void Reset() override;
 
-    Bool_t CheckIfSensitive(std::string name) override;
+    bool CheckIfSensitive(std::string name) override;
 
     void Initialize() override;
-
-    void SetSpecialPhysicsCuts() override { ; }
 
   private:
     /** Track information to be stored until the track leaves the
@@ -129,5 +140,3 @@ inline void R3BSofTofW::ResetParameters()
     fTime = fLength = fELoss = fZ = fA = 0;
     fPosIndex = 0;
 };
-
-#endif /* R3BSofTofW_H */

@@ -2,8 +2,7 @@
 // ***                  R3BSofTofWTcal2SingleTcal
 // *** ***************************************************************
 
-#ifndef R3BSOFTOFW_TCAL2SINGLETCAL_H
-#define R3BSOFTOFW_TCAL2SINGLETCAL_H 1
+#pragma once
 
 #include "FairTask.h"
 #include "R3BSofSciRawTofPar.h"
@@ -65,7 +64,5 @@ class R3BSofTofWTcal2SingleTcal : public FairTask
     R3BSofTofWSingleTcalData* AddHitData(Int_t plastic, Double_t time, Double_t tof, Double_t pos);
 
   public:
-    ClassDef(R3BSofTofWTcal2SingleTcal, 1)
+    ClassDef(R3BSofTofWTcal2SingleTcal, 1);
 };
-
-#endif // R3BSOFTOFW_TCAL2SINGLETCAL_H

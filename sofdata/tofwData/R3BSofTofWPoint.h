@@ -1,21 +1,29 @@
+/******************************************************************************
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2026 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU General Public Licence (GPL) version 3,                *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
+
 // -------------------------------------------------------------------------
-// -----                      R3BSofTofWPoint header file              -----
-// -----                  Created 06/12/17  by JL Rodriguez            -----
+// -----                     R3BSofTofWPoint header file               -----
+// -----             Created 06/12/17 by J.L. Rodriguez-Sanchez        -----
 // -------------------------------------------------------------------------
 
-/**  R3BSofTofWPoint.h
- **/
+#pragma once
 
-#ifndef R3BSofTofWPoint_H
-#define R3BSofTofWPoint_H
-
-#include "FairMCPoint.h"
-#include "TObject.h"
-#include "TVector3.h"
+#include <FairMCPoint.h>
+#include <TObject.h>
+#include <TVector3.h>
 
 class R3BSofTofWPoint : public FairMCPoint
 {
-
   public:
     /** Default constructor **/
     R3BSofTofWPoint();
@@ -34,65 +42,66 @@ class R3BSofTofWPoint : public FairMCPoint
      *@param length   Track length since creation [cm]
      *@param eLoss    Energy deposit [GeV]
      **/
-    R3BSofTofWPoint(Int_t trackID,
-                    Int_t detID,
-                    Int_t detCopyID,
-                    Double_t Z,
-                    Double_t A,
+    R3BSofTofWPoint(int trackID,
+                    int detID,
+                    int detCopyID,
+                    double Z,
+                    double A,
                     TVector3 posIn,
                     TVector3 posOut,
                     TVector3 momIn,
                     TVector3 momOut,
-                    Double_t tof,
-                    Double_t length,
-                    Double_t eLoss);
+                    double tof,
+                    double length,
+                    double eLoss);
 
     /** Copy constructor **/
     R3BSofTofWPoint(const R3BSofTofWPoint& point) { *this = point; };
 
     /** Destructor **/
-    virtual ~R3BSofTofWPoint();
+    virtual ~R3BSofTofWPoint() = default;
 
     /** Accessors **/
-    Int_t GetDetCopyID() const { return fDetCopyID; }
-    Double_t GetXIn() const { return fX; }
-    Double_t GetYIn() const { return fY; }
-    Double_t GetZIn() const { return fZ; }
-    Double_t GetXOut() const { return fX_out; }
-    Double_t GetYOut() const { return fY_out; }
-    Double_t GetZOut() const { return fZ_out; }
-    Double_t GetPxOut() const { return fPx_out; }
-    Double_t GetPyOut() const { return fPy_out; }
-    Double_t GetPzOut() const { return fPz_out; }
-    Double_t GetZFF() const { return fZFF; }
-    Double_t GetAFF() const { return fAFF; }
+    int GetDetCopyID() const { return fDetCopyID; }
+    double GetXIn() const { return fX; }
+    double GetYIn() const { return fY; }
+    double GetZIn() const { return fZ; }
+    double GetXOut() const { return fX_out; }
+    double GetYOut() const { return fY_out; }
+    double GetZOut() const { return fZ_out; }
+    double GetPxOut() const { return fPx_out; }
+    double GetPyOut() const { return fPy_out; }
+    double GetPzOut() const { return fPz_out; }
+    double GetZFF() const { return fZFF; }
+    double GetAFF() const { return fAFF; }
 
     void PositionIn(TVector3& pos) { pos.SetXYZ(fX, fY, fZ); }
     void PositionOut(TVector3& pos) { pos.SetXYZ(fX_out, fY_out, fZ_out); }
     void MomentumOut(TVector3& mom) { mom.SetXYZ(fPx_out, fPy_out, fPz_out); }
 
     /** Point coordinates at given z from linear extrapolation **/
-    Double_t GetX(Double_t z) const;
-    Double_t GetY(Double_t z) const;
+    double GetX(double z) const;
+    double GetY(double z) const;
 
     /** Check for distance between in and out **/
-    Bool_t IsUsable() const;
+    bool IsUsable() const;
 
     /** Modifiers **/
     void SetPositionOut(TVector3 pos);
     void SetMomentumOut(TVector3 mom);
-    void SetDetCopyID(Int_t id) { fDetCopyID = id; };
+    void SetDetCopyID(int id) { fDetCopyID = id; };
 
     /** Output to screen **/
-    virtual void Print(const Option_t* opt) const;
+    virtual void Print(const Option_t*) const;
 
-  protected:
-    Double32_t fX_out, fY_out, fZ_out;
-    Double32_t fPx_out, fPy_out, fPz_out;
-    Int_t fDetCopyID;
-    Double32_t fZFF, fAFF;
+  private:
+    double fX_out = 0., fY_out = 0., fZ_out = 0.;
+    double fPx_out = 0., fPy_out = 0., fPz_out = 0.;
+    int fDetCopyID = 0;
+    double fZFF = 0., fAFF = 0.;
 
-    ClassDef(R3BSofTofWPoint, 1)
+  public:
+    ClassDef(R3BSofTofWPoint, 1);
 };
 
 inline void R3BSofTofWPoint::SetPositionOut(TVector3 pos)
@@ -108,5 +117,3 @@ inline void R3BSofTofWPoint::SetMomentumOut(TVector3 mom)
     fPy_out = mom.Py();
     fPz_out = mom.Pz();
 }
-
-#endif

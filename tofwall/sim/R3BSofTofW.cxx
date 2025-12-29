@@ -1,21 +1,34 @@
+/******************************************************************************
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2026 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU General Public Licence (GPL) version 3,                *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
+
 // ------------------------------------------------------------------------
 // -----                        R3BSofTofW source file                -----
 // -----                  Created 24/11/17 by H.Alvarez-Pol           -----
 // ------------------------------------------------------------------------
 
 #include "R3BSofTofW.h"
-
-#include "FairRootManager.h"
-#include "FairRun.h"
-#include "FairVolume.h"
 #include "R3BLogger.h"
 #include "R3BMCStack.h"
 #include "R3BSofTofWPoint.h"
-#include "TGeoManager.h"
-#include "TVirtualMC.h"
-#include "TVirtualMCStack.h"
+
+#include <FairRootManager.h>
+#include <FairRun.h>
+#include <FairVolume.h>
 
 #include <TClonesArray.h>
+#include <TGeoManager.h>
+#include <TVirtualMC.h>
+#include <TVirtualMCStack.h>
 
 R3BSofTofW::R3BSofTofW()
     : R3BSofTofW("")
@@ -28,7 +41,7 @@ R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoTranslation& trans, con
 }
 
 R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi)
-    : R3BDetector("R3BSofTofW", kSOFTofWall, geoFile, combi)
+    : R3BDetector("R3BSofTofW", kSOFTofWall, geoFile.Data(), combi)
     , fSofTofWallCollection(new TClonesArray("R3BSofTofWPoint"))
     , fPosIndex(0)
 {
@@ -77,7 +90,6 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
         if (TVirtualMC::GetMC()->IsTrackExiting() || TVirtualMC::GetMC()->IsTrackStop() ||
             TVirtualMC::GetMC()->IsTrackDisappeared())
         {
-
             fTrackID = TVirtualMC::GetMC()->GetStack()->GetCurrentTrackNumber();
             fVolumeID = vol->getMCid();
             fDetCopyID = vol->getCopyNo();
@@ -105,7 +117,7 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
                      fELoss);
 
             // Increment number of SofTofWallPoints for this track
-            R3BStack* stack = static_cast<R3BStack*>(TVirtualMC::GetMC()->GetStack());
+            auto* stack = static_cast<R3BStack*>(TVirtualMC::GetMC()->GetStack());
             stack->AddPoint(kSOFTofWall);
             ResetParameters();
         }
@@ -143,9 +155,9 @@ TClonesArray* R3BSofTofW::GetCollection(Int_t iColl) const
 }
 
 // -----   Public method Print   ----------------------------------------------
-void R3BSofTofW::Print(Option_t* option) const
+void R3BSofTofW::Print(Option_t*) const
 {
-    Int_t nHits = fSofTofWallCollection->GetEntriesFast();
+    auto nHits = fSofTofWallCollection->GetEntriesFast();
     R3BLOG(info, nHits << " points registered in this event");
 }
 
@@ -171,7 +183,7 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
                                       Double_t eLoss)
 {
     TClonesArray& clref = *fSofTofWallCollection;
-    Int_t size = clref.GetEntriesFast();
+    auto size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
     {
         R3BLOG(info,
@@ -183,7 +195,7 @@ R3BSofTofWPoint* R3BSofTofW::AddPoint(Int_t trackID,
 }
 
 // -----  Public method CheckIfSensitive  ----------------------------------
-Bool_t R3BSofTofW::CheckIfSensitive(std::string name)
+bool R3BSofTofW::CheckIfSensitive(std::string name)
 {
     if (TString(name).Contains("TOF_FFs"))
     {
@@ -193,4 +205,4 @@ Bool_t R3BSofTofW::CheckIfSensitive(std::string name)
     return kFALSE;
 }
 
-ClassImp(R3BSofTofW);
+ClassImp(R3BSofTofW)

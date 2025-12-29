@@ -1,6 +1,6 @@
 /******************************************************************************
  *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
- *   Copyright (C) 2017-2025 Members of R3B Collaboration                     *
+ *   Copyright (C) 2017-2026 Members of R3B Collaboration                     *
  *                                                                            *
  *             This software is distributed under the terms of the            *
  *                 GNU Lesser General Public Licence (LGPL) version 3,        *
