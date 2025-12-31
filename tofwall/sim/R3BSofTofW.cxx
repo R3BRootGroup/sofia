@@ -43,7 +43,6 @@ R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoTranslation& trans, con
 R3BSofTofW::R3BSofTofW(const TString& geoFile, const TGeoCombiTrans& combi)
     : R3BDetector("R3BSofTofW", kSOFTofWall, geoFile.Data(), combi)
     , fSofTofWallCollection(new TClonesArray("R3BSofTofWPoint"))
-    , fPosIndex(0)
 {
     ResetParameters();
 }
@@ -64,7 +63,7 @@ void R3BSofTofW::Initialize()
 }
 
 // -----   Public method ProcessHits  --------------------------------------
-Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
+bool R3BSofTofW::ProcessHits(FairVolume* vol)
 {
     /** This method is called from the MC stepping */
 
@@ -78,10 +77,10 @@ Bool_t R3BSofTofW::ProcessHits(FairVolume* vol)
         TVirtualMC::GetMC()->TrackMomentum(fMomIn);
     }
 
-    Double_t M_in = TVirtualMC::GetMC()->TrackMass() * 1000.;
+    auto M_in = TVirtualMC::GetMC()->TrackMass() * 1000.;
     // Charge and mass are now obtained from PDG Code
-    Double_t fZ_in = int(TVirtualMC::GetMC()->TrackPid() / 10000) - 100000.;
-    Double_t fA_in = 0.1 * (TVirtualMC::GetMC()->TrackPid() - (100000 + fZ_in) * 10000.);
+    auto fZ_in = int(TVirtualMC::GetMC()->TrackPid() / 10000) - 100000.;
+    auto fA_in = 0.1 * (TVirtualMC::GetMC()->TrackPid() - (100000 + fZ_in) * 10000.);
 
     fELoss += TVirtualMC::GetMC()->Edep();
     if (fELoss > 0)
@@ -138,7 +137,7 @@ void R3BSofTofW::EndOfEvent()
 // -----   Public method Register   -------------------------------------------
 void R3BSofTofW::Register()
 {
-    FairRootManager::Instance()->Register("SofTofWPoint", GetName(), fSofTofWallCollection, kTRUE);
+    FairRootManager::Instance()->Register("SofTofWPoint", GetName(), fSofTofWallCollection, true);
 }
 
 // -----   Public method GetCollection   --------------------------------------
@@ -158,7 +157,7 @@ TClonesArray* R3BSofTofW::GetCollection(Int_t iColl) const
 void R3BSofTofW::Print(Option_t*) const
 {
     auto nHits = fSofTofWallCollection->GetEntriesFast();
-    R3BLOG(info, nHits << " points registered in this event");
+    LOG(info) << "R3BSofTofW: " << nHits << " points registered in this event";
 }
 
 // -----   Public method Reset   ----------------------------------------------

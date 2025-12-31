@@ -1,5 +1,4 @@
-#ifndef __R3BSofTrimDTOffsetPar_H__
-#define __R3BSofTrimDTOffsetPar_H__
+#pragma once
 
 #include "FairTask.h"
 #include "R3BSofTrimCalPar.h"
@@ -11,7 +10,6 @@ class R3BEventHeader;
 
 class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTrimCalculateDriftTimeOffsetPar();
@@ -28,14 +26,8 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* opt);
 
-    /** Virtual method FinishEvent **/
-    virtual void FinishEvent();
-
     /** Virtual method FinishTask **/
     virtual void FinishTask();
-
-    /** Virtual method Reset **/
-    virtual void Reset();
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
@@ -62,7 +54,7 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
     void SetDistInterSection(Double_t d) { fDistInterSection = d; }
     void SetDriftVelocity(Double_t v) { fDriftVelocity = v; }
 
-  protected:
+  private:
     Int_t fNumSections;
     Int_t fNumAnodes;
     Int_t fMinStatistics; // minimum statistics to proceed to the calibration
@@ -92,5 +84,3 @@ class R3BSofTrimCalculateDriftTimeOffsetPar : public FairTask
   public:
     ClassDef(R3BSofTrimCalculateDriftTimeOffsetPar, 0);
 };
-
-#endif //__R3BSofTrimDTOffsetPar_H__

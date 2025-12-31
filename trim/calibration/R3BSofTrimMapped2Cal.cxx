@@ -58,16 +58,16 @@ R3BSofTrimMapped2Cal::~R3BSofTrimMapped2Cal()
 
 void R3BSofTrimMapped2Cal::SetParContainers()
 {
-    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    auto* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
-        LOG(error) << "FairRuntimeDb not opened!";
+        LOG(fatal) << "FairRuntimeDb not opened!";
     }
 
-    fCal_Par = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
+    fCal_Par = dynamic_cast<R3BSofTrimCalPar*>(rtdb->getContainer("trimCalPar"));
     if (!fCal_Par)
     {
-        LOG(error) << "R3BSofTrimMapped2CalPar::Init() Couldn't get handle on trimCalPar container";
+        LOG(fatal) << "R3BSofTrimMapped2CalPar::Init() Couldn't get handle on trimCalPar container";
         return;
     }
     else
@@ -88,7 +88,7 @@ InitStatus R3BSofTrimMapped2Cal::Init()
 {
     LOG(info) << "R3BSofTrimMapped2Cal::Init()";
 
-    FairRootManager* rootManager = FairRootManager::Instance();
+    auto* rootManager = FairRootManager::Instance();
     if (!rootManager)
     {
         return kFATAL;
@@ -97,7 +97,7 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     // --- ----------------- --- //
     // --- INPUT MAPPED DATA --- //
     // --- ----------------- --- //
-    fTrimMappedData = (TClonesArray*)rootManager->GetObject("TrimMappedData");
+    fTrimMappedData = dynamic_cast<TClonesArray*>(rootManager->GetObject("TrimMappedData"));
     if (!fTrimMappedData)
     {
         return kFATAL;
@@ -106,7 +106,7 @@ InitStatus R3BSofTrimMapped2Cal::Init()
     // --- --------------- --- //
     // --- OUTPUT CAL DATA --- //
     // --- --------------- --- //
-    fTrimCalData = new TClonesArray("R3BSofTrimCalData", MAX_MULT_TRIM_CAL * 8);
+    fTrimCalData = new TClonesArray("R3BSofTrimCalData");
     rootManager->Register("TrimCalData", "Trim Cal", fTrimCalData, !fOnline);
 
     return kSUCCESS;
@@ -120,16 +120,10 @@ InitStatus R3BSofTrimMapped2Cal::ReInit()
 }
 
 // -----   Public method Execution   --------------------------------------------
-void R3BSofTrimMapped2Cal::Exec(Option_t* option)
+void R3BSofTrimMapped2Cal::Exec(Option_t*)
 {
     // Reset entries in output arrays, local arrays
     Reset();
-
-    // get the parameters
-    if (!fCal_Par)
-    {
-        LOG(error) << "R3BSofTrimMapped2Cal: NOT Container Parameter!!";
-    }
 
     // Reading input mapped data per anode
     //   --> number of channels = number of anodes (6: id=1..6)
@@ -199,9 +193,6 @@ void R3BSofTrimMapped2Cal::Exec(Option_t* option)
 
     return;
 }
-
-// -----   Protected method Finish   --------------------------------------------
-void R3BSofTrimMapped2Cal::Finish() {}
 
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTrimMapped2Cal::Reset()

@@ -1,5 +1,4 @@
-#ifndef __R3BSOFTRIMMATCHGAINPAR_H__
-#define __R3BSOFTRIMMATCHGAINPAR_H__
+#pragma once
 
 #include "FairTask.h"
 #include "TCanvas.h"
@@ -14,7 +13,6 @@ class R3BEventHeader;
 
 class R3BSofTrimCalculateMatchGainPar : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTrimCalculateMatchGainPar();
@@ -31,14 +29,8 @@ class R3BSofTrimCalculateMatchGainPar : public FairTask
     /** Virtual method Exec **/
     virtual void Exec(Option_t* opt);
 
-    /** Virtual method FinishEvent **/
-    virtual void FinishEvent();
-
     /** Virtual method FinishTask **/
     virtual void FinishTask();
-
-    /** Virtual method Reset **/
-    virtual void Reset();
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
@@ -72,5 +64,3 @@ class R3BSofTrimCalculateMatchGainPar : public FairTask
   public:
     ClassDef(R3BSofTrimCalculateMatchGainPar, 0);
 };
-
-#endif //__R3BSOFTRIMMATCHGAINPAR_H__

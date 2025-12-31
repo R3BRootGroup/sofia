@@ -86,11 +86,11 @@ InitStatus R3BSofTofWDigitizer::Init()
     R3BLOG(info, "");
 
     // Get input array
-    FairRootManager* ioman = FairRootManager::Instance();
+    auto* ioman = FairRootManager::Instance();
     R3BLOG_IF(fatal, !ioman, "FairRootManager not found.");
 
-    fMCTrack = (TClonesArray*)ioman->GetObject("MCTrack");
-    fTofPoints = (TClonesArray*)ioman->GetObject("SofTofWPoint");
+    fMCTrack = dynamic_cast<TClonesArray*>(ioman->GetObject("MCTrack"));
+    fTofPoints = dynamic_cast<TClonesArray*>(ioman->GetObject("SofTofWPoint"));
 
     // Register output array fTofHits
     fTofHits = new TClonesArray("R3BSofTofWHitData");
@@ -125,12 +125,12 @@ void R3BSofTofWDigitizer::Exec(Option_t*)
 
         if (PID > 1000080160) // Z=8 and A=16
         {
-            Double_t fX_in = pointData->GetXIn();
-            Double_t fY_in = pointData->GetYIn();
-            Double_t fZ_in = pointData->GetZIn();
-            Double_t fX_out = pointData->GetXOut();
-            Double_t fY_out = pointData->GetYOut();
-            Double_t fZ_out = pointData->GetZOut();
+            auto fX_in = pointData->GetXIn();
+            auto fY_in = pointData->GetYIn();
+            auto fZ_in = pointData->GetZIn();
+            auto fX_out = pointData->GetXOut();
+            auto fY_out = pointData->GetYOut();
+            auto fZ_out = pointData->GetZOut();
             paddle = pointData->GetDetCopyID() + 1;
             // std::cout<<paddle<<std::endl;
 

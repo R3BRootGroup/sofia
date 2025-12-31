@@ -21,30 +21,16 @@
 
 // R3BSofTrimCalculateDriftTimeOffsetPar: Default Constructor --------------------------
 R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar()
-    : FairTask("R3BSofTrimCalculateDriftTimeOffsetPar", 1)
-    , fNumSections(3)
-    , fNumAnodes(6)
-    , fMinStatistics(0)
-    , fTrimCalData(NULL)
-    , fMwpc0HitData(NULL)
-    , fMwpc1HitData(NULL)
-    , fCalPar(NULL)
-    , fMwpc0GeoPar(NULL)
-    , fMwpc1GeoPar(NULL)
-    , fTrimGeoPar(NULL)
-    , fWidthAnode(25)       // mm
-    , fDistInterSection(50) // mm 2*edge anodes of 20 mm + 1*10 mm gap
-    , fDriftVelocity(60)    // mm/micros, distance from anode to FG: 80 mm with a difference of V = 2700V
-    , fOutputFile(NULL)
+    : R3BSofTrimCalculateDriftTimeOffsetPar("R3BSofTrimCalculateDriftTimeOffsetPar", 1)
 {
 }
 
 // R3BSofTrimCalculateDriftTimeOffsetPar: Standard Constructor --------------------------
 R3BSofTrimCalculateDriftTimeOffsetPar::R3BSofTrimCalculateDriftTimeOffsetPar(const char* name, Int_t iVerbose)
     : FairTask(name, iVerbose)
-    , fNumSections(0)
-    , fNumAnodes(0)
-    , fMinStatistics(0)
+    , fNumSections(3)
+    , fNumAnodes(6)
+    , fMinStatistics(100)
     , fTrimCalData(NULL)
     , fMwpc0HitData(NULL)
     , fMwpc1HitData(NULL)
@@ -78,10 +64,9 @@ R3BSofTrimCalculateDriftTimeOffsetPar::~R3BSofTrimCalculateDriftTimeOffsetPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
 {
-
     LOG(info) << "R3BSofTrimCalculateDriftTimeOffsetPar: Init";
 
-    FairRootManager* rm = FairRootManager::Instance();
+    auto* rm = FairRootManager::Instance();
     if (!rm)
     {
         return kFATAL;
@@ -91,7 +76,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- INPUT TRIM CAL DATA --- //
     // --- ------------------- --- //
 
-    fTrimCalData = (TClonesArray*)rm->GetObject("TrimCalData");
+    fTrimCalData = dynamic_cast<TClonesArray*>(rm->GetObject("TrimCalData"));
     if (!fTrimCalData)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on TrimCalData";
@@ -102,7 +87,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- INPUT MWPC0 HIT DATA --- //
     // --- -------------------- --- //
 
-    fMwpc0HitData = (TClonesArray*)rm->GetObject("Mwpc0HitData");
+    fMwpc0HitData = dynamic_cast<TClonesArray*>(rm->GetObject("Mwpc0HitData"));
     if (!fMwpc0HitData)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on Mwpc0HitData";
@@ -113,7 +98,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- INPUT MWPC1 HIT DATA --- //
     // --- -------------------- --- //
 
-    fMwpc1HitData = (TClonesArray*)rm->GetObject("Mwpc1HitData");
+    fMwpc1HitData = dynamic_cast<TClonesArray*>(rm->GetObject("Mwpc1HitData"));
     if (!fMwpc1HitData)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on Mwpc1HitData";
@@ -124,7 +109,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- RUN TIME DATA BASE --- //
     // --- ------------------ --- //
 
-    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    auto* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
         return kFATAL;
@@ -134,7 +119,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- SOF TRIM TRIANGLE CAL PARAMETERS CONTAINER --- //
     // --- ------------------------------------------ --- //
 
-    fCalPar = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
+    fCalPar = dynamic_cast<R3BSofTrimCalPar*>(rtdb->getContainer("trimCalPar"));
     if (!fCalPar)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::Init() Couldn't get handle on trimCalPar container";
@@ -151,7 +136,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ---------------------- --- //
     // ---  GEOMETRY OF THE MWPC0 --- //
     // --- ---------------------- --- //
-    fMwpc0GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc0GeoPar");
+    fMwpc0GeoPar = dynamic_cast<R3BTGeoPar*>(rtdb->getContainer("Mwpc0GeoPar"));
     if (!fMwpc0GeoPar)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc0GeoPar "
@@ -164,7 +149,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ---------------------- --- //
     // ---  GEOMETRY OF THE MWPC1 --- //
     // --- ---------------------- --- //
-    fMwpc1GeoPar = (R3BTGeoPar*)rtdb->getContainer("Mwpc1GeoPar");
+    fMwpc1GeoPar = dynamic_cast<R3BTGeoPar*>(rtdb->getContainer("Mwpc1GeoPar"));
     if (!fMwpc1GeoPar)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to mwpc1GeoPar "
@@ -177,7 +162,7 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
     // --- ----------------------------- --- //
     // ---  GEOMETRY OF THE TRIPLE-MUSIC --- //
     // --- ----------------------------- --- //
-    fTrimGeoPar = (R3BTGeoPar*)rtdb->getContainer("TrimGeoPar");
+    fTrimGeoPar = dynamic_cast<R3BTGeoPar*>(rtdb->getContainer("TrimGeoPar"));
     if (!fTrimGeoPar)
     {
         LOG(error) << "R3BSofTrimCalculateDriftTimeOffsetPar::SetParContainers() : Could not get access to trimGeoPar "
@@ -211,9 +196,8 @@ InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::Init()
 InitStatus R3BSofTrimCalculateDriftTimeOffsetPar::ReInit() { return kSUCCESS; }
 
 // -----   Public method Exec   --------------------------------------------
-void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
+void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t*)
 {
-
     Int_t iSec, iAnode;
     Double_t geoX0, geoX1, geoZ0, geoZ1, geoDZ;
     Double_t X0, X1, DX;
@@ -241,8 +225,8 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     // --- -------------- --- //
     // --- MWPCs HIT DATA --- //
     // --- -------------- --- //
-    nHitsMw0 = fMwpc0HitData->GetEntries();
-    nHitsMw1 = fMwpc1HitData->GetEntries();
+    nHitsMw0 = fMwpc0HitData->GetEntriesFast();
+    nHitsMw1 = fMwpc1HitData->GetEntriesFast();
     // if (nHitsMw0 != 0)
     //{
     //    std::cout << std::endl;
@@ -250,8 +234,8 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
     //}
     if (nHitsMw0 == 1 && nHitsMw1 == 1)
     {
-        R3BMwpcHitData* hitMwpc0 = (R3BMwpcHitData*)fMwpc0HitData->At(0);
-        R3BMwpcHitData* hitMwpc1 = (R3BMwpcHitData*)fMwpc1HitData->At(0);
+        auto* hitMwpc0 = dynamic_cast<R3BMwpcHitData*>(fMwpc0HitData->At(0));
+        auto* hitMwpc1 = dynamic_cast<R3BMwpcHitData*>(fMwpc1HitData->At(0));
         X0 = hitMwpc0->GetX() + geoX0;
         X1 = hitMwpc1->GetX() + geoX1;
         DX = X1 - X0;
@@ -259,12 +243,12 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
         // --- --------------------------------------- --- //
         // --- LOOP OVER TRIANGLE CAL HITS FOR SofTrim --- //
         // --- --------------------------------------- --- //
-        nHits = fTrimCalData->GetEntries();
+        nHits = fTrimCalData->GetEntriesFast();
         if (!nHits)
             return;
         for (Int_t ihit = 0; ihit < nHits; ihit++)
         {
-            R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fTrimCalData->At(ihit);
+            auto* hit = dynamic_cast<R3BSofTrimCalData*>(fTrimCalData->At(ihit));
             iSec = hit->GetSecID() - 1;
             iAnode = hit->GetAnodeID() - 1;
             DTraw = hit->GetDriftTimeRaw();
@@ -279,11 +263,6 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t* opt)
         }                                                         // end of loop over the mapped data
     }
 }
-
-// ---- Public method Reset   --------------------------------------------------
-void R3BSofTrimCalculateDriftTimeOffsetPar::Reset() {}
-
-void R3BSofTrimCalculateDriftTimeOffsetPar::FinishEvent() {}
 
 // ---- Public method Finish   --------------------------------------------------
 void R3BSofTrimCalculateDriftTimeOffsetPar::FinishTask()

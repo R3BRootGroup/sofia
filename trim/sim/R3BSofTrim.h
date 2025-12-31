@@ -1,5 +1,17 @@
-#ifndef R3BSofTrim_H
-#define R3BSofTrim_H 1
+/******************************************************************************
+ *   Copyright (C) 2017 GSI Helmholtzzentrum für Schwerionenforschung GmbH    *
+ *   Copyright (C) 2017-2026 Members of R3B Collaboration                     *
+ *                                                                            *
+ *             This software is distributed under the terms of the            *
+ *                 GNU General Public Licence (GPL) version 3,                *
+ *                    copied verbatim in the file "LICENSE".                  *
+ *                                                                            *
+ * In applying this license GSI does not waive the privileges and immunities  *
+ * granted to it by virtue of its status as an Intergovernmental Organization *
+ * or submit itself to any jurisdiction.                                      *
+ ******************************************************************************/
+
+#pragma once
 
 #include "R3BDetector.h"
 #include "TLorentzVector.h"
@@ -35,7 +47,7 @@ class R3BSofTrim : public R3BDetector
      ** to the collection.
      *@param vol  Pointer to the active volume
      **/
-    Bool_t ProcessHits(FairVolume* vol = 0) override;
+    bool ProcessHits(FairVolume* vol = 0) override;
 
     /**  method EndOfEvent
      **
@@ -51,7 +63,7 @@ class R3BSofTrim : public R3BDetector
     void Register() override;
 
     /** Accessor to the hit collection **/
-    TClonesArray* GetCollection(Int_t iColl) const override;
+    TClonesArray* GetCollection(int iColl) const override;
 
     /**  method Print
      **
@@ -65,26 +77,26 @@ class R3BSofTrim : public R3BDetector
      **/
     void Reset() override;
 
-    Bool_t CheckIfSensitive(std::string name) override;
+    bool CheckIfSensitive(std::string name) override;
 
     void Initialize() override;
 
   private:
     /** Track information to be stored until the track leaves the
         active volume. **/
-    Int_t fTrackID;  //!  track index
-    Int_t fTrackPID; //!  particle identification
-    Int_t fVolumeID; //!  volume id
-    Int_t fDetCopyID;
-    Double_t fZ;
-    Double_t fA;
-    Int_t fUniqueID;                //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
+    int fTrackID;  //!  track index
+    int fTrackPID; //!  particle identification
+    int fVolumeID; //!  volume id
+    int fDetCopyID;
+    double fZ;
+    double fA;
+    int fUniqueID;                  //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
     TLorentzVector fPosIn, fPosOut; //!  position
     TLorentzVector fMomIn, fMomOut; //!  momentum
-    Double32_t fTime;               //!  time
-    Double32_t fLength;             //!  length
-    Double32_t fELoss;              //!  energy loss
-    Int_t fNSteps;                  //!  Number of steps in the active volume
+    double fTime;                   //!  time
+    double fLength;                 //!  length
+    double fELoss;                  //!  energy loss
+    int fNSteps;                    //!  Number of steps in the active volume
 
     TClonesArray* fSofTRIMCollection; //!  The point collection
 
@@ -92,18 +104,18 @@ class R3BSofTrim : public R3BDetector
      **
      ** Adds a SofTRIMPoint to the HitCollection
      **/
-    R3BSofTrimPoint* AddPoint(Int_t trackID,
-                              Int_t detID,
-                              Int_t detCopyID,
-                              Double_t zf,
-                              Double_t af,
+    R3BSofTrimPoint* AddPoint(int trackID,
+                              int detID,
+                              int detCopyID,
+                              double zf,
+                              double af,
                               TVector3 posIn,
                               TVector3 pos_out,
                               TVector3 momIn,
                               TVector3 momOut,
-                              Double_t time,
-                              Double_t length,
-                              Double_t eLoss);
+                              double time,
+                              double length,
+                              double eLoss);
 
     /** Private method ResetParameters
      **
@@ -125,5 +137,3 @@ inline void R3BSofTrim::ResetParameters()
     fTime = fLength = fZ = fA = fELoss = 0.;
     fNSteps = 0;
 };
-
-#endif

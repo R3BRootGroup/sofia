@@ -2,10 +2,9 @@
 // -----             R3BSofTrimCalPar source file               -----
 // ------------------------------------------------------------------
 
-#ifndef R3BSofTrimCalPar_H
-#define R3BSofTrimCalPar_H
+#pragma once
 
-#include "FairParGenericSet.h" // for FairParGenericSet
+#include "FairParGenericSet.h"
 #include "TArrayD.h"
 #include "TArrayF.h"
 #include "TObjArray.h"
@@ -17,7 +16,6 @@ class FairParamList;
 
 class R3BSofTrimCalPar : public FairParGenericSet
 {
-
   public:
     /** Standard constructor **/
     R3BSofTrimCalPar(const char* name = "trimCalPar",
@@ -86,7 +84,6 @@ class R3BSofTrimCalPar : public FairParGenericSet
 
     R3BSofTrimCalPar(const R3BSofTrimCalPar&); /*< a copy constructor >*/
 
+  public:
     ClassDef(R3BSofTrimCalPar, 1);
 };
-
-#endif
