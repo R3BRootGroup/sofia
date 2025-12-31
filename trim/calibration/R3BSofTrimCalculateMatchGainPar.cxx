@@ -1,35 +1,24 @@
 #include "R3BSofTrimCalculateMatchGainPar.h"
+#include "R3BSofTrimCalData.h"
+#include "R3BSofTrimCalPar.h"
 
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairRunAna.h"
 #include "FairRuntimeDb.h"
-#include "R3BEventHeader.h"
-#include "R3BSofTrimCalData.h"
-#include "R3BSofTrimCalPar.h"
+
 #include "TClonesArray.h"
-#include "TGeoManager.h"
-#include "TGeoMatrix.h"
 #include "TMath.h"
 #include "TObjArray.h"
 #include "TRandom.h"
 #include "TVector3.h"
-
 #include <iostream>
 #include <stdlib.h>
 
 // R3BSofTrimCalculateMatchGainPar: Default Constructor --------------------------
 R3BSofTrimCalculateMatchGainPar::R3BSofTrimCalculateMatchGainPar()
-    : FairTask("R3BSofTrimCalculateMatchGainPar", 1)
-    , fNumSections(3)
-    , fNumAnodes(6)
-    , fNumPairsPerSection(3)
-    , fCalData(NULL)
-    , fCalPar(NULL)
-    , fEpsilon(0.01)
-    , fOutputFile(NULL)
+    : R3BSofTrimCalculateMatchGainPar("R3BSofTrimCalculateMatchGainPar", 1)
 {
-    fGainMin = new TArrayF(9);
 }
 
 // R3BSofTrimCalculateMatchGainPar: Standard Constructor --------------------------
@@ -56,10 +45,9 @@ R3BSofTrimCalculateMatchGainPar::~R3BSofTrimCalculateMatchGainPar()
 // -----   Public method Init   --------------------------------------------
 InitStatus R3BSofTrimCalculateMatchGainPar::Init()
 {
-
     LOG(info) << "R3BSofTrimCalculateMatchGainPar: Init";
 
-    FairRootManager* rm = FairRootManager::Instance();
+    auto* rm = FairRootManager::Instance();
     if (!rm)
     {
         return kFATAL;
@@ -69,7 +57,7 @@ InitStatus R3BSofTrimCalculateMatchGainPar::Init()
     // --- INPUT CAL DATA --- //
     // --- -------------- --- //
 
-    fCalData = (TClonesArray*)rm->GetObject("TrimCalData");
+    fCalData = dynamic_cast<TClonesArray*>(rm->GetObject("TrimCalData"));
     if (!fCalData)
     {
         LOG(error) << "R3BSofTrimCalculateMatchGainPar::Init() Couldn't get handle on TrimCalData";
@@ -80,13 +68,13 @@ InitStatus R3BSofTrimCalculateMatchGainPar::Init()
     // --- SOF TRIM TRIANGLE CAL PARAMETERS CONTAINER --- //
     // --- ------------------------------------------ --- //
 
-    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    auto* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
         return kFATAL;
     }
 
-    fCalPar = (R3BSofTrimCalPar*)rtdb->getContainer("trimCalPar");
+    fCalPar = dynamic_cast<R3BSofTrimCalPar*>(rtdb->getContainer("trimCalPar"));
     if (!fCalPar)
     {
         LOG(error) << "R3BSofTrimCalculateMatchGainPar::Init() Couldn't get handle on trimCalPar container";
@@ -131,9 +119,8 @@ InitStatus R3BSofTrimCalculateMatchGainPar::Init()
 InitStatus R3BSofTrimCalculateMatchGainPar::ReInit() { return kSUCCESS; }
 
 // -----   Public method Exec   --------------------------------------------
-void R3BSofTrimCalculateMatchGainPar::Exec(Option_t* opt)
+void R3BSofTrimCalculateMatchGainPar::Exec(Option_t*)
 {
-
     Int_t iSec, iAnode, iPair;
     Double_t Esub[fNumSections * fNumAnodes];
     Double_t EsubDown;
@@ -147,12 +134,12 @@ void R3BSofTrimCalculateMatchGainPar::Exec(Option_t* opt)
     // --- ------------------------------ --- //
     // --- LOOP OVER CAL DATA FOR SofTrim --- //
     // --- ------------------------------ --- //
-    UInt_t nHits = fCalData->GetEntries();
+    auto nHits = fCalData->GetEntries();
     if (!nHits)
         return;
-    for (Int_t ihit = 0; ihit < nHits; ihit++)
+    for (auto ihit = 0; ihit < nHits; ihit++)
     {
-        R3BSofTrimCalData* hit = (R3BSofTrimCalData*)fCalData->At(ihit);
+        auto* hit = dynamic_cast<R3BSofTrimCalData*>(fCalData->At(ihit));
         iSec = hit->GetSecID() - 1;
         iAnode = hit->GetAnodeID() - 1;
         mult[iAnode + iSec * fNumAnodes]++;
@@ -185,11 +172,6 @@ void R3BSofTrimCalculateMatchGainPar::Exec(Option_t* opt)
         }     // end of loop over the pairs
     }         // end of loop over the sections
 }
-
-// ---- Public method Reset   --------------------------------------------------
-void R3BSofTrimCalculateMatchGainPar::Reset() {}
-
-void R3BSofTrimCalculateMatchGainPar::FinishEvent() {}
 
 // ---- Public method Finish   --------------------------------------------------
 void R3BSofTrimCalculateMatchGainPar::FinishTask()

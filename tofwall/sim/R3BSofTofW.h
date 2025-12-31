@@ -51,7 +51,7 @@ class R3BSofTofW : public R3BDetector
      ** to the collection.
      *@param vol  Pointer to the active volume
      **/
-    Bool_t ProcessHits(FairVolume* vol = 0) override;
+    bool ProcessHits(FairVolume* vol = 0) override;
 
     /** Virtual method EndOfEvent
      **
@@ -67,7 +67,7 @@ class R3BSofTofW : public R3BDetector
     void Register() override;
 
     /** Gets the produced collections */
-    TClonesArray* GetCollection(Int_t iColl) const override;
+    TClonesArray* GetCollection(int iColl) const override;
 
     /** Virtual method Print
      **
@@ -85,18 +85,17 @@ class R3BSofTofW : public R3BDetector
   private:
     /** Track information to be stored until the track leaves the
         active volume. **/
-    Int_t fTrackID;                 //!  track index
-    Int_t fTrackPID;                //!  particle identification
-    Int_t fVolumeID;                //!  volume id
-    Int_t fDetCopyID;               //!  Det volume id
-    Double_t fZ;                    //!  atomic number fragment
-    Double_t fA;                    //!  mass number fragment
+    int fTrackID;                   //!  track index
+    int fTrackPID;                  //!  particle identification
+    int fVolumeID;                  //!  volume id
+    int fDetCopyID;                 //!  Det volume id
+    double fZ;                      //!  atomic number fragment
+    double fA;                      //!  mass number fragment
     TLorentzVector fPosIn, fPosOut; //!  position
     TLorentzVector fMomIn, fMomOut; //!  momentum
-    Double32_t fTime;               //!  time
-    Double32_t fLength;             //!  length
-    Double32_t fELoss;              //!  energy loss
-    Int_t fPosIndex;                //!
+    double fTime;                   //!  time
+    double fLength;                 //!  length
+    double fELoss;                  //!  energy loss
 
     TClonesArray* fSofTofWallCollection; //  The point collection
 
@@ -104,9 +103,9 @@ class R3BSofTofW : public R3BDetector
      **
      ** Adds a SofTofWallPoint to the HitCollection
      **/
-    R3BSofTofWPoint* AddPoint(Int_t trackID,
-                              Int_t detID,
-                              Int_t volid,
+    R3BSofTofWPoint* AddPoint(int trackID,
+                              int detID,
+                              int volid,
                               Double_t Z,
                               Double_t A,
                               TVector3 posIn,
@@ -138,5 +137,4 @@ inline void R3BSofTofW::ResetParameters()
     fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fTime = fLength = fELoss = fZ = fA = 0;
-    fPosIndex = 0;
 };

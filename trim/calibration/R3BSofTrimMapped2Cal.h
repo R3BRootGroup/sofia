@@ -2,8 +2,7 @@
 // -----                R3BSofTrimMapped2Cal                   -----
 // -----------------------------------------------------------------
 
-#ifndef R3BSofTrimMapped2Cal_H
-#define R3BSofTrimMapped2Cal_H
+#pragma once
 
 #include "FairTask.h"
 #include "R3BSofTrimCalData.h"
@@ -19,7 +18,6 @@ class R3BSofTrimCalPar;
 
 class R3BSofTrimMapped2Cal : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTrimMapped2Cal();
@@ -44,9 +42,6 @@ class R3BSofTrimMapped2Cal : public FairTask
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
-
-    /** Virtual method Finish **/
-    virtual void Finish();
 
     void SetOnline(Bool_t option) { fOnline = option; }
 
@@ -73,5 +68,3 @@ class R3BSofTrimMapped2Cal : public FairTask
     // Class definition
     ClassDef(R3BSofTrimMapped2Cal, 1)
 };
-
-#endif

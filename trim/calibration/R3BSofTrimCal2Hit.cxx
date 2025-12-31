@@ -71,16 +71,16 @@ R3BSofTrimCal2Hit::~R3BSofTrimCal2Hit()
 
 void R3BSofTrimCal2Hit::SetParContainers()
 {
-    FairRuntimeDb* rtdb = FairRuntimeDb::instance();
+    auto* rtdb = FairRuntimeDb::instance();
     if (!rtdb)
     {
-        LOG(error) << "FairRuntimeDb not opened!";
+        LOG(fatal) << "FairRuntimeDb not opened!";
     }
 
-    fTrimHitPar = (R3BSofTrimHitPar*)rtdb->getContainer("trimHitPar");
+    fTrimHitPar = dynamic_cast<R3BSofTrimHitPar*>(rtdb->getContainer("trimHitPar"));
     if (!fTrimHitPar)
     {
-        LOG(error) << "R3BSofTrimCal2HitPar::Init() Couldn't get handle on trimHitPar container";
+        LOG(fatal) << "R3BSofTrimCal2HitPar::Init() Couldn't get handle on trimHitPar container";
         return;
     }
     else
@@ -105,19 +105,17 @@ InitStatus R3BSofTrimCal2Hit::Init()
 {
     LOG(info) << "R3BSofTrimCal2Hit::Init()";
 
-    FairRootManager* rootManager = FairRootManager::Instance();
+    auto* rootManager = FairRootManager::Instance();
     if (!rootManager)
     {
         return kFATAL;
     }
-    header = (R3BEventHeader*)rootManager->GetObject("EventHeader.");
-    if (!header)
-        header = (R3BEventHeader*)rootManager->GetObject("R3BEventHeader");
+    header = dynamic_cast<R3BEventHeader*>(rootManager->GetObject("EventHeader."));
 
     // --- ------------------------------- --- //
     // --- INPUT CAL DATA FOR TRIPLE-MUSIC --- //
     // --- ------------------------------- --- //
-    fTrimCalData = (TClonesArray*)rootManager->GetObject("TrimCalData");
+    fTrimCalData = dynamic_cast<TClonesArray*>(rootManager->GetObject("TrimCalData"));
     if (!fTrimCalData)
     {
         LOG(warn) << "R3BSofTrimCal2Hit::Init() TrimCalData not found";
@@ -126,7 +124,7 @@ InitStatus R3BSofTrimCal2Hit::Init()
     // --- ---------------------- --- //
     // --- INPUT CAL DATA FOR SCI --- //
     // --- ---------------------- --- //
-    fSciCalData = (TClonesArray*)rootManager->GetObject("SofSciCalData");
+    fSciCalData = dynamic_cast<TClonesArray*>(rootManager->GetObject("SofSciCalData"));
     if (!fSciCalData)
     {
         LOG(warn) << "R3BSofTrimCal2Hit::Init() SofSciCalData not found";
@@ -149,7 +147,7 @@ InitStatus R3BSofTrimCal2Hit::ReInit()
 }
 
 // -----   Public method Execution   --------------------------------------------
-void R3BSofTrimCal2Hit::Exec(Option_t* option)
+void R3BSofTrimCal2Hit::Exec(Option_t*)
 {
     int expid = fExpId != 0 ? fExpId : header->GetExpId();
     if (expid == 455 && fCoulex)
@@ -165,12 +163,6 @@ void R3BSofTrimCal2Hit::S455_Coulex()
 {
     // Reset entries in output arrays, local arrays
     Reset();
-
-    // Get the parameters
-    if (!fTrimHitPar)
-    {
-        LOG(error) << "R3BSofTrimCal2Hit::Exec() TrimHitPar Container not found";
-    }
 
     // Local variables at Cal Level
     Int_t iSec, iAnode;
@@ -188,7 +180,7 @@ void R3BSofTrimCal2Hit::S455_Coulex()
     Float_t eal[fNumSections * nAligned];
     Float_t dtal[fNumSections * nAligned];
     Float_t sumRaw, sumBeta, sumDT, sumTheta, zval, dtSection, Ddt;
-    Double_t correction;
+    double correction = 0.;
 
     // Initialization of the local variables
     for (Int_t s = 0; s < fNumSections; s++)
@@ -209,14 +201,14 @@ void R3BSofTrimCal2Hit::S455_Coulex()
     // Get the number of entries of the SciCalData TClonesArray and extract the beam velocity
     if (fSciCalData)
     {
-        Int_t nHitsCalSci = fSciCalData->GetEntries();
+        int nHitsCalSci = fSciCalData->GetEntriesFast();
         if (!nHitsCalSci)
         {
             return;
         }
-        for (Int_t entry = 0; entry < nHitsCalSci; entry++)
+        for (auto entry = 0; entry < nHitsCalSci; entry++)
         {
-            R3BSofSciCalData* iSciCalData = (R3BSofSciCalData*)fSciCalData->At(entry);
+            auto* iSciCalData = dynamic_cast<R3BSofSciCalData*>(fSciCalData->At(entry));
             if (iSciCalData->GetDetector() == fIdCaveC)
             {
                 betaFromS2 = iSciCalData->GetBeta_S2();
@@ -227,14 +219,14 @@ void R3BSofTrimCal2Hit::S455_Coulex()
     // Get the number of entries of the TrimCalData TClonesArray and loop over it
     if (fTrimCalData)
     {
-        Int_t nHitsCalTrim = fTrimCalData->GetEntries();
+        auto nHitsCalTrim = fTrimCalData->GetEntriesFast();
         if (!nHitsCalTrim)
         {
             return;
         }
-        for (Int_t entry = 0; entry < nHitsCalTrim; entry++)
+        for (auto entry = 0; entry < nHitsCalTrim; entry++)
         {
-            R3BSofTrimCalData* iCalData = (R3BSofTrimCalData*)fTrimCalData->At(entry);
+            auto* iCalData = dynamic_cast<R3BSofTrimCalData*>(fTrimCalData->At(entry));
             iSec = iCalData->GetSecID() - 1;
             iAnode = iCalData->GetAnodeID() - 1;
             mult[iAnode + iSec * fNumAnodes]++;
@@ -358,12 +350,6 @@ void R3BSofTrimCal2Hit::S455_P2p()
     // Reset entries in output arrays, local arrays
     Reset();
 
-    // Get the parameters
-    if (!fTrimHitPar)
-    {
-        LOG(error) << "R3BSofTrimCal2Hit::Exec() TrimHitPar Container not found";
-    }
-
     // Local variables at Cal Level
     Int_t iSec, iAnode;
     UInt_t mult[fNumSections * fNumAnodes];
@@ -380,7 +366,7 @@ void R3BSofTrimCal2Hit::S455_P2p()
     Float_t eal[fNumSections * nAligned];
     Float_t dtal[fNumSections * nAligned];
     Float_t sumRaw, sumDT, sumTheta, zval, dtSection, Ddt;
-    Double_t correction;
+    double correction = 0.;
 
     // Initialization of the local variables
     for (Int_t s = 0; s < fNumSections; s++)
@@ -401,14 +387,14 @@ void R3BSofTrimCal2Hit::S455_P2p()
     // Get the number of entries of the TrimCalData TClonesArray and loop over it
     if (fTrimCalData)
     {
-        Int_t nHitsCalTrim = fTrimCalData->GetEntries();
+        auto nHitsCalTrim = fTrimCalData->GetEntriesFast();
         if (!nHitsCalTrim)
         {
             return;
         }
-        for (Int_t entry = 0; entry < nHitsCalTrim; entry++)
+        for (auto entry = 0; entry < nHitsCalTrim; entry++)
         {
-            R3BSofTrimCalData* iCalData = (R3BSofTrimCalData*)fTrimCalData->At(entry);
+            auto* iCalData = dynamic_cast<R3BSofTrimCalData*>(fTrimCalData->At(entry));
             iSec = iCalData->GetSecID() - 1;
             iAnode = iCalData->GetAnodeID() - 1;
             mult[iAnode + iSec * fNumAnodes]++;
@@ -497,9 +483,6 @@ void R3BSofTrimCal2Hit::S455_P2p()
     return;
 }
 
-// -----   Protected method Finish   --------------------------------------------
-void R3BSofTrimCal2Hit::Finish() {}
-
 // -----   Public method Reset   ------------------------------------------------
 void R3BSofTrimCal2Hit::Reset()
 {
@@ -520,7 +503,7 @@ R3BSofTrimHitData* R3BSofTrimCal2Hit::AddHitData(Int_t secID,
                                                  Float_t Z)
 {
     TClonesArray& clref = *fTrimHitData;
-    Int_t size = clref.GetEntriesFast();
+    auto size = clref.GetEntriesFast();
     return new (clref[size]) R3BSofTrimHitData(secID, e1, e2, e3, Eraw, Ebeta, Edt, Etheta, Z);
 }
 

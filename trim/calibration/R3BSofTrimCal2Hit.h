@@ -2,8 +2,7 @@
 // -----                R3BSofTrimCal2Hit                   -----
 // --------------------------------------------------------------
 
-#ifndef R3BSofTrimCal2Hit_H
-#define R3BSofTrimCal2Hit_H
+#pragma once
 
 #include "FairTask.h"
 #include "R3BEventHeader.h"
@@ -19,7 +18,6 @@ class R3BSofTrimHitPar;
 
 class R3BSofTrimCal2Hit : public FairTask
 {
-
   public:
     /** Default constructor **/
     R3BSofTrimCal2Hit();
@@ -44,9 +42,6 @@ class R3BSofTrimCal2Hit : public FairTask
 
     /** Virtual method ReInit **/
     virtual InitStatus ReInit();
-
-    /** Virtual method Finish **/
-    virtual void Finish();
 
     /** Method to set up the experiment ID **/
     void SetExpId(Int_t exp) { fExpId = exp; }
@@ -91,5 +86,3 @@ class R3BSofTrimCal2Hit : public FairTask
     //--- Class definition --- //
     ClassDef(R3BSofTrimCal2Hit, 1)
 };
-
-#endif
