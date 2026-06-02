@@ -49,7 +49,7 @@ Please ask your questions, request features, and report issues by [creating a gi
 
 The SOFIA project uses clang-format-16 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
 ~~~bash
-bash apply-format.sh
+. apply-format.sh
 ~~~
 
 ## Spell Checking
@@ -335,8 +335,10 @@ The following systems are tested regularly.
 | Debian      | x86\_64  | 11             | GCC 10.2.1    | 3.27.4 / 3.30.0 | C++17           |
 | Debian      | x86\_64  | 12             | GCC 12.2.0    | 3.27.4 / 3.30.0 | C++17 / C++20   |
 | Debian      | x86\_64  | 13             | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17           |
+| Debian      | x86\_64  | 14             | GCC 15.2.0    | 4.0.3           | C++17           |
 | Ubuntu      | x86\_64  | 24.04          | GCC 13.3.0    | 3.28.3 / 4.0.3  | C++17 / C++20   |
 | Ubuntu      | x86\_64  | 25.04          | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17           |
+| Ubuntu      | x86\_64  | 26.04          | GCC 15.2.0    | 4.0.3           | C++17           |
    
 ## More Information
 

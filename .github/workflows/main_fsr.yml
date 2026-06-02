@@ -31,9 +31,6 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  schedule:
-    - cron: "0 22 * * 2,5"    # Runs at 22:00 UTC
-  
 
 # A workflow run is made up of one or more jobs that can run sequentially or
 # parallelly. As has been specified above, all the jobs below will be
@@ -50,12 +47,9 @@ jobs:
       fail-fast: false
       # Definition of the strategy matrix
       matrix:
-        # Here are the groups of repositories that need to be downloaded inside
-        # r3broot. Each group is used by only one job.
+        # Each group is used by only one job.
         repos: [ sofia ]
-        os: [ debian11, debian12 , debian13]
-        fsv: [ jan24p5 ]
-        cpp: [ 17 ]
+        sys: [ debian13_cpp17_feb26p1_v19.0.1 , debian14_cpp17_feb26p1_v19.0.1 , ubuntu2604_cpp17_jan24p6_v19.0.1 ]
         include:
           - preset: simple
           - repos: sofia
@@ -65,7 +59,7 @@ jobs:
     # tool-kits for the building, such as clang-tidy and cvmfs. For more
     # information, please visit the Docker repository at Dockerhub.
     container: 
-      image: r3bdockers/${{ matrix.os }}
+      image: r3bdockers/${{ matrix.sys }}
       volumes:
         - /tmp:/cvmfs
       env:
@@ -91,7 +85,7 @@ jobs:
       # A self-defined composite action. It sets multiple necessary environment
       # variables and mounts the cmvfs folder of fairroot and fairsoft.
       - name: Pre-build
-        uses: './.github/actions/pre-build'
+        uses: './.github/actions/fsr/pre-build'
 
       # A self-defined composite action, which restores the caches of
       # dependencies and builds and install them if the cache doesn't exist.
@@ -105,7 +99,7 @@ jobs:
       # "pull_request" and disabled for the merge event.
       - name: Install dependencies
         id: restore-cache
-        uses: './.github/actions/install-deps'
+        uses: './.github/actions/fsr/install-deps'
         with: 
           cache-name: ${{ matrix.cache }}
           r3b-dev-key: ${{ env.cacheSHA }}
@@ -113,7 +107,7 @@ jobs:
       # A self-defined composite action for the cmake configuration and build
       # of r3broot (along with necessary dep repos).
       - name: Configure-build-sofia
-        uses: './.github/actions/r3bbuild-steps'
+        uses: './.github/actions/fsr/r3bbuild-steps'
 
       # A self-defined composite action to perform the ctest and push the
       # results to the cdash (cmake-dashborad). To fully show the errors and
@@ -121,6 +115,6 @@ jobs:
       # are rerun after 'make clean'.
       - name: Ctest-cdash
         if: always()
-        uses: './.github/actions/ctest-cdash'
+        uses: './.github/actions/fsr/ctest-cdash'
         with:
           repo: ${{ matrix.repos }}
