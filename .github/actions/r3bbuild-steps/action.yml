@@ -31,6 +31,7 @@ runs:
         mv sofia R3BRoot
         mv R3BRoot sofia
         cd sofia
+        git clone https://github.com/R3BRootGroup/R3BFileSource.git
         mv sofia/ucesb .
         export UCESB_DIR=$GITHUB_WORKSPACE/ucesb/
         echo "UCESB_DIR=$GITHUB_WORKSPACE/ucesb/" >> $GITHUB_ENV

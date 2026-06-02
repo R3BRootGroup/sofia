@@ -49,7 +49,7 @@ jobs:
       matrix:
         # Each group is used by only one job.
         repos: [ sofia ]
-        sys: [ debian13_cpp17_feb26p1_v19.0.1 , debian14_cpp17_feb26p1_v19.0.1 , ubuntu2604_cpp17_jan24p6_v19.0.1 ]
+        sys: [ debian13_cpp17_feb26p1_v19.0.1 , debian13_cpp20_feb26p1_v19.0.1 , debian14_cpp17_feb26p1_v19.0.1 , ubuntu2604_cpp17_jan24p6_v19.0.1 ]
         include:
           - preset: simple
           - repos: sofia
