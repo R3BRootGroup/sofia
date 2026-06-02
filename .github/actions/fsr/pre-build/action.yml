@@ -1,0 +1,31 @@
+name: pre build
+description: 'steps before building R3BRoot with Sofia'
+
+runs:
+  using: composite
+  steps:
+    - name: set env variables
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+        echo "UCESB_DIR=$GITHUB_WORKSPACE/ucesb/" >> $GITHUB_ENV
+        export SIMPATH=$FAIRSOFTPATH
+        echo "SIMPATH=${SIMPATH}" >> $GITHUB_ENV
+        echo "FAIRROOTPATH=$FAIRROOTPATH" >> $GITHUB_ENV
+        echo "${SIMPATH}/bin" >> $GITHUB_PATH           
+        # variables for ccache
+        echo "CCACHE_BASEDIR=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
+        echo "CCACHE_DIR=${GITHUB_WORKSPACE}/.ccache" >> $GITHUB_ENV
+        echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
+        echo "CCACHE_COMPRESSLEVEL=6" >> $GITHUB_ENV
+        echo "SOURCEDIR=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+        echo "BUILDDIR=$GITHUB_WORKSPACE/build" >> $GITHUB_ENV
+        echo "cacheSHA=$([[ ${{github.event_name}} = "push" ]] && git rev-parse --short HEAD || git rev-parse --short HEAD^)" >> $GITHUB_ENV
+      shell: bash
+
+    - name: update system
+      run: |    
+        apt-get update
+        apt-get install --fix-missing -y sudo wget gnupg lsb-release
+        mkdir -p ${UCESB_DIR}
+        mkdir -p ${CCACHE_DIR}
+      shell: bash
