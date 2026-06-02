@@ -115,6 +115,6 @@ jobs:
       # are rerun after 'make clean'.
       - name: Ctest-cdash
         if: always()
-        uses: './.github/actions/fsr/ctest-cdash'
+        uses: './sofia/.github/actions/fsr/ctest-cdash'
         with:
           repo: ${{ matrix.repos }}
