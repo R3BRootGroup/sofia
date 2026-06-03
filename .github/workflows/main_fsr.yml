@@ -18,7 +18,7 @@
 # See the CI workflow developed for R3BRoot for more details
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
-name: CI-CD
+name: CI-CD-Main
 
 # Controls when the action will run. 
 on:
@@ -48,8 +48,10 @@ jobs:
       # Definition of the strategy matrix
       matrix:
         # Each group is used by only one job.
-        repos: [ sofia ]
-        sys: [ debian13_cpp17_feb26p1_v19.0.1 , debian13_cpp20_feb26p1_v19.0.1 , debian14_cpp17_feb26p1_v19.0.1 , ubuntu2604_cpp17_jan24p6_v19.0.1 ]
+        repos: [ sofia ] 
+        sys: [ debian12_cpp17_feb26p1_v19.0.1, almalinux101_cpp17_feb26p1_v19.0.1, ubuntu2604_cpp17_feb26p1_v19.0.1,  
+               debian13_cpp17_feb26p1_v19.0.1, debian13_cpp20_feb26p1_v19.0.1, debian13_cpp23_feb26p1_v19.0.1,
+               debian14_cpp17_feb26p1_v19.0.1, debian14_cpp20_feb26p1_v19.0.1, debian14_cpp23_feb26p1_v19.0.1 ]
         include:
           - preset: simple
           - repos: sofia
@@ -60,24 +62,19 @@ jobs:
     # information, please visit the Docker repository at Dockerhub.
     container: 
       image: r3bdockers/${{ matrix.sys }}
-      volumes:
-        - /tmp:/cvmfs
       env:
-        CVMDIR: /cvmfs/fairsoft.gsi.de
         # Specifying the number of threads available for the building and
         # testing. Github hosted runners can have at most 4 cores. The number
         # of the cores can be increased with a larger runner, thus increasing
         # the speed of the run.
         NUM_THREADS: 4
-      # Options for the Docker container to be run with cvmfs.
-      options: --user root --privileged  --ulimit nofile=10000:10000 --cap-add SYS_ADMIN --device /dev/fuse
 
     # Each job contains different steps that are executed sequentially. Each
     # step could be multiple shell commands or a composite action either from
     # another github repo or a self-defined one in .github/actions.
     steps:
       # Fetch updates from pull request branches using a public github action.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           # This allows all commits of all branches to be fetched.
           fetch-depth: 0

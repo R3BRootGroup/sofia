@@ -23,9 +23,15 @@ runs:
       shell: bash
 
     - name: update system
-      run: |    
-        apt-get update
-        apt-get install --fix-missing -y sudo wget gnupg lsb-release
+      run: |
+        if command -v apt-get >/dev/null 2>&1; then
+            apt-get update
+            apt-get install --fix-missing -y sudo gnupg lsb-release
+        elif command -v dnf >/dev/null 2>&1; then
+            dnf -y install sudo gnupg2 which diffutils
+            echo "YACC=bison" >> $GITHUB_ENV
+        fi
+        cat /etc/os-release
         mkdir -p ${UCESB_DIR}
         mkdir -p ${CCACHE_DIR}
       shell: bash
