@@ -130,15 +130,15 @@ Some simulations of two experimental configurations are included inside the sofi
 
 This directory contains all the detector geometries generated from the macros located at ./sofia/macros/geo. The existing geometries are :
 
-- sof_at_v19a.geo.root for the Active target detector
-- mwpc_0.geo.root for the MWPC0 detector
+- sof_at_v21.geo.root for the Active target detector
+- mwpc0_v2021.3.geo.root for the MWPC0 detector
 - targetvacuumchamber_ams_s455.geo.root for the vacuum chamber and AMS silicon detectors
-- mwpc_1.geo.root for the MWPC1 detector
-- twinmusic_v22.geo.root for the twin-Music detector
-- mwpc_2.geo.root for the MWPC2 detector
-- mwpc_3.geo.root for the MWPC3 detector
-- glad_s455.geo.root for GLAD magnet
-- sof_tof_v21.geo.root for the ToF-Wall detector
+- mwpc1_v2021.3.geo.root for the MWPC1 detector
+- twinmusic_v2021.3.geo.root for the twin-Music detector
+- mwpc2_v2021.3.geo.root for the MWPC2 detector
+- mwpc3_v2021.3.geo.root for the MWPC3 detector
+- glad_v2025.1.fission.geo.root for GLAD magnet
+- sof_tof_v2021.3.geo.root for the ToF-Wall detector
 
 ### sofia/macros/coulexsim
 
@@ -329,16 +329,20 @@ The following systems are tested regularly.
 
 | **OS Name** | **Arch** | **OS Version** | **Compiler**  | **CMake**       | **C++ Version** |
 | ----------- | -------- | -------------- | ------------- | --------------- | --------------- |
-| Almalinux   | x86\_64  | 9.3            | GCC 11.4.1    | 3.27.9 / 4.0.3  | C++17 / C++20   |
+| Almalinux   | x86\_64  | 9.3            | GCC 11.4.1    | 3.27.9 / 4.0.3  | C++17 / C++20 / C++23 |
 | Almalinux   | x86\_64  | 9.4            | GCC 14.2.0    | 3.30.6          | C++17           |
+| Almalinux   | x86\_64  | 9.7            | GCC 11.4.1    | 4.2.0           | C++17 / C++20 / C++23 |
+| Almalinux   | x86\_64  | 10.1           | GCC 14.2.0    | 4.0.3           | C++17 / C++20 / C++23 |
+| Almalinux   | x86\_64  | 10.2           | GCC 14.3.1    | 4.0.3           | C++17 / C++20 / C++23 |
 | RHEL        | x86\_64  | 9.6            | GCC 14.2.0    | 3.30.6          | C++17           |
 | Debian      | x86\_64  | 11             | GCC 10.2.1    | 3.27.4 / 3.30.0 | C++17           |
-| Debian      | x86\_64  | 12             | GCC 12.2.0    | 3.27.4 / 3.30.0 | C++17 / C++20   |
-| Debian      | x86\_64  | 13             | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17           |
-| Debian      | x86\_64  | 14             | GCC 15.2.0    | 4.0.3           | C++17           |
-| Ubuntu      | x86\_64  | 24.04          | GCC 13.3.0    | 3.28.3 / 4.0.3  | C++17 / C++20   |
-| Ubuntu      | x86\_64  | 25.04          | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17           |
-| Ubuntu      | x86\_64  | 26.04          | GCC 15.2.0    | 4.0.3           | C++17           |
+| Debian      | x86\_64  | 12             | GCC 12.2.0    | 3.27.4 / 4.0.3  | C++17 / C++20   |
+| Debian      | x86\_64  | 13             | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17 / C++20 / C++23 |
+| Debian      | x86\_64  | 14             | GCC 15.2.0    | 3.31.6 / 4.0.3  | C++17 / C++20 / C++23 |
+| Ubuntu      | x86\_64  | 24.04          | GCC 13.3.0    | 3.28.3 / 4.0.3  | C++17 / C++20 / C++23 |
+| Ubuntu      | x86\_64  | 25.04          | GCC 14.2.0    | 3.31.6          | C++17 / C++20   |
+| Ubuntu      | x86\_64  | 26.04          | GCC 15.2.0    | 3.31.6 / 4.0.3  | C++17 / C++20 / C++23 |
+| MacOS       | arm64    | 15.3           | AppleClang 15 |  4.0.3          | C++17           |
    
 ## More Information
 
