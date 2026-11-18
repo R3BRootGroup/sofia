@@ -40,6 +40,6 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           sudo apt-get update
-          sudo apt-get install clang-format-16
-          ./.clang-format-check.sh clang-format-16
+          sudo apt-get install clang-format-19
+          ./.clang-format-check.sh clang-format-19
         shell: bash

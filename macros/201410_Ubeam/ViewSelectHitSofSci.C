@@ -132,7 +132,7 @@ void ViewSelectHitSofSci(UInt_t FirstRun = 1355)
                 h2_TofRaw_vs_PosRaw[1]->Fill(DeltaT[1], TofRaw);
             }
         } // end of if nHits=6
-    }     // end of for(Event)
+    } // end of for(Event)
 
     char nameCan[100];
 

@@ -169,8 +169,8 @@ void R3BSofTrimCalculateMatchGainPar::Exec(Option_t*)
                     }
                 }
             } // end of check mult up = mult down
-        }     // end of loop over the pairs
-    }         // end of loop over the sections
+        } // end of loop over the pairs
+    } // end of loop over the sections
 }
 
 // ---- Public method Finish   --------------------------------------------------

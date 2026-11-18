@@ -333,7 +333,7 @@ void R3BSofCorrOnlineSpectra::Exec(Option_t* option)
                 } // end of loop over entry2
             }
         } // end of loop over entry1
-    }     // end of if(CorrVMappedData)
+    } // end of if(CorrVMappedData)
 
     Double_t DeltaT_CorrM;
     if (fCorrmMapped && fCorrmMapped->GetEntriesFast() > 0)

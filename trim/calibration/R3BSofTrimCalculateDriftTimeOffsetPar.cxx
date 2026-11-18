@@ -260,7 +260,7 @@ void R3BSofTrimCalculateDriftTimeOffsetPar::Exec(Option_t*)
             //          << 1000. * Xanode / fDriftVelocity << " [100 ps]" << std::endl;
             fh1_DeltaDT[iAnode + iSec * fNumAnodes]->Fill(10000. * Xanode / fDriftVelocity -
                                                           DTraw); // 10000 : mm/micros -> mm/100ps
-        }                                                         // end of loop over the mapped data
+        } // end of loop over the mapped data
     }
 }
 

@@ -21,10 +21,7 @@
 #include <sstream>
 
 #define NbScalers 14
-#define NbChannelsPerScaler                                   \
-    {                                                         \
-        7, 56, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16 \
-    }
+#define NbChannelsPerScaler { 7, 56, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16 }
 
 class TClonesArray;
 class R3BEventHeader;

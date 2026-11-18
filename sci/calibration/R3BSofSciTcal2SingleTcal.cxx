@@ -223,7 +223,7 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
                     maskL[0] |= (0x1) << multL;
                     AddSingleTcalData(1, iRawTime, iRawPos, -100000., -100000.);
                 } // end of loop over the hits of the left PMTs
-            }     // end of loop over the hits of the right PMTs
+            } // end of loop over the hits of the right PMTs
 
         } // --- end of CAVE C only --- //
 
@@ -281,9 +281,9 @@ void R3BSofSciTcal2SingleTcal::Exec(Option_t* option)
                                     mult_selectHits[dSta]++;
                                 }
                             } // end of multLsta
-                        }     // end of multRsta
-                    }         // end of multLsto
-                }             // end of multRsto
+                        } // end of multRsta
+                    } // end of multLsto
+                } // end of multRsto
                 if (mult_selectHits[dSta] > 0 &&
                     (mult_selectHits[dSto] == 0 || mult_selectHits[dSta] < mult_selectHits[dSto]))
                 {
