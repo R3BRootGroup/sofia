@@ -187,9 +187,9 @@ void R3BSofTrimMapped2Cal::Exec(Option_t*)
                         // std::cout << "Add Cal Data: s=" << s+1 << ", a=" << a+1<< ", ematch=" << ematch << std::endl;
                     }
                 } // end of check that anode has data
-            }     // end of loop over the anodes
-        }         // end of one Tref per Section
-    }             // end of loop over section
+            } // end of loop over the anodes
+        } // end of one Tref per Section
+    } // end of loop over section
 
     return;
 }

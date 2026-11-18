@@ -47,7 +47,7 @@ Please ask your questions, request features, and report issues by [creating a gi
 
 ## Code Formatting
 
-The SOFIA project uses clang-format-16 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
+The SOFIA project uses clang-format-19 to ensure a common code formatting. The script "apply-format.sh" can be used for this purpose: 
 ~~~bash
 . apply-format.sh
 ~~~
@@ -335,7 +335,6 @@ The following systems are tested regularly.
 | Almalinux   | x86\_64  | 10.1           | GCC 14.2.0    | 4.0.3           | C++17 / C++20 / C++23 |
 | Almalinux   | x86\_64  | 10.2           | GCC 14.3.1    | 4.0.3           | C++17 / C++20 / C++23 |
 | RHEL        | x86\_64  | 9.6            | GCC 14.2.0    | 3.30.6          | C++17           |
-| Debian      | x86\_64  | 11             | GCC 10.2.1    | 3.27.4 / 3.30.0 | C++17           |
 | Debian      | x86\_64  | 12             | GCC 12.2.0    | 3.27.4 / 4.0.3  | C++17 / C++20   |
 | Debian      | x86\_64  | 13             | GCC 14.2.0    | 3.31.6 / 4.0.3  | C++17 / C++20 / C++23 |
 | Debian      | x86\_64  | 14             | GCC 15.2.0    | 3.31.6 / 4.0.3  | C++17 / C++20 / C++23 |

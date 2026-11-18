@@ -255,7 +255,7 @@ void R3BSofTrimCal2Hit::S455_Coulex()
                         nRaw++;
                     }
                 } // end of loop over the anodes
-            }     // end calculation of fEnergyRaw for rectangular shape anodes
+            } // end calculation of fEnergyRaw for rectangular shape anodes
             else
             {
                 for (Int_t ch = 0; ch < nAligned; ch++)
@@ -282,7 +282,7 @@ void R3BSofTrimCal2Hit::S455_Coulex()
                         nRaw++;
                     }
                 } // end of loop over the pairs
-            }     // end of calculation of fEnergyRaw for triangular shape anodes
+            } // end of calculation of fEnergyRaw for triangular shape anodes
             if (nRaw > 0)
                 sumRaw = fTrimHitPar->GetEnergyAlignOffset(s + 1) +
                          fTrimHitPar->GetEnergyAlignGain(s + 1) * (sumRaw / (Float_t)nRaw);
@@ -423,7 +423,7 @@ void R3BSofTrimCal2Hit::S455_P2p()
                         nRaw++;
                     }
                 } // end of loop over the anodes
-            }     // end calculation of fEnergyRaw for rectangular shape anodes
+            } // end calculation of fEnergyRaw for rectangular shape anodes
             else
             {
                 for (Int_t ch = 0; ch < nAligned; ch++)
@@ -450,7 +450,7 @@ void R3BSofTrimCal2Hit::S455_P2p()
                         nRaw++;
                     }
                 } // end of loop over the pairs
-            }     // end of calculation of fEnergyRaw for triangular shape anodes
+            } // end of calculation of fEnergyRaw for triangular shape anodes
             if (nRaw > 0)
                 sumRaw = fTrimHitPar->GetEnergyAlignOffset(s + 1) +
                          fTrimHitPar->GetEnergyAlignGain(s + 1) * (sumRaw / (Float_t)nRaw);

@@ -1113,9 +1113,9 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                             fh2_PosVsTofS8[2 * (iDet - fIdS8) + 1]->Fill(TofS8[iDet - fIdS8], hitcal->GetPosMm());
                         }
                     } // --- end of loop over Cal data --- //
-                }     // --- end of if Cal data --- //
-            }         // --- end of if SingleTcal data --- //
-        }             //--- end of if Tcal data --- //
+                } // --- end of if Cal data --- //
+            } // --- end of if SingleTcal data --- //
+        } //--- end of if Tcal data --- //
 
         // --- ----------------------------------------- --- //
         // --- filling some histogramms outside the loop --- //
@@ -1263,7 +1263,7 @@ void R3BSofSciOnlineSpectra::Exec(Option_t* option)
                 fh2_PosVsTofS8[2 * (dstop - fIdS8)]->Fill(TofS8[dstop - fIdS8], CalPos[fIdS8 - 1]);
             }
         } // --- end of if SofSci at S8 --- //
-    }     // --- end of if Mapped data --- //
+    } // --- end of if Mapped data --- //
 
     fNEvents++;
 }

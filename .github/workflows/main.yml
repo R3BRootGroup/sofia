@@ -53,7 +53,7 @@ jobs:
         # Here are the groups of repositories that need to be downloaded inside
         # r3broot. Each group is used by only one job.
         repos: [ sofia ]
-        os: [ debian11, debian12 ]
+        os: [ debian12 ]
         fsv: [ jan24p5 ]
         cpp: [ 17 ]
         include:
